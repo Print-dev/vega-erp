@@ -1,0 +1,57 @@
+.input-rdo{
+  background-color: red; /* Fondo claro */
+  color: black; /* Texto oscuro */
+  border: 1px solid #ccc; /* Borde sutil */
+  cursor: default; /* Indicador de solo lectura */
+}
+
+.size-body{
+  height: 90vh;
+}
+
+/* Ocultar el menú inicialmente */
+.drop-menu-sb{
+  position: absolute; /* Elimina su influencia en el flujo del documento */
+  top: 100%; /* Asegura que el menú se posicione justo debajo del botón */
+  left: 0;
+  right: 0;
+  transform: scaleY(0); /* Inicia el menú contraído verticalmente */
+  transform-origin: top; /* Define el punto de origen para la animación */
+  transition: transform 0.3s ease, visibility 0.3s ease; /* Agrega animación suave */
+  visibility: hidden; /* Oculta visualmente el menú */
+}
+
+.drop-sb.show .drop-menu-sb {
+  transform: scaleY(1); /* Expande el menú verticalmente */
+  visibility: visible; /* Lo hace visible */
+}
+
+
+.hidden-event-icon{
+  pointer-events: none;
+}
+
+#list{
+  position: absolute; /* Posición absoluta para salir del flujo del documento */
+  top: 100%; /* Aparece justo debajo del input */
+  left: 0;
+  width: 100%;
+  z-index: 1050; /* Asegura que esté por encima de otros elementos */
+  max-height: 200px; /* Altura máxima con scroll si hay muchas opciones */
+  overflow-y: auto; /* Habilita el scroll */
+  display: none; /* Por defecto, oculto */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para mejor diseño */
+}
+
+.select-area option{
+  width: 50px;
+  padding: 1px;
+  white-space: nowrap; /* Evita el salto de línea */
+  overflow: hidden; /* Oculta el contenido que se desborda */
+  text-overflow: ellipsis; /* Muestra los tres puntos (...) */
+
+}
+
+#list.show {
+  display: block; /* Mostrar cuando tenga la clase 'show' */
+}

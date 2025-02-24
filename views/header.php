@@ -1,0 +1,346 @@
+
+<?php
+session_start();
+if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {
+  header('location:http://localhost/vega-erp');
+} else {
+  //El usuario logeado, solo se le permitira acceso a las vistas indicadores por su PERFIL
+  $url = $_SERVER['REQUEST_URI']; //obtener url
+  $rutaCompleta = explode("/", $url); //url ->array()
+  $rutaCompleta = array_filter($rutaCompleta);
+  $totalElementos = count($rutaCompleta);
+  //Buscar la vista actual en la lista de acceso
+  $vistaActual = $rutaCompleta[$totalElementos];
+  //die(var_dump($vistaActual));
+  $listaAcceso = $_SESSION['login']['accesos'];
+  //die(var_dump($totalElementos));
+
+  //Verificando el permiso
+  //var_dump($listaAcceso);
+  $encontrado = false;
+  $i = 0;
+
+  while (($i < count($listaAcceso)) && !$encontrado) {
+    if ($listaAcceso[$i]['ruta'] == $vistaActual) {
+      $encontrado = true;
+    }
+    $i++;
+  }
+
+  if (!$encontrado) {
+    header("Location:http://localhost/vega-erp/views/ventas/listar-atencion-cliente");
+  }
+}
+$usuario = $_SESSION['login']['nom_usuario'];
+
+$rol ="";
+switch($_SESSION['login']['nivelacceso']){
+  case 'Administrador':
+    $rol="Administrador";
+    break;
+  
+}
+$host = "http://localhost/vega-erp/";
+?>
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+  <!-- Bootstrap -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+    crossorigin="anonymous" />
+    <!-- Font API GOOGLE -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+
+
+  <!-- Volt CSS -->
+  <link type="text/css" href="http://localhost/vega-erp/css/dashboard/volt.css" rel="stylesheet" />
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="http://localhost/vega-erp/css/global.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- jKanban CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jkanban@1.2.0/dist/jkanban.min.css">
+
+  <!-- list-usuario -->
+  <link rel="stylesheet" href="http://localhost/vega-erp/css/usuarios/list-usuario.css">
+  <link rel="stylesheet" href="http://localhost/vega-erp/css/usuarios/registrar-usuario.css">
+
+  <!-- activo -->
+  <!-- <link rel="stylesheet" href="http://localhost/vega-erp/css/activos/lista-activo.css">
+  <link rel="stylesheet" href="http://localhost/vega-erp/css/activos/registrar-activo.css"> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+
+  <!-- Bajas -->
+  <!-- <link rel="stylesheet" href="http://localhost/vega-erp/css/baja-activo.css"> -->
+
+  <!-- JQUERY -->
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
+  <link
+    rel="stylesheet"
+    href="//cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+
+</head>
+<style>
+  #encabezado-titulo {
+    font-family: "Outfit", serif;
+    font-weight: 400;
+    font-style: normal;
+
+  }
+
+
+  #links {
+    color: black;
+  }
+
+  #links:hover {
+    color: white;
+    font-weight: bold;
+
+  }
+</style>
+
+<body>
+  <!-- BOTON HAMBURGUESA EN RESPONSIVE -->
+  <nav class="navbar navbar-light bg-white px-4 col-12 d-lg-none">
+    <div class="d-flex align-items-center ms-auto">
+      <button
+        class="navbar-toggler d-lg-none collapsed"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#sidebarMenu"
+        aria-controls="sidebarMenu"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+        style=" border: 1px solid black;">
+        <span class="navbar-toggler-icon" style="background-color: white;"></span>
+      </button>
+    </div>
+  </nav>
+  <!-- BOTON HAMBURGUESA EN RESPONSIVE-->
+
+  <!-- SIDEBAR -->
+  <nav
+    id="sidebarMenu"
+    class="sidebar d-lg-block bg-white text-white collapse"
+    data-simplebar>
+    <div class="sidebar-inner px-4 pt-3">
+      <div
+        class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
+        <div class="collapse-close d-md-none">
+          <a
+            href="#sidebarMenu"
+            data-bs-toggle="collapse"
+            data-bs-target="#sidebarMenu"
+            aria-controls="sidebarMenu"
+            aria-expanded="true"
+            aria-label="Toggle navigation">
+            <svg
+              class="icon icon-xs"
+              fill="dark"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <!-- OPCIONES SIDEBAR -->
+      <ul class="nav flex-column pt-3 pt-md-0" id="options-sidebar" style="height: 800px;">
+        <li class="nav-item mb-3">
+          <a class="nav-link bg-white d-flex align-items-center" href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente">
+            <span class="sidebar-icon me-2">
+              <img
+                src="http://localhost/vega-erp/images/vega-p-logo.png"
+                alt="Logo"
+                class="rounded"
+                style="width: 40px; object-fit: cover;">
+            </span>
+            <span class="sidebar-text text-dark" id="encabezado-titulo">Vega Producciones</span>
+          </a>
+        </li>
+        <?php
+        foreach ($listaAcceso as $access) {
+          if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario") {
+            echo "
+                <li class='nav-item'>
+                  <a href='http://localhost/vega-erp/views/{$access['modulo']}/{$access['ruta']}' class='nav-link' id='links'>
+                    <i class='{$access['icono']}'></i>
+                    <span class='sidebar-text mx-2'>{$access['texto']}</span>
+                  </a>
+                </li>            
+              ";
+          } else if ($access['modulo'] === "ventas" && $access['visible']) {
+            echo "
+            <li class='sidebar-item nav-item'>
+              <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#ventas'
+                aria-expanded='false' aria-controls='ventas'>
+                <i class='{$access['icono']}'></i>
+                <span class='sidebar-text mx-2'>{$access['texto']}</span>
+                <i class='fa-solid fa-angle-down ms-auto mt-2 toggle-icon'></i>
+              </a>              
+            </li> 
+            <ul id='ventas' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#ventas'>
+            ";
+
+            foreach ($listaAcceso as $access) {
+              if (!$access['visible'] && $access['modulo'] === "ventas") {
+                echo "
+                <li class='sidebar-item nav-item list-ventas'>
+                  <a href='http://localhost/vega-erp/views/{$access['modulo']}/{$access['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'><i class='{$access['icono']}'></i><span class='sidebar-text mx-2'>{$access['texto']}</span></a>
+                </li>
+                ";
+              }
+            }
+            echo "</ul>
+            ";
+          }
+           else if ($access['modulo'] === "utilitario" && $access['visible']) {
+            echo "
+            <li class='sidebar-item nav-item'>
+              <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#utilitario'
+                aria-expanded='false' aria-controls='utilitario'>
+                <i class='{$access['icono']}'></i>
+                <span class='sidebar-text mx-2'>{$access['texto']}</span>
+                <i class='fa-solid fa-angle-down ms-auto mt-2 toggle-icon'></i>
+              </a>              
+            </li> 
+            <ul id='utilitario' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#utilitario'>
+            ";
+
+            foreach ($listaAcceso as $access) {
+              if (!$access['visible'] && $access['modulo'] === "utilitario") {
+                echo "
+                <li class='sidebar-item nav-item list-utilitario'>
+                  <a href='http://localhost/vega-erp/views/{$access['modulo']}/{$access['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'><i class='{$access['icono']}'></i><span class='sidebar-text mx-2'>{$access['texto']}</span></a>
+                </li>
+                ";
+              }
+            }
+            echo "</ul>
+            ";
+          }
+        }
+
+        ?>
+
+
+      </ul>
+      <!--/ OPCIONES SIDEBAR -->
+    </div>
+  </nav>
+  <!-- FIN SIDEBAR -->
+
+  <main class="content">
+    <!-- NAVBAR-HEADER -->
+    <nav
+      class="navbar navbar-top navbar-expand ps-0 pb-0">
+      <div class="container-fluid px-0">
+        <div
+          class="d-flex justify-content-between w-100"
+          id="navbarSupportedContent">
+          <div class="d-flex align-items-center"></div>
+          <!-- Navbar links (PERFIL USUARIO) -->
+          <ul class="navbar-nav align-items-center">
+            <!-- LOGO NOTIFICACION -->
+            <!-- <li class="nav-item dropdown me-4">
+              <a
+                class="nav-link text-dark notification-bell unread dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+                <svg
+                  class="icon icon-sm text-gray-900"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
+                </svg>
+              </a>
+              <div class="dropdown-menu dropdown-menu-lg dropdown-menu-center mt-2 py-0">
+                <div class="list-group list-group-flush">
+                  <a href="#" class="text-center text-primary fw-bold border-bottom border-light py-3">
+                    Notifications
+                  </a>
+                  <div class="" id="list-notificaciones">
+
+                  </div>
+                  <a href="#" class="dropdown-item text-center fw-bold rounded-bottom py-3" id="show-all-notificaciones">
+                    <svg
+                      class="icon icon-xxs text-gray-400 me-1"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                      <path
+                        fill-rule="evenodd"
+                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                        clip-rule="evenodd"></path>
+                    </svg>
+                    View all
+                  </a>
+                </div>
+              </div>
+            </li> -->
+            <!-- FIN LOGO NOTIFICACION -->
+            <a class="dropdown-item d-flex align-items-center" href="<?= $host ?>/controllers/usuario.controller.php?operation=destroy">
+                    <svg
+                      class="dropdown-icon text-danger me-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                    Cerrar Sesión
+                  </a>
+            <!-- USER - LOGOUT -->
+            
+            <!-- FIN USER - LOGOUT -->
+          </ul>
+
+        </div>
+      </div>
+    </nav>
+    <!-- /NAVBAR-HEADER -->
+    <script>
+      document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.addEventListener('click', function() {
+          const icon = this.querySelector('.toggle-icon'); // Selecciona el ícono dentro del <li>
+          if (icon?.classList.contains('fa-angle-down')) {
+            icon?.classList.remove('fa-angle-down');
+            icon?.classList.add('fa-angle-up');
+          } else {
+            icon?.classList.remove('fa-angle-up');
+            icon?.classList.add('fa-angle-down');
+          }
+        });
+      });
+    </script>

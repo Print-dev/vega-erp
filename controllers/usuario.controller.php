@@ -1,0 +1,130 @@
+<?php
+
+session_start();
+
+header("Content-type: application/json; charset=utf-8");
+
+$accesos = [
+  'Administrador'=>[
+    ['modulo'=>'ventas', 'ruta'=>'', 'texto'=>'Ventas', 'visible'=>true, 'icono'=>'fa-solid fa-folder'],
+    ['modulo'=>'ventas', 'ruta'=>'listar-atencion-cliente', 'texto'=>'Atencion al cliente', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
+    ['modulo'=>'ventas', 'ruta'=>'actualizar-atencion-cliente', 'texto'=>'', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
+    ['modulo'=>'ventas', 'ruta'=>'registrar-atencion-cliente', 'texto'=>'', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
+
+    ['modulo'=>'utilitario', 'ruta'=>'', 'texto'=>'Utilitario', 'visible'=>true, 'icono'=>'fa-solid fa-folder'],
+    ['modulo'=>'utilitario', 'ruta'=>'listar-usuarios', 'texto'=>'Usuarios', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
+    ['modulo'=>'utilitario', 'ruta'=>'registrar-usuario', 'texto'=>'', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
+  ]
+];
+
+if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {
+  $session = [
+    "estado" => false,
+    "inicio" => "",
+    "idusuario" => -1,
+    "apellidos" => "",
+    "nombres" => "",
+    "nom_usuario" => "",
+    "claveacceso" => "",
+    "nivelacceso" => "",
+    "accesos" => [],
+  ];
+}
+
+require_once '../models/Usuario.php';
+
+$usuario = new Usuario();
+
+if (isset($_GET['operation'])) {
+  switch ($_GET['operation']) {
+    case 'destroy':
+      session_destroy();
+      session_unset();
+      header("location:http://localhost/vega-erp/");
+      break;
+
+    case 'obtenerUsuarioPorId':
+      echo json_encode($usuario->obtenerUsuarioPorId(['idusuario' => $_GET['idusuario']]));
+      break;
+  }
+}
+
+if (isset($_POST['operation'])) {
+  switch ($_POST['operation']) {
+    case 'login':
+      $nomUser = $usuario->limpiarCadena($_POST['nom_usuario']);
+      $registro = $usuario->login(['nom_usuario' => $nomUser]);
+
+      $resultados = [
+        "login" => false,
+        "mensaje" => ""
+      ];
+
+      if ($registro && $registro[0]['estado']>0) {
+        $claveEncriptada = $registro[0]['claveacceso']; //DB
+        $claveIngresada = $usuario->limpiarCadena($_POST['claveacceso']);
+
+        if (password_verify($claveIngresada, $claveEncriptada)) {
+          $resultados['login'] = true;
+          $resultados['mensaje'] = "Bienvenido";
+          $resultados['rol'] = $registro[0]['nivelacceso'];
+
+          //Ya esta validado
+          $session['estado'] = true;
+          $session['inicio'] = date('h:i:s d-m-Y');
+          $session['idusuario'] = $registro[0]['idusuario'];
+          $session['apellidos'] = $registro[0]['apellidos'];
+          $session['nombres'] = $registro[0]['nombres'];
+          $session['nom_usuario'] = $registro[0]['nom_usuario'];
+          $session['claveacceso'] = $registro[0]['claveacceso'];
+          $session['nivelacceso'] = $registro[0]['nivelacceso'];
+          $session['idnivelacceso'] = $registro[0]['idnivelacceso'];
+
+          //die(json_encode($accesos[$registro[0]['nivelacceso']]));
+          //$accesos = $usuario->getPermisos(['idperfil' => $registro[0]['idperfil']]);
+          $session['accesos'] = $accesos[$registro[0]['nivelacceso']]; //temporal
+
+        } else {
+          $resultados['mensaje'] = "Error en la contraseña";
+          $session['estado'] = false;
+          $session['apellidos'] = "";
+          $session['nombres'] = "";
+        }
+      } else {
+        if($registro && $registro[0]['estado']==0){
+          $resultados['mensaje'] = "En el sistema estas como inactivo, solicita una reactivacion de la cuenta";
+        }
+        else if(!$registro){
+          $resultados['mensaje'] = "No existe el usuario";
+        }
+        $session['estado'] = false;
+        $session['apellidos'] = "";
+        $session['nombres'] = "";
+      }
+
+      $_SESSION['login'] = $session;
+      //die(json_encode($_SESSION['login']));
+
+      echo json_encode($resultados);
+      break;
+
+    case 'registrarUsuario':
+      $clave = $usuario->limpiarCadena($_POST['claveacceso']);
+      $cleanData = [
+        'idpersona' => $usuario->limpiarCadena($_POST['idpersona']),
+        'nom_usuario' => $usuario->limpiarCadena($_POST['nom_usuario']),
+        'claveacceso' => password_hash($clave, PASSWORD_BCRYPT),
+        'idnivelacceso' => $usuario->limpiarCadena($_POST['idnivelacceso'])
+      ];
+
+      $respuesta = ['idusuario' => -1];
+      $idusuario = $usuario->registrarUsuario($cleanData);
+
+      if ($idusuario > 0) {
+        $respuesta['idusuario'] = $idusuario;
+      }
+
+      echo json_encode($respuesta);
+      break;
+  }
+}

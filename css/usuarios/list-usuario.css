@@ -1,0 +1,6 @@
+.scrollable-div {
+  max-height: 500px; /* Altura máxima del contenedor */
+  overflow-y: auto; /* Habilitar scroll vertical */
+  border: 1px solid #ccc; /* Borde para visualización */
+  border-radius: 5px;
+}
