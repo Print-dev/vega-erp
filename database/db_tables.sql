@@ -106,3 +106,28 @@ CREATE TABLE permisos (
     constraint fk_idnivelacceso_p FOREIGN KEY (idnivelacceso) REFERENCES nivelaccesos(idnivelacceso),
     constraint uk_idnivelacceso_p UNIQUE(idnivelacceso, ruta)
 ) ENGINE=INNODB;
+
+create table atencion_cliente (
+	idatencion_cliente	int auto_increment primary key,
+    idusuario	int			not null,
+    iddistrito	int			not null,
+    ndocumento	varchar(20) not null,
+    razonsocial	varchar(120) not null,
+    tipo		char(1) not null,
+    telefono	char(15) not null,
+    fecha_evento1	date not null,
+    hora_presentacion1	time not null,
+    tiempo_presentacion1 int  not null,
+    fecha_evento2 	date not null,
+    hora_presentacion2	time not null,
+    tiempo_presentacion2			int	 not null,
+    establecimiento	varchar(80) not null,
+    tipo_evento		char(1) not null,
+    igv				boolean	not null,
+    correo			varchar(130) not null,
+    direccion		varchar(130) not null,
+    tipo_pago		char(1) not null,
+    validez			int		null,
+    constraint fk_idartista	foreign key (idusuario) references usuarios (idusuario),
+    constraint fk_iddistrito_ac foreign key (iddistrito) references distritos (iddistrito)
+) engine = innodb;
