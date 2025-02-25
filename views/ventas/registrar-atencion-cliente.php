@@ -141,7 +141,7 @@
         <div class="card-footer d-flex justify-content-end">
             <div class="d-flex gap-2">
                 <button type="button" id="btnGuardarAC" class="btn btn-primary">
-                    <i class="fa-solid fa-floppy-disk px-2"></i>Guardar</button>
+                    <i class="fa-solid fa-floppy-disk px-2"></i>Guardar y cotizar</button>
                 <button type="button" id="btnLimpiarAC" class="btn btn-primary">
                     <i class="fa-solid fa-eraser px-2"></i>Limpiar</button>
                 <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" id="btnRegresarAC" class="btn btn-primary">
@@ -151,4 +151,30 @@
     </div>
 </div>
 
+<!-- MODAL PARA COTIZAR -->
+<div class="modal fade" id="modal-choose-especificacion" tabindex="-1" aria-labelledby="modalPreviaCotizacion" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalPreviaCotizacion">Previa Cotizacion</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close-mdl-cotizacion">Cerrar</button>
+        <button type="button" class="btn btn-primary" id="btnGenerarCotizacion">Generar Cotizacion</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <?php require_once '../footer.php' ?>
+
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="http://localhost/vega-erp/js/ventas/cotizar.js"></script>
+
+</body>
+</html>

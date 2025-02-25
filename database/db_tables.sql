@@ -128,6 +128,6 @@ create table atencion_cliente (
     direccion		varchar(130) not null,
     tipo_pago		char(1) not null,
     validez			int		null,
-    constraint fk_idartista	foreign key (idusuario) references usuarios (idusuario),
+    constraint fk_idartista_ac	foreign key (idusuario) references usuarios (idusuario),
     constraint fk_iddistrito_ac foreign key (iddistrito) references distritos (iddistrito)
 ) engine = innodb;
