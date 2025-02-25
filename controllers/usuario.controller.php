@@ -3,17 +3,23 @@
 session_start();
 
 header("Content-type: application/json; charset=utf-8");
-
+// cuando se pone en visible true se pone como dropdown
 $accesos = [
   'Administrador'=>[
-    ['modulo'=>'ventas', 'ruta'=>'', 'texto'=>'Ventas', 'visible'=>true, 'icono'=>'fa-solid fa-folder'],
-    ['modulo'=>'ventas', 'ruta'=>'listar-atencion-cliente', 'texto'=>'Atencion al cliente', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
-    ['modulo'=>'ventas', 'ruta'=>'actualizar-atencion-cliente', 'texto'=>'', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
-    ['modulo'=>'ventas', 'ruta'=>'registrar-atencion-cliente', 'texto'=>'', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
+    ['modulo'=>'ventas', 'ruta'=>'', 'texto'=>'Ventas', 'subruta' => '','visible'=>true, 'icono'=>'fa-solid fa-folder'],
 
-    ['modulo'=>'utilitario', 'ruta'=>'', 'texto'=>'Utilitario', 'visible'=>true, 'icono'=>'fa-solid fa-folder'],
-    ['modulo'=>'utilitario', 'ruta'=>'listar-usuarios', 'texto'=>'Usuarios', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
-    ['modulo'=>'utilitario', 'ruta'=>'registrar-usuario', 'texto'=>'', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
+    ['modulo'=>'ventas', 'ruta'=>'listar-atencion-cliente', 'subruta' => '', 'texto'=>'Atención cliente', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
+    ['modulo'=>'ventas', 'ruta'=>'actualizar-atencion-cliente', 'subruta' => '', 'texto'=> '' ,'visible'=>false, 'icono'=>''],
+    ['modulo'=>'ventas', 'ruta'=>'registrar-atencion-cliente', 'subruta' => '', 'texto'=> '' ,'visible'=>false, 'icono'=>''],
+
+
+
+    ['modulo'=>'utilitario', 'ruta'=>'', 'texto'=>'Tarifario', 'subruta' => 'usuarios','visible'=>true, 'icono'=>'fa-solid fa-folder'],
+
+    ['modulo'=>'utilitario', 'ruta'=>'usuarios/listar-usuarios', 'subruta' => 'usuarios','texto'=>'Usuarios', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
+    ['modulo'=>'utilitario', 'ruta'=>'usuarios/registrar-usuario', 'subruta' => 'usuarios', 'visible'=>false],
+    ['modulo'=>'utilitario', 'ruta'=>'tarifas/listar-tarifas', 'subruta' => 'tarifas', 'texto'=>'Tarifario', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
+    ['modulo'=>'utilitario', 'ruta'=>'tarifas/registrar-tarifa', 'subruta' => 'tarifas', 'visible'=>false],
   ]
 ];
 

@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {
@@ -33,12 +32,11 @@ if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {
 }
 $usuario = $_SESSION['login']['nom_usuario'];
 
-$rol ="";
-switch($_SESSION['login']['nivelacceso']){
+$rol = "";
+switch ($_SESSION['login']['nivelacceso']) {
   case 'Administrador':
-    $rol="Administrador";
+    $rol = "Administrador";
     break;
-  
 }
 $host = "http://localhost/vega-erp/";
 ?>
@@ -55,10 +53,10 @@ $host = "http://localhost/vega-erp/";
     rel="stylesheet"
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
     crossorigin="anonymous" />
-    <!-- Font API GOOGLE -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+  <!-- Font API GOOGLE -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
 
 
   <!-- Volt CSS -->
@@ -184,65 +182,62 @@ $host = "http://localhost/vega-erp/";
         foreach ($listaAcceso as $access) {
           if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario") {
             echo "
-                <li class='nav-item'>
-                  <a href='http://localhost/vega-erp/views/{$access['modulo']}/{$access['ruta']}' class='nav-link' id='links'>
-                    <i class='{$access['icono']}'></i>
-                    <span class='sidebar-text mx-2'>{$access['texto']}</span>
-                  </a>
-                </li>            
-              ";
+    <li class='nav-item'>
+      <a href='http://localhost/vega-erp/views/{$access['modulo']}/{$access['ruta']}' class='nav-link' id='links'>
+        <i class='{$access['icono']}'></i>
+        <span class='sidebar-text mx-2'>{$access['texto']}</span>
+      </a>
+    </li>";
           } else if ($access['modulo'] === "ventas" && $access['visible']) {
             echo "
-            <li class='sidebar-item nav-item'>
-              <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#ventas'
-                aria-expanded='false' aria-controls='ventas'>
-                <i class='{$access['icono']}'></i>
-                <span class='sidebar-text mx-2'>{$access['texto']}</span>
-                <i class='fa-solid fa-angle-down ms-auto mt-2 toggle-icon'></i>
-              </a>              
-            </li> 
-            <ul id='ventas' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#ventas'>
-            ";
+    <li class='sidebar-item nav-item'>
+      <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#ventas'
+        aria-expanded='false' aria-controls='ventas'>
+        <i class='{$access['icono']}'></i>
+        <span class='sidebar-text mx-2'>{$access['texto']}</span>
+        <i class='fa-solid fa-angle-down ms-auto mt-2 toggle-icon'></i>
+      </a>              
+    </li> 
+    <ul id='ventas' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#ventas'>";
 
-            foreach ($listaAcceso as $access) {
-              if (!$access['visible'] && $access['modulo'] === "ventas") {
+            foreach ($listaAcceso as $subAccess) {
+              if (!$subAccess['visible'] && $subAccess['modulo'] === "ventas" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
                 echo "
-                <li class='sidebar-item nav-item list-ventas'>
-                  <a href='http://localhost/vega-erp/views/{$access['modulo']}/{$access['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'><i class='{$access['icono']}'></i><span class='sidebar-text mx-2'>{$access['texto']}</span></a>
-                </li>
-                ";
+        <li class='sidebar-item nav-item list-ventas'>
+          <a href='http://localhost/vega-erp/views/{$subAccess['modulo']}/{$subAccess['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+            <i class='{$subAccess['icono']}'></i>
+            <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
+          </a>
+        </li>";
               }
             }
-            echo "</ul>
-            ";
-          }
-           else if ($access['modulo'] === "utilitario" && $access['visible']) {
+            echo "</ul>";
+          } else if ($access['modulo'] === "utilitario" && $access['visible']) {
             echo "
-            <li class='sidebar-item nav-item'>
-              <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#utilitario'
-                aria-expanded='false' aria-controls='utilitario'>
-                <i class='{$access['icono']}'></i>
-                <span class='sidebar-text mx-2'>{$access['texto']}</span>
-                <i class='fa-solid fa-angle-down ms-auto mt-2 toggle-icon'></i>
-              </a>              
-            </li> 
-            <ul id='utilitario' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#utilitario'>
-            ";
+    <li class='sidebar-item nav-item'>
+      <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#utilitario'
+        aria-expanded='false' aria-controls='utilitario'>
+        <i class='{$access['icono']}'></i>
+        <span class='sidebar-text mx-2'>{$access['texto']}</span>
+        <i class='fa-solid fa-angle-down ms-auto mt-2 toggle-icon'></i>
+      </a>              
+    </li> 
+    <ul id='utilitario' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#utilitario'>";
 
-            foreach ($listaAcceso as $access) {
-              if (!$access['visible'] && $access['modulo'] === "utilitario") {
+            foreach ($listaAcceso as $subAccess) {
+              if (!$subAccess['visible'] && $subAccess['modulo'] === "utilitario" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
                 echo "
-                <li class='sidebar-item nav-item list-utilitario'>
-                  <a href='http://localhost/vega-erp/views/{$access['modulo']}/{$access['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'><i class='{$access['icono']}'></i><span class='sidebar-text mx-2'>{$access['texto']}</span></a>
-                </li>
-                ";
+        <li class='sidebar-item nav-item list-utilitario'>
+          <a href='http://localhost/vega-erp/views/{$subAccess['modulo']}/{$subAccess['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+            <i class='{$subAccess['icono']}'></i>
+            <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
+          </a>
+        </li>";
               }
             }
-            echo "</ul>
-            ";
+            echo "</ul>";
           }
         }
-
         ?>
 
 
@@ -307,22 +302,22 @@ $host = "http://localhost/vega-erp/";
             </li> -->
             <!-- FIN LOGO NOTIFICACION -->
             <a class="dropdown-item d-flex align-items-center" href="<?= $host ?>/controllers/usuario.controller.php?operation=destroy">
-                    <svg
-                      class="dropdown-icon text-danger me-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                    </svg>
-                    Cerrar Sesión
-                  </a>
+              <svg
+                class="dropdown-icon text-danger me-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+              </svg>
+              Cerrar Sesión
+            </a>
             <!-- USER - LOGOUT -->
-            
+
             <!-- FIN USER - LOGOUT -->
           </ul>
 

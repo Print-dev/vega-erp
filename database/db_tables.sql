@@ -76,23 +76,22 @@ CREATE TABLE usuarios
 
 CREATE TABLE artistas (
 	idartista 	INT auto_increment primary key,
-	iddistrito	int			not null,
-    razonsocial	varchar(100) not null,
-    documento	varchar(20) not null,
-    direccion	varchar(80) not null,
-    telefono	varchar(15) not null,
-    correo 		varchar(120) not null,
-    web			varchar(120) not null,
-    constraint fk_iddistrito_art foreign key (iddistrito) references distritos (iddistrito)
+    idpersona	int not null,
+    biografia	varchar(300) null,
+    web			varchar(120) null,
+    facebook	varchar(120) null,
+    youtube		varchar(120) null,
+    tiktok		varchar(120) null,
+    constraint fk_idpersona_art foreign key (idpersona) references personas (idpersona)
 )ENGINE = INNODB;
 
 CREATE TABLE tarifario (
 	idtarifario int auto_increment primary key,
     idartista		int not null,
-    iddistrito		int not null,
+    iddepartamento	int not null,
 	precio			decimal(7,2) not null,
-    constraint fk_idartista foreign key (idartista) references artistas (idartista),
-    constraint fk_iddistrito_tarifario foreign key (iddistrito) references distritos (iddistrito)
+    constraint fk_idartista_tar foreign key (idartista) references artistas (idartista),
+    constraint fk_iddepartamento_tarifario_tar foreign key (iddepartamento) references departamentos (iddepartamento)
 ) ENGINE = INNODB;
 
 CREATE TABLE permisos (
@@ -130,4 +129,22 @@ create table atencion_cliente (
     validez			int		null,
     constraint fk_idartista_ac	foreign key (idusuario) references usuarios (idusuario),
     constraint fk_iddistrito_ac foreign key (iddistrito) references distritos (iddistrito)
+) engine = innodb;
+
+create table convenios (
+	idconvenio	int auto_increment primary key,
+    idatencion_cliente int not null,
+    abono_garantia	double null,
+    abono_publicidad double null,
+	propuesta_cliente text not null,
+    estado			int null default 1, -- 1 = aprobada, 2 = no aprobado
+    constraint fk_idatencion_cliente foreign key (idatencion_cliente) references atencion_cliente (idatencion_cliente)
+) engine = innodb;
+
+create table contratos (
+	idcontrato	int auto_increment primary key,
+    idatencion_cliente	int not null,
+    monto_pagado		double not null,
+    estado				int not null default 1, -- 1 = pendiente de pago (pago 15%), 2- pagado, 3- caducado
+    constraint fk_idatencion_cliente_contratos foreign key (idatencion_cliente) references atencion_cliente (idatencion_cliente)
 ) engine = innodb;
