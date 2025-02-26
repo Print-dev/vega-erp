@@ -104,7 +104,19 @@ INSERT INTO distritos (distrito, idprovincia) VALUES
 -- Distritos de Abancay
 ('Abancay', 22), ('Chacoche', 22), ('Circa', 22), ('Curahuasi', 22), ('Huanipaca', 22), ('Lambrama', 22), ('Pichirhua', 22), ('San Pedro de Cachora', 22), ('Tamburco', 22),
 -- Distritos de Andahuaylas
-('Andahuaylas', 23), ('Andarapa', 23), ('Chiara', 23), ('Huancarama', 23), ('Huancaray', 23), ('Huayana', 23), ('José María Arguedas', 23), ('Kishuara', 23), ('Pacobamba', 23), ('Pacucha', 23), ('Pampachiri', 23), ('Pomacocha', 23), ('San Antonio de Cachi', 23), ('San Jerónimo', 23), ('San Miguel de Chaccrampa', 23), ('Santa María de Chicmo', 23), ('Talavera', 23), ('Tumay Huaraca', 23), ('Turpo', 23);
+('Andahuaylas', 23), ('Andarapa', 23), ('Chiara', 23), ('Huancarama', 23), ('Huancaray', 23), ('Huayana', 23), ('José María Arguedas', 23), ('Kishuara', 23), ('Pacobamba', 23), ('Pacucha', 23), ('Pampachiri', 23), ('Pomacocha', 23), ('San Antonio de Cachi', 23), ('San Jerónimo', 23), ('San Miguel de Chaccrampa', 23), ('Santa María de Chicmo', 23), ('Talavera', 23), ('Tumay Huaraca', 23), ('Turpo', 23),
+-- distritos de chincha
+('Chincha Alta', 100),
+('Alto Larán', 100),
+('Chavín', 100),
+('Chincha Baja', 100),
+('El Carmen', 100),
+('Grocio Prado', 100),
+('Pueblo Nuevo', 100),
+('San Juan de Yanac', 100),
+('San Pedro de Huacarpana', 100),
+('Sunampe', 100),
+('Tambo de Mora', 100);
 
 
 
@@ -130,3 +142,6 @@ VALUES
 (3, 'ventas', 'listar-atencion-cliente', 'Atención al cliente', false, 'fa-solid fa-users'),
 (3, 'ventas', 'registrar-atencion-cliente', '', false, NULL),
 (3, 'ventas', 'update-atencion-cliente', NULL, false, NULL);
+
+INSERT INTO usuarios (idnivelacceso, idpersona, nom_usuario, claveacceso) values
+	(3, 1, 'royer', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC')

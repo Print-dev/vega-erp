@@ -3,15 +3,15 @@ require_once '../models/Persona.php';
 
 $persona = new Persona();
 // ag order by
-if(isset($_GET['operation'])){
-  switch($_GET['operation']){
+if (isset($_GET['operation'])) {
+  switch ($_GET['operation']) {
     case 'obtenerPersonas':
       echo json_encode($persona->obtenerPersonas());
       break;
     case 'obtenerPersonaPorId':
-      echo json_encode($persona->obtenerPersonaPorId(['idpersona'=>$_GET['idpersona']]));
+      echo json_encode($persona->obtenerPersonaPorId(['idpersona' => $_GET['idpersona']]));
       break;
-    /* case 'searchPersonaNumDoc':
+      /* case 'searchPersonaNumDoc':
       echo json_encode($persona->searchPersonaNumDoc(['numdoc'=>$_GET['numdoc']]));
       break;
     case 'searchTelefono':
@@ -22,33 +22,33 @@ if(isset($_GET['operation'])){
       break; */
   }
 }
-if(isset($_POST['operation'])){
-  switch($_POST['operation']){
+if (isset($_POST['operation'])) {
+  switch ($_POST['operation']) {
     case 'registrarPersona':
       $cleanData = [
-          'num_doc'   => $persona->limpiarCadena($_POST['num_doc']),
-          'apellidos' => $persona->limpiarCadena($_POST['apellidos']),
-          'nombres'   => $persona->limpiarCadena($_POST['nombres']),
-          'genero'    => $persona->limpiarCadena($_POST['genero']),
-          'direccion' => $persona->limpiarCadena($_POST['direccion']),
-          'telefono'  => $persona->limpiarCadena($_POST['telefono']),
-          'telefono2' => $persona->limpiarCadena($_POST['telefono2']),
-          'correo'    => $persona->limpiarCadena($_POST['correo']),
-          'iddistrito'=> $persona->limpiarCadena($_POST['iddistrito'])
+        'num_doc'   => $persona->limpiarCadena($_POST['num_doc']),
+        'apellidos' => $persona->limpiarCadena($_POST['apellidos']),
+        'nombres'   => $persona->limpiarCadena($_POST['nombres']),
+        'genero'    => $persona->limpiarCadena($_POST['genero']),
+        'direccion' => $persona->limpiarCadena($_POST['direccion']),
+        'telefono'  => $persona->limpiarCadena($_POST['telefono']),
+        'telefono2' => $persona->limpiarCadena($_POST['telefono2']),
+        'correo'    => $persona->limpiarCadena($_POST['correo']),
+        'iddistrito' => $persona->limpiarCadena($_POST['iddistrito'])
       ];
-  
+
       $respuesta = ['idpersona' => -1];
-  
+
       $idpersona = $persona->registrarPersona($cleanData);
-  
+
       if ($idpersona > 0) {
-          $respuesta['idpersona'] = $idpersona;
+        $respuesta['idpersona'] = $idpersona;
       }
-  
+
       echo json_encode($respuesta);
       break;
-  
-    case 'updatePersona':
+
+      /* case 'updatePersona':
       $cleanData = [
         'idpersona'=>$persona->limpiarCadena($_POST['idpersona']),
         'apellidos'=>$persona->limpiarCadena($_POST['apellidos']),
@@ -67,5 +67,6 @@ if(isset($_POST['operation'])){
       }
       echo json_encode($respuesta);
       break;
+  } */
   }
 }

@@ -1,5 +1,5 @@
 <?php require_once '../../header.php' ?>
-<link rel="stylesheet" href="http://localhost/SIGEMAPRE/css/usuario-register.css">
+<!-- <link rel="stylesheet" href="http://localhost/SIGEMAPRE/css/usuario-register.css"> -->
 
 <h2>Registrar usuario</h2>
 <div class="row g-0 h-100 mb-3">
@@ -17,7 +17,7 @@
                 <input type="text"
                   style="height: 100%;"
                   autocomplete="off"
-                  id="numDoc"
+                  id="num_doc"
                   placeholder="Num Doc."
                   pattern="[0-9]*"
                   class="form-control"
@@ -51,6 +51,8 @@
               <div class="form-floating">
                 <select name="genero" id="genero" class="form-select" required>
                   <option value="">Selecciona</option>
+                  <option value="F">Femenino</option>
+                  <option value="M">Masculino</option>
                 </select>
                 <label for="genero" class="form-label">Genero</label>
               </div>
@@ -101,16 +103,14 @@
                 <div class="form-floating">
                 <select name="nacionalidad" id="nacionalidad" class="form-select" required">    
                     <option value="">Selecciona</option>
-                    <option value="1">Peru</option>
+                    <option value="31">Peru</option>
                 </select>
-                <label for="nacionalidad" class="form-label">Pais/Nacionalidad</label>
+                <label for="nacionalidad" class="form-label">Nacionalidad</label>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-floating">
                 <select name="departamento" id="departamento" class="form-select" required">    
-                    <option value="">Selecciona</option>
-                    <option value="1">Peru</option>
                 </select>
                 <label for="departamento" class="form-label">Departamento</label>
                 </div>
@@ -118,8 +118,6 @@
             <div class="col-md-3">
                 <div class="form-floating">
                 <select name="provincia" id="provincia" class="form-select" required">    
-                    <option value="">Selecciona</option>
-                    <option value="1">Peru</option>
                 </select>
                 <label for="provincia" class="form-label">Provincia</label>
                 </div>
@@ -127,8 +125,6 @@
             <div class="col-md-3 ">
                 <div class="form-floating">
                 <select name="distrito" id="distrito" class="form-select" required">    
-                    <option value="">Selecciona</option>
-                    <option value="1">Peru</option>
                 </select>
                 <label for="distrito" class="form-label">Distrito</label>
                 </div>
@@ -145,7 +141,7 @@
           <div class="row g-2 mb-3 mt-3 form-group">
             <label for="claveacceso" class="col-sm-1 form-label size-label mt-3">Contraseña:</label>
             <div class="col-sm-5">
-              <input type="claveacceso" id="claveacceso" class="form-control" autocomplete="off">
+              <input type="password" id="claveacceso" class="form-control" autocomplete="off" >
             </div>
           </div>
           <div class="row g-2 mt-3">

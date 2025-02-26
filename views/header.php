@@ -145,7 +145,7 @@ $host = "http://localhost/vega-erp/";
     data-simplebar>
     <div class="sidebar-inner px-4 pt-3">
       <div
-        class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
+        class="d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
         <div class="collapse-close d-md-none">
           <a
             href="#sidebarMenu"

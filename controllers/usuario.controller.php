@@ -52,6 +52,10 @@ if (isset($_GET['operation'])) {
     case 'obtenerUsuarioPorId':
       echo json_encode($usuario->obtenerUsuarioPorId(['idusuario' => $_GET['idusuario']]));
       break;
+
+    case 'obtenerPersonaPorDoc':
+      echo json_encode($usuario->obtenerPersonaPorDoc(['num_doc' => $_GET['num_doc']]));
+      break;
   }
 }
 

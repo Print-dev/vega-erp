@@ -108,18 +108,15 @@ CREATE TABLE permisos (
 
 create table atencion_cliente (
 	idatencion_cliente	int auto_increment primary key,
-    idusuario	int			not null,
+    idusuario	int			not null, -- id artista
     iddistrito	int			not null,
     ndocumento	varchar(20) not null,
     razonsocial	varchar(120) not null,
     tipo		char(1) not null,
     telefono	char(15) not null,
-    fecha_evento1	date not null,
-    hora_presentacion1	time not null,
-    tiempo_presentacion1 int  not null,
-    fecha_evento2 	date not null,
-    hora_presentacion2	time not null,
-    tiempo_presentacion2			int	 not null,
+    fecha_evento	date not null,
+    hora_presentacion	time not null,
+    tiempo_presentacion int  not null,
     establecimiento	varchar(80) not null,
     tipo_evento		char(1) not null,
     igv				boolean	not null,

@@ -4,16 +4,17 @@
  * @param {string} modulo Módulo de la aplicación desde donde se genera (créditos, clientes, ventas, etc.)
  * @returns {boolean} Retorna un valor lógico basado en una promesa
  */
-async function ask(pregunta = ``, modulo = `SIGEMAPRE`){
+async function ask(pregunta = ``, modulo = ``){
   const respuesta = await Swal.fire({
     title: pregunta,
     text: modulo,
-    icon: 'question',
+    imageUrl: 'http://localhost/vega-erp/images/vega-p-logo.png',
+    imageWidth: 100,
     showCancelButton: true,
     confirmButtonText: 'Aceptar',
     cancelButtonText: 'Cancelar',
     confirmButtonColor: '#3498db',
-    footer: 'SIGEMAPRE Ver. 1.2'
+    footer: 'Vega Producciones Beta Version 1.0',
   });
 
   return respuesta.isConfirmed;

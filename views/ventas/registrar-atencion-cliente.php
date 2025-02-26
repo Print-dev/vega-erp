@@ -15,15 +15,16 @@
 -moz-box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);">
         <div class="card-body">
             <div class="row ">
+
                 <h1 id="titulo-registrar-at-clientes">REGISTRAR ATENCION CLIENTE</h1>
                 <div class="row">
 
                     <div class="card border-0">
                         <div class="card-header border-0">
                             <div class="col-md-5">
-                                <label for="razonsocial" class="form-label">N° Documento / RUC</label>
+                                <label for="ndocumento" class="form-label">N° Documento / RUC</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="ndocumento" aria-label="ndocumento" aria-describedby="button-addon2">
+                                    <input type="text" class="form-control" id="ndocumento" aria-label="ndocumento" aria-describedby="button-addon2">
                                     <button class="btn btn-primary" type="button" id="btnBuscarCliente">Buscar</button>
                                 </div>
 
@@ -42,12 +43,6 @@
                                 <div class="form-floating">
                                     <input type="date" class="form-control" id="fechaevento" autocomplete="off">
                                     <label for="fechaevento" class="form-label">Fecha de evento</label>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-floating">
-                                    <input type="date" class="form-control" id="fechaevento2" autocomplete="off">
-                                    <label for="fechaevento2" class="form-label">Fecha de evento 2</label>
                                 </div>
                             </div>
 
@@ -101,6 +96,13 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-floating">
+                                    <input type="time" id="horapresentacion" name="horapresentacion"
+                                        class="form-control">
+                                    <label for="horapresentacion" class="form-label">Hora de presentacion</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-floating">
                                     <input type="time" id="tiempopresentacion" name="tiempopresentacion"
                                         class="form-control">
                                     <label for="tiempopresentacion" class="form-label">Tiempo de presentacion</label>
@@ -133,6 +135,29 @@
                                     <label for="validez" class="form-label">Dias de validez</label>
                                 </div>
                             </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="igv" checked>
+                                <label class="form-check-label" for="igv">
+                                    IGV incluido
+                                </label>
+                            </div>
+                            <hr>
+                            <h1>Datos de cliente</h1>
+                            <div class="col-md-2">
+                                <div class="form-floating">
+                                    <input type="number" id="correo" name="correo"
+                                        class="form-control">
+                                    <label for="correo" class="form-label">Correo</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-floating">
+                                    <input type="number" id="direccion" name="direccion"
+                                        class="form-control">
+                                    <label for="direccion" class="form-label">Direccion</label>
+                                </div>
+                            </div>
+                            
                         </div>
                     </div>
 
@@ -155,22 +180,22 @@
 
 <!-- MODAL PARA COTIZAR -->
 <div class="modal fade" id="modal-choose-especificacion" tabindex="-1" aria-labelledby="modalPreviaCotizacion" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="modalPreviaCotizacion">Previa Cotizacion</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close-mdl-cotizacion">Cerrar</button>
-        <button type="button" class="btn btn-primary" id="btnGenerarCotizacion">Generar Cotizacion</button>
-      </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalPreviaCotizacion">Previa Cotizacion</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close-mdl-cotizacion">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btnGenerarCotizacion">Generar Cotizacion</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <?php require_once '../footer.php' ?>
@@ -179,4 +204,5 @@
 <script src="http://localhost/vega-erp/js/ventas/cotizar.js"></script>
 
 </body>
+
 </html>
