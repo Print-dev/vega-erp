@@ -10,7 +10,9 @@
 </style>
 
 <div class="container-fluid mt-5">
-    <div class="card">
+    <div class="card" style="border-color:rgb(247, 247, 242); box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);
+-webkit-box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);
+-moz-box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);">
         <div class="card-body">
             <div class="row ">
                 <h1 id="titulo-registrar-at-clientes">REGISTRAR ATENCION CLIENTE</h1>
@@ -22,7 +24,7 @@
                                 <label for="razonsocial" class="form-label">N° Documento / RUC</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="ndocumento" aria-label="ndocumento" aria-describedby="button-addon2">
-                                    <button class="btn btn-outline-secondary" type="button" id="btnBuscarCliente">Buscar</button>
+                                    <button class="btn btn-primary" type="button" id="btnBuscarCliente">Buscar</button>
                                 </div>
 
                             </div>

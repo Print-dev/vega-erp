@@ -14,12 +14,12 @@ $accesos = [
 
 
 
-    ['modulo'=>'utilitario', 'ruta'=>'', 'texto'=>'Tarifario', 'subruta' => 'usuarios','visible'=>true, 'icono'=>'fa-solid fa-folder'],
+    ['modulo'=>'utilitario', 'ruta'=>'', 'texto'=>'Utilitario', 'subruta' => '','visible'=>true, 'icono'=>'fa-solid fa-folder'],
 
-    ['modulo'=>'utilitario', 'ruta'=>'usuarios/listar-usuarios', 'subruta' => 'usuarios','texto'=>'Usuarios', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
-    ['modulo'=>'utilitario', 'ruta'=>'usuarios/registrar-usuario', 'subruta' => 'usuarios', 'visible'=>false],
-    ['modulo'=>'utilitario', 'ruta'=>'tarifas/listar-tarifas', 'subruta' => 'tarifas', 'texto'=>'Tarifario', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
-    ['modulo'=>'utilitario', 'ruta'=>'tarifas/registrar-tarifa', 'subruta' => 'tarifas', 'visible'=>false],
+    ['modulo'=>'utilitario', 'ruta'=>'listar-usuarios', 'subruta' => 'usuarios','texto'=>'Usuarios', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
+    ['modulo'=>'utilitario', 'ruta'=>'registrar-usuario', 'subruta' => 'usuarios', 'visible'=>false],
+    ['modulo'=>'utilitario', 'ruta'=>'listar-tarifas', 'subruta' => 'tarifas', 'texto'=>'Tarifario', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
+    ['modulo'=>'utilitario', 'ruta'=>'registrar-tarifa', 'subruta' => 'tarifas', 'visible'=>false],
   ]
 ];
 
