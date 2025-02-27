@@ -106,27 +106,37 @@ CREATE TABLE permisos (
     constraint uk_idnivelacceso_p UNIQUE(idnivelacceso, ruta)
 ) ENGINE=INNODB;
 
-create table atencion_cliente (
-	idatencion_cliente	int auto_increment primary key,
-    idusuario	int			not null, -- id artista
-    iddistrito	int			not null,
-    ndocumento	varchar(20) not null,
-    razonsocial	varchar(120) not null,
-    tipo		char(1) not null,
-    telefono	char(15) not null,
-    fecha_evento	date not null,
+create table clientes (
+	idcliente	int auto_increment primary key,
+    iddistrito	int not null,
+    ndocumento	CHAR(20)	null,
+    razonsocial	varchar(130)  null,
+	telefono    char(15)	null,
+	correo		varchar(130) not null,
+    direccion	varchar(130) not null,
+    constraint fk_iddistrito_cli foreign key (iddistrito) references distritos (iddistrito),
+    constraint    uk_telefono         UNIQUE(telefono),
+    constraint 	chk_telefono		CHECK(telefono LIKE '9%')
+)engine=innodb;
+
+create table detalles_presentacion (
+	iddetalle_evento	int auto_increment primary key,
+    idusuario			int not null,
+    idcliente			int not null,
+    fecha_presentacion	date not null,
     hora_presentacion	time not null,
     tiempo_presentacion int  not null,
     establecimiento	varchar(80) not null,
     tipo_evento		char(1) not null,
+    modalidad		varchar(10)	not null,
+	validez			int		null,
     igv				boolean	not null,
-    correo			varchar(130) not null,
-    direccion		varchar(130) not null,
-    tipo_pago		char(1) not null,
-    validez			int		null,
-    constraint fk_idartista_ac	foreign key (idusuario) references usuarios (idusuario),
-    constraint fk_iddistrito_ac foreign key (iddistrito) references distritos (iddistrito)
-) engine = innodb;
+    tipo_pago		varchar(10) not null,
+    constraint fk_idusuario_dp foreign key (idusuario) references usuarios (idusuario),
+    constraint fk_idcliente_dp foreign key (idcliente) references clientes (idcliente),
+    constraint    chk_detalle_p          CHECK(modalidad IN('convenio', 'contrato')),
+    constraint    chk_detalle_p_tp          CHECK(tipo_pago IN('contado', 'credito'))
+)engine=innodb;
 
 create table convenios (
 	idconvenio	int auto_increment primary key,

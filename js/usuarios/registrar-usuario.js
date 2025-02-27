@@ -307,7 +307,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   $q("#form-person-user").addEventListener("submit", async (e) => {
     e.preventDefault();
-    alert("entrando")
     isReset = true;
     await validateNumDoc(); //valida que el numero de caracteres y otras validaciones sean correctas
     //const validateFields = validateData(); //Valida que los campos no esten vacios
