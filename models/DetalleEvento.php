@@ -4,15 +4,17 @@ require_once 'ExecQuery.php';
 
 class DetalleEvento extends ExecQuery
 {
-  public function registrarDetalleEvento($params = []): int
+  public function registrarDetallePresentacion($params = []): int
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_detalle_evento(@iddetalleevento,?,?,?,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_detalle_presentacion(@iddetalleevento,?,?,?,?,?,?,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idusuario'],
           $params['idcliente'],
+          $params['iddistrito'],
+          $params['ncotizacion'],
           $params['fechapresentacion'],
           $params['horapresentacion'],
           $params['tiempopresentacion'],
@@ -33,14 +35,14 @@ class DetalleEvento extends ExecQuery
     }
   }
 
-  /* public function obtenerPersonaPorDoc($params = []): array
+  public function obtenerCotizacionPorNcot($params = []): array
   {
     try {
-      $cmd = parent::execQ("CALL sp_search_persona_numdoc(?)");
-      $cmd->execute(array($params['num_doc']));
+      $cmd = parent::execQ("SELECT * FROM detalles_presentacion WHERE ncotizacion = ?");
+      $cmd->execute(array($params['ncotizacion']));
       return $cmd->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
       die($e->getMessage());
     }
-  } */
+  }
 }

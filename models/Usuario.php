@@ -94,4 +94,18 @@ class Usuario extends ExecQuery
       die($e->getMessage());
     }
   }
+
+
+  public function obtenerUsuarioPorNivel($params = []): array // mas que todo para obtener ARTISTAS
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_usuario_por_nivel(?)");
+      $cmd->execute(array($params['idnivelacceso']));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+
 }

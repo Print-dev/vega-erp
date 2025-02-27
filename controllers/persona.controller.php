@@ -1,6 +1,9 @@
 <?php
 require_once '../models/Persona.php';
-
+header("Access-Control-Allow-Origin: http://localhost:80");
+header("Content-type: application/json; charset=utf-8");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Métodos permitidos
+header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Encabezados permitidos
 $persona = new Persona();
 // ag order by
 if (isset($_GET['operation'])) {

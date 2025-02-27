@@ -65,3 +65,23 @@ BEGIN
 END $$
 
 CALL sp_user_login('royer.18');
+
+DROP PROCEDURE IF EXISTS sp_obtener_usuario_por_nivel;
+DELIMITER $$
+CREATE PROCEDURE sp_obtener_usuario_por_nivel
+(
+	IN _idnivelacceso INT
+)
+BEGIN
+	SELECT
+		US.idusuario,
+        US.nom_usuario,
+        US.estado,
+        NA.nivelacceso,
+        NA.idnivelacceso
+		FROM usuarios US
+        INNER JOIN nivelaccesos NA ON US.idnivelacceso = NA.idnivelacceso
+        WHERE NA.idnivelacceso = _idnivelacceso;
+END $$
+
+CALL sp_obtener_usuario_por_nivel(6)

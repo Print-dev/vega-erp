@@ -19,8 +19,8 @@ BEGIN
         SET existe_error = 1;
     END;
     
-    INSERT INTO personas (iddistrito, ndocumento, razonsocial, telefono, correo, direccion)
-    VALUES (_iddistrito, _ndocumento, _razonsocial, _telefono, _correo, _direccion);
+    INSERT INTO clientes (iddistrito, ndocumento, razonsocial, telefono, correo, direccion)
+    VALUES (NULLIF(_iddistrito, '') , NULLIF(_ndocumento, ''), NULLIF(_razonsocial, ''), NULLIF(_telefono, ''), NULLIF(_correo, ''), NULLIF(_direccion, ''));
     
     IF existe_error = 1 THEN
         SET _idcliente = -1;
@@ -46,5 +46,5 @@ BEGIN
     LEFT JOIN provincias PR ON PR.idprovincia = DI.idprovincia
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
     LEFT JOIN nacionalidades NA ON NA.idnacionalidad = D.idnacionalidad
-    WHERE C.num_doc = _ndocumento;
+    WHERE C.ndocumento = _ndocumento;
 END $$

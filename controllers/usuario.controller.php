@@ -1,25 +1,34 @@
 <?php
 
 session_start();
-
+header("Access-Control-Allow-Origin: http://localhost:80");
 header("Content-type: application/json; charset=utf-8");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Métodos permitidos
+header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Encabezados permitidos
 // cuando se pone en visible true se pone como dropdown
 $accesos = [
-  'Administrador'=>[
-    ['modulo'=>'ventas', 'ruta'=>'', 'texto'=>'Ventas', 'subruta' => '','visible'=>true, 'icono'=>'fa-solid fa-folder'],
+  'Administrador' => [
+    ['modulo' => 'ventas', 'ruta' => '', 'texto' => 'Ventas', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-folder'],
 
-    ['modulo'=>'ventas', 'ruta'=>'listar-atencion-cliente', 'subruta' => '', 'texto'=>'Atención cliente', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
-    ['modulo'=>'ventas', 'ruta'=>'actualizar-atencion-cliente', 'subruta' => '', 'texto'=> '' ,'visible'=>false, 'icono'=>''],
-    ['modulo'=>'ventas', 'ruta'=>'registrar-atencion-cliente', 'subruta' => '', 'texto'=> '' ,'visible'=>false, 'icono'=>''],
+    ['modulo' => 'ventas', 'ruta' => 'listar-atencion-cliente', 'subruta' => '', 'texto' => 'Atención cliente', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'ventas', 'ruta' => 'actualizar-atencion-cliente', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''],
+    ['modulo' => 'ventas', 'ruta' => 'registrar-atencion-cliente', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''],
 
 
 
-    ['modulo'=>'utilitario', 'ruta'=>'', 'texto'=>'Utilitario', 'subruta' => '','visible'=>true, 'icono'=>'fa-solid fa-folder'],
+    ['modulo' => 'utilitario', 'ruta' => '', 'texto' => 'Utilitario', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-folder'],
 
-    ['modulo'=>'utilitario', 'ruta'=>'listar-usuarios', 'subruta' => 'usuarios','texto'=>'Usuarios', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
-    ['modulo'=>'utilitario', 'ruta'=>'registrar-usuario', 'subruta' => 'usuarios', 'visible'=>false],
-    ['modulo'=>'utilitario', 'ruta'=>'listar-tarifas', 'subruta' => 'tarifas', 'texto'=>'Tarifario', 'visible'=>false, 'icono'=>'fa-solid fa-list'],
-    ['modulo'=>'utilitario', 'ruta'=>'registrar-tarifa', 'subruta' => 'tarifas', 'visible'=>false],
+    ['modulo' => 'utilitario', 'ruta' => 'listar-usuarios', 'subruta' => 'usuarios', 'texto' => 'Usuarios', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'utilitario', 'ruta' => 'registrar-usuario', 'subruta' => 'usuarios', 'visible' => false],
+    ['modulo' => 'utilitario', 'ruta' => 'listar-tarifas', 'subruta' => 'tarifas', 'texto' => 'Tarifario', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'utilitario', 'ruta' => 'registrar-tarifa', 'subruta' => 'tarifas', 'visible' => false],
+
+
+
+    /* ['modulo' => 'gerencia', 'ruta' => '', 'texto' => 'Gerencia General', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-folder'],
+
+    ['modulo' => 'gerencia', 'ruta' => 'contabilidad', 'subruta' => 'contabilidad', 'texto' => 'Usuarios', 'visible' => false, 'icono' => 'fa-solid fa-list'], */
+
   ]
 ];
 
@@ -56,6 +65,10 @@ if (isset($_GET['operation'])) {
     case 'obtenerPersonaPorDoc':
       echo json_encode($usuario->obtenerPersonaPorDoc(['num_doc' => $_GET['num_doc']]));
       break;
+
+    case 'obtenerUsuarioPorNivel':
+      echo json_encode($usuario->obtenerUsuarioPorNivel(['idnivelacceso' => $_GET['idnivelacceso']]));
+      break;
   }
 }
 
@@ -70,7 +83,7 @@ if (isset($_POST['operation'])) {
         "mensaje" => ""
       ];
 
-      if ($registro && $registro[0]['estado']>0) {
+      if ($registro && $registro[0]['estado'] > 0) {
         $claveEncriptada = $registro[0]['claveacceso']; //DB
         $claveIngresada = $usuario->limpiarCadena($_POST['claveacceso']);
 
@@ -101,10 +114,9 @@ if (isset($_POST['operation'])) {
           $session['nombres'] = "";
         }
       } else {
-        if($registro && $registro[0]['estado']==0){
+        if ($registro && $registro[0]['estado'] == 0) {
           $resultados['mensaje'] = "En el sistema estas como inactivo, solicita una reactivacion de la cuenta";
-        }
-        else if(!$registro){
+        } else if (!$registro) {
           $resultados['mensaje'] = "No existe el usuario";
         }
         $session['estado'] = false;

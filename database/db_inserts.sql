@@ -121,7 +121,8 @@ INSERT INTO distritos (distrito, idprovincia) VALUES
 
 
 INSERT INTO personas (num_doc, apellidos, nombres, genero, direccion, telefono, telefono2, correo, iddistrito)
-VALUES ('12345678', 'Pérez', 'Juan', 'M', 'Av. Principal 123', '987654321', '912345678', 'juan.perez@email.com', 1);
+VALUES ('12345678', 'Pérez', 'Juan', 'M', 'Av. Principal 123', '987654321', '912345678', 'juan.perez@email.com', 1),
+	('72754758', 'Test Test', 'Test Test', 'F', 'calle false 777', '999333222', '', 'test@gmail.com', 1);
 
 INSERT INTO nivelaccesos (nivelacceso) values 
 	('Vendedor'),
@@ -144,4 +145,8 @@ VALUES
 (3, 'ventas', 'update-atencion-cliente', NULL, false, NULL);
 
 INSERT INTO usuarios (idnivelacceso, idpersona, nom_usuario, claveacceso) values
-	(3, 1, 'royer', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC')
+	(3, 1, 'royer', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC'),
+    (6, 2, 'Azucena Calvay', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC');
+
+INSERT INTO clientes (iddistrito, ndocumento, razonsocial, telefono, correo, direccion) values
+	(74, '10727547521', 'AVALOS ROMERO ROYER ALEXIS', '973189350', 'alexisjkg@gmail.com', 'Asent. FALSA 123');

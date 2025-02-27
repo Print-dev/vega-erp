@@ -74,23 +74,12 @@ CREATE TABLE usuarios
     CONSTRAINT uk_nom_usuario UNIQUE(nom_usuario)
 )ENGINE=INNODB;
 
-CREATE TABLE artistas (
-	idartista 	INT auto_increment primary key,
-    idpersona	int not null,
-    biografia	varchar(300) null,
-    web			varchar(120) null,
-    facebook	varchar(120) null,
-    youtube		varchar(120) null,
-    tiktok		varchar(120) null,
-    constraint fk_idpersona_art foreign key (idpersona) references personas (idpersona)
-)ENGINE = INNODB;
-
 CREATE TABLE tarifario (
 	idtarifario int auto_increment primary key,
-    idartista		int not null,
+    idusuario		int not null,
     iddepartamento	int not null,
 	precio			decimal(7,2) not null,
-    constraint fk_idartista_tar foreign key (idartista) references artistas (idartista),
+    constraint fk_idartista_tar foreign key (idusuario) references usuarios (idusuario),
     constraint fk_iddepartamento_tarifario_tar foreign key (iddepartamento) references departamentos (iddepartamento)
 ) ENGINE = INNODB;
 
@@ -108,50 +97,55 @@ CREATE TABLE permisos (
 
 create table clientes (
 	idcliente	int auto_increment primary key,
-    iddistrito	int not null,
+    iddistrito	int null,
     ndocumento	CHAR(20)	null,
     razonsocial	varchar(130)  null,
 	telefono    char(15)	null,
-	correo		varchar(130) not null,
-    direccion	varchar(130) not null,
+	correo		varchar(130) null,
+    direccion	varchar(130) null,
     constraint fk_iddistrito_cli foreign key (iddistrito) references distritos (iddistrito),
     constraint    uk_telefono         UNIQUE(telefono),
-    constraint 	chk_telefono		CHECK(telefono LIKE '9%')
+    constraint 	chk_telefono		CHECK(telefono LIKE '9%'),
+    constraint 	chk_numdocumento	check(ndocumento)
 )engine=innodb;
 
 create table detalles_presentacion (
-	iddetalle_evento	int auto_increment primary key,
+	iddetalle_presentacion	int auto_increment primary key,
     idusuario			int not null,
     idcliente			int not null,
+    iddistrito			int not null,
+    ncotizacion			CHAR(9) not null,
     fecha_presentacion	date not null,
     hora_presentacion	time not null,
     tiempo_presentacion int  not null,
     establecimiento	varchar(80) not null,
-    tipo_evento		char(1) not null,
-    modalidad		varchar(10)	not null,
+    tipo_evento		int not null,
+    modalidad		int	not null,
 	validez			int		null,
-    igv				boolean	not null,
-    tipo_pago		varchar(10) not null,
+    igv				tinyint	not null,
+    tipo_pago		int not null,
     constraint fk_idusuario_dp foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idcliente_dp foreign key (idcliente) references clientes (idcliente),
-    constraint    chk_detalle_p          CHECK(modalidad IN('convenio', 'contrato')),
-    constraint    chk_detalle_p_tp          CHECK(tipo_pago IN('contado', 'credito'))
+    constraint fk_iddistrito_dp foreign key (iddistrito) references distritos (iddistrito),
+    constraint    chk_detalle_p          CHECK(modalidad IN(1, 2)),
+    constraint    chk_detalle_p_tp          CHECK(tipo_pago IN(1, 2)),
+    constraint	uk_ncotizacion 			UNIQUE(ncotizacion)
 )engine=innodb;
 
 create table convenios (
 	idconvenio	int auto_increment primary key,
-    idatencion_cliente int not null,
+    iddetalle_presentacion int not null,
     abono_garantia	double null,
     abono_publicidad double null,
 	propuesta_cliente text not null,
     estado			int null default 1, -- 1 = aprobada, 2 = no aprobado
-    constraint fk_idatencion_cliente foreign key (idatencion_cliente) references atencion_cliente (idatencion_cliente)
+    constraint fk_dp_cv foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 ) engine = innodb;
 
 create table contratos (
 	idcontrato	int auto_increment primary key,
-    idatencion_cliente	int not null,
+    iddetalle_presentacion	int not null,
     monto_pagado		double not null,
     estado				int not null default 1, -- 1 = pendiente de pago (pago 15%), 2- pagado, 3- caducado
-    constraint fk_idatencion_cliente_contratos foreign key (idatencion_cliente) references atencion_cliente (idatencion_cliente)
+    constraint fk_dp_cs foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 ) engine = innodb;
