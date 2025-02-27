@@ -312,8 +312,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" id="btnGenerarCotizacion">Generar Convenio</button>
-                            <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn btn-primary" data-bs-dismiss="modal" id="close-mdl-cotizacion">Ir a inicio</a>
+                            <button type="button" class="btn btn-secondary" id="btnGenerarConvenio">Generar Convenio</button>
+                            <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn btn-primary" data-bs-dismiss="modal" id="close-mdl-cotizacion">Cerrar</a>
                         </div>
                     </div>
                 </div>

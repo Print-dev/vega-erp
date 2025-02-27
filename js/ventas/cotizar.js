@@ -407,15 +407,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           console.log(detalleevento);
 
           if (detalleevento.iddetalleevento > 0) {
-            let modalCotizacion = new bootstrap.Modal($q("#modal-previacotizacion"));
-            modalCotizacion.show();
-            //showToast("Se ha registrado correctamente la atencion", "SUCCESS", 1000);
-            isReset = false;
-            //resetUI();
-            //$q("#ndocumento").value = "";
-            //bloquearCampos(true);
-            //$q("#btnGuardarAC").disabled = true;
-            //$q("#ndocumento").focus();
+            if($q("#modalidad").value === 1) // me quede aca
           } else {
             showToast("Hubo un error al registrar la atencion", "ERROR");
           }
