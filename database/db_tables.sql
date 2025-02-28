@@ -138,7 +138,9 @@ create table convenios (
     abono_garantia	double null,
     abono_publicidad double null,
 	propuesta_cliente text not null,
-    estado			int null default 1, -- 1 = aprobada, 2 = no aprobado
+    estado			int null default 1, -- 1 = pendiente, 2 = aprobada, 3 = no aprobado
+    created_at		datetime null default now(),
+    updated_at		datetime null ,
     constraint fk_dp_cv foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 ) engine = innodb;
 
@@ -147,5 +149,7 @@ create table contratos (
     iddetalle_presentacion	int not null,
     monto_pagado		double not null,
     estado				int not null default 1, -- 1 = pendiente de pago (pago 15%), 2- pagado, 3- caducado
+    created_at			datetime	null default now(),
+	updated_at		datetime null ,
     constraint fk_dp_cs foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 ) engine = innodb;

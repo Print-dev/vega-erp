@@ -238,7 +238,7 @@
 </div>
 
 <!-- MODAL PARA COTIZAR DE MANERA CONTRATO -->
-<div class="modal fade" id="modal-previacotizacion" tabindex="-1" aria-labelledby="modalPreviaCotizacion" aria-hidden="true">
+<div class="modal fade" id="modal-previacotizacion" tabindex="-1" aria-labelledby="modalPreviaCotizacion" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -267,57 +267,59 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="btnGenerarCotizacion">Generar Cotizacion</button>
-                <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn btn-primary" data-bs-dismiss="modal" id="close-mdl-cotizacion">Ir a inicio</a>
+                <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn btn-primary" id="close-mdl-cotizacion">Ir a inicio</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal-convenio" tabindex="-1" aria-labelledby="modalContratoConvenio" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalContratoConvenio">Previa Convenio</h1>
+                <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn-close"></a>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" id="abonogarantia" name="abonogarantia"
+                                        class="form-control">
+                                    <label for="abonogarantia" class="form-label">Abono de garantía</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" id="abonopublicidad" name="abonopublicidad"
+                                        class="form-control">
+                                    <label for="abonopublicidad" class="form-label">Abono de publicidad</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <div class="mb-3">
+                                <label for="propuestacliente" class="form-label">Propuesta de cliente</label>
+                                <textarea class="form-control" id="propuestacliente" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnGenerarConvenio">Generar Convenio</button>
+                <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn btn-primary"  id="close-mdl-convenio">Ir a inicio</a>
             </div>
         </div>
     </div>
 </div>
 
 <!-- MODAL PARA CONTRATO CONVENIO -->
-<div class="modal fade" id="modal-convenio" tabindex="-1" aria-labelledby="modalConvenio" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalConvenio">Previa Cotizacion</h1>
-                <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn-close"></a>
-            </div>
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="number" id="abonogarantia" name="abonogarantia"
-                                    class="form-control">
-                                <label for="abonogarantia" class="form-label">Abono de garantía</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="number" id="abonopublicidad" name="abonopublicidad"
-                                    class="form-control">
-                                <label for="abonopublicidad" class="form-label">Abono de publicidad</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <textarea name="propuestacliente" id="propuestacliente"></textarea>
-                                <label for="propuestacliente" class="form-label">Propuesta cliente</label>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" id="btnGenerarConvenio">Generar Convenio</button>
-                            <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn btn-primary" data-bs-dismiss="modal" id="close-mdl-cotizacion">Cerrar</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        
 
             <?php require_once '../footer.php' ?>
 

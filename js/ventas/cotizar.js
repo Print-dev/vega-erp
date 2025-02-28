@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     return data.json();
   }
 
-  /* $q("#btnGuardarAC").addEventListener("click", async function () {
-  let id_producto = $q("#id_producto").value;
-  let cantidad = $q("#cantidad").value;
+$q("#btnGuardarAC").addEventListener("click", async function () {
+  let modalCotizacion = new bootstrap.Modal($q("#modal-convenio"));
+  modalCotizacion.show();
 });
-*/
+
   $q("#btnGenerarCotizacion").addEventListener("click", async () => {
     alert("generando pdf...")
   })
@@ -218,6 +218,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     $q("#tiempopresentacion").disabled = isblock;
     $q("#establecimiento").disabled = isblock;
     $q("#tipoevento").disabled = isblock;
+    $q("#tipopago").disabled = isblock;
     $q("#modalidad").disabled = isblock;
     $q("#validez").disabled = isblock;
     $q("#nacionalidad2").disabled = isblock;
@@ -405,9 +406,34 @@ document.addEventListener('DOMContentLoaded', async function () {
 
           const detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
           console.log(detalleevento);
-
+          console.log("select modalidad : antes de netrar a condicion ", $q("#modalidad").value)
           if (detalleevento.iddetalleevento > 0) {
-            if($q("#modalidad").value === 1) // me quede aca
+            if($q("#modalidad").value == 1){
+              console.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
+  
+              let modalCotizacion = new bootstrap.Modal($q("#modal-convenio"));
+              modalCotizacion.show();
+              //showToast("Se ha registrado correctamente la atencion", "SUCCESS", 1000);
+              isReset = false;
+              //resetUI();
+              //$q("#ndocumento").value = "";
+              //bloquearCampos(true);
+              //$q("#btnGuardarAC").disabled = true;
+              //$q("#ndocumento").focus();
+            } // me quede aca
+            else if ($q("#modalidad").value == 2){
+              onsole.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
+  
+              let modalCotizacion = new bootstrap.Modal($q("#modal-previacotizacion"));
+              modalCotizacion.show();
+              //showToast("Se ha registrado correctamente la atencion", "SUCCESS", 1000);
+              isReset = false;
+              //resetUI();
+              //$q("#ndocumento").value = "";
+              //bloquearCampos(true);
+              //$q("#btnGuardarAC").disabled = true;
+              //$q("#ndocumento").focus();
+            }
           } else {
             showToast("Hubo un error al registrar la atencion", "ERROR");
           }
@@ -432,17 +458,35 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
         console.log(detalleevento);
+        console.log("select modalidad : antes de netrar a condicion ", $q("#modalidad").value)
 
         if (detalleevento.iddetalleevento > 0) {
-          let modalCotizacion = new bootstrap.Modal($q("#modal-previacotizacion"));
-          modalCotizacion.show();
-          //showToast("Se ha registrado correctamente la atencion", "SUCCESS", 1000);
-          isReset = false;
-          //resetUI();
-          //$q("#ndocumento").value = "";
-          //bloquearCampos(true);
-          //$q("#btnGuardarAC").disabled = true;
-          //$q("#ndocumento").focus();
+          if($q("#modalidad").value == 1){
+            console.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
+
+            let modalCotizacion = new bootstrap.Modal($q("#modal-convenio"));
+            modalCotizacion.show();
+            //showToast("Se ha registrado correctamente la atencion", "SUCCESS", 1000);
+            isReset = false;
+            //resetUI();
+            //$q("#ndocumento").value = "";
+            //bloquearCampos(true);
+            //$q("#btnGuardarAC").disabled = true;
+            //$q("#ndocumento").focus();
+          } // me quede aca
+          else if ($q("#modalidad").value == 2){
+            onsole.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
+
+            let modalCotizacion = new bootstrap.Modal($q("#modal-previacotizacion"));
+            modalCotizacion.show();
+            //showToast("Se ha registrado correctamente la atencion", "SUCCESS", 1000);
+            isReset = false;
+            //resetUI();
+            //$q("#ndocumento").value = "";
+            //bloquearCampos(true);
+            //$q("#btnGuardarAC").disabled = true;
+            //$q("#ndocumento").focus();
+          }
         } else {
           showToast("Hubo un error al registrar la atencion", "ERROR");
         }
