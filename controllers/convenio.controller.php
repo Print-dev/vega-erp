@@ -6,22 +6,13 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Mét
 header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Encabezados permitidos
 $convenio = new Convenio();
 // ag order by
-/* if (isset($_GET['operation'])) {
+if (isset($_GET['operation'])) {
   switch ($_GET['operation']) {
-    case 'obtenerPersonaPorId':
-      echo json_encode($convenio->obtenerPersonaPorId(['idpersona' => $_GET['idpersona']]));
-      break;
-      case 'searchPersonaNumDoc':
-      echo json_encode($persona->searchPersonaNumDoc(['numdoc'=>$_GET['numdoc']]));
-      break;
-    case 'searchTelefono':
-      echo json_encode($persona->searchTelf(['telefono'=>$_GET['telefono']]));
-      break;
-    case 'searchEmail':
-      echo json_encode($persona->searchEmail(['email'=>$_GET['email']]));
+    case 'obtenerContratoConvenio':
+      echo json_encode($convenio->obtenerContratoConvenio(['idconvenio' => $_GET['idconvenio']]));
       break;
   }
-} */
+}
 if (isset($_POST['operation'])) {
   switch ($_POST['operation']) {
     case 'registrarConvenio':

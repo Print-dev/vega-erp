@@ -100,6 +100,7 @@ create table clientes (
     iddistrito	int null,
     ndocumento	CHAR(20)	null,
     razonsocial	varchar(130)  null,
+    representantelegal varchar(130) null,
 	telefono    char(15)	null,
 	correo		varchar(130) null,
     direccion	varchar(130) null,
@@ -114,7 +115,7 @@ create table detalles_presentacion (
     idusuario			int not null,
     idcliente			int not null,
     iddistrito			int not null,
-    ncotizacion			CHAR(9) not null,
+    ncotizacion			CHAR(9) null,
     fecha_presentacion	date not null,
     hora_presentacion	time not null,
     tiempo_presentacion int  not null,
@@ -129,7 +130,8 @@ create table detalles_presentacion (
     constraint fk_iddistrito_dp foreign key (iddistrito) references distritos (iddistrito),
     constraint    chk_detalle_p          CHECK(modalidad IN(1, 2)),
     constraint    chk_detalle_p_tp          CHECK(tipo_pago IN(1, 2)),
-    constraint	uk_ncotizacion 			UNIQUE(ncotizacion)
+    constraint	uk_ncotizacion 			UNIQUE(ncotizacion),
+    constraint uk_idp 					UNIQUE(iddetalle_presentacion)
 )engine=innodb;
 
 create table convenios (

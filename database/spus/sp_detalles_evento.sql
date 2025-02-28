@@ -26,8 +26,8 @@ BEGIN
         SET existe_error = 1;
     END;
     
-    INSERT INTO detalles_presentacion (idusuario, idcliente, iddistrito, ncotizacion,fecha_presentacion, hora_presentacion, tiempo_presentacion, establecimiento, tipo_evento, modalidad, validez, igv, tipo_pago)
-    VALUES (_idusuario, _idcliente, _iddistrito, _ncotizacion, _fechapresentacion, _horapresentacion, _tiempopresentacion, _establecimiento, _tipoevento, _modalidad, NULLIF(_validez, ''), _igv, _tipopago);
+    INSERT INTO detalles_presentacion (idusuario, idcliente, iddistrito, ncotizacion, fecha_presentacion, hora_presentacion, tiempo_presentacion, establecimiento, tipo_evento, modalidad, validez, igv, tipo_pago)
+    VALUES (_idusuario, _idcliente, _iddistrito, NULLIF(_ncotizacion, ''), _fechapresentacion, _horapresentacion, _tiempopresentacion, _establecimiento, _tipoevento, _modalidad, NULLIF(_validez, ''), _igv, _tipopago);
     
     IF existe_error = 1 THEN
         SET _iddetalle_presentacion = -1;
@@ -35,3 +35,20 @@ BEGIN
         SET _iddetalle_presentacion = LAST_INSERT_ID();
     END IF;
 END $$
+
+drop procedure if exists sp_obtener_dp_porid;
+DELIMITER //
+CREATE PROCEDURE `sp_obtener_dp_porid`(
+	IN _iddetalle_presentacion	INT
+)
+BEGIN
+	SELECT 		
+		DP.iddetalle_presentacion, DE.departamento, PRO.provincia, DIS.distrito
+	FROM detalles_presentacion DP
+	LEFT JOIN distritos DIS ON DIS.iddistrito = DP.iddistrito
+    LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
+    LEFT JOIN departamentos DE ON DE.iddepartamento = PRO.iddepartamento
+    WHERE DP.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
+END //
+
+call sp_obtener_dp_porid(13)

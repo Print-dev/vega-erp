@@ -1,18 +1,35 @@
 USE vega_producciones_erp;
 
-DROP PROCEDURE IF EXISTS `obtenerConvenioPorId`
+
+DROP PROCEDURE IF EXISTS `obtenerContratoConvenio`
 DELIMITER //
-CREATE PROCEDURE `obtenerConvenioPorId`(
-	IN _idtarea	INT
+CREATE PROCEDURE `obtenerContratoConvenio`(
+	IN _idconvenio	INT
 )
 BEGIN
 	SELECT 		
-		*
+		C.idconvenio, 
+        CLI.razonsocial, CLI.ndocumento, CLI.direccion, 
+        DISCLI.distrito, PROCLI.provincia, DECLI.departamento, 
+        USU.nom_usuario,
+        DP.fecha_presentacion,
+		DP.tiempo_presentacion,
+        DP.hora_presentacion,
+        DP.establecimiento,
+        DISDP.distrito, PRODP.provincia, DEDP.departamento,
+        DP.igv,
+		C.abono_garantia, C.abono_publicidad
 	FROM convenios C
 	LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = C.iddetalle_presentacion
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.iddetalle_presentacion
-    WHERE TAR.idtarea = _idtarea -- me quede aca
-	GROUP BY TAR.idtarea, TAR.fechainicio, TAR.horainicio, TAR.estado;
+    LEFT JOIN distritos DISCLI ON DISCLI.iddistrito = CLI.iddistrito
+    LEFT JOIN provincias PROCLI ON PROCLI.idprovincia = DISCLI.idprovincia
+    LEFT JOIN departamentos DECLI ON DECLI.iddepartamento = PROCLI.iddepartamento
+    LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito
+	LEFT JOIN provincias PRODP ON PRODP.idprovincia = DISDP.idprovincia
+    LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
+    LEFT JOIN usuarios	USU ON USU.idusuario = DP.idusuario
+    WHERE C.idconvenio = _idconvenio; -- me quede aca
 END //
 
 
@@ -57,3 +74,15 @@ BEGIN
     WHERE idconvenio = _idconvenio;
 END $$
 
+DROP PROCEDURE IF EXISTS `obtenerConvenioPorIdDP`
+DELIMITER //
+CREATE PROCEDURE `obtenerConvenioPorIdDP`(
+	IN _iddetalle_presentacion	INT
+)
+BEGIN
+	SELECT 		
+		C.idconvenio
+	FROM convenios C
+	LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = C.iddetalle_presentacion
+    WHERE C.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
+END //

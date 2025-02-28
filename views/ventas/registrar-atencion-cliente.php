@@ -21,7 +21,7 @@
                         <div class="card-body row g-2">
                             <h1 class="card-title">Datos de cliente</h1>
 
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <div class="input-group" style="height: 100%;">
                                     <input type="text"
                                         style="height: 100%;"
@@ -43,16 +43,23 @@
                                     <span id="showTipoDoc" style="font-size: small; margin-left: auto; margin-right:12%"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <div class="form-floating">
                                     <input type="text" id="razonsocial" name="razonsocial"
                                         class="form-control">
                                     <label for="razonsocial" class="form-label">Razon social/Nombre</label>
                                 </div>
                             </div>
+                            <div class="col-md-3" id="container-representantelegal" hidden>
+                                <div class="form-floating">
+                                    <input type="text" id="representantelegal" name="representantelegal"
+                                        class="form-control">
+                                    <label for="representantelegal" class="form-label">Representante legal</label>
+                                </div>
+                            </div>
                             <div class="col-md-2">
                                 <div class="form-floating">
-                                    <input type="number" id="telefono" name="telefono" maxlength="9" max="9"
+                                    <input type="number" id="telefono" name="telefono" maxlength="9"
                                         class="form-control">
                                     <label for="telefono" class="form-label">Telefono</label>
                                 </div>
@@ -255,7 +262,7 @@
                             <th>Precio S/.</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tInfoCotizacion">
                         <tr>
                             <td>Ica</td>
                             <td>Chincha</td>
@@ -267,13 +274,14 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="btnGenerarCotizacion">Generar Cotizacion</button>
-                <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn btn-primary" id="close-mdl-cotizacion">Ir a inicio</a>
+                <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn btn-primary" id="close-mdl-cotizacion">Guardar y cerrar</a>
             </div>
         </div>
     </div>
 </div>
 
 
+<!-- MODAL PARA CONTRATO CONVENIO -->
 <div class="modal fade" id="modal-convenio" tabindex="-1" aria-labelledby="modalContratoConvenio" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -312,20 +320,19 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="btnGenerarConvenio">Generar Convenio</button>
-                <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn btn-primary"  id="close-mdl-convenio">Ir a inicio</a>
+                <button type="button" class="btn btn-primary btnGuardarConvenio" id="close-mdl-convenio">Guardar y cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- MODAL PARA CONTRATO CONVENIO -->
-        
 
-            <?php require_once '../footer.php' ?>
 
-            <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-            <script src="http://localhost/vega-erp/js/ventas/cotizar.js"></script>
+<?php require_once '../footer.php' ?>
 
-            </body>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="http://localhost/vega-erp/js/ventas/cotizar.js"></script>
 
-            </html>
+</body>
+
+</html>

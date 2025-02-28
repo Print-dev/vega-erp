@@ -10,6 +10,10 @@ if (isset($_GET['operation'])) {
     case 'obtenerCotizacionPorNcot':
       echo json_encode($detalleevento->obtenerCotizacionPorNcot(['ncotizacion' => $_GET['ncotizacion']]));
       break;
+
+    case 'obtenerDPporId':
+      echo json_encode($detalleevento->obtenerDPporId(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
+      break;
   }
 }
 if (isset($_POST['operation'])) {
@@ -19,7 +23,7 @@ if (isset($_POST['operation'])) {
         'idusuario'   => $detalleevento->limpiarCadena($_POST['idusuario']),
         'idcliente' => $detalleevento->limpiarCadena($_POST['idcliente']),
         'iddistrito' => $detalleevento->limpiarCadena($_POST['iddistrito']),
-        'ncotizacion' => $detalleevento->limpiarCadena($_POST['ncotizacion']),
+        'ncotizacion' => $detalleevento->limpiarCadena($_POST['ncotizacion']) ? $detalleevento->limpiarCadena($_POST['ncotizacion']) : '',
         'fechapresentacion'   => $detalleevento->limpiarCadena($_POST['fechapresentacion']),
         'horapresentacion'    => $detalleevento->limpiarCadena($_POST['horapresentacion']),
         'tiempopresentacion' => $detalleevento->limpiarCadena($_POST['tiempopresentacion']),

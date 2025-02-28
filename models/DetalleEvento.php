@@ -45,4 +45,15 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
+
+  public function obtenerDPporId($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_dp_porid(?)");
+      $cmd->execute(array($params['iddetallepresentacion']));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
 }

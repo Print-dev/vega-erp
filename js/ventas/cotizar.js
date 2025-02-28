@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', async function () {
   bloquearCampos(true)
   let idcliente = -1
   let ncotizacion = ''
+  let iddetalleevento = -1
+
   function $q(object = null) {
     return document.querySelector(object);
   }
@@ -17,15 +19,15 @@ document.addEventListener('DOMContentLoaded', async function () {
     return data.json();
   }
 
-$q("#btnGuardarAC").addEventListener("click", async function () {
-  let modalCotizacion = new bootstrap.Modal($q("#modal-convenio"));
-  modalCotizacion.show();
-});
+  /* $q("#btnGuardarAC").addEventListener("click", async function () {
+    let modalCotizacion = new bootstrap.Modal($q("#modal-convenio"));
+    modalCotizacion.show();
+  }); */
 
-  $q("#btnGenerarCotizacion").addEventListener("click", async () => {
-    alert("generando pdf...")
-  })
-
+  /*   $q("#btnGenerarCotizacion").addEventListener("click", async () => {
+      alert("generando pdf...")
+    })
+   */
   // ****************************** OBTENER DATOS ****************************** //
 
   async function obtenerDepartamentos(iddepartamento) {
@@ -96,6 +98,15 @@ $q("#btnGuardarAC").addEventListener("click", async function () {
     return fpersona
   }
 
+  async function obtenerDPporId(iddetallepresentacion) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerDPporId");
+    params.append("iddetallepresentacion", iddetallepresentacion);
+    const fpersona = await getDatos(`${host}detalleevento.controller.php`, params)
+    console.log(fpersona);
+    return fpersona
+  }
+
   // ****************************** LLENAR COMBOS ****************************** //
 
   // ELEGIR NACIONALIDAD DE CLIENTE
@@ -155,6 +166,7 @@ $q("#btnGuardarAC").addEventListener("click", async function () {
     cliente.append("iddistrito", $q("#distrito").value ? $q("#distrito").value : '');
     cliente.append("ndocumento", $q("#ndocumento").value ? $q("#ndocumento").value : '');
     cliente.append("razonsocial", $q("#razonsocial").value ? $q("#razonsocial").value : '');
+    cliente.append("representantelegal", $q("#representantelegal").value ? $q("#representantelegal").value : '');
     cliente.append("telefono", $q("#telefono").value ? $q("#telefono").value : '');
     cliente.append("correo", $q("#correo").value ? $q("#correo").value : '');
     cliente.append("direccion", $q("#direccion").value ? $q("#direccion").value : '');
@@ -182,7 +194,7 @@ $q("#btnGuardarAC").addEventListener("click", async function () {
     detalle.append("idusuario", $q("#artista").value); // id artista
     detalle.append("idcliente", idcliente);
     detalle.append("iddistrito", $q("#distrito2").value);
-    detalle.append("ncotizacion", ncotizacion);
+    detalle.append("ncotizacion", ncotizacion ? ncotizacion : '');
     detalle.append("fechapresentacion", $q("#fechapresentacion").value);
     detalle.append("horapresentacion", $q("#horapresentacion").value);
     detalle.append("tiempopresentacion", $q("#tiempopresentacion").value);
@@ -199,6 +211,24 @@ $q("#btnGuardarAC").addEventListener("click", async function () {
     });
     const rdetalle = await fdetalle.json();
     return rdetalle;
+  }
+
+  async function registrarConvenio(iddetallepresentacion, estado) {
+
+    const convenio = new FormData();
+    convenio.append("operation", "registrarConvenio");
+    convenio.append("iddetallepresentacion", iddetallepresentacion); // id artista
+    convenio.append("abonogarantia", $q("#abonogarantia").value);
+    convenio.append("abonopublicidad", $q("#abonopublicidad").value);
+    convenio.append("propuestacliente", $q("#propuestacliente").value);
+    convenio.append("estado", estado);
+
+    const fconvenio = await fetch(`${host}convenio.controller.php`, {
+      method: "POST",
+      body: convenio,
+    });
+    const rconvenio = await fconvenio.json();
+    return rconvenio;
   }
 
   // ************************************* FUNCIONES DE VALIDACION ************************************* //
@@ -233,6 +263,7 @@ $q("#btnGuardarAC").addEventListener("click", async function () {
   function showDatos(data) {
     console.log(data)
     $q("#razonsocial").value = data.razonsocial;
+    $q("#representantelegal").value = data.representantelegal ? data.representantelegal : '';
     $q("#telefono").value = data.telefono;
     $q("#correo").value = data.correo;
     $q("#nacionalidad").value = data.idnacionalidad;
@@ -246,6 +277,7 @@ $q("#btnGuardarAC").addEventListener("click", async function () {
   function resetUI() {
     $q("#ndocumento").value = '';
     $q("#razonsocial").value = '';
+    $q("#representantelegal").value = '';
     $q("#telefono").value = '';
     $q("#correo").value = '';
     $q("#nacionalidad").value = '';
@@ -319,6 +351,13 @@ $q("#btnGuardarAC").addEventListener("click", async function () {
       if (isblock) {
         showToast("El cliente ya existe", "WARNING");
         //$q("#btnEnviar").disabled = true;
+        if (data[0].representantelegal) {
+          $q("#container-representantelegal").hidden = false
+        }
+        else {
+          $q("#container-representantelegal").hidden = true
+
+        }
         idcliente = data[0].idcliente
         showDatos(data[0]);
         bloquearCampos(false)
@@ -327,6 +366,7 @@ $q("#btnGuardarAC").addEventListener("click", async function () {
           if (isRUC) {
             console.log($q("#ndocumento").value)
             const dataCliente = await obtenerDataClienteRUC()
+            $q("#container-representantelegal").hidden = false
             console.log("data cliente sunat: ", dataCliente);
             //showDataCliente(dataCliente)
             $q("#razonsocial").value = dataCliente.razonSocial;
@@ -337,6 +377,7 @@ $q("#btnGuardarAC").addEventListener("click", async function () {
             console.log($q("#ndocumento").value)
             const dataCliente = await obtenerDataClienteDNI()
             console.log("data cliente sunat: ", dataCliente);
+            $q("#container-representantelegal").hidden = true
             //showDataCliente(dataCliente)
             $q("#nacionalidad").value = 31 ? 31 : '';
             $q("#razonsocial").value = dataCliente.nombre + " " + dataCliente.apellidoPaterno + " " + dataCliente.apellidoMaterno;
@@ -358,6 +399,31 @@ $q("#btnGuardarAC").addEventListener("click", async function () {
   }
 
   // ************************************* EVENTOS ************************************* //
+
+
+
+  $q("#btnLimpiarAC").addEventListener("click", () => {
+    $q("#form-atencion-clientes").reset();
+    resetUI()
+    bloquearCampos(true);
+  })
+
+  $q(".btnGuardarConvenio").addEventListener("click", () => {
+    const convenio = registrarConvenio(iddetalleevento, 1)
+    if (convenio) {
+      showToast("Se ha guardado el convenio", "SUCCESS", 1000, 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente');
+    }
+  })
+
+  $q("#btnGenerarConvenio").addEventListener("click", async () => {
+    if (await ask("Confirma la acción")) {
+      const convenio = registrarConvenio(iddetalleevento, 2)
+      if (convenio) {
+        window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
+      }
+    }
+  })
+
 
   $q("#search").addEventListener("click", async () => {
     idcliente = -1
@@ -404,13 +470,19 @@ $q("#btnGuardarAC").addEventListener("click", async function () {
             cotizacionExiste = obtenerCotizacionPorNcot(ncotizacion);
           } while (cotizacionExiste.length > 0); // Si existe, genera otro número
 
-          const detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
-          console.log(detalleevento);
+          if ($q("#modalidad").value == 1) {
+            detalleevento = await registrarDetalleEvento(data.idcliente);
+            console.log(detalleevento);
+          } else if ($q("#modalidad").value == 2) {
+            detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
+            console.log(detalleevento);
+          }
           console.log("select modalidad : antes de netrar a condicion ", $q("#modalidad").value)
           if (detalleevento.iddetalleevento > 0) {
-            if($q("#modalidad").value == 1){
+            iddetalleevento = detalleevento.iddetalleevento
+            if ($q("#modalidad").value == 1) {
               console.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
-  
+
               let modalCotizacion = new bootstrap.Modal($q("#modal-convenio"));
               modalCotizacion.show();
               //showToast("Se ha registrado correctamente la atencion", "SUCCESS", 1000);
@@ -421,9 +493,22 @@ $q("#btnGuardarAC").addEventListener("click", async function () {
               //$q("#btnGuardarAC").disabled = true;
               //$q("#ndocumento").focus();
             } // me quede aca
-            else if ($q("#modalidad").value == 2){
-              onsole.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
-  
+            else if ($q("#modalidad").value == 2) {
+              const detallespresentacion = await obtenerDPporId(iddetalleevento)
+              console.log("detallespresentacion: ", detallespresentacion)
+              detallespresentacion.forEach(dp => {
+                $q("#tInfoCotizacion").innerHTML = `
+                  <tr>
+                    <td>${dp.iddetalle_presentacion}</td>
+                    <td>${dp.departamento}</td>
+                    <td>${dp.provincia}</td>
+                    <td>${dp.distrito}</td> // ME QUEDE ACA
+                  </tr>
+                  `
+              });
+
+              console.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
+
               let modalCotizacion = new bootstrap.Modal($q("#modal-previacotizacion"));
               modalCotizacion.show();
               //showToast("Se ha registrado correctamente la atencion", "SUCCESS", 1000);
@@ -456,12 +541,17 @@ $q("#btnGuardarAC").addEventListener("click", async function () {
           cotizacionExiste = obtenerCotizacionPorNcot(ncotizacion);
         } while (cotizacionExiste.length > 0); // Si existe, genera otro número
 
-        const detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
-        console.log(detalleevento);
-        console.log("select modalidad : antes de netrar a condicion ", $q("#modalidad").value)
+        if ($q("#modalidad").value == 1) {
+          detalleevento = await registrarDetalleEvento(idcliente);
+          console.log(detalleevento);
+        } else if ($q("#modalidad").value == 2) {
+          detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
+          console.log(detalleevento);
+        }
 
         if (detalleevento.iddetalleevento > 0) {
-          if($q("#modalidad").value == 1){
+          iddetalleevento = detalleevento.iddetalleevento
+          if ($q("#modalidad").value == 1) {
             console.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
 
             let modalCotizacion = new bootstrap.Modal($q("#modal-convenio"));
@@ -474,9 +564,11 @@ $q("#btnGuardarAC").addEventListener("click", async function () {
             //$q("#btnGuardarAC").disabled = true;
             //$q("#ndocumento").focus();
           } // me quede aca
-          else if ($q("#modalidad").value == 2){
-            onsole.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
-
+          else if ($q("#modalidad").value == 2) {
+            console.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
+            console.log("iddetalleevento -> ", iddetalleevento)
+            const detallespresentacion = await obtenerDPporId(iddetalleevento)
+            console.log("detallespresentacion: ", detallespresentacion)
             let modalCotizacion = new bootstrap.Modal($q("#modal-previacotizacion"));
             modalCotizacion.show();
             //showToast("Se ha registrado correctamente la atencion", "SUCCESS", 1000);
@@ -501,6 +593,10 @@ $q("#btnGuardarAC").addEventListener("click", async function () {
       //if (unikeEmail.length > 0) { message = "El correo electronico ya existe"; }
       showToast(message, "ERROR");
     } */
+
+    if ($q("#modalidad").value == 2) {
+
+    }
   });
 
   $q("#modalidad").addEventListener("change", function (e) {
