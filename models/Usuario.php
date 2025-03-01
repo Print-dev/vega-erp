@@ -9,9 +9,10 @@ class Usuario extends ExecQuery
   public function filtrarUsuarios($params = []): array
   {
     try {
-      $sp = parent::execQ("CALL sp_obtener_usuarios(?,?,?,?,?)");
+      $sp = parent::execQ("CALL sp_obtener_usuarios(?,?,?,?,?,?)");
       $sp->execute(
         array(
+          $params['nivelacceso'],
           $params['numdoc'],
           $params['nombres'],
           $params['apellidos'],

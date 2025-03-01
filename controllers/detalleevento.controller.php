@@ -17,7 +17,8 @@ if (isset($_GET['operation'])) {
 
     case 'filtrarAtenciones':
       $cleanData = [
-        'ncotizacion' => $_GET['ncotizacion'] === "" ? null : $detalleevento->limpiarCadena($_GET['ncotizacion'])
+        'ncotizacion' => $_GET['ncotizacion'] === "" ? null : $detalleevento->limpiarCadena($_GET['ncotizacion']),
+        'ndocumento' => $_GET['ndocumento'] === "" ? null : $detalleevento->limpiarCadena($_GET['ndocumento'])
       ];
       echo json_encode($detalleevento->filtrarAtenciones($cleanData));
       break;

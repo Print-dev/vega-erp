@@ -581,7 +581,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             //$q("#btnGuardarAC").disabled = true;
             //$q("#ndocumento").focus();
           } // me quede aca
-          else if ($q("#modalidad").value == 2) {                          
+          else if ($q("#modalidad").value == 2) {
             console.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
             console.log("iddetalleevento -> ", iddetalleevento)
             const detallespresentacion = await obtenerDPporId(iddetalleevento)

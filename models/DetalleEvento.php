@@ -38,8 +38,11 @@ class DetalleEvento extends ExecQuery
   public function filtrarAtenciones($params = []): array
   {
     try {
-      $cmd = parent::execQ("CALL sp_obtener_detalles_evento (?)");
-      $cmd->execute(array($params['ncotizacion']));
+      $cmd = parent::execQ("CALL sp_obtener_detalles_evento (?,?)");
+      $cmd->execute(array(
+        $params['ncotizacion'],
+        $params['ndocumento'],        
+      ));
       return $cmd->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
       die($e->getMessage());

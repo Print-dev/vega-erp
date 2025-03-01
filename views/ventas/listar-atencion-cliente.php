@@ -3,7 +3,7 @@
     <div class="card" style="border-color: #f2f4f7; box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);
 -webkit-box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);
 -moz-box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);">
-        <div class="card-body" >
+        <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
                     <h1>Atención al cliente</h1>
@@ -13,51 +13,58 @@
                 </div>
             </div>
             <div class="row">
-                <div class="card">
-                        <div class="card-body">
+                <div class="card border-0">
+                    <div class="card-body">
                         <div class="row g-0 mb-3">
                             <div class="card border-0">
-                                <div class="card-body border-0">              
+                                <div class="card-body border-0">
                                     <div class="row">
-                                    <div class="col-md-2">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control filter" id="ncotizacion" autocomplete="off">
-                                            <label for="ncotizacion">Nº Cotizacion</label>
+                                        <div class="col-md-2">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control filter" id="ncotizacion" autocomplete="off">
+                                                <label for="ncotizacion">Nº Cotizacion</label>
+                                            </div>
                                         </div>
-                                    </div>   
-                                    </div>                             
-                                </div>              
-                                </div>
-                            </div>
-                            </div>
-                            <div class="row g-1">
-                                <div class="table-responsive">
-                                    <table class="table" id="table-atenciones">
-                                        <thead class="text-center">
-                                            <tr>
-                                            <th>#</th>
-                                            <th>N° Cotizacion</th>
-                                            <th>Artista</th>
-                                            <th>Cliente</th>
-                                            <th>Tipo evento</th>
-                                            <th>Modalidad</th>
-                                            <th>Fecha presentacion</th>                                
-                                            <th>Opciones</th>                                
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tb-body-atencion">
-                                        </tbody>
-                                    </table>
-
+                                        <div class="col-md-2">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control filter" id="ndocumento" autocomplete="off">
+                                                <label for="ndocumento">Nº Documento/RUC</label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-            
-            <!-- ./Modal Para elegir la especificacion -->
+                    <div class="row g-1">
+                        <div class="table-responsive">
+                            <table class="table" id="table-atenciones">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>N° Cotizacion</th>
+                                        <th>Artista</th>
+                                        <th>N° Documento/RUC</th>
+                                        <th>Cliente</th>
+                                        <th>Tipo evento</th>
+                                        <th>Modalidad</th>
+                                        <th>Fecha presentacion</th>
+                                        <th>Opciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tb-body-atencion">
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- ./Modal Para elegir la especificacion -->
         </div>
     </div>
+</div>
 </div>
 
 <!-- MODAL PARA COTIZAR DE MANERA CONTRATO -->
@@ -66,7 +73,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="modalPreviaCotizacion">Tarifario</h1>
-                <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn-close"></a>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <table class="table rounded">
@@ -79,14 +86,14 @@
                         </tr>
                     </thead>
                     <tbody id="tInfoCotizacion">
-                        
+
                     </tbody>
-                    
+
                 </table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="btnGenerarCotizacion">Generar Cotizacion</button>
-                <button type="button" href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn btn-primary btnGuardarContrato" id="close-mdl-cotizacion">Guardar y cerrar</button>
+                <button type="button" class="btn btn-primary btnGuardarContrato" id="close-mdl-cotizacion">Guardar y cerrar</button>
             </div>
         </div>
     </div>
@@ -145,4 +152,5 @@
 <script src="http://localhost/vega-erp/js/ventas/listar-atencion.js"></script>
 
 </body>
+
 </html>

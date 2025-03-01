@@ -174,3 +174,5 @@ INSERT INTO contratos (
 (1, 750.00, 1), -- Pendiente de pago (15% inicial)
 (2, 5000.00, 2), -- Pagado completamente
 (3, 770.00, 3); -- Caducado
+
+INSERT INTO tarifario (idusuario, idprovincia, precio) VALUES (2, 100, 3000.00),(2,100, 4000.00);

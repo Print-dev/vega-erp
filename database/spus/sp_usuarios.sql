@@ -91,6 +91,7 @@ DELIMITER $$
 
 CREATE PROCEDURE sp_obtener_usuarios
 (
+	IN _nivelacceso VARCHAR(30),
 	IN _num_doc	VARCHAR(20),
 	IN _nombres VARCHAR(100),
     IN _apellidos VARCHAR(100),
@@ -99,16 +100,19 @@ CREATE PROCEDURE sp_obtener_usuarios
 )
 BEGIN
 	SELECT
-		US.idusuario, PE.num_doc, PE.nombres, PE.apellidos, US.nom_usuario, PE.telefono
+		US.idusuario, NA.nivelacceso, PE.num_doc, PE.nombres, PE.apellidos, US.nom_usuario, PE.telefono, US.estado
 	FROM usuarios US
 	INNER JOIN personas PE ON PE.idpersona = US.idpersona
-	WHERE PE.num_doc LIKE CONCAT('%', COALESCE(_num_doc, ''), '%') 
+    INNER JOIN nivelaccesos NA ON NA.idnivelacceso = US.idnivelacceso
+	WHERE NA.nivelacceso LIKE CONCAT('%', COALESCE(_nivelacceso, ''), '%')
+	  AND PE.num_doc LIKE CONCAT('%', COALESCE(_num_doc, ''), '%') 
 	  AND PE.nombres LIKE CONCAT('%', COALESCE(_nombres, ''), '%') 
 	  AND PE.apellidos LIKE CONCAT('%', COALESCE(_apellidos, ''), '%') 
 	  AND PE.telefono LIKE CONCAT('%', COALESCE(_telefono, ''), '%') 
 	  AND US.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%');
-
 END $$
+
+-- CALL sp_obtener_usuarios('Art','','','','','');
 
 DELIMITER ;
 

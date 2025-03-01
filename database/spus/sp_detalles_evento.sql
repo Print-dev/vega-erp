@@ -54,13 +54,15 @@ END //
 drop procedure if exists sp_obtener_detalles_evento;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_detalles_evento`(
-	IN _ncotizacion CHAR(9)
+	IN _ncotizacion CHAR(9),
+    IN _ndocumento CHAR(9)
 )
 BEGIN
 	SELECT 		
-		DP.iddetalle_presentacion, DP.ncotizacion ,USU.nom_usuario, CLI.razonsocial, DP.tipo_evento, DP.modalidad, DP.fecha_presentacion
+		DP.iddetalle_presentacion, CLI.ndocumento ,DP.ncotizacion ,USU.nom_usuario, CLI.razonsocial, DP.tipo_evento, DP.modalidad, DP.fecha_presentacion
 	FROM detalles_presentacion DP
 	INNER JOIN usuarios USU ON USU.idusuario = DP.idusuario
     INNER JOIN clientes CLI ON CLI.idcliente = DP.idcliente
-    WHERE DP.ncotizacion LIKE CONCAT('%', COALESCE(_ncotizacion, ''), '%');
+    WHERE DP.ncotizacion LIKE CONCAT('%', COALESCE(_ncotizacion, ''), '%')
+		AND CLI.ndocumento LIKE CONCAT('%', COALESCE(_ndocumento, ''), '%');
 END //

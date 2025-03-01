@@ -1,12 +1,13 @@
 <?php require_once '../../header.php' ?>
 <!-- <link rel="stylesheet" href="http://localhost/SIGEMAPRE/css/usuario-register.css"> -->
 
-<h2>Registrar usuario</h2>
 <div class="row g-0 h-100 mb-3">
   <div class="col-md-12">
     <div class="card">
-      <div class="card-header card-header border-0 d-flex pt-2 pb-2">
-        <a href="<?= $host ?>views/utilitario/usuarios/listar-usuarios" class="btn btn-outline-primary btn-sm ms-auto m-0" type="button"><i class="fa-solid fa-circle-left"></i>  Regresar</a>
+      <div class="card-header border-0 d-flex justify-content-between align-items-center">
+        <h2>Registrar usuario</h2>
+
+        <a href="<?= $host ?>views/utilitario/usuarios/listar-usuarios" class="btn btn-outline-primary btn-sm ms-auto m-0" type="button"><i class="fa-solid fa-circle-left"></i> Regresar</a>
       </div>
       <div class="card-body ">
         <h5>Datos de la Persona</h5>
@@ -34,7 +35,7 @@
                 <span id="showTipoDoc" style="font-size: small; margin-left: auto; margin-right:12%"></span>
               </div>
             </div>
-           
+
             <div class="col-md-3">
               <div class="form-floating">
                 <input type="text" autocomplete="off" class="form-control" id="apellidos" minlength="3" required>
@@ -96,41 +97,41 @@
                 <input type="email" id="correo" class="form-control" autocomplete="off" placeholder="Email (Opcional)">
                 <label for="correo" class="form-label">Email (Opcional)</label>
               </div>
-            </div>                        
+            </div>
           </div>
-            <div class="row g-2 mb-5 mt-3 form-group">
+          <div class="row g-2 mb-5 mt-3 form-group">
             <div class="col-md-3">
-                <div class="form-floating">
-                <select name="nacionalidad" id="nacionalidad" class="form-select" required">    
-                    <option value="">Selecciona</option>
-                    <option value="31">Peru</option>
+              <div class="form-floating">
+                <select name="nacionalidad" id="nacionalidad" class="form-select" required">
+                  <option value="">Selecciona</option>
+                  <option value="31">Peru</option>
                 </select>
                 <label for="nacionalidad" class="form-label">Nacionalidad</label>
-                </div>
+              </div>
             </div>
             <div class="col-md-3">
-                <div class="form-floating">
-                <select name="departamento" id="departamento" class="form-select" required">    
+              <div class="form-floating">
+                <select name="departamento" id="departamento" class="form-select" required">
                 </select>
                 <label for="departamento" class="form-label">Departamento</label>
-                </div>
+              </div>
             </div>
             <div class="col-md-3">
-                <div class="form-floating">
-                <select name="provincia" id="provincia" class="form-select" required">    
+              <div class="form-floating">
+                <select name="provincia" id="provincia" class="form-select" required">
                 </select>
                 <label for="provincia" class="form-label">Provincia</label>
-                </div>
+              </div>
             </div>
             <div class="col-md-3 ">
-                <div class="form-floating">
-                <select name="distrito" id="distrito" class="form-select" required">    
+              <div class="form-floating">
+                <select name="distrito" id="distrito" class="form-select" required">
                 </select>
                 <label for="distrito" class="form-label">Distrito</label>
-                </div>
+              </div>
             </div>
-            </div>
-<hr>
+          </div>
+          <hr>
           <div class="row g-2 mb-3 mt-3 form-group">
             <h5>Datos del usuario</h5>
             <label for="nom_usuario" class="col-sm-1 form-label size-label mt-3">Nombre Usuario:</label>
@@ -141,7 +142,7 @@
           <div class="row g-2 mb-3 mt-3 form-group">
             <label for="claveacceso" class="col-sm-1 form-label size-label mt-3">Contraseña:</label>
             <div class="col-sm-5">
-              <input type="password" id="claveacceso" class="form-control" autocomplete="off" >
+              <input type="password" id="claveacceso" class="form-control" autocomplete="off">
             </div>
           </div>
           <div class="row g-2 mt-3">
@@ -150,9 +151,9 @@
               <select name="idnivelacceso" id="idnivelacceso" class="form-select filters">
                 <option value="">Selecciona</option>
               </select>
-            </div>            
+            </div>
           </div>
-          
+
           <div class="row mt-3">
             <div class="col-sm-3">
               <button type="submit" class="form-control btn btn-primary w-75" id="btnEnviar" disabled>
@@ -169,4 +170,5 @@
 <script src="http://localhost/vega-erp/js/usuarios/registrar-usuario.js"></script>
 
 </body>
+
 </html>

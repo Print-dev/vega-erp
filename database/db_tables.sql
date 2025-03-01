@@ -66,7 +66,7 @@ CREATE TABLE usuarios
     idpersona	INT NOT NULL,
     nom_usuario VARCHAR(30) NOT NULL,
     claveacceso VARBINARY(255) not null, 
-	estado 		TINYINT NOT NULL DEFAULT 1, -- 1=activo, 0=baja/inactivo/suspendido/baneado, 2=no asignado
+	estado 		TINYINT NOT NULL DEFAULT 1, -- 1=activo, 2=baja/inactivo/suspendido/baneado/inhabilitado
 	create_at	  DATETIME			  NOT NULL DEFAULT NOW(),
     update_at	  DATETIME			  NULL,
     CONSTRAINT fk_idpersona FOREIGN KEY (idpersona) REFERENCES personas(idpersona),
@@ -77,10 +77,10 @@ CREATE TABLE usuarios
 CREATE TABLE tarifario (
 	idtarifario int auto_increment primary key,
     idusuario		int not null,
-    iddepartamento	int not null,
+    idprovincia	int not null,
 	precio			decimal(7,2) not null,
     constraint fk_idartista_tar foreign key (idusuario) references usuarios (idusuario),
-    constraint fk_iddepartamento_tarifario_tar foreign key (iddepartamento) references departamentos (iddepartamento)
+    constraint fk_provincia_tarifario_art foreign key (idprovincia) references provincias (idprovincia)
 ) ENGINE = INNODB;
 
 CREATE TABLE permisos (
@@ -137,8 +137,8 @@ create table detalles_presentacion (
 create table convenios (
 	idconvenio	int auto_increment primary key,
     iddetalle_presentacion int not null,
-    abono_garantia	double null,
-    abono_publicidad double null,
+    abono_garantia	decimal(7,2) null,
+    abono_publicidad decimal(7,2) null,
 	propuesta_cliente text not null,
     estado			int null default 1, -- 1 = pendiente, 2 = aprobada, 3 = no aprobado
     created_at		datetime null default now(),
@@ -149,7 +149,7 @@ create table convenios (
 create table contratos (
 	idcontrato	int auto_increment primary key,
     iddetalle_presentacion	int not null,
-    monto_pagado		double not null,
+    monto_pagado		decimal(7,2) not null,
     estado				int not null default 1, -- 1 = pendiente de pago (pago 15%), 2- pagado, 3- caducado
     created_at			datetime	null default now(),
 	updated_at		datetime null ,
