@@ -5,6 +5,27 @@ require_once 'ExecQuery.php';
 class Usuario extends ExecQuery
 {
 
+  
+  public function filtrarUsuarios($params = []): array
+  {
+    try {
+      $sp = parent::execQ("CALL sp_obtener_usuarios(?,?,?,?,?)");
+      $sp->execute(
+        array(
+          $params['numdoc'],
+          $params['nombres'],
+          $params['apellidos'],
+          $params['telefono'],
+          $params['nomusuario'],
+        )
+        
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+  
   public function login($params = []): array
   {
     try {

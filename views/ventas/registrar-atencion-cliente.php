@@ -263,18 +263,14 @@
                         </tr>
                     </thead>
                     <tbody id="tInfoCotizacion">
-                        <tr>
-                            <td>Ica</td>
-                            <td>Chincha</td>
-                            <td>Alta</td>
-                            <td>2000</td>
-                        </tr>
+                        
                     </tbody>
+                    
                 </table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="btnGenerarCotizacion">Generar Cotizacion</button>
-                <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn btn-primary" id="close-mdl-cotizacion">Guardar y cerrar</a>
+                <button type="button" href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn btn-primary btnGuardarContrato" id="close-mdl-cotizacion">Guardar y cerrar</button>
             </div>
         </div>
     </div>

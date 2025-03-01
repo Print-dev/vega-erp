@@ -14,6 +14,13 @@ if (isset($_GET['operation'])) {
     case 'obtenerDPporId':
       echo json_encode($detalleevento->obtenerDPporId(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
       break;
+
+    case 'filtrarAtenciones':
+      $cleanData = [
+        'ncotizacion' => $_GET['ncotizacion'] === "" ? null : $detalleevento->limpiarCadena($_GET['ncotizacion'])
+      ];
+      echo json_encode($detalleevento->filtrarAtenciones($cleanData));
+      break;
   }
 }
 if (isset($_POST['operation'])) {

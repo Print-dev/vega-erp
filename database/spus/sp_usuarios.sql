@@ -85,3 +85,31 @@ BEGIN
 END $$
 
 CALL sp_obtener_usuario_por_nivel(6)
+
+DROP PROCEDURE IF EXISTS sp_obtener_usuarios;
+DELIMITER $$
+
+CREATE PROCEDURE sp_obtener_usuarios
+(
+	IN _num_doc	VARCHAR(20),
+	IN _nombres VARCHAR(100),
+    IN _apellidos VARCHAR(100),
+    IN _telefono CHAR(15),
+    IN _nom_usuario VARCHAR(30)
+)
+BEGIN
+	SELECT
+		US.idusuario, PE.num_doc, PE.nombres, PE.apellidos, US.nom_usuario, PE.telefono
+	FROM usuarios US
+	INNER JOIN personas PE ON PE.idpersona = US.idpersona
+	WHERE PE.num_doc LIKE CONCAT('%', COALESCE(_num_doc, ''), '%') 
+	  AND PE.nombres LIKE CONCAT('%', COALESCE(_nombres, ''), '%') 
+	  AND PE.apellidos LIKE CONCAT('%', COALESCE(_apellidos, ''), '%') 
+	  AND PE.telefono LIKE CONCAT('%', COALESCE(_telefono, ''), '%') 
+	  AND US.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%');
+
+END $$
+
+DELIMITER ;
+
+CALL sp_obtener_usuarios('', '', '','','')

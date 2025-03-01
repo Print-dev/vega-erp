@@ -69,6 +69,17 @@ if (isset($_GET['operation'])) {
     case 'obtenerUsuarioPorNivel':
       echo json_encode($usuario->obtenerUsuarioPorNivel(['idnivelacceso' => $_GET['idnivelacceso']]));
       break;
+
+    case 'filtrarUsuarios':
+      $cleanData = [
+        'numdoc' => $_GET['numdoc'] === "" ? null : $usuario->limpiarCadena($_GET['numdoc']),
+        'nombres' => $_GET['nombres'] === "" ? null : $usuario->limpiarCadena($_GET['nombres']),
+        'apellidos' => $_GET['apellidos'] === "" ? null : $usuario->limpiarCadena($_GET['apellidos']),
+        'telefono' => $_GET['telefono'] === "" ? null : $usuario->limpiarCadena($_GET['telefono']),
+        'nomusuario' => $_GET['nomusuario'] === "" ? null : $usuario->limpiarCadena($_GET['nomusuario']),
+      ];
+      echo json_encode($usuario->filtrarUsuarios($cleanData));
+      break;
   }
 }
 

@@ -120,8 +120,8 @@ create table detalles_presentacion (
     hora_presentacion	time not null,
     tiempo_presentacion int  not null,
     establecimiento	varchar(80) not null,
-    tipo_evento		int not null,
-    modalidad		int	not null,
+    tipo_evento		int not null, -- 1= publico, 2= privado
+    modalidad		int	not null, -- 1= convenio, 2= contrato
 	validez			int		null,
     igv				tinyint	not null,
     tipo_pago		int not null,

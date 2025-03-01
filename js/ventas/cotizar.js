@@ -231,6 +231,22 @@ document.addEventListener('DOMContentLoaded', async function () {
     return rconvenio;
   }
 
+  async function registrarContrato(iddetallepresentacion, estado) {
+
+    const contrato = new FormData();
+    contrato.append("operation", "registrarContrato");
+    contrato.append("iddetallepresentacion", iddetallepresentacion); // id artista
+    contrato.append("montopagado", $q("#montopagado").value);
+    contrato.append("estado", estado);
+
+    const fcontrato = await fetch(`${host}contrato.controller.php`, {
+      method: "POST",
+      body: contrato,
+    });
+    const rcontrato = await fcontrato.json();
+    return rcontrato;
+  }
+
   // ************************************* FUNCIONES DE VALIDACION ************************************* //
 
   function bloquearCampos(isblock) {
@@ -432,6 +448,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   });
 
+
   $q("#form-atencion-clientes").addEventListener("submit", async (e) => {
     e.preventDefault();
     isReset = true;
@@ -499,10 +516,10 @@ document.addEventListener('DOMContentLoaded', async function () {
               detallespresentacion.forEach(dp => {
                 $q("#tInfoCotizacion").innerHTML = `
                   <tr>
-                    <td>${dp.iddetalle_presentacion}</td>
                     <td>${dp.departamento}</td>
                     <td>${dp.provincia}</td>
-                    <td>${dp.distrito}</td> // ME QUEDE ACA
+                    <td>Alta</td>
+                    <td>2000</td>
                   </tr>
                   `
               });
@@ -564,11 +581,21 @@ document.addEventListener('DOMContentLoaded', async function () {
             //$q("#btnGuardarAC").disabled = true;
             //$q("#ndocumento").focus();
           } // me quede aca
-          else if ($q("#modalidad").value == 2) {
+          else if ($q("#modalidad").value == 2) {                          
             console.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
             console.log("iddetalleevento -> ", iddetalleevento)
             const detallespresentacion = await obtenerDPporId(iddetalleevento)
             console.log("detallespresentacion: ", detallespresentacion)
+            detallespresentacion.forEach(dp => {
+              $q("#tInfoCotizacion").innerHTML = `
+                <tr>
+                  <td>${dp.departamento}</td>
+                  <td>${dp.provincia}</td>
+                  <td>Media</td>
+                  <td>2500</td>
+                </tr>
+                `
+            });
             let modalCotizacion = new bootstrap.Modal($q("#modal-previacotizacion"));
             modalCotizacion.show();
             //showToast("Se ha registrado correctamente la atencion", "SUCCESS", 1000);
