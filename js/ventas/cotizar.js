@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', async function () {
   let idcliente = -1
   let ncotizacion = ''
   let iddetalleevento = -1
+  let idprovincia = -1
+  let idartista = -1
 
   function $q(object = null) {
     return document.querySelector(object);
@@ -106,7 +108,25 @@ document.addEventListener('DOMContentLoaded', async function () {
     console.log(fpersona);
     return fpersona
   }
-
+  
+  async function obtenerTarifaArtistaPorProvincia(idprovincia) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerTarifaArtistaPorProvincia");
+    params.append("idprovincia", idprovincia);
+    const fpersona = await getDatos(`${host}tarifa.controller.php`, params)
+    console.log(fpersona);
+    return fpersona
+  }
+  
+  /* async function obtenerCotizacion(iddetallepresentacion) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerCotizacion");
+    params.append("iddetallepresentacion", iddetallepresentacion);
+    const fpersona = await getDatos(`${host}detalleevento.controller.php`, params)
+    console.log(fpersona);
+    return fpersona
+  }
+ */
   // ****************************** LLENAR COMBOS ****************************** //
 
   // ELEGIR NACIONALIDAD DE CLIENTE
@@ -469,7 +489,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     if (await ask("¿Estas seguro de registrar?")) {
 
-      if (idcliente == -1) {
+      if (idcliente == -1) {}
+      //convenio
         const data = await registrarCliente();
         console.log(data);
         //alert("registrando persona")
@@ -513,6 +534,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             else if ($q("#modalidad").value == 2) {
               const detallespresentacion = await obtenerDPporId(iddetalleevento)
               console.log("detallespresentacion: ", detallespresentacion)
+              idprovincia = detallespresentacion[0].idprovincia
+              idartista =  $q("#artista").value
               detallespresentacion.forEach(dp => {
                 $q("#tInfoCotizacion").innerHTML = `
                   <tr>
@@ -544,6 +567,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
       }
       else {
+        // CONTRATO
         //alert(`REGISTRANDO CON UN CLIENTE YA EXISTENE ${idcliente}`)
         //GENERAR NUMERO RANDOM ALEATORIO DE 9 DIGITOS
         let year = new Date().getFullYear(); // Obtiene el año actual dinámicamente
@@ -586,6 +610,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             console.log("iddetalleevento -> ", iddetalleevento)
             const detallespresentacion = await obtenerDPporId(iddetalleevento)
             console.log("detallespresentacion: ", detallespresentacion)
+            idprovincia = detallespresentacion[0].idprovincia
+            idartista =  $q("#artista").value
             detallespresentacion.forEach(dp => {
               $q("#tInfoCotizacion").innerHTML = `
                 <tr>
@@ -610,7 +636,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           showToast("Hubo un error al registrar la atencion", "ERROR");
         }
       }
-    }
+    
     /* } else {
       let message = "";
       //if (!validateFields) { message = "Completa los campos"; }
@@ -628,12 +654,20 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   $q("#modalidad").addEventListener("change", function (e) {
     const modalidad = parseInt(e.target.value);
-    console.log(modalidad);
+    console.log(modalidad);3
     if (modalidad === 1) {
       $q("#container-validez").hidden = true
     } else {
       $q("#container-validez").hidden = false
     }
+  })
+
+  $q("#btnGenerarCotizacion").addEventListener("click", async (e) => {
+    //const tarifaArtista = await obtenerTarifasPorProvincia()
+//    const cotizacion = await obtenerCotizacion(iddetalleevento)
+    console.log("clickeando")
+    window.open(`http://localhost/vega-erp/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idartista=${idartista}`)
+    return
   })
 
   // ************************************* FUNCIONES AUTOMATICAS ************************************* //

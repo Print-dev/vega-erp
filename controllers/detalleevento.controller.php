@@ -15,6 +15,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($detalleevento->obtenerDPporId(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
       break;
 
+    case 'obtenerCotizacion':
+      echo json_encode($detalleevento->obtenerCotizacion(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
+      break;
+
     case 'filtrarAtenciones':
       $cleanData = [
         'ncotizacion' => $_GET['ncotizacion'] === "" ? null : $detalleevento->limpiarCadena($_GET['ncotizacion']),

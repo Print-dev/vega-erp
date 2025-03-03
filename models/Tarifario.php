@@ -19,6 +19,23 @@ class Tarifario extends ExecQuery
       die($e->getMessage());
     }
   }
+
+  public function obtenerTarifaArtistaPorProvincia($params = []): array
+  {
+    try {
+      $sp = parent::execQ("CALL sp_search_tarifa_artista_por_provincia(?,?) ");
+      $sp->execute(
+        array(    
+          $params['idprovincia'],
+          $params['idusuario'],
+        )
+        
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
   
   public function filtrarTarifas($params = []): array
   {

@@ -17,6 +17,24 @@ BEGIN
     WHERE PR.iddepartamento = _iddepartamento;
 END $$
 
+DROP PROCEDURE IF EXISTS sp_search_tarifa_artista_por_provincia;
+DELIMITER $$
+CREATE PROCEDURE sp_search_tarifa_artista_por_provincia
+(
+	IN _idprovincia INT,
+    IN _idusuario INT
+)
+BEGIN
+	SELECT 
+	T.idtarifario, T.precio, PR.idprovincia, D.iddepartamento
+    FROM usuarios USU
+    LEFT JOIN tarifario T ON T.idusuario = USU.idusuario
+    LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
+    LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
+    WHERE PR.idprovincia = _idprovincia AND USU.idusuario = _idusuario;
+END $$
+
+-- CALL sp_search_tarifa_artista_por_provincia (100, 2)
 
 DROP PROCEDURE IF EXISTS sp_search_tarifa_artista;
 DELIMITER $$

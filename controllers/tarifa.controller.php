@@ -23,6 +23,14 @@ if(isset($_GET['operation'])){
         ];
         echo json_encode($tarifa->obtenerTarifasPorProvincia($cleanData));
         break;
+        
+    case 'obtenerTarifaArtistaPorProvincia':
+        $cleanData = [
+          'idprovincia' => $tarifa->limpiarCadena($_GET['idprovincia']),
+          'idusuario' => $tarifa->limpiarCadena($_GET['idusuario']),
+        ];
+        echo json_encode($tarifa->obtenerTarifaArtistaPorProvincia($cleanData));
+        break;
     
   }
 }
