@@ -267,7 +267,7 @@ $host = "http://localhost/vega-erp/";
           <!-- Navbar links (PERFIL USUARIO) -->
           <ul class="navbar-nav align-items-center">
             <!-- LOGO NOTIFICACION -->
-            <li class="nav-item dropdown me-6">
+            <li class="nav-item dropdown">
               <a
                 class="nav-link text-dark notification-bell unread dropdown-toggle"
                 href="#"

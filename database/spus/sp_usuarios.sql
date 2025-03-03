@@ -115,5 +115,3 @@ END $$
 -- CALL sp_obtener_usuarios('Art','','','','','');
 
 DELIMITER ;
-
-CALL sp_obtener_usuarios('', '', '','','')
