@@ -39,4 +39,15 @@ class Cliente extends ExecQuery
       die($e->getMessage());
     }
   }
+
+  public function verificarDatosIncompletosCliente($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("SELECT * FROM clientes WHERE idcliente = ?");
+      $cmd->execute(array($params['idcliente']));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
 }

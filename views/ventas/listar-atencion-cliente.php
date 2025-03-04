@@ -99,6 +99,96 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal-datosclienteincompletos" tabindex="-1" aria-labelledby="modalDatosClienteIncompletos" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalDatosClienteIncompletos">Previa Contrato</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table rounded">
+                    <tbody id="tDatosClienteIncompleto">
+                        <span class="text-danger">Antes de generar contrato llena los datos del cliente</span>
+                        <div class="row g-2 mt-2">
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <select name="nacionalidad" id="nacionalidad" class="form-select" required">
+                                        <option value="">Selecciona</option>
+                                        <option value="31">Peru</option>
+                                    </select>
+                                    <label for="nacionalidad" class="form-label">Nacionalidad</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <select name="departamento" id="departamento" class="form-select" required">
+                                    </select>
+                                    <label for="departamento" class="form-label">Departamento</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <select name="provincia" id="provincia" class="form-select" required">
+                                    </select>
+                                    <label for="provincia" class="form-label">Provincia</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 ">
+                                <div class="form-floating">
+                                    <select name="distrito" id="distrito" class="form-select" required">
+                                    </select>
+                                    <label for="distrito" class="form-label">Distrito</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="text" id="razonsocial" name="razonsocial"
+                                        class="form-control">
+                                    <label for="razonsocial" class="form-label">Razon social/Nombre</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4" id="container-representantelegal" hidden>
+                                <div class="form-floating">
+                                    <input type="text" id="representantelegal" name="representantelegal"
+                                        class="form-control">
+                                    <label for="representantelegal" class="form-label">Representante legal</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <input type="number" id="telefono" name="telefono" maxlength="9"
+                                        class="form-control">
+                                    <label for="telefono" class="form-label">Telefono</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="text" id="correo" name="correo"
+                                        class="form-control">
+                                    <label for="correo" class="form-label">Correo</label>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-floating">
+                                    <input type="text" id="direccion" name="direccion"
+                                        class="form-control">
+                                    <label for="direccion" class="form-label">Direccion</label>
+                                </div>
+                            </div>
+                        </div>
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnActualizarDatosCliente">Actualizar Datos</button>
+                <button type="button" class="btn btn-primary btnGuardarContrato" id="close-mdl-datoscliente">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- MODAL PARA CONTRATO CONVENIO -->
 <div class="modal fade" id="modal-convenio" tabindex="-1" aria-labelledby="modalContratoConvenio" aria-hidden="true" data-bs-backdrop="static">
@@ -145,6 +235,41 @@
     </div>
 </div>
 
+
+<!-- MODAL PARA CONTRATO CONVENIO -->
+<div class="modal fade" id="modal-contrato" tabindex="-1" aria-labelledby="modalContrato" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalContrato">Pagar Contrato de Presentación</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="row g-2 d-flex justify-content-center" >
+                            <div class="col-md-6 ">
+                                <div class="form-floating ">
+                                    <input type="number" id="montopagado" name="montopagado"
+                                        class="form-control ">
+                                    <label for="montopagado" class="form-label">Monto</label>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnGenerarContrato">Guardar</button>
+                <button type="button" class="btn btn-secondary" id="btnGenerarContrato">Generar Reserva</button>
+                <button type="button" class="btn btn-primary" id="close-mdl-convenio">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <?php require_once '../footer.php' ?>
 

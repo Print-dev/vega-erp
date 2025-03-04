@@ -26,7 +26,7 @@ class Contrato extends ExecQuery
       return -1;
     }
   }
-/* 
+  /* 
   public function obtenerUsuarioPorId($params = []): array
   {
     try {
@@ -41,6 +41,34 @@ class Contrato extends ExecQuery
     }
   }
  */
+
+  public function obtenerContrato($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL obtenerContrato(?)");
+      $cmd->execute(
+        array($params['idcontrato'])
+      );
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return [];
+    }
+  }
+
+  public function obtenerContratoPorDP($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("SELECT * FROM contratos WHERE iddetalle_presentacion = ?");
+      $cmd->execute(
+        array($params['iddetallepresentacion'])
+      );
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return [];
+    }
+  }
 
   public function actualizarEstadoContrato($params = []): bool
   {
@@ -59,5 +87,4 @@ class Contrato extends ExecQuery
       return false;
     }
   }
-
 }

@@ -22,7 +22,7 @@ $convenio = new Convenio();
 
 
 //PROCESAR LLEGADA DE DATOS
-$idconvenio = isset($_GET['idconvenio']) && $_GET['idconvenio'] !== "" ? $detalleevento->limpiarCadena($_GET['idconvenio']) : null;
+$idconvenio = isset($_GET['idconvenio']) && $_GET['idconvenio'] !== "" ? $convenio->limpiarCadena($_GET['idconvenio']) : null;
 /* $iddetallepresentacion = isset($_GET['iddetallepresentacion']) && $_GET['iddetallepresentacion'] !== "" ? $detalleevento->limpiarCadena($_GET['iddetallepresentacion']) : null;
 $idprovincia = isset($_GET['idprovincia']) && $_GET['idprovincia'] !== "" ? $detalleevento->limpiarCadena($_GET['idprovincia']) : null;
 $idusuario = isset($_GET['idusuario']) && $_GET['idusuario'] !== "" ? $detalleevento->limpiarCadena($_GET['idusuario']) : null;
@@ -35,7 +35,7 @@ $convenioContrato = $convenio->obtenerContratoConvenio(['idconvenio' => $idconve
 $tarifaArtista = $tarifario->obtenerTarifaArtistaPorProvincia(['idprovincia' => $idprovincia, 'idusuario' => $idusuario]);
 $igv = ($tarifaArtista[0]['precio'] + $precio) * 0.18; */
 
-//die(var_dump($cotizacion[0]['igv']));
+//die(var_dump($convenioContrato[0]));
 
 require_once __DIR__ . '/../../estructura_pdf/contrato_convenio/contenido.php';
 $html = ob_get_clean();

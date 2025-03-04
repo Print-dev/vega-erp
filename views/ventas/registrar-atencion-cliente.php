@@ -137,7 +137,7 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-floating">
-                                    <input type="time" id="tiempopresentacion" name="tiempopresentacion"
+                                    <input type="number" id="tiempopresentacion" name="tiempopresentacion"
                                         class="form-control">
                                     <label for="tiempopresentacion" class="form-label">Tiempo de presentacion</label>
                                 </div>

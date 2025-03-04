@@ -6,22 +6,17 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Mét
 header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Encabezados permitidos
 $contrato = new Contrato();
 // ag order by
-/* if (isset($_GET['operation'])) {
+if (isset($_GET['operation'])) {
   switch ($_GET['operation']) {
-    case 'obtenerPersonaPorId':
-      echo json_encode($convenio->obtenerPersonaPorId(['idpersona' => $_GET['idpersona']]));
+    case 'obtenerContrato':
+      echo json_encode($contrato->obtenerContrato(['idcontrato' => $_GET['idcontrato']]));
       break;
-      case 'searchPersonaNumDoc':
-      echo json_encode($persona->searchPersonaNumDoc(['numdoc'=>$_GET['numdoc']]));
-      break;
-    case 'searchTelefono':
-      echo json_encode($persona->searchTelf(['telefono'=>$_GET['telefono']]));
-      break;
-    case 'searchEmail':
-      echo json_encode($persona->searchEmail(['email'=>$_GET['email']]));
+
+    case 'obtenerContratoPorDP':
+      echo json_encode($contrato->obtenerContratoPorDP(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
       break;
   }
-} */
+}
 if (isset($_POST['operation'])) {
   switch ($_POST['operation']) {
     case 'registrarContrato':
@@ -44,19 +39,18 @@ if (isset($_POST['operation'])) {
 
     case 'actualizarEstadoContrato':
       $cleanData = [
-        'idcontrato'=>$contrato->limpiarCadena($_POST['idcontrato']),
-        'estado'=>$contrato->limpiarCadena($_POST['estado'])
+        'idcontrato' => $contrato->limpiarCadena($_POST['idcontrato']),
+        'estado' => $contrato->limpiarCadena($_POST['estado'])
       ];
 
-      $respuesta=['update'=>false];
+      $respuesta = ['update' => false];
 
       $update = $contrato->actualizarEstadoContrato($cleanData);
 
-      if($update){
-        $respuesta['update']=true;
+      if ($update) {
+        $respuesta['update'] = true;
       }
       echo json_encode($respuesta);
       break;
-  
   }
 }

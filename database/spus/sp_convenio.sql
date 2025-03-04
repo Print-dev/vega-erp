@@ -9,7 +9,7 @@ CREATE PROCEDURE `obtenerContratoConvenio`(
 BEGIN
 	SELECT 		
 		C.idconvenio, 
-        CLI.razonsocial, CLI.ndocumento, CLI.direccion, 
+        CLI.razonsocial, CLI.ndocumento, CLI.direccion, CLI.representantelegal,
         DISCLI.distrito, PROCLI.provincia, DECLI.departamento, 
         USU.nom_usuario,
         DP.fecha_presentacion,

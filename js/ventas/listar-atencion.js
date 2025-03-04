@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let idprovincia = -1
   let provincia = ''
   let idartista = -1
+  let idcliente = -1
 
   function $q(object = null) {
     return document.querySelector(object);
@@ -29,6 +30,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     const data = await getDatos(`${host}detalleevento.controller.php`, params);
     return data
   }
+
+  async function verificarDatosIncompletosCliente(idcliente) {
+    const params = new URLSearchParams();
+    params.append("operation", 'verificarDatosIncompletosCliente');
+    params.append("idcliente", idcliente);
+    const data = await getDatos(`${host}cliente.controller.php`, params);
+    return data
+  }
+
+  async function obtenerContratoPorDP(iddetallepresentacion) {
+    const params = new URLSearchParams();
+    params.append("operation", 'obtenerContratoPorDP');
+    params.append("iddetallepresentacion", iddetallepresentacion);
+    const data = await getDatos(`${host}contrato.controller.php`, params);
+    return data
+  }
+
+  // ******************************************** REGISTRAR DATOS ************************************************
+
+  async function registrarContrato(iddetallepresentacion, estado) {
+
+    const convenio = new FormData();
+    convenio.append("operation", "registrarContrato");
+    convenio.append("iddetallepresentacion", iddetallepresentacion); // id artista
+    convenio.append("montopagado", $q("#montopagado").value);
+    convenio.append("estado", estado);
+
+    const fconvenio = await fetch(`${host}convenio.controller.php`, {
+      method: "POST",
+      body: convenio,
+    });
+    const rconvenio = await fconvenio.json();
+    return rconvenio;
+  }
+
 
 
   function createTable(data) {
@@ -206,6 +242,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (e.target.classList.contains("btn-cotizar")) {
           await buttonCotizar(e);
         }
+        if (e.target.classList.contains("btn-contrato")) {
+          await buttonContrato(e);
+        }
         /* if(e.target.classList.contains("show-espec")){//abre el sidebar
           await btnSBUpdateActivo(e);
         }
@@ -233,6 +272,76 @@ document.addEventListener("DOMContentLoaded", async () => {
     const modalImg = new bootstrap.Modal($q("#modal-previacotizacion"));
     modalImg.show();
 
+  }
+
+  async function buttonContrato(e) {
+    iddp = e.target.getAttribute("data-id");
+    const dp = await obtenerDPporId(iddp)
+    idprovincia = dp[0].idprovincia
+    idartista = dp[0].idusuario
+    idcliente = dp[0].idcliente
+    console.log(dp);
+    const cliente = await verificarDatosIncompletosCliente(dp[0].idcliente)
+    const contratoExiste = await obtenerContratoPorDP(iddp)
+
+    console.log(contratoExiste);
+
+    console.log(cliente);
+    if (
+      cliente[0].ndocumento.length === 11 && // Un RUC tiene 11 dígitos
+      cliente[0].ndocumento.startsWith("1") // Verifica si empieza con "1"
+    ) {
+      // Es un RUC de persona natural
+      console.log("es ruc persona natural");
+      if (!cliente[0].correo || !cliente[0].direccion || !cliente[0].ndocumento || !cliente[0].razonsocial || !cliente[0].telefono) {
+        console.log("su legal esta null")
+        const modalDatos = new bootstrap.Modal($q("#modal-datosclienteincompletos"));
+        modalDatos.show();
+        await renderizarDatosClienteIncompleto(cliente[0])
+
+      }
+
+    } else if (
+      cliente[0].ndocumento.length === 11 &&
+      cliente[0].ndocumento.startsWith("2") // Verifica si empieza con "2"
+    ) {
+      // Es un RUC de empresa (persona jurídica)
+      console.log("es ruc empresa");
+      if (!cliente[0].correo || !cliente[0].direccion || !cliente[0].ndocumento || !cliente[0].razonsocial || !cliente[0].representantelegal || !cliente[0].telefono) {
+        console.log("su legal esta null")
+
+        if (contratoExiste.length > 0) {
+          const modalDatos = new bootstrap.Modal($q("#modal-datosclienteincompletos"));
+          modalDatos.show();
+          await renderizarDatosClienteIncompleto(cliente[0])
+        } else {
+          const modalDatos = new bootstrap.Modal($q("#modal-contrato"));
+          modalDatos.show();
+        }
+
+      }
+    } else if (
+      cliente[0].ndocumento.length === 8 // Un DNI tiene 8 dígitos
+    ) {
+      // Es un DNI (persona natural)
+      console.log("es dni persona natural");
+      if (!cliente[0].correo || !cliente[0].direccion || !cliente[0].ndocumento || !cliente[0].razonsocial || !cliente[0].telefono) {
+        console.log("su legal esta null")
+        const modalDatos = new bootstrap.Modal($q("#modal-datosclienteincompletos"));
+        modalDatos.show();
+      }
+    }
+
+    if (contratoExiste.length > 0) {
+      //http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=1&idprovincia=100&idusuario=2&precio=2500
+      window.open(`http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0].idcontrato}&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`)
+      //window.open(`http://localhost/vega-erp/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${2500}`)
+      return
+    }
+
+    /* const modalImg = new bootstrap.Modal($q("#modal-previacotizacion"));
+    modalImg.show(); */
+    //alert("CONSULTANDOCONTRATO")
 
   }
 
@@ -243,9 +352,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log(dp);
     //alert("asdasdd")
     idprovincia = dp[0].idprovincia
-            idartista =  dp[0].idusuario
-            provincia = dp[0].provincia
-            iddetalleevento = dp[0].iddetalle_presentacion
+    idartista = dp[0].idusuario
+    provincia = dp[0].provincia
+    iddetalleevento = dp[0].iddetalle_presentacion
 
     $q("#tInfoCotizacion").innerHTML = ''
     dp.forEach(detdp => {
@@ -260,11 +369,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  async function renderizarDatosClienteIncompleto(cliente) { // renderiza los datos completos e incompletos a los campos del modal
+    $q("#razonsocial").value = cliente.razonsocial
+    $q("#representantelegal").value = cliente.representantelegal
+    $q("#telefono").value = cliente.telefono
+    $q("#correo").value = cliente.correo
+    $q("#direccion").value = cliente.direccion
+  }
+
   //  ******************************************* EVENTOS *******************************************************
 
   $q("#btnGenerarCotizacion").addEventListener("click", async (e) => {
     //const tarifaArtista = await obtenerTarifasPorProvincia()
-//    const cotizacion = await obtenerCotizacion(iddetalleevento)
+    //    const cotizacion = await obtenerCotizacion(iddetalleevento)
     console.log("clickeando")
     window.open(`http://localhost/vega-erp/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${2500}`)
     return

@@ -12,6 +12,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($cliente->obtenerClientePorDoc(['ndocumento' => $_GET['ndocumento']]));
       break;
 
+    case 'verificarDatosIncompletosCliente':
+      echo json_encode($cliente->verificarDatosIncompletosCliente(['idcliente' => $_GET['idcliente']]));
+      break;
+
     case 'consultarRUC':
       $numero = $_GET['ndocumento'] ?? '';
 
