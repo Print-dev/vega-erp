@@ -30,7 +30,7 @@
         width: 100%;
         border-collapse: collapse;
         font-size: 11px;
-        margin-top: 160px;
+        margin-top: 150px;
     }
 
     .header-left {
@@ -38,6 +38,7 @@
         text-align: left;
         vertical-align: top;
         padding-left: 230px;
+        font-size: 12px;
         /* Ajusta el margen izquierdo */
     }
 
@@ -233,7 +234,7 @@
     </table>
     <table class="datos-cliente">
         <tr style="background-color: #FFC000;">
-            <td colspan="4" style="text-align: center; font-size: 14px;"><strong>DATOS DE CLIENTE</strong></td>
+            <td colspan="4" style="text-align: center; font-size: 12px;"><strong>DATOS DE CLIENTE</strong></td>
         </tr>
         <tr>
             <td class="label">Nombres / Razón Social</td>
@@ -266,7 +267,7 @@
     </table>
     <table class="datos-presentacion">
         <tr style="background-color: #FFC000;">
-            <td colspan="4" style="text-align: center; font-size: 14px;"><strong>DATOS DE PRESENTACION</strong></td>
+            <td colspan="4" style="text-align: center; font-size: 12px;"><strong>DATOS DE PRESENTACION</strong></td>
         </tr>
         <tr>
             <td class="label">Artista</td>
@@ -293,7 +294,7 @@
     </table>
     <table class="datos-cotizacion">
         <tr style="background-color: #FFC000;">
-            <td colspan="5" style="text-align: center; font-size: 14px;"><strong>COTIZACION</strong></td>
+            <td colspan="5" style="text-align: center; font-size: 12px;"><strong>COTIZACION</strong></td>
         </tr>
         <tr>
             <td class="label">Ítem</td>
@@ -354,7 +355,7 @@
     </table>
     <table class="datos-pagos">
         <tr style="background-color: #FFC000;">
-            <td colspan="5" style="text-align: center; font-size: 14px;"><strong>MEDIOS DE PAGO</strong></td>
+            <td colspan="5" style="text-align: center; font-size: 12px;"><strong>MEDIOS DE PAGO</strong></td>
         </tr>
         <tr>
             <td class="label">Banco</td>
@@ -371,7 +372,7 @@
     </table>
     <table class="datos-terminos-condiciones">
         <tr>
-            <td colspan="5" style="text-align: start; font-size: 14px; text-decoration: underline; border: none;"><strong>TERMINOS Y CONDICIONES</strong></td>
+            <td colspan="5" style="text-align: start; font-size: 12px; text-decoration: underline; border: none;"><strong>TERMINOS Y CONDICIONES</strong></td>
         </tr>
         <tr>
             <td class="label" colspan="5" style="border: none;">
