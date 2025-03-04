@@ -176,7 +176,7 @@
         /* Centrar y dar espacio debajo del header */
         border-collapse: collapse;
         font-size: 11px;
-        margin-top: 60px;
+        margin-top: 30px;
 
     }
 
@@ -306,25 +306,49 @@
             <td>1</td>
             <td>Presentacion artistica</td>
             <td></td>
-            <td><?php echo $tarifaArtista[0]['precio'] ?></td>
-            <td><?php echo $tarifaArtista[0]['precio'] ?></td>
+            <td><?php if(isset($tarifaArtista[0]['precio'])){
+                echo $tarifaArtista[0]['precio'];
+            } else {
+                echo 'Sin tarifa en esta provincia';
+            } ?></td>
+            <td><?php if(isset($tarifaArtista[0]['precio'])){
+                echo $tarifaArtista[0]['precio'];
+            } else {
+                echo 'Sin tarifa en esta provincia';
+            } ?></td>
         </tr>
         <tr>
             <td>2</td>
+            <td>Puesto en la locacion <?php echo $provincia; ?></td>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td><?php echo $precio; ?></td>
+            <td><?php echo $precio; ?></td>
         </tr>
         <tr>
             <td colspan="3" style="text-align: right; border: none;">(Opcional)</td>
             <td><strong>IGV (18%)</strong></td>
-            <td></td>
+            <td><?php if ($cotizacion[0]['igv'] == 0) {
+                echo 'no incluye';
+            }else if ($cotizacion[0]['igv'] == 1) { 
+                echo $igv;
+            } ?></td>
         </tr>
         <tr>
             <td colspan="3" style="text-align: right; border: none;"></td>
             <td><strong>TOTAL</strong></td>
-            <td></td>
+            <td><?php if ($cotizacion[0]['igv'] == 0){
+                if (isset($tarifaArtista[0]['precio'])){
+                    echo $tarifaArtista[0]['precio'] + $precio;
+                } else{
+                    echo $precio;
+                }
+            } else if ($cotizacion[0]['igv'] == 1) {
+                if (isset($tarifaArtista[0]['precio'])){
+                    echo ($tarifaArtista[0]['precio'] + $precio) + $igv;
+                }else{
+                    echo $precio + $igv;
+                }
+            } ?></td>
         </tr>
 
     </table>

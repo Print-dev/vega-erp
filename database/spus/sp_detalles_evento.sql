@@ -43,8 +43,9 @@ CREATE PROCEDURE `sp_obtener_dp_porid`(
 )
 BEGIN
 	SELECT 		
-		DP.iddetalle_presentacion, DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia
+		DP.iddetalle_presentacion, DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario
 	FROM detalles_presentacion DP
+    LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
 	LEFT JOIN distritos DIS ON DIS.iddistrito = DP.iddistrito
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
     LEFT JOIN departamentos DE ON DE.iddepartamento = PRO.iddepartamento

@@ -2,6 +2,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const host = "http://localhost/vega-erp/controllers/";
   let myTable = null;
+  let idprovincia = -1
+  let provincia = ''
+  let idartista = -1
 
   function $q(object = null) {
     return document.querySelector(object);
@@ -229,14 +232,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     await renderizarUbigeoPresentacion(idcotizar)
     const modalImg = new bootstrap.Modal($q("#modal-previacotizacion"));
     modalImg.show();
+
+
   }
 
   // ******************************************* VINCULANDO DATOS A MODALES ********************************
 
   async function renderizarUbigeoPresentacion(iddp) {
     const dp = await obtenerDPporId(iddp)
-    //console.log(data);
+    console.log(dp);
     //alert("asdasdd")
+    idprovincia = dp[0].idprovincia
+            idartista =  dp[0].idusuario
+            provincia = dp[0].provincia
+            iddetalleevento = dp[0].iddetalle_presentacion
+
     $q("#tInfoCotizacion").innerHTML = ''
     dp.forEach(detdp => {
       $q("#tInfoCotizacion").innerHTML = `
@@ -249,6 +259,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       `
     });
   }
+
+  //  ******************************************* EVENTOS *******************************************************
+
+  $q("#btnGenerarCotizacion").addEventListener("click", async (e) => {
+    //const tarifaArtista = await obtenerTarifasPorProvincia()
+//    const cotizacion = await obtenerCotizacion(iddetalleevento)
+    console.log("clickeando")
+    window.open(`http://localhost/vega-erp/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${2500}`)
+    return
+  })
 
 })
 

@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   let iddetalleevento = -1
   let idprovincia = -1
   let idartista = -1
+  let provincia = ''
 
   function $q(object = null) {
     return document.querySelector(object);
@@ -536,6 +537,7 @@ document.addEventListener('DOMContentLoaded', async function () {
               console.log("detallespresentacion: ", detallespresentacion)
               idprovincia = detallespresentacion[0].idprovincia
               idartista =  $q("#artista").value
+              provincia = detallespresentacion[0].provincia
               detallespresentacion.forEach(dp => {
                 $q("#tInfoCotizacion").innerHTML = `
                   <tr>
@@ -612,6 +614,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             console.log("detallespresentacion: ", detallespresentacion)
             idprovincia = detallespresentacion[0].idprovincia
             idartista =  $q("#artista").value
+            provincia = detallespresentacion[0].provincia
             detallespresentacion.forEach(dp => {
               $q("#tInfoCotizacion").innerHTML = `
                 <tr>
@@ -666,7 +669,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     //const tarifaArtista = await obtenerTarifasPorProvincia()
 //    const cotizacion = await obtenerCotizacion(iddetalleevento)
     console.log("clickeando")
-    window.open(`http://localhost/vega-erp/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idartista=${idartista}`)
+    window.open(`http://localhost/vega-erp/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${2500}`)
     return
   })
 
