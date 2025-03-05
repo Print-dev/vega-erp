@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     console.log(fpersona);
     return fpersona
   }
-  
+
   async function obtenerTarifaArtistaPorProvincia(idprovincia) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerTarifaArtistaPorProvincia");
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     console.log(fpersona);
     return fpersona
   }
-  
+
   /* async function obtenerCotizacion(iddetallepresentacion) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerCotizacion");
@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     detalle.append("tipoevento", $q("#tipoevento").value);
     detalle.append("modalidad", $q("#modalidad").value);
     detalle.append("validez", $q("#validez").value ? $q("#validez").value : '');
-    detalle.append("igv", $q("#igv").value);
+    detalle.append("igv", $q("#igv").checked ? 1 : 0);
     detalle.append("tipopago", $q("#tipopago").value);
 
     const fdetalle = await fetch(`${host}detalleevento.controller.php`, {
@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     return rconvenio;
   }
 
-  async function registrarContrato(iddetallepresentacion, estado) {
+  /* async function registrarContrato(iddetallepresentacion, estado) {
 
     const contrato = new FormData();
     contrato.append("operation", "registrarContrato");
@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
     const rcontrato = await fcontrato.json();
     return rcontrato;
-  }
+  } */
 
   // ************************************* FUNCIONES DE VALIDACION ************************************* //
 
@@ -293,6 +293,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     $q("#provincia2").disabled = isblock;
     $q("#distrito2").disabled = isblock;
     $q("#igv").disabled = isblock;
+    $q("#btnGuardarAC").disabled = isblock;
+    $q("#btnLimpiarAC").disabled = isblock;
     //selector("externo").disabled = isblock
   }
 
@@ -369,15 +371,15 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   async function validateNumDoc() {
     //Validaciones del num doc, guarda en una variable si es valido o no (boolean)
-    const isNumeric = /^[0-9]+$/.test($q("#ndocumento").value);
-    const minLength = ($q("#ndocumento").value.length >= 8);
-    console.log($q("#ndocumento").value.length)
-    const validaNumDoc = $q("#ndocumento").value.length === 8 || $q("#ndocumento").value.length === 11 ? true : false;
-    const isRUC = $q("#ndocumento").value.length === 11
-    const isDNI = $q("#ndocumento").value.length === 8
+    const isNumeric = /^[0-9]+$/.test($q("#ndocumento").value.trim());
+    const minLength = ($q("#ndocumento").value.trim().length >= 8);
+    console.log($q("#ndocumento").value.trim().length)
+    const validaNumDoc = $q("#ndocumento").value.trim().length === 8 || $q("#ndocumento").value.trim().length === 11 ? true : false;
+    const isRUC = $q("#ndocumento").value.trim().length === 11
+    const isDNI = $q("#ndocumento").value.trim().length === 8
 
     if ($q("#ndocumento").value !== "" && isNumeric && minLength && validaNumDoc) {
-      const data = await obtenerClientePorDoc($q("#ndocumento").value.trim());
+      const data = await obtenerClientePorDoc($q("#ndocumento").value);
       const isblock = (data.length > 0); // confirma si la persona ya existe y bloquea los campos 
       bloquearCampos(isblock);
 
@@ -490,8 +492,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     if (await ask("¿Estas seguro de registrar?")) {
 
-      if (idcliente == -1) {}
-      //convenio
+      if (idcliente == -1) {
+        //convenio
         const data = await registrarCliente();
         console.log(data);
         //alert("registrando persona")
@@ -536,7 +538,7 @@ document.addEventListener('DOMContentLoaded', async function () {
               const detallespresentacion = await obtenerDPporId(iddetalleevento)
               console.log("detallespresentacion: ", detallespresentacion)
               idprovincia = detallespresentacion[0].idprovincia
-              idartista =  $q("#artista").value
+              idartista = $q("#artista").value
               provincia = detallespresentacion[0].provincia
               detallespresentacion.forEach(dp => {
                 $q("#tInfoCotizacion").innerHTML = `
@@ -613,7 +615,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             const detallespresentacion = await obtenerDPporId(iddetalleevento)
             console.log("detallespresentacion: ", detallespresentacion)
             idprovincia = detallespresentacion[0].idprovincia
-            idartista =  $q("#artista").value
+            idartista = $q("#artista").value
             provincia = detallespresentacion[0].provincia
             detallespresentacion.forEach(dp => {
               $q("#tInfoCotizacion").innerHTML = `
@@ -639,7 +641,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           showToast("Hubo un error al registrar la atencion", "ERROR");
         }
       }
-    
+    }
     /* } else {
       let message = "";
       //if (!validateFields) { message = "Completa los campos"; }
@@ -655,9 +657,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
   });
 
+
   $q("#modalidad").addEventListener("change", function (e) {
     const modalidad = parseInt(e.target.value);
-    console.log(modalidad);3
+    console.log(modalidad); 3
     if (modalidad === 1) {
       $q("#container-validez").hidden = true
     } else {
@@ -667,7 +670,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   $q("#btnGenerarCotizacion").addEventListener("click", async (e) => {
     //const tarifaArtista = await obtenerTarifasPorProvincia()
-//    const cotizacion = await obtenerCotizacion(iddetalleevento)
+    //    const cotizacion = await obtenerCotizacion(iddetalleevento)
     console.log("clickeando")
     window.open(`http://localhost/vega-erp/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${2500}`)
     return

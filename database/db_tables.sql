@@ -125,6 +125,8 @@ create table detalles_presentacion (
 	validez			int		null,
     igv				tinyint	not null,
     tipo_pago		int not null,
+    reserva			tinyint null default 0,
+    estado			tinyint null default 0, -- 0: activo, 1:vencido
     constraint fk_idusuario_dp foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idcliente_dp foreign key (idcliente) references clientes (idcliente),
     constraint fk_iddistrito_dp foreign key (iddistrito) references distritos (iddistrito),
@@ -150,8 +152,18 @@ create table contratos (
 	idcontrato	int auto_increment primary key,
     iddetalle_presentacion	int not null,
     monto_pagado		decimal(7,2) not null,
-    estado				int not null default 1, -- 1 = pendiente de pago (pago 15%), 2- pagado, 3- caducado
+    estado				int null default 1, -- 1 = pendiente de pago (pago 15%), 2- pagado, 3- caducado
     created_at			datetime	null default now(),
 	updated_at		datetime null ,
     constraint fk_dp_cs foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
+) engine = innodb;
+
+create table pagos_contrato (
+	idpagocontrato		int auto_increment primary key,
+    idcontrato	int not null,
+    monto		decimal(7,2) not null,
+    fecha_pago	date	not null ,
+    hora_pago	time 	not null,
+    tipo_pago 	int			not null,
+    constraint fk_idcontrato	foreign key (idcontrato) references contratos (idcontrato)
 ) engine = innodb;

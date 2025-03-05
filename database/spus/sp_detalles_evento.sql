@@ -61,10 +61,23 @@ CREATE PROCEDURE `sp_obtener_detalles_evento`(
 )
 BEGIN
 	SELECT 		
-		DP.iddetalle_presentacion, CLI.ndocumento ,DP.ncotizacion ,USU.nom_usuario, CLI.razonsocial, DP.tipo_evento, DP.modalidad, DP.fecha_presentacion
+		DP.iddetalle_presentacion, CLI.ndocumento ,DP.ncotizacion ,USU.nom_usuario, CLI.razonsocial, DP.tipo_evento, DP.modalidad, DP.fecha_presentacion, CO.idcontrato, DP.validez
 	FROM detalles_presentacion DP
 	INNER JOIN usuarios USU ON USU.idusuario = DP.idusuario
     INNER JOIN clientes CLI ON CLI.idcliente = DP.idcliente
+    LEFT JOIN contratos CO ON CO.iddetalle_presentacion = DP.iddetalle_presentacion
     WHERE DP.ncotizacion LIKE CONCAT('%', COALESCE(_ncotizacion, ''), '%')
 		AND CLI.ndocumento LIKE CONCAT('%', COALESCE(_ndocumento, ''), '%');
+END //
+
+DROP PROCEDURE sp_actualizar_estado_dp;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_estado_dp (
+	IN _iddetalle_presentacion INT,
+    IN _estado TINYINT
+)
+BEGIN
+		UPDATE detalles_presentacion SET
+    estado = _estado
+    WHERE idcontrato = _idcontrato; 
 END //

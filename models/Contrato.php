@@ -10,17 +10,40 @@ class Contrato extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_contrato(@idcontrato,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_contrato(@idcontrato,?,?)');
       $cmd->execute(
         array(
           $params['iddetallepresentacion'],
-          $params['montopagado'],
+          //$params['montopagado'],
           $params['estado'],
         )
       );
 
       $respuesta = $pdo->query("SELECT @idcontrato AS idcontrato")->fetch(PDO::FETCH_ASSOC);
       return $respuesta['idcontrato'];
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return -1;
+    }
+  }
+  
+  public function registrarPagoContrato($params = []): int
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('CALL sp_registrar_pago_contrato(@idpagocontrato,?,?,?,?,?)');
+      $cmd->execute(
+        array(
+          $params['idcontrato'],
+          $params['monto'],
+          $params['fechapago'],
+          $params['horapago'],
+          $params['tipopago'],
+        )
+      );
+
+      $respuesta = $pdo->query("SELECT @idpagocontrato AS idpagocontrato")->fetch(PDO::FETCH_ASSOC);
+      return $respuesta['idpagocontrato'];
     } catch (Exception $e) {
       error_log("Error: " . $e->getMessage());
       return -1;
@@ -46,6 +69,19 @@ class Contrato extends ExecQuery
   {
     try {
       $cmd = parent::execQ("CALL obtenerContrato(?)");
+      $cmd->execute(
+        array($params['idcontrato'])
+      );
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return [];
+    }
+  }
+  public function obtenerPagosContratoPorIdContrato($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("SELECT * FROM pagos_contrato WHERE idcontrato = ?");
       $cmd->execute(
         array($params['idcontrato'])
       );

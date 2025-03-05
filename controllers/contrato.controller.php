@@ -15,6 +15,10 @@ if (isset($_GET['operation'])) {
     case 'obtenerContratoPorDP':
       echo json_encode($contrato->obtenerContratoPorDP(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
       break;
+
+    case 'obtenerPagosContratoPorIdContrato':
+      echo json_encode($contrato->obtenerPagosContratoPorIdContrato(['idcontrato' => $_GET['idcontrato']]));
+      break;
   }
 }
 if (isset($_POST['operation'])) {
@@ -22,7 +26,7 @@ if (isset($_POST['operation'])) {
     case 'registrarContrato':
       $cleanData = [
         'iddetallepresentacion'   => $contrato->limpiarCadena($_POST['iddetallepresentacion']),
-        'montopagado' => $contrato->limpiarCadena($_POST['montopagado']),
+        //'montopagado' => $contrato->limpiarCadena($_POST['montopagado']),
         'estado' => $contrato->limpiarCadena($_POST['estado'])
       ];
 
@@ -32,6 +36,26 @@ if (isset($_POST['operation'])) {
 
       if ($idcontrato > 0) {
         $respuesta['idcontrato'] = $idcontrato;
+      }
+
+      echo json_encode($respuesta);
+      break;
+
+    case 'registrarPagoContrato':
+      $cleanData = [
+        'idcontrato'   => $contrato->limpiarCadena($_POST['idcontrato']),
+        'monto' => $contrato->limpiarCadena($_POST['monto']),
+        'fechapago' => $contrato->limpiarCadena($_POST['fechapago']),
+        'horapago' => $contrato->limpiarCadena($_POST['horapago']),
+        'tipopago' => $contrato->limpiarCadena($_POST['tipopago'])
+      ];
+
+      $respuesta = ['idpagocontrato' => -1];
+
+      $idpagocontrato = $contrato->registrarPagoContrato($cleanData);
+
+      if ($idpagocontrato > 0) {
+        $respuesta['idpagocontrato'] = $idpagocontrato;
       }
 
       echo json_encode($respuesta);

@@ -247,26 +247,26 @@
             <div class="modal-body">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="row g-2 d-flex justify-content-center" >
+                        <div class="row g-2 d-flex justify-content-center">
                             <div class="col-md-6 ">
+                                <div id="montoActual">
+
+                                </div>
                                 <div class="form-floating ">
                                     <input type="number" id="montopagado" name="montopagado"
-                                        class="form-control ">
+                                        class="form-control " min="0">
                                     <label for="montopagado" class="form-label">Monto</label>
                                 </div>
                                 <div id="porciento">
-                                    
+
                                 </div>
                             </div>
-
                         </div>
-
-
                     </div>
                 </div>
             </div>
             <div class="modal-footer" id="contenedor-botones">
-                <button type="button" class="btn btn-secondary" id="">Guardar</button>
+                <button type="button" class="btn btn-secondary" id="btnGuardar" hidden>Guardar</button>
                 <button type="button" class="btn btn-secondary" id="btnGenerarReserva" hidden>Generar Reserva</button>
                 <button type="button" class="btn btn-primary" id="close-mdl-convenio">Cerrar</button>
             </div>

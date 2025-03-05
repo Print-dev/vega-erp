@@ -73,12 +73,11 @@ DELIMITER ;
 
 CALL sp_obtenerCotizacion (4);
 
-
+DROP PROCEDURE IF EXISTS `sp_registrar_contrato`;
 DELIMITER $$
 CREATE PROCEDURE sp_registrar_contrato(
     OUT _idcontrato INT,
 	IN _iddetalle_presentacion INT,
-    IN _monto_pagado DOUBLE,
     IN _estado int
 )
 BEGIN
@@ -89,13 +88,41 @@ BEGIN
         SET existe_error = 1;
     END;
     
-    INSERT INTO convenios (iddetalle_presentacion, monto_pagado, estado)
-    VALUES (_iddetalle_presentacion, _monto_pagado, _estado);
+    INSERT INTO contratos (iddetalle_presentacion, estado)
+    VALUES (_iddetalle_presentacion, _estado);
     
     IF existe_error = 1 THEN
         SET _idcontrato = -1;
     ELSE
         SET _idcontrato = LAST_INSERT_ID();
+    END IF;
+END $$
+
+DROP PROCEDURE IF EXISTS `sp_registrar_pago_contrato`;
+DELIMITER $$
+CREATE PROCEDURE sp_registrar_pago_contrato(
+    OUT _idpagocontrato INT,
+	IN _idcontrato INT,
+    IN _monto decimal(7,2),
+    IN _fecha_pago DATE,
+    IN _hora_pago	TIME,
+    IN _tipo_pago	INT
+)
+BEGIN
+    DECLARE existe_error INT DEFAULT 0;
+    
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SET existe_error = 1;
+    END;
+    
+    INSERT INTO pagos_contrato (idcontrato, monto, fecha_pago, hora_pago, tipo_pago)
+    VALUES (_idcontrato, _monto, _fecha_pago, _hora_pago, _tipo_pago);
+    
+    IF existe_error = 1 THEN
+        SET _idpagocontrato = -1;
+    ELSE
+        SET _idpagocontrato = LAST_INSERT_ID();
     END IF;
 END $$
 

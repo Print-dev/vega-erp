@@ -28,13 +28,11 @@
                                         autocomplete="off"
                                         id="ndocumento"
                                         placeholder="Nª Documento / RUC."
-                                        pattern="[0-9]*"
                                         class="form-control"
-                                        minlength="8"
-                                        maxlength="20"
+                                        
                                         required
                                         autofocus
-                                        title="Ingresa solo números.">
+                                        >
                                     <span class="input-group-text btn-primary" style="cursor: pointer;" id="search">
                                         <i class="fa-solid fa-magnifying-glass"></i>
                                     </span>
@@ -221,7 +219,7 @@
                                 </div>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="igv">
+                                <input class="form-check-input" type="checkbox" id="igv">
                                 <label class="form-check-label" for="igv">
                                     IGV incluido
                                 </label>
