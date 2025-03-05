@@ -254,6 +254,9 @@
                                         class="form-control ">
                                     <label for="montopagado" class="form-label">Monto</label>
                                 </div>
+                                <div id="porciento">
+                                    
+                                </div>
                             </div>
 
                         </div>
@@ -262,9 +265,9 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="btnGenerarContrato">Guardar</button>
-                <button type="button" class="btn btn-secondary" id="btnGenerarContrato">Generar Reserva</button>
+            <div class="modal-footer" id="contenedor-botones">
+                <button type="button" class="btn btn-secondary" id="">Guardar</button>
+                <button type="button" class="btn btn-secondary" id="btnGenerarReserva" hidden>Generar Reserva</button>
                 <button type="button" class="btn btn-primary" id="close-mdl-convenio">Cerrar</button>
             </div>
         </div>

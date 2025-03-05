@@ -175,4 +175,4 @@ INSERT INTO contratos (
 (2, 5000.00, 2), -- Pagado completamente
 (3, 770.00, 3); -- Caducado
 
-INSERT INTO tarifario (idusuario, idprovincia, precio) VALUES (2, 100, 3000.00),(2,100, 4000.00);
+INSERT INTO tarifario (idusuario, idprovincia, precio) VALUES (2, 100, 3000.00);
