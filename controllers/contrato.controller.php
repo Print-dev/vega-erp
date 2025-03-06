@@ -19,6 +19,10 @@ if (isset($_GET['operation'])) {
     case 'obtenerPagosContratoPorIdContrato':
       echo json_encode($contrato->obtenerPagosContratoPorIdContrato(['idcontrato' => $_GET['idcontrato']]));
       break;
+
+    case 'obtenerReservaPorPagoContrato':
+      echo json_encode($contrato->obtenerReservaPorPagoContrato(['idpagocontrato' => $_GET['idpagocontrato']]));
+      break;
   }
 }
 if (isset($_POST['operation'])) {
@@ -61,6 +65,17 @@ if (isset($_POST['operation'])) {
       }
 
       echo json_encode($respuesta);
+      break;
+
+    case 'registrarReserva':
+      $cleanData = [
+        'idpagocontrato'   => $contrato->limpiarCadena($_POST['idpagocontrato']),
+        'vigencia' => $contrato->limpiarCadena($_POST['vigencia']),
+        'fechacreada' => $contrato->limpiarCadena($_POST['fechacreada'])
+      ];
+
+      $rpt = $contrato->registrarReserva($cleanData);
+      echo json_encode($rpt);
       break;
 
     case 'actualizarEstadoContrato':

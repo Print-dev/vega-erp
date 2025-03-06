@@ -17,7 +17,7 @@ BEGIN
         DP.horafinal,
         DP.establecimiento,
         DP.referencia,
-        DISDP.distrito, PRODP.provincia, DEDP.departamento,
+        DISDP.distrito as distrito_evento, PRODP.provincia as provincia_evento, DEDP.departamento as departamento_evento,
         DP.igv,
 		C.abono_garantia, C.abono_publicidad
 	FROM convenios C
@@ -32,7 +32,7 @@ BEGIN
     LEFT JOIN usuarios	USU ON USU.idusuario = DP.idusuario
     WHERE C.idconvenio = _idconvenio; -- me quede aca
 END //
-
+call obtenerContratoConvenio (1);
 
 DELIMITER $$
 CREATE PROCEDURE sp_registrar_convenio (

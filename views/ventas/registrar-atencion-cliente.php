@@ -178,7 +178,7 @@
                                 <div class="form-floating">
                                     <input type="number" id="validez" name="validez"
                                         class="form-control">
-                                    <label for="validez" class="form-label">Dias de validez</label>
+                                    <label for="validez" class="form-label">Dias de validez/Vigencia</label>
                                 </div>
                             </div>
                             <div class="col-md-3">

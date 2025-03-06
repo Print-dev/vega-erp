@@ -32,10 +32,9 @@ class DetalleEvento extends ExecQuery
     } catch (PDOException $e) {
       // Registrar detalles del error en el log
       error_log("Error en registrarDetallePresentacion: " . $e->getMessage());
-      
+
       // Retornar detalles del error
       die($e->getMessage());
-
     }
   }
 
@@ -59,6 +58,38 @@ class DetalleEvento extends ExecQuery
       $cmd = parent::execQ("SELECT * FROM detalles_presentacion WHERE ncotizacion = ?");
       $cmd->execute(array($params['ncotizacion']));
       return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function actualizarEstadoReservaDp($params = []): bool
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_actualizar_estado_reserva_dp (?,?)");
+      $rpt = $cmd->execute(
+        array(
+          $params['iddetallepresentacion'],
+          $params['reserva'],
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function actualizarPagado50DP($params = []): bool
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_actualizar_pagado50_dp (?,?)");
+      $rpt = $cmd->execute(
+        array(
+          $params['iddetallepresentacion'],
+          $params['pagado50'],
+        )
+      );
+      return $rpt;
     } catch (Exception $e) {
       die($e->getMessage());
     }

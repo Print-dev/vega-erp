@@ -136,7 +136,8 @@ function formatoHora($hora_24h)
     return $hora_obj->format('g:i A'); // "g:i A" da la hora en 12h sin ceros a la izquierda
 }
 
-function restarHoras($horaInicio, $horaFin) {
+function restarHoras($horaInicio, $horaFin)
+{
     // Convertir las horas en objetos DateTime
     $inicio = new DateTime($horaInicio);
     $fin = new DateTime($horaFin);
@@ -204,9 +205,9 @@ $monto_texto = numeroATexto($monto_numerico);
             <td class="label" colspan="5" style="border: none;">
                 <strong>PRIMERO:</strong> EL ORGANIZADOR contrata los servicios artísticos de <?= strtoupper($convenioContrato[0]['nom_usuario']) ?>
                 para una presentación para el día <?= $fecha_formateada ?>,
-                por <?=  restarHoras($horainicio, $horafinal); ?> horas de SHOW a las
-                <?= $hora_inicio_formateada ?> a <?= $hora_final_formateada ?>  en <strong>“<?= $convenioContrato[0]['establecimiento'] ?>”</strong>,
-                provincia de <?= $convenioContrato[0]['provincia'] ?>, departamento de <?= $convenioContrato[0]['departamento'] ?>.
+                por <?= restarHoras($horainicio, $horafinal); ?> horas de SHOW a las
+                <?= $hora_inicio_formateada ?> a <?= $hora_final_formateada ?> en <strong>“<?= $convenioContrato[0]['establecimiento'] ?>”</strong>,
+                provincia de <?= $convenioContrato[0]['provincia_evento'] ?>, departamento de <?= $convenioContrato[0]['departamento_evento'] ?>.
             </td>
         </tr>
         <tr>
@@ -266,7 +267,16 @@ $monto_texto = numeroATexto($monto_numerico);
                 <table class="datos-firma ">
 
                     <tr>
-                        <td colspan="5">_________________________________</td>
+                        <td colspan="5" style="position: relative; text-align: center;">
+                            <img src="http://localhost/vega-erp/images/firma/firma.png" style="
+        position: absolute;
+        top: -70px; /* Ajusta según sea necesario */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 170px; /* Ajusta el tamaño */
+    " alt="Firma">
+                            ___________________________________
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="5">Negociaciones y producciones Vega S.A.C</td>

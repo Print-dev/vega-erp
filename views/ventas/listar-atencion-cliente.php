@@ -280,7 +280,38 @@
             </div>
             <div class="modal-footer" id="contenedor-botones">
                 <button type="button" class="btn btn-secondary" id="btnGuardar" hidden>Guardar</button>
-                <button type="button" class="btn btn-secondary" id="btnGenerarReserva" hidden>Generar Reserva</button>
+                <!-- <button type="button" class="btn btn-secondary" id="btnGenerarReserva" hidden>Generar Reserva</button> -->
+                <button type="button" class="btn btn-primary" id="close-mdl-convenio" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-reserva" tabindex="-1" aria-labelledby="modalReserva" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalReserva">Detalles a previa reserva</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="row g-2 d-flex justify-content-center">
+                            <div class="col-md-6 ">
+                                <div class="form-floating ">
+                                    <input type="number" id="vigencia" name="vigencia"
+                                        class="form-control " min="0">
+                                    <label for="vigencia" class="form-label">Vigencia</label>
+                                </div>                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id="contenedor-botones">
+                <button type="button" class="btn btn-secondary" id="btnGuardarReserva">Guardar</button>
+                <!-- <button type="button" class="btn btn-secondary" id="btnGenerarReserva" hidden>Generar Reserva</button> -->
                 <button type="button" class="btn btn-primary" id="close-mdl-convenio" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>

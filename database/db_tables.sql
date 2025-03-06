@@ -127,6 +127,7 @@ create table detalles_presentacion (
 	validez			int		null,
     igv				tinyint	not null,
     reserva			tinyint null default 0,
+    pagado50		tinyint null default 0,
     estado			tinyint null default 1, -- 1: activo, 2:vencido
     constraint fk_idusuario_dp foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idcliente_dp foreign key (idcliente) references clientes (idcliente),
@@ -179,5 +180,7 @@ create table reservas (
 	idreserva		int auto_increment primary key,
     idpagocontrato	int not null,
     vigencia		int not null,
+    fechacreada		date not null,
     constraint fk_idpagocontrato_res foreign key (idpagocontrato) references pagos_contrato (idpagocontrato)
 ) engine = innodb;
+

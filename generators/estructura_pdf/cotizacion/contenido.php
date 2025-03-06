@@ -207,7 +207,8 @@ function formatoHora($hora_24h)
 }
 
 
-function restarHoras($horaInicio, $horaFinal) {
+function restarHoras($horaInicio, $horaFinal)
+{
     $inicio = new DateTime($horaInicio);
     $final = new DateTime($horaFinal);
     $intervalo = $inicio->diff($final);
@@ -301,7 +302,7 @@ echo $hora_final_formateada;
             <td colspan="1"><?php echo $cotizacion[0]['provincia']; ?></td>
         </tr>
         <tr>
-            <td class="label" >Correo</td>
+            <td class="label">Correo</td>
             <td style="border-left: none;"><?php echo $cotizacion[0]['correo']; ?></td>
             <td class="label" colspan="1">Celular</td>
             <td colspan="1"><?php echo $cotizacion[0]['telefono']; ?></td>
@@ -352,12 +353,12 @@ echo $hora_final_formateada;
         <tr>
             <td style="width: 20px;">1</td>
             <td style="width: 350px;">PRESENTACION ARTÍSTICA DE <?= strtoupper($cotizacion[0]['nom_usuario']); ?> </td>
-            <td style="width: 100px;"><?=  restarHoras($horainicio, $horafinal); ?></td>
+            <td style="width: 100px;"><?= restarHoras($horainicio, $horafinal); ?></td>
             <td style="width: 70px;"><?php if (isset($tarifaArtista[0]['precio'])) {
-                    echo $tarifaArtista[0]['precio'];
-                } else {
-                    echo 'Sin tarifa en esta provincia';
-                } ?></td>
+                                            echo $tarifaArtista[0]['precio'];
+                                        } else {
+                                            echo 'Sin tarifa en esta provincia';
+                                        } ?></td>
             <td><?php if (isset($tarifaArtista[0]['precio'])) {
                     echo $tarifaArtista[0]['precio'];
                 } else {
@@ -367,7 +368,7 @@ echo $hora_final_formateada;
         <tr>
             <td>2</td>
             <td>Puesto en la locacion <?php echo $provincia; ?></td>
-            <td><?=  restarHoras($horainicio, $horafinal); ?></td>
+            <td><?= restarHoras($horainicio, $horafinal); ?></td>
             <td><?php echo $precio; ?></td>
             <td><?php echo $precio; ?></td>
         </tr>
@@ -437,7 +438,16 @@ echo $hora_final_formateada;
     </table>
     <table class="datos-firma">
         <tr>
-            <td colspan="5">_________________________________</td>
+            <td colspan="5" style="position: relative; text-align: end;">
+                <img src="http://localhost/vega-erp/images/firma/firma.png" style="
+        position: absolute;
+        top: -70px; /* Ajusta según sea necesario */
+        left: 90%;
+        transform: translateX(-50%);
+        width: 170px; /* Ajusta el tamaño */
+    " alt="Firma">
+                _______________________________
+            </td>
         </tr>
         <tr>
             <td colspan="5">V° B° Vega Producciones S.A.C</td>

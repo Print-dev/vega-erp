@@ -137,7 +137,8 @@ function formatoHora($hora_24h)
     return $hora_obj->format('g:i A'); // "g:i A" da la hora en 12h sin ceros a la izquierda
 }
 
-function restarHoras($horaInicio, $horaFinal) {
+function restarHoras($horaInicio, $horaFinal)
+{
     $inicio = new DateTime($horaInicio);
     $final = new DateTime($horaFinal);
     $intervalo = $inicio->diff($final);
@@ -182,7 +183,7 @@ $monto_texto = numeroATexto($monto_numerico); */
 <div class="watermark">
     <table class="datos-terminos-condiciones">
         <tr>
-            <td colspan="5" style="text-align: center; font-size: 16px; text-decoration: underline; border: none; padding-bottom: 20px;"><strong>CONTRATO DE PRESENTACION ARTISTICA</strong></td>
+            <td colspan="5" style="text-align: center; font-size: 16px; text-decoration: underline; border: none; "><strong>CONTRATO DE PRESENTACION ARTISTICA</strong></td>
         </tr>
         <tr>
             <td class="label" colspan="5" style="border: none;">
@@ -227,7 +228,7 @@ $monto_texto = numeroATexto($monto_numerico); */
         <tr>
             <td class="label" colspan="5" style="border: none;">
                 <strong>PRIMERO: EL ORGANIZADOR</strong> contrata los servicios artísticos de <strong><?= $contratoPresentacion[0]['nom_usuario'] ?></strong> Y
-                ORQUESTA para una presentación para el día <strong><?= $fecha_formateada ?></strong>, por <strong><?=  restarHoras($horainicio, $horafinal); ?> </strong> de SHOW
+                ORQUESTA para una presentación para el día <strong><?= $fecha_formateada ?></strong>, por <strong><?= restarHoras($horainicio, $horafinal); ?> </strong> de SHOW
                 de <?php echo $hora_inicio_formateada . ' a ' . $hora_final_formateada ?> , (que por la dificultad de la ruta puede variar como máximo
                 1 hora posterior) en la localidad <?= $contratoPresentacion[0]['distrito_evento'] ?>, provincia de <?= $contratoPresentacion[0]['provincia_evento'] ?>, departamento de <?= $contratoPresentacion[0]['departamento_evento'] ?>.
             </td>
@@ -378,7 +379,16 @@ $monto_texto = numeroATexto($monto_numerico); */
                 <table class="datos-firma ">
 
                     <tr>
-                        <td colspan="5">_________________________________</td>
+                        <td colspan="5" style="position: relative; text-align: center;">
+                            <img src="http://localhost/vega-erp/images/firma/firma.png" style="
+        position: absolute;
+        top: -70px; /* Ajusta según sea necesario */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 170px; /* Ajusta el tamaño */
+    " alt="Firma">
+                            ___________________________________
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="5">Negociaciones y producciones Vega S.A.C</td>

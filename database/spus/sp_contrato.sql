@@ -72,7 +72,7 @@ END $$
 
 DELIMITER ;
 
-CALL sp_obtenerCotizacion (4);
+CALL sp_obtenerCotizacion (5);
 
 DROP PROCEDURE IF EXISTS `sp_registrar_contrato`;
 DELIMITER $$

@@ -51,6 +51,41 @@ class Contrato extends ExecQuery
       return -1;
     }
   }
+
+  public function registrarReserva($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('INSERT INTO reservas (idpagocontrato, vigencia, fechacreada) VALUES (?,?,?)');
+      $rpt = $cmd->execute(
+        array(
+          $params['idpagocontrato'],
+          $params['vigencia'],
+          $params['fechacreada']
+        )
+      );
+     return $rpt;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return -1;
+    }
+  }
+  
+  public function obtenerReservaPorPagoContrato($params = []): array
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('CALL sp_obtener_reserva_por_pagocontrato (?)');
+      $cmd->execute(
+        array(
+          $params['idpagocontrato']
+        )
+      );
+     return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+      die($e->getMessage());
+    }
+  }
   /* 
   public function obtenerUsuarioPorId($params = []): array
   {

@@ -9,10 +9,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   let igv = -1;
   let iddetallepresentacion = -1;
   let idcontrato = -1
+  let idpagocontrato = -1
 
   //MODALES
   let modalDatosContrato
   let modalDatosClienteIncompleto
+  let modalReserva
 
   function $q(object = null) {
     return document.querySelector(object);
@@ -71,6 +73,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data;
   }
 
+  async function obtenerReservaPorPagoContrato(idpagocontrato) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerReservaPorPagoContrato");
+    params.append("idpagocontrato", idpagocontrato);
+    const data = await getDatos(`${host}contrato.controller.php`, params);
+    return data;
+  }
+
   // ******************************************** REGISTRAR DATOS ************************************************
 
   async function registrarContrato(iddetallepresentacion, estado) {
@@ -108,6 +118,53 @@ document.addEventListener("DOMContentLoaded", async () => {
     const rpago = await fpago.json();
     return rpago;
   }
+
+  async function actualizarEstadoReservaDp(iddetallepresentacion, estreserva) {
+    const reserva = new FormData();
+    reserva.append("operation", "actualizarEstadoReservaDp");
+    reserva.append("iddetallepresentacion", iddetallepresentacion);
+    reserva.append("reserva", estreserva);
+
+    const freserva = await fetch(`${host}detalleevento.controller.php`, {
+      method: "POST",
+      body: reserva,
+    });
+    const rreserva = await freserva.json();
+    return rreserva;
+  }
+
+  async function registrarReserva(idpagocontrato, vigencia) {
+    const fechaHoraPeru = obtenerFechaHoraPeru();
+
+    const reserva = new FormData();
+    reserva.append("operation", "registrarReserva");
+    reserva.append("idpagocontrato", idpagocontrato);
+    reserva.append("vigencia", vigencia);
+    reserva.append("fechacreada", fechaHoraPeru[0]);
+
+    const freserva = await fetch(`${host}contrato.controller.php`, {
+      method: "POST",
+      body: reserva,
+    });
+    const rreserva = await freserva.json();
+    return rreserva;
+  }
+
+  async function actualizarPagado50DP(iddetallepresentacion) {
+    const pagado50 = new FormData();
+    pagado50.append("operation", "actualizarPagado50DP");
+    pagado50.append("iddetallepresentacion", iddetallepresentacion);
+    pagado50.append("pagado50", 1);
+
+    const fpagado50 = await fetch(`${host}detalleevento.controller.php`, {
+      method: "POST",
+      body: pagado50,
+    });
+    const rpagado50 = await fpagado50.json();
+    return rpagado50;
+  }
+
+  // ******************************************** DATATABLE ************************************************
 
   function createTable(data) {
     let rows = $("#tb-body-atencion").find("tr");
@@ -237,13 +294,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 `
           : ``
         }
+
+        ${
+          parseInt(x.pagado50) == 1 ? `` : parseInt(x.reserva) == 1
+          ? `<button type="button" class="btn btn-sm btn-primary btn-reserva" data-id=${x.iddetalle_presentacion} title="Generar Reserva">
+              Generar Reserva
+            </button>` : ``}
               
-              <button type="button" class="btn btn-sm btn-danger btn-cancelar" data-id=${x.iddetalle_presentacion
-        } title="Cancelar">
-                X
-              </button>
-            </td>
-          </tr>
+              
           `;
 
       // Evento para actualizar estado dp
@@ -309,6 +367,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (e.target.classList.contains("btn-contrato")) {
             await buttonContrato(e);
           }
+          if (e.target.classList.contains("btn-reserva")) {
+            await buttonReserva(e);
+          }
           /* if(e.target.classList.contains("show-espec")){//abre el sidebar
           await btnSBUpdateActivo(e);
         }
@@ -345,18 +406,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     idartista = dp[0].idusuario;
     const contrato = await obtenerContratoPorDP(idcontrato) //esto en realidad es id detalle presentacion
     console.log("contratoo al dar click al btn contrato -> ", contrato)
-    if(contrato.length > 0){
+    if (contrato.length > 0) {
       const pagosContrato = await obtenerPagosContratoPorIdContrato(contrato[0]?.idcontrato)
       console.log("pagos contrato al dar click al btn contrato -> ", pagosContrato)
       for (let i = 0; i < pagosContrato.length; i++) {
-        if(pagosContrato[i].estado == 3){
+        if (pagosContrato[i].estado == 3) {
           // ya se pago el 25% restante o bien ya se pago el 50% de golpe
-          pagoAdelantadoO50 = true        
+          pagoAdelantadoO50 = true
           break;
         }
-        
+
       }
-      if (pagoAdelantadoO50){
+      if (pagoAdelantadoO50) {
         window.open(
           `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contrato[0].idcontrato
           }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
@@ -367,11 +428,52 @@ document.addEventListener("DOMContentLoaded", async () => {
     showToast("Aun no puedes generar contrato hasta pagar el adelanto del 50%", "ERROR")
   }
 
+  async function buttonReserva(e) {
+
+    let pagoAdelantadoO25 = false
+    idcontrato = e.target.getAttribute("data-id");
+    const contrato = await obtenerContratoPorDP(idcontrato) //esto en realidad es id detalle presentacion
+    console.log("contrato  existe ->", contrato)
+    if (contrato.length > 0) {
+      const pagosContrato = await obtenerPagosContratoPorIdContrato(contrato[0]?.idcontrato)
+      console.log("pagos contrato al dar click al btn contrato -> ", pagosContrato)
+      for (let i = 0; i < pagosContrato.length; i++) {
+        if (pagosContrato[i].estado == 1) {
+          // ya se pago el 25%
+          pagoAdelantadoO25 = true
+          break;
+        }
+
+      }
+      idpagocontrato = pagosContrato[0]?.idpagocontrato
+      const reservaExiste = await obtenerReservaPorPagoContrato(pagosContrato[0]?.idpagocontrato)
+      console.log("reserva existe -> ", reservaExiste)
+      if (pagoAdelantadoO25) {
+        if (reservaExiste.length > 0) {
+          window.open(
+            `http://localhost/vega-erp/generators/generadores_pdf/constancia_reserva/constanciareserva.php?iddetallepresentacion=${idcontrato}&idpagocontrato=${pagosContrato[0]?.idpagocontrato}` // esto en realida es el iddetalle_presentacion
+          );
+          console.log("Si existe la reserva")
+          return
+        } else {
+          // abrir modal
+          console.log("NO existe la reserva")
+          modalReserva = new bootstrap.Modal(
+            $q("#modal-reserva")
+          );
+          modalReserva.show();
+          return
+        }
+      }
+    }
+    showToast("Aun no puedes generar reserva hasta pagar el adelanto del 25%", "ERROR")
+  }
+
   async function buttonPagar(e) {
     $q("#montopagado").value = 0
     $q("#contenedor-noperacion").hidden = true
-    $q("#noperacion").value = '' 
-    $q("#tipopago").value = -1 
+    $q("#noperacion").value = ''
+    $q("#tipopago").value = -1
     iddp = e.target.getAttribute("data-id");
     const dp = await obtenerDPporId(iddp);
     idprovincia = dp[0].idprovincia;
@@ -396,204 +498,204 @@ document.addEventListener("DOMContentLoaded", async () => {
     ) {
       // Es un RUC de persona natural
       console.log("es ruc persona natural");
-      
-        console.log("su legal esta null");
-        if (contratoExiste?.length > 0) {
-          let pago50 = false
-          const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
-          console.log("pagos -> ", pagos)
 
-          totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
+      console.log("su legal esta null");
+      if (contratoExiste?.length > 0) {
+        let pago50 = false
+        const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
+        console.log("pagos -> ", pagos)
 
-          console.log("Total pagado: ", totalPagado);
-         /*  if (totalPagado == 0){
-            
-          } */
+        totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
 
-          pagos.forEach(pago => {
-            if (pago?.tipo_pago == 3) {
-              pago50 = true
+        console.log("Total pagado: ", totalPagado);
+        /*  if (totalPagado == 0){
+           
+         } */
+
+        pagos.forEach(pago => {
+          if (pago?.tipo_pago == 3) {
+            pago50 = true
+          }
+        });
+        console.log("pago50 bool -> ", pago50)
+        if (pago50) {
+          let incompleto = false
+          const datosIncompletos = await verificarDatosIncompletosCliente(idcliente)
+          for (const clave in datosIncompletos) {
+            if (datosIncompletos[clave] === null || datosIncompletos[clave] === "") {
+              //console.log(`El campo "${clave}" está vacío. Deteniendo el ciclo.`);
+              incompleto = true;
+              break;
             }
-          });
-          console.log("pago50 bool -> ", pago50)
-          if (pago50) {
-            let incompleto = false
-            const datosIncompletos = await verificarDatosIncompletosCliente(idcliente)
-            for (const clave in datosIncompletos) {
-              if (datosIncompletos[clave] === null || datosIncompletos[clave] === "") {
-                //console.log(`El campo "${clave}" está vacío. Deteniendo el ciclo.`);
-                incompleto = true;
-                break;
-              }
-              //console.log(`${clave}: ${datosIncompletos[clave]}`);
-            }
-            if (incompleto) {
-              modalDatosClienteIncompleto = new bootstrap.Modal(
-                $q("#modal-datosclienteincompletos")
-              );
-              modalDatosClienteIncompleto.show();
-              await renderizarDatosClienteIncompleto(cliente[0]);
-              return
-            }
-            window.open(
-              `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0].idcontrato
-              }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
+            //console.log(`${clave}: ${datosIncompletos[clave]}`);
+          }
+          if (incompleto) {
+            modalDatosClienteIncompleto = new bootstrap.Modal(
+              $q("#modal-datosclienteincompletos")
             );
+            modalDatosClienteIncompleto.show();
+            await renderizarDatosClienteIncompleto(cliente[0]);
+            return
+          }
+          window.open(
+            `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0].idcontrato
+            }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
+          );
 
-          }
-          else if (!pago50) {
-            modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
-            modalDatosContrato.show();
-            console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
-            $q("#btnGenerarReserva").hidden = false
-            $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
-          }
-        } else {
-          const contrato = await registrarContrato(iddetallepresentacion, 1);
-          console.log("idcontrato > ", contrato)
-          idcontrato = contrato.idcontrato
-          if (idcontrato) {
-            modalDatos = new bootstrap.Modal($q("#modal-contrato"));
-            modalDatos.show();
-          }
         }
-      
+        else if (!pago50) {
+          modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
+          modalDatosContrato.show();
+          console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
+          //$q("#btnGenerarReserva").hidden = false
+          $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
+        }
+      } else {
+        const contrato = await registrarContrato(iddetallepresentacion, 1);
+        console.log("idcontrato > ", contrato)
+        idcontrato = contrato.idcontrato
+        if (idcontrato) {
+          modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
+          modalDatosContrato.show();
+        }
+      }
+
     } else if (
       cliente[0].ndocumento.length === 11 &&
       cliente[0].ndocumento.startsWith("2") // Verifica si empieza con "2"
     ) {
       // Es un RUC de empresa (persona jurídica)
       console.log("es ruc empresa");
-      
-        console.log("su legal esta null");
-        console.log("contratoExiste -> ", contratoExiste)
+
+      console.log("su legal esta null");
+      console.log("contratoExiste -> ", contratoExiste)
 
 
-        if (contratoExiste?.length > 0) {
-          let pago50 = false
-          const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
-          console.log("pagos -> ", pagos)
+      if (contratoExiste?.length > 0) {
+        let pago50 = false
+        const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
+        console.log("pagos -> ", pagos)
 
-          totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
+        totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
 
-          console.log("Total pagado: ", totalPagado);
+        console.log("Total pagado: ", totalPagado);
 
 
-          pagos.forEach(pago => {
-            if (pago?.tipo_pago == 3) {
-              pago50 = true
+        pagos.forEach(pago => {
+          if (pago?.tipo_pago == 3) {
+            pago50 = true
+          }
+        });
+        console.log("pago50 bool -> ", pago50)
+        if (pago50) {
+          let incompleto = false
+          const datosIncompletos = await verificarDatosIncompletosCliente(idcliente)
+          for (const clave in datosIncompletos) {
+            if (datosIncompletos[clave] === null || datosIncompletos[clave] === "") {
+              //console.log(`El campo "${clave}" está vacío. Deteniendo el ciclo.`);
+              incompleto = true;
+              break;
             }
-          });
-          console.log("pago50 bool -> ", pago50)
-          if (pago50) {
-            let incompleto = false
-            const datosIncompletos = await verificarDatosIncompletosCliente(idcliente)
-            for (const clave in datosIncompletos) {
-              if (datosIncompletos[clave] === null || datosIncompletos[clave] === "") {
-                //console.log(`El campo "${clave}" está vacío. Deteniendo el ciclo.`);
-                incompleto = true;
-                break;
-              }
-              //console.log(`${clave}: ${datosIncompletos[clave]}`);
-            }
-            if (incompleto) {
-              modalDatosClienteIncompleto = new bootstrap.Modal(
-                $q("#modal-datosclienteincompletos")
-              );
-              modalDatosClienteIncompleto.show();
-              await renderizarDatosClienteIncompleto(cliente[0]);
-              return
-            }
-            window.open(
-              `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0].idcontrato
-              }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
+            //console.log(`${clave}: ${datosIncompletos[clave]}`);
+          }
+          if (incompleto) {
+            modalDatosClienteIncompleto = new bootstrap.Modal(
+              $q("#modal-datosclienteincompletos")
             );
-
+            modalDatosClienteIncompleto.show();
+            await renderizarDatosClienteIncompleto(cliente[0]);
+            return
           }
-          else if (!pago50) {
-            const modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
-            modalDatosContrato.show();
-            console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
-            $q("#btnGenerarReserva").hidden = false
-            $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
-          }
-        } else {
-          const contrato = await registrarContrato(iddetallepresentacion, 1);
-          console.log("idcontrato > ", contrato)
-          idcontrato = contrato.idcontrato
-          if (idcontrato) {
-            modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
-            modalDatosContrato.show();
-          }
+          window.open(
+            `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0].idcontrato
+            }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
+          );
 
         }
-      
+        else if (!pago50) {
+          modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
+          modalDatosContrato.show();
+          console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
+          //$q("#btnGenerarReserva").hidden = false
+          $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
+        }
+      } else {
+        const contrato = await registrarContrato(iddetallepresentacion, 1);
+        console.log("idcontrato > ", contrato)
+        idcontrato = contrato.idcontrato
+        if (idcontrato) {
+          modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
+          modalDatosContrato.show();
+        }
+
+      }
+
     } else if (
       cliente[0].ndocumento.length === 8 // Un DNI tiene 8 dígitos
     ) {
       // Es un DNI (persona natural)
       console.log("es dni persona natural");
-      
-        console.log("su legal esta null");
-        if (contratoExiste.length > 0) {
-          let pago50 = false
-          const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
-          console.log("pagos -> ", pagos)
 
-          totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
+      console.log("su legal esta null");
+      if (contratoExiste.length > 0) {
+        let pago50 = false
+        const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
+        console.log("pagos -> ", pagos)
 
-          console.log("Total pagado: ", totalPagado);
+        totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
+
+        console.log("Total pagado: ", totalPagado);
 
 
-          pagos.forEach(pago => {
-            if (pago?.tipo_pago == 3) {
-              pago50 = true
+        pagos.forEach(pago => {
+          if (pago?.tipo_pago == 3) {
+            pago50 = true
+          }
+        });
+        console.log("pago50 bool -> ", pago50)
+        if (pago50) {
+          let incompleto = false
+          const datosIncompletos = await verificarDatosIncompletosCliente(idcliente)
+          for (const clave in datosIncompletos) {
+            if (datosIncompletos[clave] === null || datosIncompletos[clave] === "") {
+              //console.log(`El campo "${clave}" está vacío. Deteniendo el ciclo.`);
+              incompleto = true;
+              break;
             }
-          });
-          console.log("pago50 bool -> ", pago50)
-          if (pago50) {
-            let incompleto = false
-            const datosIncompletos = await verificarDatosIncompletosCliente(idcliente)
-            for (const clave in datosIncompletos) {
-              if (datosIncompletos[clave] === null || datosIncompletos[clave] === "") {
-                //console.log(`El campo "${clave}" está vacío. Deteniendo el ciclo.`);
-                incompleto = true;
-                break;
-              }
-              //console.log(`${clave}: ${datosIncompletos[clave]}`);
-            }
-            if (incompleto) {
-              modalDatosClienteIncompleto = new bootstrap.Modal(
-                $q("#modal-datosclienteincompletos")
-              );
-              modalDatosClienteIncompleto.show();
-              await renderizarDatosClienteIncompleto(cliente[0]);
-              return
-            }
-            window.open(
-              `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0].idcontrato
-              }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
+            //console.log(`${clave}: ${datosIncompletos[clave]}`);
+          }
+          if (incompleto) {
+            modalDatosClienteIncompleto = new bootstrap.Modal(
+              $q("#modal-datosclienteincompletos")
             );
+            modalDatosClienteIncompleto.show();
+            await renderizarDatosClienteIncompleto(cliente[0]);
+            return
+          }
+          window.open(
+            `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0].idcontrato
+            }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
+          );
 
-          }
-          else if (!pago50) { // ESTO ES CUANDO ES 25%  
-            modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
-            modalDatosContrato.show();
-            console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
-            $q("#btnGenerarReserva").hidden = false
-            $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
-          }
-        } else {
-          console.log("iddetallepresentacion -> ", iddetallepresentacion)
-          const contrato = await registrarContrato(iddetallepresentacion, 1);
-          console.log("idcontrato > ", contrato)
-          idcontrato = contrato.idcontrato
-          if (idcontrato) {
-            modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
-            modalDatosContrato.show();
-          }
         }
-      
+        else if (!pago50) { // ESTO ES CUANDO ES 25%  
+          modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
+          modalDatosContrato.show();
+          console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
+          //$q("#btnGenerarReserva").hidden = false
+          $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
+        }
+      } else {
+        console.log("iddetallepresentacion -> ", iddetallepresentacion)
+        const contrato = await registrarContrato(iddetallepresentacion, 1);
+        console.log("idcontrato > ", contrato)
+        idcontrato = contrato.idcontrato
+        if (idcontrato) {
+          modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
+          modalDatosContrato.show();
+        }
+      }
+
     }
 
     //if (contratoExiste.length > 0) {
@@ -645,6 +747,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   //  ******************************************* EVENTOS *******************************************************
+
+  $q("#btnGuardarReserva").addEventListener("click", async (e) => {
+    const reservaGenerada = await registrarReserva(idpagocontrato, $q("#vigencia").value)
+    console.log("reserva gerenada- >", reservaGenerada)
+    if (reservaGenerada) {
+      modalReserva?.hide()
+      showToast("La reserva esta lista para ser generada", "SUCCESS")
+    }
+  })
 
   $q("#btnGenerarCotizacion").addEventListener("click", async (e) => {
     //const tarifaArtista = await obtenerTarifasPorProvincia()
@@ -709,7 +820,7 @@ document.addEventListener("DOMContentLoaded", async () => {
      
    }) */
 
-    // BOTON PARA GUARDAR LOS MONTOS QUE SE VAN PAGANDO YA SEA  25% o 25%
+  // BOTON PARA GUARDAR LOS MONTOS QUE SE VAN PAGANDO YA SEA  25% o 25%
   $q("#btnGuardar").addEventListener("click", async () => {
 
     console.log("iddetallepresentacion -> ", iddetallepresentacion)
@@ -742,25 +853,55 @@ document.addEventListener("DOMContentLoaded", async () => {
         if ((parseFloat($q("#montopagado").value) + totalPagado) >= precio50) {
           console.log("pago del 50%");
           console.log("verificando que existe el idcontrato ->", idcontrato)
-          if($q("#tipopago").value == 1){
-            if($q("#noperacion").value.trim() !== ""){
+          if ($q("#tipopago").value == 1) {
+            if ($q("#noperacion").value.trim() !== "") {
               const pagoContrato = await registrarPagoContrato(idcontrato, 3)
               console.log("Pago guardado", pagoContrato)
-              if (pagoContrato.idpagocontrato) {
-                showToast("Pago guardado, ya puede generar el contrato.", "SUCCESS", 3000);
-                modalDatosContrato?.hide()
+              const dp = await obtenerDPporId(iddetallepresentacion)
+              console.log("dp otenida antes de actualzar:-> ", dp)
+              if (dp[0]?.pagado50 == 0) {
+                if (pagoContrato.idpagocontrato) {
+                  const pagado50DP = await actualizarPagado50DP(iddetallepresentacion)
+                  if (pagado50DP) {
+                    modalDatosContrato?.hide()
+                    await dataFilters()
+                    showToast("Pago guardado, ya puede generar el contrato.", "SUCCESS", 3000);
+                  }
+                }
+              } else if (dp[0]?.pagado50 == 1) {
+                if (pagoContrato.idpagocontrato) {
+                  modalDatosContrato?.hide()
+                  showToast("Pago guardado, ya puede generar el contrato.", "SUCCESS", 3000);
+                }
               }
+
               return
             }
             showToast("Digite el numero de operación.", "ERROR");
-          }else if ($q("#tipopago").value == 2){
+          } else if ($q("#tipopago").value == 2) {
             console.log("idcontrato -> ", idcontrato)
             const pagoContrato = await registrarPagoContrato(idcontrato, 3)
-              console.log("Pago guardado", pagoContrato)
+            console.log("Pago guardado", pagoContrato)
+            const dp = await obtenerDPporId(iddetallepresentacion)
+            console.log("dp otenida antes de actualzar:-> ", dp)
+
+            if (dp[0]?.pagado50 == 0) {
               if (pagoContrato.idpagocontrato) {
-                showToast("Pago guardado, ya puede generar el contrato.", "SUCCESS", 3000);
-                modalDatosContrato?.hide()
+                const pagado50DP = await actualizarPagado50DP(iddetallepresentacion)
+                if (pagado50DP) {
+                  await dataFilters()
+                  modalDatosContrato?.hide()
+                  showToast("Pago guardado, ya puede generar el contrato.", "SUCCESS", 3000);
+                }
               }
+            } else if (dp[0]?.pagado50 == 1) {
+              if (pagoContrato.idpagocontrato) {
+                modalDatosContrato?.hide()
+                showToast("Pago guardado, ya puede generar el contrato.", "SUCCESS", 3000);
+              }
+            }
+          } else {
+            showToast("Eliga una opcion de pago", "ERROR");
           }
 
           /* const idcontrato = await registrarContrato(iddetallepresentacion, 2);
@@ -770,32 +911,53 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else if ((parseFloat($q("#montopagado").value) + totalPagado) >= precio25) {
           console.log("pago del 25%");
           console.log("verificando que existe el idcontrato ->", idcontrato)
-          
-          if($q("#tipopago").value == 1){
-            if($q("#noperacion").value.trim() !== ""){
+
+          if ($q("#tipopago").value == 1) {
+            if ($q("#noperacion").value.trim() !== "") {
               const pagoContrato = await registrarPagoContrato(idcontrato, 1)
+
               console.log("Pago guardado", pagoContrato)
               if (pagoContrato.idpagocontrato) {
                 showToast("Pago guardado", "SUCCESS");
                 modalDatosContrato?.hide()
+                const dpExiste = await obtenerDPporId(iddetallepresentacion)
+                console.log("DP EXISTE ? -> ", dpExiste)
+
+                if (dpExiste[0].reserva == 0) {
+                  const estadoReserva = await actualizarEstadoReservaDp(iddetallepresentacion, 1)
+                  console.log("Estado reserva actualizado", estadoReserva)
+                  await dataFilters()
+                } else if (dpExiste[0].reserva == 1) {
+                  return
+                }
               }
               return
             }
             showToast("Digite el numero de operación.", "ERROR");
-          }else if ($q("#tipopago").value == 2){
+          } else if ($q("#tipopago").value == 2) {
             const pagoContrato = await registrarPagoContrato(idcontrato, 1)
-              console.log("Pago guardado", pagoContrato)
-              if (pagoContrato.idpagocontrato) {
-                showToast("Pago guardado", "SUCCESS");
-                modalDatosContrato?.hide()
+            console.log("Pago guardado", pagoContrato)
+            if (pagoContrato.idpagocontrato) {
+              showToast("Pago guardado", "SUCCESS");
+              modalDatosContrato?.hide()
+              const dpExiste = await obtenerDPporId(iddetallepresentacion)
+              console.log("DP EXISTE ? -> ", dpExiste)
+              if (dpExiste[0].reserva == 0) {
+                const estadoReserva = await actualizarEstadoReservaDp(iddetallepresentacion, 1)
+                console.log("Estado reserva actualizado", estadoReserva)
+                await dataFilters()
+              } else if (dpExiste[0].reserva == 1) {
+                return
               }
-          }else{
+            }
+          } else {
             showToast("Eliga una opcion de pago", "ERROR");
           }
+
           /* const idcontrato = await registrarContrato(iddetallepresentacion, 1);
           console.log("idcontrato > ", idcontrato)
            */
-          
+
         }
       } else if ($q("#montopagado").value < 0) {
         showToast("No puede ingresar un monto negativo", "WARNING", 3000);
@@ -810,17 +972,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  $q("#btnGenerarReserva").addEventListener("click", async () => {
+  /* $q("#btnGenerarReserva").addEventListener("click", async () => {
     alert("GENERANDO RESERVA")
   })
-
+ */
   $q("#tipopago").addEventListener("change", async (e) => {
-    const tipoPago = e.target.value; 
+    const tipoPago = e.target.value;
 
-    if(tipoPago == 1){
+    if (tipoPago == 1) {
       $q("#contenedor-noperacion").hidden = false
-      
-    }else if (tipoPago == 2) {
+
+    } else if (tipoPago == 2) {
       $q("#contenedor-noperacion").hidden = true
       $q("#noperacion").value = ''
     }

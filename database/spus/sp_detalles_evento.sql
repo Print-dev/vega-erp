@@ -43,7 +43,7 @@ CREATE PROCEDURE `sp_obtener_dp_porid`(
 )
 BEGIN
 	SELECT 		
-		DP.iddetalle_presentacion, DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv
+		DP.iddetalle_presentacion, DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50
 	FROM detalles_presentacion DP
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
@@ -70,7 +70,9 @@ BEGIN
         DP.modalidad, 
         DP.fecha_presentacion, 
         CO.idcontrato, 
-        DP.validez
+        DP.validez,
+        DP.reserva,
+        DP.pagado50
     FROM detalles_presentacion DP
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
@@ -93,4 +95,29 @@ BEGIN
 		UPDATE detalles_presentacion SET
     estado = _estado
     WHERE idcontrato = _idcontrato; 
+END //
+
+DROP PROCEDURE sp_actualizar_pagado50_dp;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_pagado50_dp (
+	IN _iddetalle_presentacion INT,
+    IN _pagado50 TINYINT
+)
+BEGIN
+		UPDATE detalles_presentacion SET
+    pagado50 = _pagado50
+    WHERE iddetalle_presentacion = _iddetalle_presentacion; 
+END //
+
+
+DROP PROCEDURE sp_actualizar_estado_reserva_dp;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_estado_reserva_dp (
+	IN _iddetalle_presentacion INT,
+    IN _reserva TINYINT
+)
+BEGIN
+		UPDATE detalles_presentacion SET
+    reserva = _reserva
+    WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
