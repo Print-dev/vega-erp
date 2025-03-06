@@ -137,11 +137,33 @@ function formatoHora($hora_24h)
     return $hora_obj->format('g:i A'); // "g:i A" da la hora en 12h sin ceros a la izquierda
 }
 
-// Ejemplo de uso
-$hora_presentacion = $contratoPresentacion[0]['hora_presentacion']; // Ejemplo: "14:00:00"
-$hora_formateada = formatoHora($hora_presentacion);
+function restarHoras($horaInicio, $horaFinal) {
+    $inicio = new DateTime($horaInicio);
+    $final = new DateTime($horaFinal);
+    $intervalo = $inicio->diff($final);
 
-echo $hora_formateada;
+    $horas = $intervalo->h;
+    $minutos = $intervalo->i;
+
+    // Formatear la salida
+    $resultado = [];
+    if ($horas > 0) {
+        $resultado[] = "$horas " . ($horas == 1 ? "hora" : "horas");
+    }
+    if ($minutos > 0) {
+        $resultado[] = "$minutos " . ($minutos == 1 ? "minuto" : "minutos");
+    }
+
+    return implode(" con ", $resultado);
+}
+// Ejemplo de uso
+$horainicio = $contratoPresentacion[0]['horainicio']; // Ejemplo: "14:00:00"
+$horafinal = $contratoPresentacion[0]['horafinal']; // Ejemplo: "14:00:00"
+$hora_inicio_formateada = formatoHora($horainicio);
+$hora_final_formateada = formatoHora($horafinal);
+
+echo $hora_inicio_formateada;
+echo $hora_final_formateada;
 
 // CONVERTIR NUMEROS A TEXTO
 function numeroATexto($numero)
@@ -150,10 +172,9 @@ function numeroATexto($numero)
     return ucfirst($formatter->format($numero));
 }
 
-$monto_numerico = (float) $contratoPresentacion[0]['abono_garantia'];
-$monto_texto = numeroATexto($monto_numerico);
+/* $monto_numerico = (float) $contratoPresentacion[0]['abono_garantia'];
 
-$monto_texto = numeroATexto($monto_numerico);
+$monto_texto = numeroATexto($monto_numerico); */
 
 ?>
 
@@ -206,8 +227,8 @@ $monto_texto = numeroATexto($monto_numerico);
         <tr>
             <td class="label" colspan="5" style="border: none;">
                 <strong>PRIMERO: EL ORGANIZADOR</strong> contrata los servicios artísticos de <strong><?= $contratoPresentacion[0]['nom_usuario'] ?></strong> Y
-                ORQUESTA para una presentación para el día <strong><?= $fecha_formateada ?></strong>, por <strong><?= $contratoPresentacion[0]['tiempo_presentacion'] ?></strong> minutos de SHOW
-                a las <?= $hora_formateada ?>, (que por la dificultad de la ruta puede variar como máximo
+                ORQUESTA para una presentación para el día <strong><?= $fecha_formateada ?></strong>, por <strong><?=  restarHoras($horainicio, $horafinal); ?> </strong> de SHOW
+                de <?php echo $hora_inicio_formateada . ' a ' . $hora_final_formateada ?> , (que por la dificultad de la ruta puede variar como máximo
                 1 hora posterior) en la localidad <?= $contratoPresentacion[0]['distrito_evento'] ?>, provincia de <?= $contratoPresentacion[0]['provincia_evento'] ?>, departamento de <?= $contratoPresentacion[0]['departamento_evento'] ?>.
             </td>
         </tr>

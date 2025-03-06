@@ -93,8 +93,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="btnGenerarCotizacion">Generar Cotizacion</button>
-                <button type="button" class="btn btn-primary btnGuardarContrato" id="close-mdl-cotizacion">Guardar y cerrar</button>
-            </div>
+<!--                 <button type="button" class="btn btn-primary btnGuardarContrato" id="close-mdl-cotizacion">Guardar y cerrar</button>
+ -->            </div>
         </div>
     </div>
 </div>
@@ -113,7 +113,7 @@
                         <div class="row g-2 mt-2">
                             <div class="col-md-3">
                                 <div class="form-floating">
-                                    <select name="nacionalidad" id="nacionalidad" class="form-select" required">
+                                    <select name="nacionalidad" id="nacionalidad" class="form-select" required>
                                         <option value="">Selecciona</option>
                                         <option value="31">Peru</option>
                                     </select>
@@ -122,21 +122,21 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating">
-                                    <select name="departamento" id="departamento" class="form-select" required">
+                                    <select name="departamento" id="departamento" class="form-select" required>
                                     </select>
                                     <label for="departamento" class="form-label">Departamento</label>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating">
-                                    <select name="provincia" id="provincia" class="form-select" required">
+                                    <select name="provincia" id="provincia" class="form-select" required>
                                     </select>
                                     <label for="provincia" class="form-label">Provincia</label>
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-floating">
-                                    <select name="distrito" id="distrito" class="form-select" required">
+                                    <select name="distrito" id="distrito" class="form-select" required>
                                     </select>
                                     <label for="distrito" class="form-label">Distrito</label>
                                 </div>
@@ -183,7 +183,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="btnActualizarDatosCliente">Actualizar Datos</button>
-                <button type="button" class="btn btn-primary btnGuardarContrato" id="close-mdl-datoscliente">Cerrar</button>
+                <button type="button" class="btn btn-primary btnGuardarContrato" id="close-mdl-datoscliente" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -229,7 +229,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="btnGenerarConvenio">Generar Convenio</button>
-                <button type="button" class="btn btn-primary btnGuardarConvenio" id="close-mdl-convenio">Guardar y cerrar</button>
+                <button type="button" class="btn btn-primary btnGuardarConvenio" id="close-mdl-convenio" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -260,6 +260,19 @@
                                 <div id="porciento">
 
                                 </div>
+                                <div class="form-floating mt-3">
+                                    <select name="tipopago" id="tipopago" class="form-select">
+                                        <option value="-1">Selecciona</option>
+                                        <option value="1">Transferencia</option>
+                                        <option value="2">Contado</option>
+                                    </select>
+                                    <label for="tipopago" class="form-label">Tipo de pago</label>
+                                </div>
+                                <div class="form-floating mt-3" id="contenedor-noperacion" hidden>
+                                    <input type="text" id="noperacion" name="noperacion"
+                                        class="form-control " min="0">
+                                    <label for="noperacion" class="form-label">N° Operacion</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -268,7 +281,7 @@
             <div class="modal-footer" id="contenedor-botones">
                 <button type="button" class="btn btn-secondary" id="btnGuardar" hidden>Guardar</button>
                 <button type="button" class="btn btn-secondary" id="btnGenerarReserva" hidden>Generar Reserva</button>
-                <button type="button" class="btn btn-primary" id="close-mdl-convenio">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="close-mdl-convenio" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>

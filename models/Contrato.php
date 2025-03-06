@@ -31,14 +31,16 @@ class Contrato extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_pago_contrato(@idpagocontrato,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_pago_contrato(@idpagocontrato,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idcontrato'],
           $params['monto'],
+          $params['tipopago'],
+          $params['noperacion'],
           $params['fechapago'],
           $params['horapago'],
-          $params['tipopago'],
+          $params['estado'],
         )
       );
 

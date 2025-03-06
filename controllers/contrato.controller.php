@@ -45,9 +45,11 @@ if (isset($_POST['operation'])) {
       $cleanData = [
         'idcontrato'   => $contrato->limpiarCadena($_POST['idcontrato']),
         'monto' => $contrato->limpiarCadena($_POST['monto']),
+        'tipopago' => $contrato->limpiarCadena($_POST['tipopago']),
+        'noperacion' => $_POST['noperacion'] === "" ? null : $contrato->limpiarCadena($_POST['noperacion']),
         'fechapago' => $contrato->limpiarCadena($_POST['fechapago']),
         'horapago' => $contrato->limpiarCadena($_POST['horapago']),
-        'tipopago' => $contrato->limpiarCadena($_POST['tipopago'])
+        'estado' => $contrato->limpiarCadena($_POST['estado'])
       ];
 
       $respuesta = ['idpagocontrato' => -1];

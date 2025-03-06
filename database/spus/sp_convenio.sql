@@ -13,9 +13,10 @@ BEGIN
         DISCLI.distrito, PROCLI.provincia, DECLI.departamento, 
         USU.nom_usuario,
         DP.fecha_presentacion,
-		DP.tiempo_presentacion,
-        DP.hora_presentacion,
+        DP.horainicio,
+        DP.horafinal,
         DP.establecimiento,
+        DP.referencia,
         DISDP.distrito, PRODP.provincia, DEDP.departamento,
         DP.igv,
 		C.abono_garantia, C.abono_publicidad

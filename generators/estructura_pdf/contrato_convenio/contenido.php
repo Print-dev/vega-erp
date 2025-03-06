@@ -136,11 +136,27 @@ function formatoHora($hora_24h)
     return $hora_obj->format('g:i A'); // "g:i A" da la hora en 12h sin ceros a la izquierda
 }
 
-// Ejemplo de uso
-$hora_presentacion = $convenioContrato[0]['hora_presentacion']; // Ejemplo: "14:00:00"
-$hora_formateada = formatoHora($hora_presentacion);
+function restarHoras($horaInicio, $horaFin) {
+    // Convertir las horas en objetos DateTime
+    $inicio = new DateTime($horaInicio);
+    $fin = new DateTime($horaFin);
 
-echo $hora_formateada;
+    // Calcular la diferencia
+    $diferencia = $inicio->diff($fin);
+
+    // Formatear el resultado en HH:MM:SS
+    return $diferencia->format('%H:%I:%S');
+}
+
+
+// Ejemplo de uso
+$horainicio = $convenioContrato[0]['horainicio']; // Ejemplo: "14:00:00"
+$horafinal = $convenioContrato[0]['horainicio']; // Ejemplo: "14:00:00"
+$hora_inicio_formateada = formatoHora($horainicio);
+$hora_final_formateada = formatoHora($horafinal);
+
+echo $hora_inicio_formateada;
+echo $hora_final_formateada;
 
 // CONVERTIR NUMEROS A TEXTO
 function numeroATexto($numero)
@@ -188,8 +204,8 @@ $monto_texto = numeroATexto($monto_numerico);
             <td class="label" colspan="5" style="border: none;">
                 <strong>PRIMERO:</strong> EL ORGANIZADOR contrata los servicios artísticos de <?= strtoupper($convenioContrato[0]['nom_usuario']) ?>
                 para una presentación para el día <?= $fecha_formateada ?>,
-                por <?= $convenioContrato[0]['tiempo_presentacion'] ?> minutos de SHOW a las
-                <?= $hora_formateada ?> en <strong>“<?= $convenioContrato[0]['establecimiento'] ?>”</strong>,
+                por <?=  restarHoras($horainicio, $horafinal); ?> horas de SHOW a las
+                <?= $hora_inicio_formateada ?> a <?= $hora_final_formateada ?>  en <strong>“<?= $convenioContrato[0]['establecimiento'] ?>”</strong>,
                 provincia de <?= $convenioContrato[0]['provincia'] ?>, departamento de <?= $convenioContrato[0]['departamento'] ?>.
             </td>
         </tr>

@@ -119,6 +119,15 @@ document.addEventListener('DOMContentLoaded', async function () {
     return fpersona
   }
 
+  async function obtenerCotizacionesPorModalidad() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerCotizacionesPorModalidad");
+    params.append("modalidad", 2);
+    const fpersona = await getDatos(`${host}detalleevento.controller.php`, params)
+    console.log(fpersona);
+    return fpersona
+  }
+
   /* async function obtenerCotizacion(iddetallepresentacion) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerCotizacion");
@@ -217,14 +226,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     detalle.append("iddistrito", $q("#distrito2").value);
     detalle.append("ncotizacion", ncotizacion ? ncotizacion : '');
     detalle.append("fechapresentacion", $q("#fechapresentacion").value);
-    detalle.append("horapresentacion", $q("#horapresentacion").value);
-    detalle.append("tiempopresentacion", $q("#tiempopresentacion").value);
+    detalle.append("horainicio", $q("#horainicio").value);
+    detalle.append("horafinal", $q("#horafinal").value);
     detalle.append("establecimiento", $q("#establecimiento").value);
+    detalle.append("referencia", $q("#referencia").value);
     detalle.append("tipoevento", $q("#tipoevento").value);
     detalle.append("modalidad", $q("#modalidad").value);
     detalle.append("validez", $q("#validez").value ? $q("#validez").value : '');
     detalle.append("igv", $q("#igv").checked ? 1 : 0);
-    detalle.append("tipopago", $q("#tipopago").value);
 
     const fdetalle = await fetch(`${host}detalleevento.controller.php`, {
       method: "POST",
@@ -234,7 +243,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     return rdetalle;
   }
 
-  async function registrarConvenio(iddetallepresentacion, estado) {
+ /*  async function registrarConvenio(iddetallepresentacion, estado) {
 
     const convenio = new FormData();
     convenio.append("operation", "registrarConvenio");
@@ -250,7 +259,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
     const rconvenio = await fconvenio.json();
     return rconvenio;
-  }
+  } */
 
   /* async function registrarContrato(iddetallepresentacion, estado) {
 
@@ -281,11 +290,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     $q("#direccion").disabled = isblock;
     $q("#artista").disabled = isblock;
     $q("#fechapresentacion").disabled = isblock;
-    $q("#horapresentacion").disabled = isblock;
-    $q("#tiempopresentacion").disabled = isblock;
+    $q("#horainicio").disabled = isblock;
+    $q("#horafinal").disabled = isblock;
     $q("#establecimiento").disabled = isblock;
     $q("#tipoevento").disabled = isblock;
-    $q("#tipopago").disabled = isblock;
     $q("#modalidad").disabled = isblock;
     $q("#validez").disabled = isblock;
     $q("#nacionalidad2").disabled = isblock;
@@ -293,6 +301,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     $q("#provincia2").disabled = isblock;
     $q("#distrito2").disabled = isblock;
     $q("#igv").disabled = isblock;
+    $q("#referencia").disabled = isblock;
     $q("#btnGuardarAC").disabled = isblock;
     $q("#btnLimpiarAC").disabled = isblock;
     //selector("externo").disabled = isblock
@@ -326,8 +335,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     $q("#direccion").value = '';
     $q("#artista").value = '';
     $q("#fechapresentacion").value = '';
-    $q("#horapresentacion").value = '';
-    $q("#tiempopresentacion").value = '';
+    $q("#horainicio").value = '';
+    $q("#horafinal").value = '';
     $q("#establecimiento").value = '';
     $q("#tipoevento").value = '';
     $q("#modalidad").value = '';
@@ -447,13 +456,13 @@ document.addEventListener('DOMContentLoaded', async function () {
     bloquearCampos(true);
   })
 
-  $q(".btnGuardarConvenio").addEventListener("click", () => {
+  /* $q(".btnGuardarConvenio").addEventListener("click", () => {
     const convenio = registrarConvenio(iddetalleevento, 1)
     if (convenio) {
       showToast("Se ha guardado el convenio", "SUCCESS", 1000, 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente');
     }
-  })
-
+  }) */
+/* 
   $q("#btnGenerarConvenio").addEventListener("click", async () => {
     if (await ask("Confirma la acción")) {
       const convenio = registrarConvenio(iddetalleevento, 2)
@@ -462,7 +471,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       }
     }
   })
-
+ */
 
   $q("#search").addEventListener("click", async () => {
     idcliente = -1
@@ -493,23 +502,19 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (await ask("¿Estas seguro de registrar?")) {
 
       if (idcliente == -1) {
-        //convenio
+        //CONVENIO Y CONTRATO CUANDO NO EXISTE AUN EL CLIENTE
         const data = await registrarCliente();
         console.log(data);
         //alert("registrando persona")
         if (data.idcliente > 0) {
           //GENERAR NUMERO RANDOM ALEATORIO DE 9 DIGITOS
-          let year = new Date().getFullYear(); // Obtiene el año actual dinámicamente
-          let cotizacionExiste;
+          const cotizaciones = await obtenerCotizacionesPorModalidad()
+          console.log("cotizaciones -> ", cotizaciones.at(-1))
+          const ultimaCotizacion = cotizaciones.at(-1); // Última cotización registrada
 
-          do {
-            let primerosCuatro = Math.floor(1000 + Math.random() * 9000); // Genera 4 dígitos aleatorios
-            ncotizacion = `${primerosCuatro}-${year}`;
-            console.log("Intentando generar n° de cotización: " + ncotizacion);
-
-            // Verificar si el número de cotización ya existe
-            cotizacionExiste = obtenerCotizacionPorNcot(ncotizacion);
-          } while (cotizacionExiste.length > 0); // Si existe, genera otro número
+          const nuevoNCotizacion = generarNuevoNCotizacion(ultimaCotizacion);
+          console.log("Nuevo número de cotización ->", nuevoNCotizacion);
+          ncotizacion = nuevoNCotizacion
 
           if ($q("#modalidad").value == 1) {
             detalleevento = await registrarDetalleEvento(data.idcliente);
@@ -518,51 +523,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
             console.log(detalleevento);
           }
-          console.log("select modalidad : antes de netrar a condicion ", $q("#modalidad").value)
+
           if (detalleevento.iddetalleevento > 0) {
-            iddetalleevento = detalleevento.iddetalleevento
-            if ($q("#modalidad").value == 1) {
-              console.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
-
-              let modalCotizacion = new bootstrap.Modal($q("#modal-convenio"));
-              modalCotizacion.show();
-              //showToast("Se ha registrado correctamente la atencion", "SUCCESS", 1000);
-              isReset = false;
-              //resetUI();
-              //$q("#ndocumento").value = "";
-              //bloquearCampos(true);
-              //$q("#btnGuardarAC").disabled = true;
-              //$q("#ndocumento").focus();
-            } // me quede aca
-            else if ($q("#modalidad").value == 2) {
-              const detallespresentacion = await obtenerDPporId(iddetalleevento)
-              console.log("detallespresentacion: ", detallespresentacion)
-              idprovincia = detallespresentacion[0].idprovincia
-              idartista = $q("#artista").value
-              provincia = detallespresentacion[0].provincia
-              detallespresentacion.forEach(dp => {
-                $q("#tInfoCotizacion").innerHTML = `
-                  <tr>
-                    <td>${dp.departamento}</td>
-                    <td>${dp.provincia}</td>
-                    <td>Alta</td>
-                    <td>2000</td>
-                  </tr>
-                  `
-              });
-
-              console.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
-
-              let modalCotizacion = new bootstrap.Modal($q("#modal-previacotizacion"));
-              modalCotizacion.show();
-              //showToast("Se ha registrado correctamente la atencion", "SUCCESS", 1000);
-              isReset = false;
-              //resetUI();
-              //$q("#ndocumento").value = "";
-              //bloquearCampos(true);
-              //$q("#btnGuardarAC").disabled = true;
-              //$q("#ndocumento").focus();
-            }
+            window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
           } else {
             showToast("Hubo un error al registrar la atencion", "ERROR");
           }
@@ -571,20 +534,17 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
       }
       else {
-        // CONTRATO
+        // CONVENIO Y CONTRATO CUANDO YA EXISTE EL CLIENTE
         //alert(`REGISTRANDO CON UN CLIENTE YA EXISTENE ${idcliente}`)
         //GENERAR NUMERO RANDOM ALEATORIO DE 9 DIGITOS
-        let year = new Date().getFullYear(); // Obtiene el año actual dinámicamente
-        let cotizacionExiste;
 
-        do {
-          let primerosCuatro = Math.floor(1000 + Math.random() * 9000); // Genera 4 dígitos aleatorios
-          ncotizacion = `${primerosCuatro}-${year}`;
-          console.log("Intentando generar n° de cotización: " + ncotizacion);
+        const cotizaciones = await obtenerCotizacionesPorModalidad()
+        console.log("cotizaciones -> ", cotizaciones.at(-1))
+        const ultimaCotizacion = cotizaciones.at(-1); // Última cotización registrada
 
-          // Verificar si el número de cotización ya existe
-          cotizacionExiste = obtenerCotizacionPorNcot(ncotizacion);
-        } while (cotizacionExiste.length > 0); // Si existe, genera otro número
+        const nuevoNCotizacion = generarNuevoNCotizacion(ultimaCotizacion);
+        console.log("Nuevo número de cotización ->", nuevoNCotizacion);
+        ncotizacion = nuevoNCotizacion
 
         if ($q("#modalidad").value == 1) {
           detalleevento = await registrarDetalleEvento(idcliente);
@@ -595,48 +555,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
 
         if (detalleevento.iddetalleevento > 0) {
-          iddetalleevento = detalleevento.iddetalleevento
-          if ($q("#modalidad").value == 1) {
-            console.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
-
-            let modalCotizacion = new bootstrap.Modal($q("#modal-convenio"));
-            modalCotizacion.show();
-            //showToast("Se ha registrado correctamente la atencion", "SUCCESS", 1000);
-            isReset = false;
-            //resetUI();
-            //$q("#ndocumento").value = "";
-            //bloquearCampos(true);
-            //$q("#btnGuardarAC").disabled = true;
-            //$q("#ndocumento").focus();
-          } // me quede aca
-          else if ($q("#modalidad").value == 2) {
-            console.log("select modalidad : despues de netrar a condicion ", $q("#modalidad").value)
-            console.log("iddetalleevento -> ", iddetalleevento)
-            const detallespresentacion = await obtenerDPporId(iddetalleevento)
-            console.log("detallespresentacion: ", detallespresentacion)
-            idprovincia = detallespresentacion[0].idprovincia
-            idartista = $q("#artista").value
-            provincia = detallespresentacion[0].provincia
-            detallespresentacion.forEach(dp => {
-              $q("#tInfoCotizacion").innerHTML = `
-                <tr>
-                  <td>${dp.departamento}</td>
-                  <td>${dp.provincia}</td>
-                  <td>Media</td>
-                  <td>2500</td>
-                </tr>
-                `
-            });
-            let modalCotizacion = new bootstrap.Modal($q("#modal-previacotizacion"));
-            modalCotizacion.show();
-            //showToast("Se ha registrado correctamente la atencion", "SUCCESS", 1000);
-            isReset = false;
-            //resetUI();
-            //$q("#ndocumento").value = "";
-            //bloquearCampos(true);
-            //$q("#btnGuardarAC").disabled = true;
-            //$q("#ndocumento").focus();
-          }
+          window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
         } else {
           showToast("Hubo un error al registrar la atencion", "ERROR");
         }
@@ -652,9 +571,9 @@ document.addEventListener('DOMContentLoaded', async function () {
       showToast(message, "ERROR");
     } */
 
-    if ($q("#modalidad").value == 2) {
+  /*   if ($q("#modalidad").value == 2) {
 
-    }
+    } */
   });
 
 
@@ -668,14 +587,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
   })
 
-  $q("#btnGenerarCotizacion").addEventListener("click", async (e) => {
+ /*  $q("#btnGenerarCotizacion").addEventListener("click", async (e) => {
     //const tarifaArtista = await obtenerTarifasPorProvincia()
     //    const cotizacion = await obtenerCotizacion(iddetalleevento)
     console.log("clickeando")
     window.open(`http://localhost/vega-erp/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${2500}`)
     return
   })
-
+ */
   // ************************************* FUNCIONES AUTOMATICAS ************************************* //
 
   //async function

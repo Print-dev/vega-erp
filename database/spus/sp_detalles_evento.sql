@@ -9,14 +9,14 @@ CREATE PROCEDURE sp_registrar_detalle_presentacion (
 	IN _iddistrito int,
     IN _ncotizacion	char(9),
     IN _fechapresentacion date,
-    IN _horapresentacion time,
-    IN _tiempopresentacion int,
+    IN _horainicio time,
+    IN _horafinal time,
     IN _establecimiento VARCHAR(80),
+    IN _referencia VARCHAR(200),
     IN _tipoevento int,
     IN _modalidad int,
     IN _validez int,
-    IN _igv tinyint,
-    IN _tipopago int
+    IN _igv tinyint
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
@@ -26,8 +26,8 @@ BEGIN
         SET existe_error = 1;
     END;
     
-    INSERT INTO detalles_presentacion (idusuario, idcliente, iddistrito, ncotizacion, fecha_presentacion, hora_presentacion, tiempo_presentacion, establecimiento, tipo_evento, modalidad, validez, igv, tipo_pago)
-    VALUES (_idusuario, _idcliente, _iddistrito, NULLIF(_ncotizacion, ''), _fechapresentacion, _horapresentacion, _tiempopresentacion, _establecimiento, _tipoevento, _modalidad, NULLIF(_validez, ''), _igv, _tipopago);
+    INSERT INTO detalles_presentacion (idusuario, idcliente, iddistrito, ncotizacion, fecha_presentacion, horainicio, horafinal, establecimiento, referencia ,tipo_evento, modalidad, validez, igv)
+    VALUES (_idusuario, _idcliente, _iddistrito, NULLIF(_ncotizacion, ''), _fechapresentacion, _horainicio, _horafinal, _establecimiento, _referencia, _tipoevento, _modalidad, NULLIF(_validez, ''), _igv);
     
     IF existe_error = 1 THEN
         SET _iddetalle_presentacion = -1;
@@ -56,19 +56,32 @@ END //
 drop procedure if exists sp_obtener_detalles_evento;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_detalles_evento`(
-	IN _ncotizacion CHAR(9),
+    IN _ncotizacion CHAR(9),
     IN _ndocumento CHAR(9)
 )
 BEGIN
-	SELECT 		
-		DP.iddetalle_presentacion, CLI.ndocumento ,DP.ncotizacion ,USU.nom_usuario, CLI.razonsocial, DP.tipo_evento, DP.modalidad, DP.fecha_presentacion, CO.idcontrato, DP.validez
-	FROM detalles_presentacion DP
-	INNER JOIN usuarios USU ON USU.idusuario = DP.idusuario
-    INNER JOIN clientes CLI ON CLI.idcliente = DP.idcliente
+    SELECT 
+        DP.iddetalle_presentacion, 
+        CLI.ndocumento,
+        DP.ncotizacion,
+        USU.nom_usuario, 
+        CLI.razonsocial, 
+        DP.tipo_evento, 
+        DP.modalidad, 
+        DP.fecha_presentacion, 
+        CO.idcontrato, 
+        DP.validez
+    FROM detalles_presentacion DP
+    LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+    LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN contratos CO ON CO.iddetalle_presentacion = DP.iddetalle_presentacion
-    WHERE DP.ncotizacion LIKE CONCAT('%', COALESCE(_ncotizacion, ''), '%')
-		AND CLI.ndocumento LIKE CONCAT('%', COALESCE(_ndocumento, ''), '%');
+    WHERE 
+    (DP.ncotizacion IS NULL OR DP.ncotizacion LIKE CONCAT('%', COALESCE(_ncotizacion, ''), '%'))
+    AND (CLI.ndocumento LIKE CONCAT('%', COALESCE(_ndocumento, ''), '%') OR _ndocumento IS NULL);
+
 END //
+
+CALL sp_obtener_detalles_evento ('','');
 
 DROP PROCEDURE sp_actualizar_estado_dp;
 DELIMITER //

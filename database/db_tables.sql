@@ -71,7 +71,8 @@ CREATE TABLE usuarios
     update_at	  DATETIME			  NULL,
     CONSTRAINT fk_idpersona FOREIGN KEY (idpersona) REFERENCES personas(idpersona),
     CONSTRAINT fk_idnivelacceso FOREIGN KEY(idnivelacceso) REFERENCES nivelaccesos(idnivelacceso),
-    CONSTRAINT uk_nom_usuario UNIQUE(nom_usuario)
+    CONSTRAINT uk_nom_usuario UNIQUE(nom_usuario),
+    constraint ck_estado_usuario check(estado IN (1,2))
 )ENGINE=INNODB;
 
 CREATE TABLE tarifario (
@@ -117,21 +118,22 @@ create table detalles_presentacion (
     iddistrito			int not null,
     ncotizacion			CHAR(9) null,
     fecha_presentacion	date not null,
-    hora_presentacion	time not null,
-    tiempo_presentacion int  not null,
+    horainicio	time not null,
+    horafinal 	time not null,
     establecimiento	varchar(80) not null,
+    referencia 		varchar(200) not null,
     tipo_evento		int not null, -- 1= publico, 2= privado
     modalidad		int	not null, -- 1= convenio, 2= contrato
 	validez			int		null,
     igv				tinyint	not null,
-    tipo_pago		int not null,
     reserva			tinyint null default 0,
-    estado			tinyint null default 0, -- 0: activo, 1:vencido
+    estado			tinyint null default 1, -- 1: activo, 2:vencido
     constraint fk_idusuario_dp foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idcliente_dp foreign key (idcliente) references clientes (idcliente),
     constraint fk_iddistrito_dp foreign key (iddistrito) references distritos (iddistrito),
     constraint    chk_detalle_p          CHECK(modalidad IN(1, 2)),
-    constraint    chk_detalle_p_tp          CHECK(tipo_pago IN(1, 2)),
+    constraint ck_estado_dp				check(estado IN (1,2)),
+    constraint ck_tevento_dp				check(tipo_evento IN (1,2)),
     constraint	uk_ncotizacion 			UNIQUE(ncotizacion),
     constraint uk_idp 					UNIQUE(iddetalle_presentacion)
 )engine=innodb;
@@ -145,25 +147,37 @@ create table convenios (
     estado			int null default 1, -- 1 = pendiente, 2 = aprobada, 3 = no aprobado
     created_at		datetime null default now(),
     updated_at		datetime null ,
-    constraint fk_dp_cv foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
+    constraint fk_dp_cv foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
+    constraint ck_estado check(estado IN(1,2,3))
 ) engine = innodb;
 
 create table contratos (
 	idcontrato	int auto_increment primary key,
     iddetalle_presentacion	int not null,
-    monto_pagado		decimal(7,2) not null,
     estado				int null default 1, -- 1 = pendiente de pago (pago 15%), 2- pagado, 3- caducado
     created_at			datetime	null default now(),
 	updated_at		datetime null ,
-    constraint fk_dp_cs foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
+    constraint fk_dp_cs foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
+    constraint ck_estado	check(estado IN (1,2,3))
 ) engine = innodb;
 
 create table pagos_contrato (
 	idpagocontrato		int auto_increment primary key,
     idcontrato	int not null,
     monto		decimal(7,2) not null,
+    tipo_pago	tinyint	not null, -- 1: transferencia, 2: contado
+    noperacion	varchar(20) null,
     fecha_pago	date	not null ,
     hora_pago	time 	not null,
-    tipo_pago 	int			not null,
-    constraint fk_idcontrato	foreign key (idcontrato) references contratos (idcontrato)
+    estado	 	int			not null, -- 1: pendiente (25%), 2: adelanto, 3: aprobado (50%)
+    constraint fk_idcontrato	foreign key (idcontrato) references contratos (idcontrato),
+    constraint ck_tipopago_pc	check (tipo_pago IN (1,2)),
+    constraint ck_estado_pc	check (estado IN (1,2, 3))
+) engine = innodb;
+
+create table reservas (
+	idreserva		int auto_increment primary key,
+    idpagocontrato	int not null,
+    vigencia		int not null,
+    constraint fk_idpagocontrato_res foreign key (idpagocontrato) references pagos_contrato (idpagocontrato)
 ) engine = innodb;

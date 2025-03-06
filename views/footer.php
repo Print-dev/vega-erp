@@ -59,7 +59,7 @@
 <!-- Libreria que simplifica sweet alert -->
 <script src="http://localhost/vega-erp/js/swalcustom.js"></script>
 <!-- Archivo para obtener fecha y hora de peru -->
-<script src="http://localhost/vega-erp/js/fechahoraperu.js"></script>
+<script src="http://localhost/vega-erp/js/utiles.js"></script>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <!-- JQUERY -->

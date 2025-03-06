@@ -197,6 +197,48 @@
     }
 </style>
 
+<?php
+
+function formatoHora($hora_24h)
+{
+    // Convertir la hora de 24h a 12h con AM/PM
+    $hora_obj = DateTime::createFromFormat('H:i:s', $hora_24h);
+    return $hora_obj->format('g:i A'); // "g:i A" da la hora en 12h sin ceros a la izquierda
+}
+
+
+function restarHoras($horaInicio, $horaFinal) {
+    $inicio = new DateTime($horaInicio);
+    $final = new DateTime($horaFinal);
+    $intervalo = $inicio->diff($final);
+
+    $horas = $intervalo->h;
+    $minutos = $intervalo->i;
+
+    // Formatear la salida
+    $resultado = [];
+    if ($horas > 0) {
+        $resultado[] = "$horas " . ($horas == 1 ? "hora" : "horas");
+    }
+    if ($minutos > 0) {
+        $resultado[] = "$minutos " . ($minutos == 1 ? "minuto" : "minutos");
+    }
+
+    return implode(" con ", $resultado);
+}
+
+// Ejemplo de uso
+$horainicio = $cotizacion[0]['horainicio']; // Ejemplo: "14:00:00"
+$horafinal = $cotizacion[0]['horafinal']; // Ejemplo: "14:00:00"
+$hora_inicio_formateada = formatoHora($horainicio);
+$hora_final_formateada = formatoHora($horafinal);
+
+echo $hora_inicio_formateada;
+echo $hora_final_formateada;
+
+
+?>
+
 <!-- Encabezado centrado -->
 <div class="watermark">
     <table class="header-container">
@@ -241,8 +283,8 @@
             <td colspan="3"><?php echo $cotizacion[0]['razonsocial']; ?></td>
         </tr>
         <tr>
-            <td class="label"><?php echo $cotizacion[0]['ndocumento']; ?></td>
-            <td colspan="3"></td>
+            <td class="label">DNI / RUC</td>
+            <td colspan="3"><?php echo $cotizacion[0]['ndocumento']; ?></td>
         </tr>
         <tr>
             <td class="label">Representante Legal</td>
@@ -253,13 +295,13 @@
             <td colspan="3"><?php echo $cotizacion[0]['direccion']; ?></td>
         </tr>
         <tr>
-            <td class="label" style="border-right: none;">Distrito</td>
+            <td class="label">Distrito</td>
             <td style="border-left: none;"><?php echo $cotizacion[0]['distrito']; ?></td>
             <td class="label" colspan="1">Provincia</td>
             <td colspan="1"><?php echo $cotizacion[0]['provincia']; ?></td>
         </tr>
         <tr>
-            <td class="label" style="border-right: none;">Correo</td>
+            <td class="label" >Correo</td>
             <td style="border-left: none;"><?php echo $cotizacion[0]['correo']; ?></td>
             <td class="label" colspan="1">Celular</td>
             <td colspan="1"><?php echo $cotizacion[0]['telefono']; ?></td>
@@ -275,9 +317,9 @@
         </tr>
         <tr>
             <td class="label">Tiempo:</td>
-            <td><?php echo $cotizacion[0]['tiempo_presentacion']; ?></td>
-            <td class="label" colspan="1">Hora</td>
-            <td colspan="1"><?php echo $cotizacion[0]['hora_presentacion']; ?></td>
+            <td><?= restarHoras($horainicio, $horafinal); ?></td>
+            <td class="label" colspan="1">Desde - Hasta</td>
+            <td colspan="1"><?php echo $hora_inicio_formateada . ' - ' . $hora_final_formateada ?></td>
         </tr>
         <tr>
             <td class="label">Fecha</td>
@@ -290,6 +332,10 @@
         <tr>
             <td class="label">Ubicación</td>
             <td colspan="3"><?php echo $cotizacion[0]['departamento_evento'] . '/' . $cotizacion[0]['provincia_evento'] . '/' . $cotizacion[0]['distrito_evento']; ?></td>
+        </tr>
+        <tr>
+            <td class="label">Referencia</td>
+            <td colspan="3"><?= $cotizacion[0]['referencia'] ?></td>
         </tr>
     </table>
     <table class="datos-cotizacion">
@@ -304,10 +350,10 @@
             <td class="label">Total</td>
         </tr>
         <tr>
-            <td>1</td>
-            <td>Presentacion artistica</td>
-            <td></td>
-            <td><?php if (isset($tarifaArtista[0]['precio'])) {
+            <td style="width: 20px;">1</td>
+            <td style="width: 350px;">PRESENTACION ARTÍSTICA DE <?= strtoupper($cotizacion[0]['nom_usuario']); ?> </td>
+            <td style="width: 100px;"><?=  restarHoras($horainicio, $horafinal); ?></td>
+            <td style="width: 70px;"><?php if (isset($tarifaArtista[0]['precio'])) {
                     echo $tarifaArtista[0]['precio'];
                 } else {
                     echo 'Sin tarifa en esta provincia';
@@ -321,7 +367,7 @@
         <tr>
             <td>2</td>
             <td>Puesto en la locacion <?php echo $provincia; ?></td>
-            <td></td>
+            <td><?=  restarHoras($horainicio, $horafinal); ?></td>
             <td><?php echo $precio; ?></td>
             <td><?php echo $precio; ?></td>
         </tr>

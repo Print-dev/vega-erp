@@ -151,28 +151,6 @@ INSERT INTO usuarios (idnivelacceso, idpersona, nom_usuario, claveacceso) values
 INSERT INTO clientes (iddistrito, ndocumento, razonsocial, telefono, correo, direccion) values
 	(74, '10727547521', 'AVALOS ROMERO ROYER ALEXIS', '973189350', 'alexisjkg@gmail.com', 'Asent. FALSA 123');
     
-INSERT INTO detalles_presentacion (
-    idusuario, idcliente, iddistrito, ncotizacion, fecha_presentacion, 
-    hora_presentacion, tiempo_presentacion, establecimiento, tipo_evento, 
-    modalidad, validez, igv, tipo_pago
-) VALUES 
-(2, 1, 74, '0004-2025', '2025-03-10', '14:00:00', 120, 'Hotel Miraflores', 1, 1,null ,1, 2),
-(2, 1, 74, '0005-2025', '2025-03-15', '16:30:00', 90, 'Centro de Convenciones', 2, 2, 7, 1, 1),
-(2, 1, 74, '0006-2025', '2025-03-20', '18:00:00', 150, 'Club Social', 1, 1, null, 1, 2);
 
-INSERT INTO convenios (
-    iddetalle_presentacion, abono_garantia, abono_publicidad, propuesta_cliente, estado
-) VALUES 
-(1, 500.00, 300.00, 'El cliente solicita incluir decoración adicional y música en vivo.', 1),
-(2, 700.00, 400.00, 'El cliente requiere un descuento en el servicio de catering.', 2),
-(3, NULL, NULL, 'El cliente propone incluir una mesa VIP sin costo adicional.', 1);
-
-
-INSERT INTO contratos (
-    iddetalle_presentacion, monto_pagado, estado
-) VALUES 
-(1, 750.00, 1), -- Pendiente de pago (15% inicial)
-(2, 5000.00, 2), -- Pagado completamente
-(3, 770.00, 3); -- Caducado
 
 INSERT INTO tarifario (idusuario, idprovincia, precio) VALUES (2, 100, 3000.00);

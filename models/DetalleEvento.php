@@ -16,22 +16,26 @@ class DetalleEvento extends ExecQuery
           $params['iddistrito'],
           $params['ncotizacion'],
           $params['fechapresentacion'],
-          $params['horapresentacion'],
-          $params['tiempopresentacion'],
+          $params['horainicio'],
+          $params['horafinal'],
           $params['establecimiento'],
+          $params['referencia'],
           $params['tipoevento'],
           $params['modalidad'],
           $params['validez'],
           $params['igv'],
-          $params['tipopago'],
         )
       );
 
       $respuesta = $pdo->query("SELECT @iddetalleevento AS iddetalleevento")->fetch(PDO::FETCH_ASSOC);
       return $respuesta['iddetalleevento'];
-    } catch (Exception $e) {
-      error_log("Error: " . $e->getMessage());
-      return -1;
+    } catch (PDOException $e) {
+      // Registrar detalles del error en el log
+      error_log("Error en registrarDetallePresentacion: " . $e->getMessage());
+      
+      // Retornar detalles del error
+      die($e->getMessage());
+
     }
   }
 
@@ -54,6 +58,17 @@ class DetalleEvento extends ExecQuery
     try {
       $cmd = parent::execQ("SELECT * FROM detalles_presentacion WHERE ncotizacion = ?");
       $cmd->execute(array($params['ncotizacion']));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerCotizacionesPorModalidad($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("SELECT * FROM detalles_presentacion WHERE modalidad = ?");
+      $cmd->execute(array($params['modalidad']));
       return $cmd->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
       die($e->getMessage());

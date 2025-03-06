@@ -18,6 +18,10 @@ if (isset($_GET['operation'])) {
     case 'obtenerCotizacion':
       echo json_encode($detalleevento->obtenerCotizacion(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
       break;
+      
+    case 'obtenerCotizacionesPorModalidad':
+      echo json_encode($detalleevento->obtenerCotizacionesPorModalidad(['modalidad' => $_GET['modalidad']]));
+      break;
 
     case 'filtrarAtenciones':
       $cleanData = [
@@ -37,14 +41,14 @@ if (isset($_POST['operation'])) {
         'iddistrito' => $detalleevento->limpiarCadena($_POST['iddistrito']),
         'ncotizacion' => $detalleevento->limpiarCadena($_POST['ncotizacion']) ? $detalleevento->limpiarCadena($_POST['ncotizacion']) : '',
         'fechapresentacion'   => $detalleevento->limpiarCadena($_POST['fechapresentacion']),
-        'horapresentacion'    => $detalleevento->limpiarCadena($_POST['horapresentacion']),
-        'tiempopresentacion' => $detalleevento->limpiarCadena($_POST['tiempopresentacion']),
+        'horainicio'    => $detalleevento->limpiarCadena($_POST['horainicio']),
+        'horafinal'    => $detalleevento->limpiarCadena($_POST['horafinal']),
         'establecimiento'  => $detalleevento->limpiarCadena($_POST['establecimiento']),
+        'referencia'  => $detalleevento->limpiarCadena($_POST['referencia']),
         'tipoevento'  => $detalleevento->limpiarCadena($_POST['tipoevento']),
         'modalidad'  => $detalleevento->limpiarCadena($_POST['modalidad']),
         'validez'  => $detalleevento->limpiarCadena($_POST['validez']) ? $detalleevento->limpiarCadena($_POST['validez']) : '',
         'igv'  => $detalleevento->limpiarCadena($_POST['igv']),
-        'tipopago'  => $detalleevento->limpiarCadena($_POST['tipopago']),
       ];
 
       $respuesta = ['iddetalleevento' => -1];

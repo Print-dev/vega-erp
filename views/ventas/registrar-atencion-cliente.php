@@ -71,7 +71,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating">
-                                    <select name="nacionalidad" id="nacionalidad" class="form-select" required">
+                                    <select name="nacionalidad" id="nacionalidad" class="form-select">
                                         <option value="">Selecciona</option>
                                         <option value="31">Peru</option>
                                     </select>
@@ -80,21 +80,21 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating">
-                                    <select name="departamento" id="departamento" class="form-select" required">
+                                    <select name="departamento" id="departamento" class="form-select">
                                     </select>
                                     <label for="departamento" class="form-label">Departamento</label>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating">
-                                    <select name="provincia" id="provincia" class="form-select" required">
+                                    <select name="provincia" id="provincia" class="form-select">
                                     </select>
                                     <label for="provincia" class="form-label">Provincia</label>
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-floating">
-                                    <select name="distrito" id="distrito" class="form-select" required">
+                                    <select name="distrito" id="distrito" class="form-select">
                                     </select>
                                     <label for="distrito" class="form-label">Distrito</label>
                                 </div>
@@ -128,16 +128,16 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-floating">
-                                    <input type="time" id="horapresentacion" name="horapresentacion"
+                                    <input type="time" id="horainicio" name="horainicio"
                                         class="form-control">
-                                    <label for="horapresentacion" class="form-label">Hora de presentacion</label>
+                                    <label for="horainicio" class="form-label">Hora de inicio</label>
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-floating">
-                                    <input type="number" id="tiempopresentacion" name="tiempopresentacion"
+                                    <input type="time" id="horafinal" name="horafinal"
                                         class="form-control">
-                                    <label for="tiempopresentacion" class="form-label">Tiempo de presentacion</label>
+                                    <label for="horafinal" class="form-label">Hora Final</label>
                                 </div>
                             </div>
 
@@ -146,6 +146,12 @@
                                     <input type="text" id="establecimiento" name="establecimiento"
                                         class="form-control">
                                     <label for="establecimiento" class="form-label">Establecimiento</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">                           
+                                        <textarea class="form-control" id="referencia" rows="3"></textarea>
+                                    <label for="referencia" class="form-label">Referencia</label>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -208,16 +214,7 @@
                                     <label for="distrito2" class="form-label">Distrito</label>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="form-floating">
-                                    <select name="tipopago" id="tipopago" class="form-select">
-                                        <option value="">Selecciona</option>
-                                        <option value="1">Crédito</option>
-                                        <option value="2">Contado</option>
-                                    </select>
-                                    <label for="tipopago" class="form-label">Tipo de pago</label>
-                                </div>
-                            </div>
+                            
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="igv">
                                 <label class="form-check-label" for="igv">
@@ -243,7 +240,7 @@
 </div>
 
 <!-- MODAL PARA COTIZAR DE MANERA CONTRATO -->
-<div class="modal fade" id="modal-previacotizacion" tabindex="-1" aria-labelledby="modalPreviaCotizacion" aria-hidden="true" data-bs-backdrop="static">
+<!-- <div class="modal fade" id="modal-previacotizacion" tabindex="-1" aria-labelledby="modalPreviaCotizacion" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -272,11 +269,11 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 
 <!-- MODAL PARA CONTRATO CONVENIO -->
-<div class="modal fade" id="modal-convenio" tabindex="-1" aria-labelledby="modalContratoConvenio" aria-hidden="true" data-bs-backdrop="static">
+<!-- <div class="modal fade" id="modal-convenio" tabindex="-1" aria-labelledby="modalContratoConvenio" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -319,7 +316,7 @@
         </div>
     </div>
 </div>
-
+ -->
 
 
 <?php require_once '../footer.php' ?>
