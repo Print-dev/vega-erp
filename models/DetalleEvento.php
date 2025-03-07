@@ -94,6 +94,22 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
+  
+  public function actualizarEstadoDp($params = []): bool
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_actualizar_estado_dp (?,?)");
+      $rpt = $cmd->execute(
+        array(
+          $params['iddetallepresentacion'],
+          $params['estado'],
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
 
   public function obtenerCotizacionesPorModalidad($params = []): array
   {

@@ -57,6 +57,33 @@ class Convenio extends ExecQuery
     }
   }
 
+  public function obtenerConvenioPorIdDP($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL obtenerConvenioPorIdDP(?)");
+      $cmd->execute(
+        array($params['iddetallepresentacion'])
+      );
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return [];
+    }
+  }
+  
+  public function obtenerConvenioPorId($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("SELECT * FROM convenios WHERE idconvenio = ?");
+      $cmd->execute(
+        array($params['idconvenio'])
+      );
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return [];
+    }
+  }
 
   public function actualizarEstadoConvenio($params = []): bool
   {
@@ -66,6 +93,27 @@ class Convenio extends ExecQuery
       $rpt = $cmd->execute(
         array(
           $params['idconvenio'],
+          $params['estado']
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+
+  public function actualizarConvenio($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_actualizar_convenio(?,?,?,?,?)");
+      $rpt = $cmd->execute(
+        array(
+          $params['idconvenio'],
+          $params['abonogarantia'],
+          $params['abonopublicidad'],
+          $params['propuestacliente'],
           $params['estado']
         )
       );

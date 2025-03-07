@@ -136,23 +136,32 @@ function formatoHora($hora_24h)
     return $hora_obj->format('g:i A'); // "g:i A" da la hora en 12h sin ceros a la izquierda
 }
 
-function restarHoras($horaInicio, $horaFin)
+function restarHoras($horaInicio, $horaFinal)
 {
-    // Convertir las horas en objetos DateTime
     $inicio = new DateTime($horaInicio);
-    $fin = new DateTime($horaFin);
+    $final = new DateTime($horaFinal);
+    $intervalo = $inicio->diff($final);
 
-    // Calcular la diferencia
-    $diferencia = $inicio->diff($fin);
+    $horas = $intervalo->h;
+    $minutos = $intervalo->i;
 
-    // Formatear el resultado en HH:MM:SS
-    return $diferencia->format('%H:%I:%S');
+    // Formatear la salida
+    $resultado = [];
+    if ($horas > 0) {
+        $resultado[] = "$horas " . ($horas == 1 ? "hora" : "horas");
+    }
+    if ($minutos > 0) {
+        $resultado[] = "$minutos " . ($minutos == 1 ? "minuto" : "minutos");
+    }
+
+    return implode(" con ", $resultado);
 }
+
 
 
 // Ejemplo de uso
 $horainicio = $convenioContrato[0]['horainicio']; // Ejemplo: "14:00:00"
-$horafinal = $convenioContrato[0]['horainicio']; // Ejemplo: "14:00:00"
+$horafinal = $convenioContrato[0]['horafinal']; // Ejemplo: "14:00:00"
 $hora_inicio_formateada = formatoHora($horainicio);
 $hora_final_formateada = formatoHora($horafinal);
 
@@ -205,7 +214,7 @@ $monto_texto = numeroATexto($monto_numerico);
             <td class="label" colspan="5" style="border: none;">
                 <strong>PRIMERO:</strong> EL ORGANIZADOR contrata los servicios artísticos de <?= strtoupper($convenioContrato[0]['nom_usuario']) ?>
                 para una presentación para el día <?= $fecha_formateada ?>,
-                por <?= restarHoras($horainicio, $horafinal); ?> horas de SHOW a las
+                por <?= restarHoras($horainicio, $horafinal); ?> de SHOW a las
                 <?= $hora_inicio_formateada ?> a <?= $hora_final_formateada ?> en <strong>“<?= $convenioContrato[0]['establecimiento'] ?>”</strong>,
                 provincia de <?= $convenioContrato[0]['provincia_evento'] ?>, departamento de <?= $convenioContrato[0]['departamento_evento'] ?>.
             </td>

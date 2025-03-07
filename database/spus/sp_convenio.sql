@@ -75,6 +75,28 @@ BEGIN
     WHERE idconvenio = _idconvenio;
 END $$
 
+DROP PROCEDURE IF EXISTS sp_actualizar_convenio;
+DELIMITER $$
+CREATE PROCEDURE sp_actualizar_convenio
+(
+	IN _idconvenio			INT,
+    IN _abono_garantia		decimal(7,2) ,
+    IN _abono_publicidad 	decimal(7,2) ,
+    IN _propuesta_cliente 	TEXT,
+    IN _estado				INT
+)
+BEGIN 
+	UPDATE convenios SET
+    abono_garantia = _abono_garantia,
+    abono_publicidad = _abono_publicidad,
+    propuesta_cliente = _propuesta_cliente,
+    estado = _estado,
+    updated_at = now()
+    WHERE idconvenio = _idconvenio;
+END $$
+
+-- CALL sp_actualizar_convenio (1,2099.50, 3050.50, 'gaaa');
+
 DROP PROCEDURE IF EXISTS `obtenerConvenioPorIdDP`
 DELIMITER //
 CREATE PROCEDURE `obtenerConvenioPorIdDP`(
@@ -87,3 +109,4 @@ BEGIN
 	LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = C.iddetalle_presentacion
     WHERE C.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
 END //
+

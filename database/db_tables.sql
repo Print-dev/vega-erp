@@ -129,6 +129,7 @@ create table detalles_presentacion (
     reserva			tinyint null default 0,
     pagado50		tinyint null default 0,
     estado			tinyint null default 1, -- 1: activo, 2:vencido
+    created_at		date null default now(),
     constraint fk_idusuario_dp foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idcliente_dp foreign key (idcliente) references clientes (idcliente),
     constraint fk_iddistrito_dp foreign key (iddistrito) references distritos (iddistrito),

@@ -367,8 +367,8 @@ echo $hora_final_formateada;
         </tr>
         <tr>
             <td>2</td>
-            <td>Puesto en la locacion <?php echo $provincia; ?></td>
-            <td><?= restarHoras($horainicio, $horafinal); ?></td>
+            <td>Puesto en la locacion de <?php echo $provincia; ?></td>
+            <td></td>
             <td><?php echo $precio; ?></td>
             <td><?php echo $precio; ?></td>
         </tr>

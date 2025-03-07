@@ -30,7 +30,7 @@
                                         placeholder="Nª Documento / RUC."
                                         class="form-control"
                                         
-                                        required
+                                        
                                         autofocus
                                         >
                                     <span class="input-group-text btn-primary" style="cursor: pointer;" id="search">
@@ -183,7 +183,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating">
-                                    <select name="nacionalidad2" id="nacionalidad2" class="form-select" required">
+                                    <select name="nacionalidad2" id="nacionalidad2" class="form-select" ">
                                         <option value="">Selecciona</option>
                                         <option value="31">Peru</option>
                                     </select>
@@ -228,7 +228,7 @@
                 <div class="card-footer d-flex justify-content-end">
                     <div class="d-flex gap-2">
                         <button type="submit" id="btnGuardarAC" class="btn btn-primary">
-                            <i class="fa-solid fa-floppy-disk px-2"></i>Guardar y cotizar</button>
+                            <i class="fa-solid fa-floppy-disk px-2"></i>Guardar</button>
                         <button type="button" id="btnLimpiarAC" class="btn btn-primary">
                             <i class="fa-solid fa-eraser px-2"></i>Limpiar</button>
                         <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" id="btnRegresarAC" class="btn btn-primary">

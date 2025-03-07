@@ -10,11 +10,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   let iddetallepresentacion = -1;
   let idcontrato = -1
   let idpagocontrato = -1
+  let idconvenio
 
   //MODALES
   let modalDatosContrato
   let modalDatosClienteIncompleto
   let modalReserva
+  let modalPropuestaCliente
 
   // LISTAS
   let pagosExistentes = []
@@ -43,6 +45,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data;
   }
 
+  async function obtenerConvenioPorId(idconvenio) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerConvenioPorId");
+    params.append("idconvenio", idconvenio);
+    const data = await getDatos(`${host}convenio.controller.php`, params);
+    return data;
+  }
+  async function obtenerConvenioPorIdDP(iddetallepresentacion) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerConvenioPorIdDP");
+    params.append("iddetallepresentacion", iddetallepresentacion);
+    const data = await getDatos(`${host}convenio.controller.php`, params);
+    return data;
+  }
   async function verificarDatosIncompletosCliente(idcliente) {
     const params = new URLSearchParams();
     params.append("operation", "verificarDatosIncompletosCliente");
@@ -84,6 +100,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data;
   }
 
+
+
   // ******************************************** REGISTRAR DATOS ************************************************
 
   async function registrarContrato(iddetallepresentacion, estado) {
@@ -122,6 +140,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rpago;
   }
 
+  async function registrarConvenio(iddetallepresentacion, estado) {
+
+    const pago = new FormData();
+    pago.append("operation", "registrarConvenio");
+    pago.append("iddetallepresentacion", iddetallepresentacion);
+    pago.append("abonogarantia", $q("#abonogarantia").value);
+    pago.append("abonopublicidad", $q("#abonopublicidad").value);
+    pago.append("propuestacliente", $q("#propuestacliente").value);
+    pago.append("estado", estado);
+
+    const fpago = await fetch(`${host}convenio.controller.php`, {
+      method: "POST",
+      body: pago,
+    });
+    const rpago = await fpago.json();
+    return rpago;
+  }
+
   async function actualizarEstadoReservaDp(iddetallepresentacion, estreserva) {
     const reserva = new FormData();
     reserva.append("operation", "actualizarEstadoReservaDp");
@@ -134,6 +170,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     const rreserva = await freserva.json();
     return rreserva;
+  }
+
+  async function actualizarEstadoDp(iddetallepresentacion, estado) {
+    const detallepre = new FormData();
+    detallepre.append("operation", "actualizarEstadoDp");
+    detallepre.append("iddetallepresentacion", iddetallepresentacion);
+    detallepre.append("estado", estado);
+
+    const fdetallepre = await fetch(`${host}detalleevento.controller.php`, {
+      method: "POST",
+      body: detallepre,
+    });
+    const rdetallepre = await fdetallepre.json();
+    return rdetallepre;
+  }
+
+  async function actualizarConvenio(idconvenio, estado) {
+    const convenioupdate = new FormData();
+    convenioupdate.append("operation", "actualizarConvenio");
+    convenioupdate.append("idconvenio", idconvenio);
+    convenioupdate.append("abonogarantia", $q("#abonogarantia").value);
+    convenioupdate.append("abonopublicidad", $q("#abonopublicidad").value);
+    convenioupdate.append("propuestacliente", $q("#propuestacliente").value);
+    convenioupdate.append("estado", estado);
+
+    const fconvenioupdate = await fetch(`${host}convenio.controller.php`, {
+      method: "POST",
+      body: convenioupdate,
+    });
+    const rconvenioupdate = await fconvenioupdate.json();
+    return rconvenioupdate;
   }
 
   async function registrarReserva(idpagocontrato, vigencia) {
@@ -165,6 +232,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     const rpagado50 = await fpagado50.json();
     return rpagado50;
+  }
+
+  async function actualizarEstadoContrato(idcontrato, estado) {
+    const contrato = new FormData();
+    contrato.append("operation", "actualizarEstadoContrato");
+    contrato.append("idcontrato", idcontrato);
+    contrato.append("estado", estado);
+
+    const fcontrato = await fetch(`${host}contrato.controller.php`, {
+      method: "POST",
+      body: contrato,
+    });
+    const rcontrato = await fcontrato.json();
+    return rcontrato;
   }
 
   // ******************************************** DATATABLE ************************************************
@@ -230,6 +311,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+
   chargerEventsButton();
 
   async function dataFilters() {
@@ -258,14 +340,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 
-    data.forEach((x, i) => {
+    data.forEach(async (x, i) => {
       $q("#table-atenciones tbody").innerHTML += `
           <tr>
             <td>${x.iddetalle_presentacion}</td>
             <td>${x.ncotizacion ? x.ncotizacion : 'no aplica'}</td>
-            <td>${x.nom_usuario}</td>
-            <td>${x.ndocumento}</td>
-            <td>${x.razonsocial}</td>
+            <td>${x.nom_usuario ? x.nom_usuario : ''}</td>
+            <td>${x.ndocumento ? x.ndocumento : ''}</td>
+            <td>${x.razonsocial ? x.razonsocial : ''}</td>
             <td>${x.tipo_evento == 1
           ? "Público"
           : x.tipo_evento == 2
@@ -275,18 +357,25 @@ document.addEventListener("DOMContentLoaded", async () => {
             <td>${x.modalidad == 1 ? "Convenio" : x.modalidad == 2 ? "Contrato" : ``
         }</td>
             <td>${x.fecha_presentacion}</td>                        
+            <td>${x.estado == 1 ? 'Activo' : x.estado == 2 ? 'Caducado' : ''}</td>                        
             <td>
-              ${parseInt(x.modalidad) == 1
-          ? `<button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generar Convenio">
-                  Convenio
-                </button>`
+              ${x.estado == 2 ? '' : parseInt(x.estadoPropConvenio) == 2 ? `<button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generara Convenio">
+                  Generar Convenio
+                </button>`  : parseInt(x.estado_convenio == 2) ? `<button type="button" class="btn btn-sm btn-warning btn-propuesta" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
+                  Detalles Propuesta
+                </button>` : parseInt(x.modalidad) == 1
+                ? `
+                      <button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generara Convenio">
+                        Generar Convenio
+                      </button>
+                      ` 
           : parseInt(x.modalidad) == 2
             ? `
                 <button type="button" class="btn btn-sm btn-success btn-cotizar" data-id=${x.iddetalle_presentacion} 
                   data-estado=${x.condicion} title="Cotizar">Cotizar</button>`
-            : ``
+            :  ``
         }
-              ${parseInt(x.modalidad) === 2
+              ${x.estado == 2 ? '' : parseInt(x.modalidad) === 2
           ? `
                 <button type="button" class="btn btn-sm btn-secondary btn-pagar" data-id=${x.iddetalle_presentacion} title="Pagar">
                   Pagar
@@ -298,8 +387,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           : ``
         }
 
-        ${
-          parseInt(x.pagado50) == 1 ? `` : parseInt(x.reserva) == 1
+        ${x.estado == 2 ? '' : parseInt(x.pagado50) == 1 ? `` : parseInt(x.reserva) == 1
           ? `<button type="button" class="btn btn-sm btn-primary btn-reserva" data-id=${x.iddetalle_presentacion} title="Generar Reserva">
               Generar Reserva
             </button>` : ``}
@@ -308,7 +396,53 @@ document.addEventListener("DOMContentLoaded", async () => {
           `;
 
       // Evento para actualizar estado dp
-      console.log("dias de validez: ", x.validez)
+
+      if (x.modalidad == 2) {
+        const fechaCreacion = new Date(x.created_at + "T00:00:00"); // Asegurar formato correcto
+        const fechaVencimiento = calcularFechaVencimiento(fechaCreacion, x.validez);
+
+        console.log("Fecha de creación:", fechaCreacion.toISOString().split("T")[0]);
+        console.log("Fecha de vencimiento:", fechaVencimiento.toISOString().split("T")[0]);
+
+        if (esFechaVencida(fechaVencimiento)) {
+          console.log("actualizando estado a vencido...")
+
+          /* const vencido = await actualizarEstadoDp(x.iddetalle_presentacion, 2)
+          if(vencido){
+            console.log("vencido...")
+          } */
+        }
+        else {
+          console.log("aun no se vence. ...")
+          if (x.vigencia_reserva) {
+            console.log("HAY UNA VIGENCIA EN RESERVA, AUN NO SE VENCERA LA PRESENTACION")
+            const fechaCreacionReserva = new Date(x.fechacreada_reserva + "T00:00:00"); // Asegurar formato correcto
+            const fechaVencimientoReserva = calcularFechaVencimiento(fechaCreacion, x.vigencia_reserva);
+
+            console.log("Fecha de creación de reserva:", fechaCreacionReserva.toISOString().split("T")[0]);
+            console.log("Fecha de vencimiento de reserva:", fechaVencimientoReserva.toISOString().split("T")[0]);
+
+            if (esFechaVencida(fechaVencimientoReserva)) {
+              console.log("actualizando estado de contrato a caducado...")
+              const estadoContratoActualizado = await actualizarEstadoContrato(x.idcontrato, 3)
+              console.log("estado contrato actualizado a vencido -> ", estadoContratoActualizado)
+            } else {
+              console.log("aun no se vence el contrato")
+              const estadoContratoActualizado = await actualizarEstadoContrato(x.idcontrato, 3)
+              console.log("estado contrato actualizado a vencido -> ", estadoContratoActualizado)
+              const vencido = await actualizarEstadoDp(x.iddetalle_presentacion, 2)
+              console.log("vencido dp ?", vencido)
+              if (vencido) {
+                console.log("vencido...")
+              }
+            }
+          }
+        }
+      }
+
+      /* if (x.validez < false) {
+      } */
+
     });
     //disabledBtnArea();
     createTable(data);
@@ -358,8 +492,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       .addEventListener("click", async (e) => {
         if (e.target) {
           idactivo = 0;
-          if (e.target.classList.contains("btn-convenio")) {
-            buttonConvenio(e);
+          if (e.target.classList.contains("btn-propuesta")) {
+            await buttonPropuesta(e);
           }
           if (e.target.classList.contains("btn-cotizar")) {
             await buttonCotizar(e);
@@ -372,6 +506,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
           if (e.target.classList.contains("btn-reserva")) {
             await buttonReserva(e);
+          }
+          if (e.target.classList.contains("btn-convenio")) {
+            await buttonConvenio(e);
           }
           /* if(e.target.classList.contains("show-espec")){//abre el sidebar
           await btnSBUpdateActivo(e);
@@ -387,11 +524,58 @@ document.addEventListener("DOMContentLoaded", async () => {
    * Abre el modal de asignar Area
    * @param {*} e evento del boton
    */
-  function buttonConvenio(e) {
-    idconvenio = e.target.getAttribute("data-id");
 
-    const modalImg = new bootstrap.Modal($q("#modal-convenio"));
-    modalImg.show();
+  async function buttonConvenio(e) {
+    idconvenio = e.target.getAttribute("data-id");
+    const convenioExiste = await obtenerConvenioPorIdDP(idconvenio)
+    console.log("convenio esxite? -> ", convenioExiste)
+    const convenio = await obtenerConvenioPorId(convenioExiste[0]?.idconvenio)
+    console.log("CONVEIO OBTENIDO: ", convenio)
+    if (convenio.length > 0) {
+      window.open(`http://localhost/vega-erp/generators/generadores_pdf/contrato_convenio/contratoconvenio.php?idconvenio=${convenio[0]?.idconvenio}`)
+      return
+
+    }
+    else {
+      showToast("Aun no hay propuestas del cliente", "ERROR");
+      return
+    }
+    //iddetallepresentacion = idconvenio // esto en realidad es el iddetalle_presentacion
+  }
+
+  async function buttonPropuesta(e) {
+    idpropuesta = e.target.getAttribute("data-id");
+    iddetallepresentacion = e.target.getAttribute("data-id");
+    // limpiar campos
+
+    $q("#abonogarantia").value = ''
+    $q("#abonopublicidad").value = ''
+    $q("#propuestacliente").value = ''
+
+    const convenioExiste = await obtenerConvenioPorIdDP(idpropuesta)
+    console.log("convenio esxite? -> ", convenioExiste)
+    const convenio = await obtenerConvenioPorId(convenioExiste[0]?.idconvenio)
+    console.log("CONVEIO OBTENIDO: ", convenio)
+    if (convenio.length > 0) {
+      idconvenio = convenio[0]?.idconvenio
+      $q("#abonogarantia").value = convenio[0]?.abono_garantia
+      $q("#abonopublicidad").value = convenio[0]?.abono_publicidad
+      $q("#propuestacliente").value = convenio[0]?.propuesta_cliente
+      $q("#btnGuardarPendiente").hidden = true
+      $q("#btnActualizarPropuesta").hidden = false
+      iddetallepresentacion = idpropuesta // esto en realidad es el iddetalle_presentacion
+      modalPropuestaCliente = new bootstrap.Modal($q("#modal-convenio"));
+      modalPropuestaCliente.show();
+      return
+    } else {
+
+      $q("#btnGuardarPendiente").hidden = false
+      $q("#btnActualizarPropuesta").hidden = true
+      iddetallepresentacion = idpropuesta // esto en realidad es el iddetalle_presentacion
+      modalPropuestaCliente = new bootstrap.Modal($q("#modal-convenio"));
+      modalPropuestaCliente.show();
+    }
+
   }
 
   async function buttonCotizar(e) {
@@ -405,8 +589,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     let pagoAdelantadoO50 = false
     idcontrato = e.target.getAttribute("data-id");
     const dp = await obtenerDPporId(idcontrato); //esto en realidad es id detalle presentacion
-    idprovincia = dp[0].idprovincia
-    idartista = dp[0].idusuario;
+    idprovincia = dp[0]?.idprovincia
+    idartista = dp[0]?.idusuario;
     const contrato = await obtenerContratoPorDP(idcontrato) //esto en realidad es id detalle presentacion
     console.log("contratoo al dar click al btn contrato -> ", contrato)
     if (contrato.length > 0) {
@@ -422,7 +606,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       if (pagoAdelantadoO50) {
         window.open(
-          `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contrato[0].idcontrato
+          `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contrato[0]?.idcontrato
           }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
         );
         return
@@ -479,14 +663,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#tipopago").value = -1
     iddp = e.target.getAttribute("data-id");
     const dp = await obtenerDPporId(iddp);
-    idprovincia = dp[0].idprovincia;
-    idartista = dp[0].idusuario;
-    idcliente = dp[0].idcliente;
-    igv = dp[0].igv;
-    iddetallepresentacion = dp[0].iddetalle_presentacion;
+    idprovincia = dp[0]?.idprovincia;
+    idartista = dp[0]?.idusuario;
+    idcliente = dp[0]?.idcliente;
+    igv = dp[0]?.igv;
+    iddetallepresentacion = dp[0]?.iddetalle_presentacion;
     totalPagado = 0
     console.log(dp);
-    const cliente = await verificarDatosIncompletosCliente(dp[0].idcliente);
+    const cliente = await verificarDatosIncompletosCliente(dp[0]?.idcliente);
     console.log(iddp);
     const contratoExiste = await obtenerContratoPorDP(iddp);
     console.log(contratoExiste);
@@ -495,227 +679,65 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     console.log(cliente);
-    if (
-      cliente[0].ndocumento.length === 11 && // Un RUC tiene 11 dígitos
-      cliente[0].ndocumento.startsWith("1") // Verifica si empieza con "1"
-    ) {
-      // Es un RUC de persona natural
-      console.log("es ruc persona natural");
+    if (contratoExiste.length > 0) {
+      let pago50 = false
+      const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
+      console.log("pagos -> ", pagos)
+      pagosExistentes = pagos
 
-      console.log("su legal esta null");
-      if (contratoExiste?.length > 0) {
-        let pago50 = false
-        const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
-        console.log("pagos -> ", pagos)
-        pagosExistentes = pagos
-        totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
+      totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
 
-        console.log("Total pagado: ", totalPagado);
-        /*  if (totalPagado == 0){
-           
-         } */
+      console.log("Total pagado: ", totalPagado);
 
-        pagos.forEach(pago => {
-          if (pago?.tipo_pago == 3) {
-            pago50 = true
+
+      pagos.forEach(pago => {
+        if (pago?.tipo_pago == 3) {
+          pago50 = true
+        }
+      });
+      console.log("pago50 bool -> ", pago50)
+      if (pago50) {
+        let incompleto = false
+        const datosIncompletos = await verificarDatosIncompletosCliente(idcliente)
+        for (const clave in datosIncompletos) {
+          if (datosIncompletos[clave] === null || datosIncompletos[clave] === "") {
+            //console.log(`El campo "${clave}" está vacío. Deteniendo el ciclo.`);
+            incompleto = true;
+            break;
           }
-        });
-        console.log("pago50 bool -> ", pago50)
-        if (pago50) {
-          let incompleto = false
-          const datosIncompletos = await verificarDatosIncompletosCliente(idcliente)
-          for (const clave in datosIncompletos) {
-            if (datosIncompletos[clave] === null || datosIncompletos[clave] === "") {
-              //console.log(`El campo "${clave}" está vacío. Deteniendo el ciclo.`);
-              incompleto = true;
-              break;
-            }
-            //console.log(`${clave}: ${datosIncompletos[clave]}`);
-          }
-          if (incompleto) {
-            modalDatosClienteIncompleto = new bootstrap.Modal(
-              $q("#modal-datosclienteincompletos")
-            );
-            modalDatosClienteIncompleto.show();
-            await renderizarDatosClienteIncompleto(cliente[0]);
-            return
-          }
-          window.open(
-            `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0].idcontrato
-            }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
+          //console.log(`${clave}: ${datosIncompletos[clave]}`);
+        }
+        if (incompleto) {
+          modalDatosClienteIncompleto = new bootstrap.Modal(
+            $q("#modal-datosclienteincompletos")
           );
-
+          modalDatosClienteIncompleto.show();
+          await renderizarDatosClienteIncompleto(cliente[0]);
+          return
         }
-        else if (!pago50) {
-          modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
-          modalDatosContrato.show();
-          console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
-          //$q("#btnGenerarReserva").hidden = false
-          $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
-        }
-      } else {
-        const contrato = await registrarContrato(iddetallepresentacion, 1);
-        console.log("idcontrato > ", contrato)
-        idcontrato = contrato.idcontrato
-        if (idcontrato) {
-          modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
-          modalDatosContrato.show();
-        }
-      }
-
-    } else if (
-      cliente[0].ndocumento.length === 11 &&
-      cliente[0].ndocumento.startsWith("2") // Verifica si empieza con "2"
-    ) {
-      // Es un RUC de empresa (persona jurídica)
-      console.log("es ruc empresa");
-
-      console.log("su legal esta null");
-      console.log("contratoExiste -> ", contratoExiste)
-
-
-      if (contratoExiste?.length > 0) {
-        let pago50 = false
-        const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
-        console.log("pagos -> ", pagos)
-        pagosExistentes = pagos
-
-        totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
-
-        console.log("Total pagado: ", totalPagado);
-
-
-        pagos.forEach(pago => {
-          if (pago?.tipo_pago == 3) {
-            pago50 = true
-          }
-        });
-        console.log("pago50 bool -> ", pago50)
-        if (pago50) {
-          let incompleto = false
-          const datosIncompletos = await verificarDatosIncompletosCliente(idcliente)
-          for (const clave in datosIncompletos) {
-            if (datosIncompletos[clave] === null || datosIncompletos[clave] === "") {
-              //console.log(`El campo "${clave}" está vacío. Deteniendo el ciclo.`);
-              incompleto = true;
-              break;
-            }
-            //console.log(`${clave}: ${datosIncompletos[clave]}`);
-          }
-          if (incompleto) {
-            modalDatosClienteIncompleto = new bootstrap.Modal(
-              $q("#modal-datosclienteincompletos")
-            );
-            modalDatosClienteIncompleto.show();
-            await renderizarDatosClienteIncompleto(cliente[0]);
-            return
-          }
-          window.open(
-            `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0].idcontrato
-            }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
-          );
-
-        }
-        else if (!pago50) {
-          modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
-          modalDatosContrato.show();
-          console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
-          //$q("#btnGenerarReserva").hidden = false
-          $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
-        }
-      } else {
-        const contrato = await registrarContrato(iddetallepresentacion, 1);
-        console.log("idcontrato > ", contrato)
-        idcontrato = contrato.idcontrato
-        if (idcontrato) {
-          modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
-          modalDatosContrato.show();
-        }
+        window.open(
+          `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0]?.idcontrato
+          }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
+        );
 
       }
-
-    } else if (
-      cliente[0].ndocumento.length === 8 // Un DNI tiene 8 dígitos
-    ) {
-      // Es un DNI (persona natural)
-      console.log("es dni persona natural");
-
-      console.log("su legal esta null");
-      if (contratoExiste.length > 0) {
-        let pago50 = false
-        const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
-        console.log("pagos -> ", pagos)
-        pagosExistentes = pagos
-
-        totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
-
-        console.log("Total pagado: ", totalPagado);
-
-
-        pagos.forEach(pago => {
-          if (pago?.tipo_pago == 3) {
-            pago50 = true
-          }
-        });
-        console.log("pago50 bool -> ", pago50)
-        if (pago50) {
-          let incompleto = false
-          const datosIncompletos = await verificarDatosIncompletosCliente(idcliente)
-          for (const clave in datosIncompletos) {
-            if (datosIncompletos[clave] === null || datosIncompletos[clave] === "") {
-              //console.log(`El campo "${clave}" está vacío. Deteniendo el ciclo.`);
-              incompleto = true;
-              break;
-            }
-            //console.log(`${clave}: ${datosIncompletos[clave]}`);
-          }
-          if (incompleto) {
-            modalDatosClienteIncompleto = new bootstrap.Modal(
-              $q("#modal-datosclienteincompletos")
-            );
-            modalDatosClienteIncompleto.show();
-            await renderizarDatosClienteIncompleto(cliente[0]);
-            return
-          }
-          window.open(
-            `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0].idcontrato
-            }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
-          );
-
-        }
-        else if (!pago50) { // ESTO ES CUANDO ES 25%  
-          modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
-          modalDatosContrato.show();
-          console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
-          //$q("#btnGenerarReserva").hidden = false
-          $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
-        }
-      } else {
-        console.log("iddetallepresentacion -> ", iddetallepresentacion)
-        const contrato = await registrarContrato(iddetallepresentacion, 1);
-        console.log("idcontrato > ", contrato)
-        idcontrato = contrato.idcontrato
-        if (idcontrato) {
-          modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
-          modalDatosContrato.show();
-        }
+      else if (!pago50) { // ESTO ES CUANDO ES 25%  
+        modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
+        modalDatosContrato.show();
+        console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
+        //$q("#btnGenerarReserva").hidden = false
+        $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
       }
-
+    } else {
+      console.log("iddetallepresentacion -> ", iddetallepresentacion)
+      const contrato = await registrarContrato(iddetallepresentacion, 1);
+      console.log("idcontrato > ", contrato)
+      idcontrato = contrato.idcontrato
+      if (idcontrato) {
+        modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
+        modalDatosContrato.show();
+      }
     }
-
-    //if (contratoExiste.length > 0) {
-    //http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=1&idprovincia=100&idusuario=2&precio=2500
-    /* window.open(
-      `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0].idcontrato
-      }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
-    ); */ // HABILITAR ESTO LUEGO DE LAS CONDICIONES
-    //window.open(`http://localhost/vega-erp/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${2500}`)
-    //return;
-    //}
-
-    /* const modalImg = new bootstrap.Modal($q("#modal-previacotizacion"));
-    modalImg.show(); */
-    //alert("CONSULTANDOCONTRATO")
   }
 
   // ******************************************* VINCULANDO DATOS A MODALES ********************************
@@ -724,10 +746,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dp = await obtenerDPporId(iddp);
     console.log(dp);
     //alert("asdasdd")
-    idprovincia = dp[0].idprovincia;
-    idartista = dp[0].idusuario;
-    provincia = dp[0].provincia;
-    iddetalleevento = dp[0].iddetalle_presentacion;
+    idprovincia = dp[0]?.idprovincia;
+    idartista = dp[0]?.idusuario;
+    provincia = dp[0]?.provincia;
+    iddetalleevento = dp[0]?.iddetalle_presentacion;
 
     $q("#tInfoCotizacion").innerHTML = "";
     dp.forEach((detdp) => {
@@ -752,15 +774,120 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   //  ******************************************* EVENTOS *******************************************************
+  $q("#btnActualizarPropuesta").addEventListener("click", async () => {
+    let abonoGarantia = parseFloat($q("#abonogarantia").value.trim());
+    let abonoPublicidad = parseFloat($q("#abonopublicidad").value.trim());
+    let propuestaCliente = $q("#propuestacliente").value.trim();
+
+    // Validaciones correctas
+    if (
+      isNaN(abonoGarantia) || abonoGarantia < 0 ||  // Verificar que sea un número y no sea negativo
+      isNaN(abonoPublicidad) || abonoPublicidad < 0 ||
+      propuestaCliente === ""  // Verificar que el campo no esté vacío
+    ) {
+      showToast("Ingrese valores válidos", "ERROR");
+    } else {
+      const convenioActualizado = await actualizarConvenio(idconvenio, 1)
+      if (convenioActualizado.update) {
+        showToast("Actualizado correctamente", "SUCCESS")
+        return
+      } else {
+        showToast("Un error ha ocurrido", "ERROR")
+        return
+      }
+    }
+
+  })
+
+  $q("#btnAprobarPropuesta").addEventListener("click", async () => {
+    if (await ask('¿Estas seguro de aprobar la propuesta?')) {
+      let abonoGarantia = parseFloat($q("#abonogarantia").value.trim());
+      let abonoPublicidad = parseFloat($q("#abonopublicidad").value.trim());
+      let propuestaCliente = $q("#propuestacliente").value.trim();
+
+      // Validaciones correctas
+      if (
+        isNaN(abonoGarantia) || abonoGarantia < 0 ||  // Verificar que sea un número y no sea negativo
+        isNaN(abonoPublicidad) || abonoPublicidad < 0 ||
+        propuestaCliente === ""  // Verificar que el campo no esté vacío
+      ) {
+        showToast("Ingrese valores válidos", "ERROR");
+      } else {
+        const convenioExiste = await obtenerConvenioPorIdDP(idconvenio)
+        console.log("convenio esxite? -> ", convenioExiste)
+        const convenio = await obtenerConvenioPorId(convenioExiste[0]?.idconvenio)
+        console.log("CONVEIO OBTENIDO: ", convenio)
+        if (convenio.length > 0) {
+          const convenioaprobado = await actualizarConvenio(idconvenio, 2)
+          console.log("convenio aprobad? -> ", convenioaprobado)
+          if (convenioaprobado?.update) {
+            await dataFilters()
+            modalPropuestaCliente.hide()
+
+            showToast("Se ha aprobado la propuesta", "SUCCESS")
+            return
+          } else {
+            showToast("Un error ha ocurrido", "ERROR")
+            return
+          }
+        } else {
+          const convenioRegistrado = await registrarConvenio(iddetallepresentacion, 2)
+          console.log("convenio registrado a aprobado:-> ", convenioRegistrado)
+          if (convenioRegistrado?.idconvenio) {
+            modalPropuestaCliente.hide()
+            await dataFilters()
+            showToast("La propuesta se ha guardado en pendiente", "SUCCESS")
+            return
+          } else {
+            showToast("Un error ha ocurrido", "ERROR")
+            return
+          }
+        }
+
+      }
+    }
+  })
+
+  $q("#btnGuardarPendiente").addEventListener("click", async () => {
+    let abonoGarantia = parseFloat($q("#abonogarantia").value.trim());
+    let abonoPublicidad = parseFloat($q("#abonopublicidad").value.trim());
+    let propuestaCliente = $q("#propuestacliente").value.trim();
+
+    // Validaciones correctas
+    if (
+      isNaN(abonoGarantia) || abonoGarantia < 0 ||  // Verificar que sea un número y no sea negativo
+      isNaN(abonoPublicidad) || abonoPublicidad < 0 ||
+      propuestaCliente === ""  // Verificar que el campo no esté vacío
+    ) {
+      showToast("Ingrese valores válidos", "ERROR");
+    } else {
+      const convenioRegistrado = await registrarConvenio(iddetallepresentacion, 1)
+      console.log("convenio registrado a pendiente:-> ", convenioRegistrado)
+      if (convenioRegistrado?.idconvenio) {
+        modalPropuestaCliente.hide()
+        showToast("La propuesta se ha guardado en pendiente", "SUCCESS")
+        return
+      } else {
+        showToast("Un error ha ocurrido", "ERROR")
+        return
+      }
+    }
+
+
+  })
+
+
+
+
 
   $q("#btnGuardarReserva").addEventListener("click", async (e) => {
     let vigencia = Number($q("#vigencia").value.trim()); // Convertimos a número
 
     // Verificamos que el valor sea un número válido y mayor a 0
-    if (!isNaN(vigencia) && vigencia > 0) {  
+    if (!isNaN(vigencia) && vigencia > 0) {
       const reservaGenerada = await registrarReserva(idpagocontrato, vigencia);
       console.log("reserva generada ->", reservaGenerada);
-      
+
       if (reservaGenerada) {
         modalReserva?.hide();
         showToast("La reserva está lista para ser generada", "SUCCESS");
@@ -783,7 +910,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // HACER APARECER UN LABEL QUE DIGA EL PORCENTAJE DE PAGO MIENTRAS SE VA DIGITANDO 
   $q("#montopagado").addEventListener("input", async () => {
-      //console.log("pagosExistentes -[->", pagosExistentes)
+    //console.log("pagosExistentes -[->", pagosExistentes)
     $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
 
     $q("#porciento").innerHTML = "";
@@ -805,9 +932,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("tarifa->", tarifa);
 
     if (igv == 0) {
-      precioFinal = parseFloat(tarifa[0].precio) + 2500;
+      precioFinal = parseFloat(tarifa[0]?.precio) + 2500;
     } else if (igv == 1) {
-      precioFinal = (parseFloat(tarifa[0].precio) + 2500) * 1.18; // Se multiplica por 1.18 para agregar IGV
+      precioFinal = (parseFloat(tarifa[0]?.precio) + 2500) * 1.18; // Se multiplica por 1.18 para agregar IGV
     }
 
     precio25 = precioFinal * 0.25;
@@ -815,7 +942,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (parseFloat($q("#montopagado").value) >= precio50 || totalPagado >= precio50) {
       console.log("pago del 50%");
-      if(pagosExistentes.length == 0){
+      if (pagosExistentes.length == 0) {
         $q("#porciento").innerHTML =
           '<label for="" class="text-success"><small>Pago del 50%</small></label>';
         $q("#btnGuardar").hidden = false
@@ -823,7 +950,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       $q("#btnGuardar").hidden = false
     } else if (parseFloat($q("#montopagado").value) >= precio25 || totalPagado >= precio25) {
       console.log("pago del 25%");
-      if(pagosExistentes.length == 0){
+      if (pagosExistentes.length == 0) {
         $q("#porciento").innerHTML =
           '<label for="" class="text-success"><small>Pago del 25%</small></label>';
         $q("#btnGuardar").hidden = false
@@ -860,9 +987,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("tarifa->", tarifa);
 
     if (igv == 0) {
-      precioFinal = parseFloat(tarifa[0].precio) + 2500;
+      precioFinal = parseFloat(tarifa[0]?.precio) + 2500;
     } else if (igv == 1) {
-      precioFinal = (parseFloat(tarifa[0].precio) + 2500) * 1.18; // Se multiplica por 1.18 para agregar IGV
+      precioFinal = (parseFloat(tarifa[0]?.precio) + 2500) * 1.18; // Se multiplica por 1.18 para agregar IGV
     }
 
     precio25 = precioFinal * 0.25;
@@ -943,11 +1070,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const dpExiste = await obtenerDPporId(iddetallepresentacion)
                 console.log("DP EXISTE ? -> ", dpExiste)
 
-                if (dpExiste[0].reserva == 0) {
+                if (dpExiste[0]?.reserva == 0) {
                   const estadoReserva = await actualizarEstadoReservaDp(iddetallepresentacion, 1)
                   console.log("Estado reserva actualizado", estadoReserva)
                   await dataFilters()
-                } else if (dpExiste[0].reserva == 1) {
+                } else if (dpExiste[0]?.reserva == 1) {
                   return
                 }
               }
@@ -962,11 +1089,11 @@ document.addEventListener("DOMContentLoaded", async () => {
               modalDatosContrato?.hide()
               const dpExiste = await obtenerDPporId(iddetallepresentacion)
               console.log("DP EXISTE ? -> ", dpExiste)
-              if (dpExiste[0].reserva == 0) {
+              if (dpExiste[0]?.reserva == 0) {
                 const estadoReserva = await actualizarEstadoReservaDp(iddetallepresentacion, 1)
                 console.log("Estado reserva actualizado", estadoReserva)
                 await dataFilters()
-              } else if (dpExiste[0].reserva == 1) {
+              } else if (dpExiste[0]?.reserva == 1) {
                 return
               }
             }

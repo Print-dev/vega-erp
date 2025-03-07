@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
  */
   // ****************************** LLENAR COMBOS ****************************** //
-
+  await obtenerArtistas()
   // ELEGIR NACIONALIDAD DE CLIENTE
   $q("#nacionalidad").addEventListener("change", async () => {
     const departamentos = await obtenerDepartamentos($q("#nacionalidad").value);
@@ -476,7 +476,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   $q("#search").addEventListener("click", async () => {
     idcliente = -1
     await validateNumDoc();
-    await obtenerArtistas()
+    
 
   });
 

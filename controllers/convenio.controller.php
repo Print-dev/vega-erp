@@ -11,6 +11,12 @@ if (isset($_GET['operation'])) {
     case 'obtenerContratoConvenio':
       echo json_encode($convenio->obtenerContratoConvenio(['idconvenio' => $_GET['idconvenio']]));
       break;
+    case 'obtenerConvenioPorId':
+      echo json_encode($convenio->obtenerConvenioPorId(['idconvenio' => $_GET['idconvenio']]));
+      break;
+    case 'obtenerConvenioPorIdDP':
+      echo json_encode($convenio->obtenerConvenioPorIdDP(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
+      break;
   }
 }
 if (isset($_POST['operation'])) {
@@ -44,6 +50,25 @@ if (isset($_POST['operation'])) {
       $respuesta=['update'=>false];
 
       $update = $convenio->actualizarEstadoConvenio($cleanData);
+
+      if($update){
+        $respuesta['update']=true;
+      }
+      echo json_encode($respuesta);
+      break;
+
+    case 'actualizarConvenio':
+      $cleanData = [
+        'idconvenio'=>$convenio->limpiarCadena($_POST['idconvenio']),
+        'abonogarantia'=>$convenio->limpiarCadena($_POST['abonogarantia']),
+        'abonopublicidad'=>$convenio->limpiarCadena($_POST['abonopublicidad']),
+        'propuestacliente'=>$convenio->limpiarCadena($_POST['propuestacliente']),
+        'estado'=>$convenio->limpiarCadena($_POST['estado']),
+      ];
+
+      $respuesta=['update'=>false];
+
+      $update = $convenio->actualizarConvenio($cleanData);
 
       if($update){
         $respuesta['update']=true;

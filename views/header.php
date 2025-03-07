@@ -12,7 +12,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {
   $vistaActual = $rutaCompleta[$totalElementos];
   //die(var_dump($vistaActual));
   $listaAcceso = $_SESSION['login']['accesos'];
-  
+
   //die(var_dump($totalElementos));
 
   //Verificando el permiso
@@ -115,9 +115,20 @@ $host = "http://localhost/vega-erp/";
     font-weight: bold;
 
   }
+
+  .beta-banner {
+    width: 100%;
+    background-color: #ffcc00;
+    color: #000;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+  }
 </style>
+<div class="beta-banner">Versión Beta</div>
 
 <body style="background-color: #FFFFFA; ">
+
   <!-- BOTON HAMBURGUESA EN RESPONSIVE -->
   <nav class="navbar navbar-light bg-white px-4 col-12 d-lg-none" style="box-shadow: 0px 2px 17px -8px rgba(0,0,0,0.27);
     -webkit-box-shadow: 0px 2px 17px -8px rgba(0,0,0,0.27);
@@ -230,7 +241,7 @@ $host = "http://localhost/vega-erp/";
             foreach ($listaAcceso as $subAccess) {
               $rutaCompleta = "http://localhost/vega-erp/views/{$subAccess['modulo']}/";
               if (!empty($subAccess['subruta'])) {
-                  $rutaCompleta .= "{$subAccess['subruta']}/";
+                $rutaCompleta .= "{$subAccess['subruta']}/";
               }
               $rutaCompleta .= "{$subAccess['ruta']}";
               if (!$subAccess['visible'] && $subAccess['modulo'] === "utilitario" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
@@ -309,7 +320,7 @@ $host = "http://localhost/vega-erp/";
               </div>
             </li>
             <!-- FIN LOGO NOTIFICACION -->
- 
+
             <!-- USER - LOGOUT -->
             <li class="nav-item dropdown ms-lg-3 me-2">
               <a

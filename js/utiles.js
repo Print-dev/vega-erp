@@ -28,3 +28,29 @@ function generarNuevoNCotizacion(ultimaCotizacion) {
 
   return `${nuevoNumero}-${añoActual}`;
 }
+
+function calcularFechaVencimiento(fechaCreacion, vigenciaDias) {
+  if (!(fechaCreacion instanceof Date) || isNaN(fechaCreacion.getTime())) {
+      console.error("Fecha inválida:", fechaCreacion);
+      return null;
+  }
+
+  const fechaVencimiento = new Date(fechaCreacion);
+  fechaVencimiento.setDate(fechaVencimiento.getDate() + parseInt(vigenciaDias || 0));
+
+  return fechaVencimiento; // Devuelve un objeto Date
+}
+
+function esFechaVencida(fechaVencimiento) {
+  if (!(fechaVencimiento instanceof Date) || isNaN(fechaVencimiento.getTime())) {
+      console.error("Fecha de vencimiento inválida:", fechaVencimiento);
+      return false;
+  }
+
+  // Obtener la fecha de hoy en formato "YYYY-MM-DD"
+  const hoy = new Date();
+  const fechaHoy = hoy.toISOString().split("T")[0]; // "YYYY-MM-DD"
+  const fechaVence = fechaVencimiento.toISOString().split("T")[0]; // "YYYY-MM-DD"
+
+  return fechaHoy === fechaVence;
+}

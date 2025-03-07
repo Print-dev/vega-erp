@@ -49,6 +49,7 @@
                                         <th>Tipo evento</th>
                                         <th>Modalidad</th>
                                         <th>Fecha presentacion</th>
+                                        <th>Estado</th>
                                         <th>Opciones</th>
                                     </tr>
                                 </thead>
@@ -228,8 +229,10 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="btnGenerarConvenio">Generar Convenio</button>
-                <button type="button" class="btn btn-primary btnGuardarConvenio" id="close-mdl-convenio" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" id="btnActualizarPropuesta">Actualizar</button>
+                <button type="button" class="btn btn-secondary" id="btnGuardarPendiente">Guardar pendiente</button>
+                <button type="button" class="btn btn-secondary" id="btnAprobarPropuesta">Aprobar Propuesta</button>
+
             </div>
         </div>
     </div>
@@ -249,6 +252,7 @@
                     <div class="row">
                         <div class="row g-2 d-flex justify-content-center">
                             <div class="col-md-6 ">
+                                <!-- <label for="" style="text-align: center; color: red;">Recordatorio: Si el tarifario no esta definido para este lugar no podrá hacer los cálculos</label> -->
                                 <div id="montoActual">
 
                                 </div>

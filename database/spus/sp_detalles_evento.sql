@@ -72,11 +72,21 @@ BEGIN
         CO.idcontrato, 
         DP.validez,
         DP.reserva,
-        DP.pagado50
+        DP.pagado50,
+        CON.estado as estadoPropConvenio,
+        DP.created_at,
+        RE.vigencia as vigencia_reserva,
+        RE.fechacreada as fechacreada_reserva,
+        CO.idcontrato,
+		DP.estado,
+        CON.estado as estado_convenio
     FROM detalles_presentacion DP
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN contratos CO ON CO.iddetalle_presentacion = DP.iddetalle_presentacion
+    LEFT JOIN convenios CON ON CON.iddetalle_presentacion = DP.iddetalle_presentacion
+    LEFT JOIN pagos_contrato PC ON PC.idcontrato = CO.idcontrato
+    LEFT JOIN reservas RE ON RE.idpagocontrato = PC.idpagocontrato
     WHERE 
     (DP.ncotizacion IS NULL OR DP.ncotizacion LIKE CONCAT('%', COALESCE(_ncotizacion, ''), '%'))
     AND (CLI.ndocumento LIKE CONCAT('%', COALESCE(_ndocumento, ''), '%') OR _ndocumento IS NULL);
@@ -94,7 +104,7 @@ CREATE PROCEDURE sp_actualizar_estado_dp (
 BEGIN
 		UPDATE detalles_presentacion SET
     estado = _estado
-    WHERE idcontrato = _idcontrato; 
+    WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
 
 DROP PROCEDURE sp_actualizar_pagado50_dp;
