@@ -16,6 +16,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   let modalDatosClienteIncompleto
   let modalReserva
 
+  // LISTAS
+  let pagosExistentes = []
+
   function $q(object = null) {
     return document.querySelector(object);
   }
@@ -504,7 +507,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let pago50 = false
         const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
         console.log("pagos -> ", pagos)
-
+        pagosExistentes = pagos
         totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
 
         console.log("Total pagado: ", totalPagado);
@@ -575,6 +578,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let pago50 = false
         const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
         console.log("pagos -> ", pagos)
+        pagosExistentes = pagos
 
         totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
 
@@ -641,6 +645,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let pago50 = false
         const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
         console.log("pagos -> ", pagos)
+        pagosExistentes = pagos
 
         totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
 
@@ -749,11 +754,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   //  ******************************************* EVENTOS *******************************************************
 
   $q("#btnGuardarReserva").addEventListener("click", async (e) => {
-    const reservaGenerada = await registrarReserva(idpagocontrato, $q("#vigencia").value)
-    console.log("reserva gerenada- >", reservaGenerada)
-    if (reservaGenerada) {
-      modalReserva?.hide()
-      showToast("La reserva esta lista para ser generada", "SUCCESS")
+    let vigencia = Number($q("#vigencia").value.trim()); // Convertimos a número
+
+    // Verificamos que el valor sea un número válido y mayor a 0
+    if (!isNaN(vigencia) && vigencia > 0) {  
+      const reservaGenerada = await registrarReserva(idpagocontrato, vigencia);
+      console.log("reserva generada ->", reservaGenerada);
+      
+      if (reservaGenerada) {
+        modalReserva?.hide();
+        showToast("La reserva está lista para ser generada", "SUCCESS");
+      }
+    } else {
+      showToast("Ingresa un valor válido", "ERROR");
+      return
     }
   })
 
@@ -769,6 +783,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // HACER APARECER UN LABEL QUE DIGA EL PORCENTAJE DE PAGO MIENTRAS SE VA DIGITANDO 
   $q("#montopagado").addEventListener("input", async () => {
+      //console.log("pagosExistentes -[->", pagosExistentes)
     $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
 
     $q("#porciento").innerHTML = "";
@@ -800,14 +815,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (parseFloat($q("#montopagado").value) >= precio50 || totalPagado >= precio50) {
       console.log("pago del 50%");
-      $q("#porciento").innerHTML =
-        '<label for="" class="text-success"><small>Pago del 50%</small></label>';
+      if(pagosExistentes.length == 0){
+        $q("#porciento").innerHTML =
+          '<label for="" class="text-success"><small>Pago del 50%</small></label>';
+        $q("#btnGuardar").hidden = false
+      }
       $q("#btnGuardar").hidden = false
     } else if (parseFloat($q("#montopagado").value) >= precio25 || totalPagado >= precio25) {
       console.log("pago del 25%");
-      $q("#porciento").innerHTML =
-        '<label for="" class="text-success"><small>Pago del 25%</small></label>';
-
+      if(pagosExistentes.length == 0){
+        $q("#porciento").innerHTML =
+          '<label for="" class="text-success"><small>Pago del 25%</small></label>';
+        $q("#btnGuardar").hidden = false
+      }
       $q("#btnGuardar").hidden = false
 
     } else if ($q("#montopagado").value == 0) {

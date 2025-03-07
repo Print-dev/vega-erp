@@ -170,10 +170,10 @@ create table pagos_contrato (
     noperacion	varchar(20) null,
     fecha_pago	date	not null ,
     hora_pago	time 	not null,
-    estado	 	int			not null, -- 1: pendiente (25%), 2: adelanto, 3: aprobado (50%)
+    estado	 	int			not null, -- 1: pendiente (25%), 2: adelanto (no colocar), 3: aprobado (50%)
     constraint fk_idcontrato	foreign key (idcontrato) references contratos (idcontrato),
     constraint ck_tipopago_pc	check (tipo_pago IN (1,2)),
-    constraint ck_estado_pc	check (estado IN (1,2, 3))
+    constraint ck_estado_pc	check (estado IN (1, 3))
 ) engine = innodb;
 
 create table reservas (

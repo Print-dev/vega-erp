@@ -248,9 +248,7 @@ $monto_texto = numeroATexto($monto_numerico);
         </tr>
         <tr>
             <td class="label" colspan="5" style="border: none;">
-                La presente constancia es emitida el <?php
-                                                        echo $formatter->format(time());
-                                                        ?> y tiene una vigencia por <?= $reserva[0]['vigencia'] ?> días, plazo en el cual la/el
+                La presente constancia tiene una vigencia por <?= $reserva[0]['vigencia'] ?> días, plazo en el cual la/el
                 organizador(a) del evento tendrá que realizar la cancelación diferencial necesaria para completar el 50% a fin de
                 celebrar el contrato.
             </td>
