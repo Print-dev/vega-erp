@@ -65,14 +65,14 @@ if (isset($_POST['operation'])) {
 
       case 'actualizarCliente':
         $cleanData = [
-          'iddistrito' => $contrato->limpiarCadena($_POST['iddistrito']),
-          'ndocumento' => $contrato->limpiarCadena($_POST['ndocumento']) ? $contrato->limpiarCadena($_POST['ndocumento']) : '',
-          'razonsocial' => $contrato->limpiarCadena($_POST['razonsocial']),
-          'representantelegal' => $contrato->limpiarCadena($_POST['representantelegal']) ? $contrato->limpiarCadena($_POST['representantelegal']) : '',
-          'telefono' => $contrato->limpiarCadena($_POST['telefono']),
-          'correo' => $contrato->limpiarCadena($_POST['correo']),
-          'direccion' => $contrato->limpiarCadena($_POST['direccion']),
-          'idcliente' => $contrato->limpiarCadena($_POST['idcliente']),
+          'idcliente' => $cliente->limpiarCadena($_POST['idcliente']),
+          'iddistrito' => $cliente->limpiarCadena($_POST['iddistrito']),
+          'ndocumento' => $cliente->limpiarCadena($_POST['ndocumento']) ? $cliente->limpiarCadena($_POST['ndocumento']) : '',
+          'razonsocial' => $cliente->limpiarCadena($_POST['razonsocial']),
+          'representantelegal' => $cliente->limpiarCadena($_POST['representantelegal']) ? $cliente->limpiarCadena($_POST['representantelegal']) : '',
+          'telefono' => $cliente->limpiarCadena($_POST['telefono']),
+          'correo' => $cliente->limpiarCadena($_POST['correo']),
+          'direccion' => $cliente->limpiarCadena($_POST['direccion']),
         ];
     
         $update = $cliente->actualizarCliente($cleanData);

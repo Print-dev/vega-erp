@@ -45,6 +45,7 @@ class Cliente extends ExecQuery
     try {
       $cmd = parent::execQ("CALL sp_actualizar_cliente(?,?,?,?,?,?,?,?)");
       $rpt = $cmd->execute(array(
+        $params['idcliente'],
         $params['iddistrito'],
         $params['ndocumento'],
         $params['razonsocial'],
@@ -52,7 +53,6 @@ class Cliente extends ExecQuery
         $params['telefono'],
         $params['correo'],
         $params['direccion'],
-        $params['idcliente'],
       ));
       return $rpt;
     } catch (Exception $e) {

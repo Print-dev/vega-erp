@@ -15,6 +15,7 @@ class Recurso extends ExecQuery
         }
     }
 
+    // OBTENER UBIGEOS POR ID ****************************************************************************************
     public function obtenerDepartamentos($params = []): array
     {
       try {
@@ -42,6 +43,62 @@ class Recurso extends ExecQuery
       try {
         $cmd = parent::execQ("SELECT * FROM distritos WHERE idprovincia = ?");
         $cmd->execute(array($params['idprovincia']));
+        return $cmd->fetchAll(PDO::FETCH_ASSOC);
+      } catch (Exception $e) {
+        die($e->getMessage());
+      }
+    }
+
+    public function obtenerDistritoPorId($params = []): array
+    {
+      try {
+        $cmd = parent::execQ("SELECT * FROM distritos WHERE iddistrito = ?");
+        $cmd->execute(array($params['iddistrito']));
+        return $cmd->fetchAll(PDO::FETCH_ASSOC);
+      } catch (Exception $e) {
+        die($e->getMessage());
+      }
+    }
+
+    // OBTENER UBIGEOS POR ID ****************************************************************************************
+    public function obtenerTodosDepartamentos(): array
+    {
+      try {
+        $cmd = parent::execQ("SELECT * FROM departamentos");
+        $cmd->execute();
+        return $cmd->fetchAll(PDO::FETCH_ASSOC);
+      } catch (Exception $e) {
+        die($e->getMessage());
+      }
+    }
+
+    public function obtenerTodosProvincias(): array
+    {
+      try {
+        $cmd = parent::execQ("SELECT * FROM provincias");
+        $cmd->execute();
+        return $cmd->fetchAll(PDO::FETCH_ASSOC);
+      } catch (Exception $e) {
+        die($e->getMessage());
+      }
+    }
+
+    public function obtenerTodosDistritos(): array
+    {
+      try {
+        $cmd = parent::execQ("SELECT * FROM distritos");
+        $cmd->execute();
+        return $cmd->fetchAll(PDO::FETCH_ASSOC);
+      } catch (Exception $e) {
+        die($e->getMessage());
+      }
+    }
+
+    public function obtenerTodosNacionalidades(): array
+    {
+      try {
+        $cmd = parent::execQ("SELECT * FROM nacionalidades");
+        $cmd->execute();
         return $cmd->fetchAll(PDO::FETCH_ASSOC);
       } catch (Exception $e) {
         die($e->getMessage());

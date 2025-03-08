@@ -72,7 +72,7 @@
                             <div class="col-md-3">
                                 <div class="form-floating">
                                     <select name="nacionalidad" id="nacionalidad" class="form-select">
-                                        <option value="">Selecciona</option>
+                                        <option value="" selected>Selecciona</option>
                                         <option value="31">Peru</option>
                                     </select>
                                     <label for="nacionalidad" class="form-label">Nacionalidad</label>

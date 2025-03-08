@@ -94,8 +94,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="btnGenerarCotizacion">Generar Cotizacion</button>
-<!--                 <button type="button" class="btn btn-primary btnGuardarContrato" id="close-mdl-cotizacion">Guardar y cerrar</button>
- -->            </div>
+                <!--                 <button type="button" class="btn btn-primary btnGuardarContrato" id="close-mdl-cotizacion">Guardar y cerrar</button>
+ -->
+            </div>
         </div>
     </div>
 </div>
@@ -112,6 +113,13 @@
                     <tbody id="tDatosClienteIncompleto">
                         <span class="text-danger">Antes de generar contrato llena los datos del cliente</span>
                         <div class="row g-2 mt-2">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="text" id="ndocumentocli" name="ndocumentocli"
+                                        class="form-control">
+                                    <label for="ndocumentocli" class="form-label">N° Documento</label>
+                                </div>
+                            </div>
                             <div class="col-md-3">
                                 <div class="form-floating">
                                     <select name="nacionalidad" id="nacionalidad" class="form-select" required>
@@ -307,7 +315,7 @@
                                     <input type="number" id="vigencia" name="vigencia"
                                         class="form-control " min="0">
                                     <label for="vigencia" class="form-label">Vigencia</label>
-                                </div>                            
+                                </div>
                             </div>
                         </div>
                     </div>

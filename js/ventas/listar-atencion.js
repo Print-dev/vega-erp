@@ -102,6 +102,34 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 
+  // *********************************************** OBTENCION DE UBIGEOS ******************************************
+
+  async function obtenerDepartamentos(iddepartamento) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerDepartamentos");
+    params.append("idnacionalidad", iddepartamento);
+    const data = await getDatos(`${host}recurso.controller.php`, params);
+    return data
+  }
+
+  async function obtenerProvincias(iddepartamento) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerProvincias");
+    params.append("iddepartamento", iddepartamento);
+    const data = await getDatos(`${host}recurso.controller.php`, params);
+    return data
+  }
+
+  async function obtenerDistritos(idprovincia) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerDistritos");
+    params.append("idprovincia", idprovincia);
+    const data = await getDatos(`${host}recurso.controller.php`, params);
+    return data
+  }
+
+
+
   // ******************************************** REGISTRAR DATOS ************************************************
 
   async function registrarContrato(iddetallepresentacion, estado) {
@@ -174,14 +202,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function actualizarCliente(idcliente) {
     const clienteAct = new FormData();
     clienteAct.append("operation", "actualizarCliente");
-    clienteAct.append("iddistrito", $q("#distrito").value );
-    clienteAct.append("ndocumento", $q("#ndocumento").value ? $q("#ndocumento").value : '');
+    clienteAct.append("idcliente", idcliente);
+    clienteAct.append("iddistrito", $q("#distrito").value);
+    clienteAct.append("ndocumento", $q("#ndocumentocli").value ? $q("#ndocumentocli").value : '');
     clienteAct.append("razonsocial", $q("#razonsocial").value);
     clienteAct.append("representantelegal", $q("#representantelegal").value ? $q("#representantelegal").value : '');
     clienteAct.append("telefono", $q("#telefono").value);
     clienteAct.append("correo", $q("#correo").value);
     clienteAct.append("direccion", $q("#direccion").value);
-    clienteAct.append("idcliente", idcliente);
 
     const fclienteAct = await fetch(`${host}cliente.controller.php`, {
       method: "POST",
@@ -383,16 +411,16 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </button>`  : parseInt(x.estado_convenio == 2) ? `<button type="button" class="btn btn-sm btn-warning btn-propuesta" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
                   Detalles Propuesta
                 </button>` : parseInt(x.modalidad) == 1
-                ? `
+          ? `
                       <button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generara Convenio">
                         Generar Convenio
                       </button>
-                      ` 
+                      `
           : parseInt(x.modalidad) == 2
             ? `
                 <button type="button" class="btn btn-sm btn-success btn-cotizar" data-id=${x.iddetalle_presentacion} 
                   data-estado=${x.condicion} title="Cotizar">Cotizar</button>`
-            :  ``
+            : ``
         }
               ${x.estado == 2 ? '' : parseInt(x.modalidad) === 2
           ? `
@@ -425,14 +453,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (esFechaVencida(fechaVencimiento)) {
           console.log("actualizando estado a vencido...")
-
-          /* const vencido = await actualizarEstadoDp(x.iddetalle_presentacion, 2)
-          if(vencido){
-            console.log("vencido...")
-          } */
-        }
-        else {
-          console.log("aun no se vence. ...")
           if (x.vigencia_reserva) {
             console.log("HAY UNA VIGENCIA EN RESERVA, AUN NO SE VENCERA LA PRESENTACION")
             const fechaCreacionReserva = new Date(x.fechacreada_reserva + "T00:00:00"); // Asegurar formato correcto
@@ -443,19 +463,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             if (esFechaVencida(fechaVencimientoReserva)) {
               console.log("actualizando estado de contrato a caducado...")
-              const estadoContratoActualizado = await actualizarEstadoContrato(x.idcontrato, 3)
-              console.log("estado contrato actualizado a vencido -> ", estadoContratoActualizado)
-            } else {
-              console.log("aun no se vence el contrato")
-              const estadoContratoActualizado = await actualizarEstadoContrato(x.idcontrato, 3)
+              const estadoContratoActualizado = await actualizarEstadoContrato(x.idcontrato, 3) // ESTADO A CADUCADO / VENCIDO
               console.log("estado contrato actualizado a vencido -> ", estadoContratoActualizado)
               const vencido = await actualizarEstadoDp(x.iddetalle_presentacion, 2)
               console.log("vencido dp ?", vencido)
               if (vencido) {
                 console.log("vencido...")
               }
+            } else {
+              console.log("aun no se vence el contrato")
             }
           }
+          const vencido = await actualizarEstadoDp(x.iddetalle_presentacion, 2)
+          console.log("vencido dp ?", vencido)
+          if (vencido) {
+            console.log("vencido...")
+          }
+        }
+        else {
+          console.log("aun no se vence la presentacion registrada. ...")
+
         }
       }
 
@@ -653,16 +680,16 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (pago50) {
             const datosIncompletos = await verificarDatosIncompletosCliente(idcliente);
             console.log("datosIncompletos -> ", datosIncompletos);
-            
+
             // Verificar si es un array y tiene al menos un elemento
             if (!Array.isArray(datosIncompletos) || datosIncompletos.length === 0) {
               console.error("Error: datosIncompletos no es un array válido o está vacío", datosIncompletos);
               return;
             }
-            
+
             let incompleto = false;
             const datosCliente = datosIncompletos[0]; // Extraer el primer objeto del array
-            
+
             for (const clave in datosCliente) {
               if (datosCliente[clave] === null || datosCliente[clave] === "") {
                 incompleto = true;
@@ -684,8 +711,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             );
             return
 
-          }          
-        } 
+          }
+        }
 
         /* window.open(
           `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contrato[0]?.idcontrato
@@ -769,14 +796,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
 
       console.log("Total pagado: ", totalPagado);
-      
-       // ESTO ES CUANDO ES 25%  
-        modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
-        modalDatosContrato.show();
-        console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
-        //$q("#btnGenerarReserva").hidden = false
-        $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
-      
+
+      // ESTO ES CUANDO ES 25%  
+      modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
+      modalDatosContrato.show();
+      console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
+      //$q("#btnGenerarReserva").hidden = false
+      $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
+
     } else {
       console.log("iddetallepresentacion -> ", iddetallepresentacion)
       const contrato = await registrarContrato(iddetallepresentacion, 1);
@@ -815,17 +842,77 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function renderizarDatosClienteIncompleto(cliente) {
     // renderiza los datos completos e incompletos a los campos del modal
+    console.log("RENDERIZANDO ESTA AAAAAAAAAAAAAAAAAAAA")
+    $q("#ndocumentocli").value = cliente.ndocumento;
     $q("#razonsocial").value = cliente.razonsocial;
     $q("#representantelegal").value = cliente.representantelegal;
     $q("#telefono").value = cliente.telefono;
     $q("#correo").value = cliente.correo;
     $q("#direccion").value = cliente.direccion;
+    //$q("#distrito").value = cliente.iddistrito;
+    if (cliente.iddistrito) {
+      await cargarUbigeoDesdeDistrito(cliente.iddistrito);
+    }
+  }
+
+  async function cargarUbigeoDesdeDistrito(idDistrito) {
+    try {
+      // 1️⃣ Obtener datos del distrito
+      let distrito = await fetch(`${host}recurso.controller.php?operation=obtenerDistritoPorId&iddistrito=${idDistrito}`).then(res => res.json());
+      console.log("TODAS LAS DISTRTITOS OBTENIDOAS  -> ", distrito)
+
+      // 2️⃣ Obtener todas las provincias y marcar la seleccionada
+      let provincias = await fetch(`${host}recurso.controller.php?operation=obtenerTodosProvincias`).then(res => res.json());
+      console.log("TODAS LAS PROVINCIAS OBTENIDOAS  -> ", provincias)
+      let provinciaSeleccionada = provincias.find(p => p.idprovincia == distrito[0].idprovincia);
+      console.log("LA PROVINCIA SELCCIONADA - ", provinciaSeleccionada)
+
+      $q("#provincia").innerHTML = provincias.map(p =>
+        `<option value="${p.idprovincia}" ${p.idprovincia === distrito[0].idprovincia ? "selected" : ""}>${p.provincia}</option>`
+      ).join("");
+
+      // 3️⃣ Obtener todas los departamentos y marcar el correcto
+      let departamentos = await fetch(`${host}recurso.controller.php?operation=obtenerTodosDepartamentos`).then(res => res.json());
+      console.log("TODOS LOS DEPARTAMENTOS OBTENIDOS -> ", departamentos)
+      console.log("LA PROVINCIA SELCCIONADA - ", provinciaSeleccionada)
+      let departamentoSeleccionado = departamentos.find(d => d.iddepartamento === provinciaSeleccionada.iddepartamento);
+      console.log("DEPARTAMENTO SELCCIONADO -> ", departamentoSeleccionado)
+      $q("#departamento").innerHTML = departamentos.map(d =>
+        `<option value="${d.iddepartamento}" ${d.iddepartamento === provinciaSeleccionada.iddepartamento ? "selected" : ""}>${d.departamento}</option>`
+      ).join("");
+
+      // 4️⃣ Obtener todas las nacionalidades y marcar la correcta
+      let nacionalidades = await fetch(`${host}recurso.controller.php?operation=obtenerTodosNacionalidades`).then(res => res.json());
+      console.log("NACIONALIDADES TODAS OBTENIDAS : ",nacionalidades)
+      let nacionalidadSeleccionada = nacionalidades.find(n => n.idnacionalidad === departamentoSeleccionado.idnacionalidad);
+      $q("#nacionalidad").innerHTML = nacionalidades.map(n =>
+        `<option value="${n.idnacionalidad}" ${n.idnacionalidad === departamentoSeleccionado.idnacionalidad ? "selected" : ""}>${n.nacionalidad}</option>`
+      ).join("");
+
+      // 5️⃣ Obtener todos los distritos y seleccionar el correcto
+      let distritos = await fetch(`${host}recurso.controller.php?operation=obtenerTodosDistritos`).then(res => res.json());
+      $q("#distrito").innerHTML = distritos.map(d =>
+        `<option value="${d.iddistrito}" ${d.iddistrito === idDistrito ? "selected" : ""}>${d.distrito}</option>`
+      ).join("");
+
+    } catch (error) {
+      console.error("Error cargando ubigeo:", error);
+    }
   }
 
   //  ******************************************* EVENTOS *******************************************************
-  $q("#btnActualizarDatosCliente").addEventListener("click", async ()=> {
+  $q("#btnActualizarDatosCliente").addEventListener("click", async () => {
     alert("actualziando")
-    await actualizarCliente() // me quede aca, falta exraewr el idcliente desdde antes de ir al btnactualizardatoscliewnte
+    const clienteDatosActualizados = await actualizarCliente(idcliente) // me quede aca, falta exraewr el idcliente desdde antes de ir al btnactualizardatoscliewnte
+    console.log("cliente datos aactuaizado=??? ", clienteDatosActualizados)
+    if(clienteDatosActualizados){
+      console.log("Cliente actualizadoooooooooooo")
+      modalDatosClienteIncompleto.hide()
+      return
+    }else{
+      showToast("Un error ha ocurrido", "ERROR")
+      return
+    }
   })
 
   $q("#btnActualizarPropuesta").addEventListener("click", async () => {
@@ -926,13 +1013,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return
       }
     }
-
-
   })
-
-
-
-
 
   $q("#btnGuardarReserva").addEventListener("click", async (e) => {
     let vigencia = Number($q("#vigencia").value.trim()); // Convertimos a número
@@ -1189,6 +1270,35 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
   })
+
+  // *****************************************************************************************
+  // *********************************** EVENTOS PARA RENDERIZAR UBIGEOS **********************************************************
+
+  $q("#nacionalidad").addEventListener("change", async () => {
+    console.log("wdasdlksadlksakldaldsakldnoasndksadlknsandasdsad")
+    const departamentos = await obtenerDepartamentos($q("#nacionalidad").value);
+    console.log("DEPARTAMENTOS OBTENIDOS : ", departamentos)
+    $q("#departamento").innerHTML = "<option value=''>Selecciona</option>";
+    departamentos.forEach(dpa => {
+      $q("#departamento").innerHTML += `<option value="${dpa.iddepartamento}">${dpa.departamento}</option>`;
+    });
+  });
+
+  $q("#departamento").addEventListener("change", async () => {
+    const provincias = await obtenerProvincias($q("#departamento").value);
+    $q("#provincia").innerHTML = "<option value=''>Selecciona</option>";
+    provincias.forEach(prv => {
+      $q("#provincia").innerHTML += `<option value="${prv.idprovincia}">${prv.provincia}</option>`;
+    });
+  });
+
+  $q("#provincia").addEventListener("change", async () => {
+    const distritos = await obtenerDistritos($q("#provincia").value);
+    $q("#distrito").innerHTML = "<option value=''>Selecciona</option>";
+    distritos.forEach(dst => {
+      $q("#distrito").innerHTML += `<option value="${dst.iddistrito}">${dst.distrito}</option>`;
+    });
+  });
+
 });
 
-// *****************************************************************************************

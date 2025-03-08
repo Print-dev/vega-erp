@@ -6,8 +6,8 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Mét
 header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Encabezados permitidos
 $recurso = new Recurso();
 // ag order by
-if(isset($_GET['operation'])){
-  switch($_GET['operation']){
+if (isset($_GET['operation'])) {
+  switch ($_GET['operation']) {
     case 'obtenerNiveles':
       echo json_encode($recurso->obtenerNiveles());
       break;
@@ -23,10 +23,27 @@ if(isset($_GET['operation'])){
     case 'obtenerDistritos':
       echo json_encode($recurso->obtenerDistritos(["idprovincia" => $recurso->limpiarCadena($_GET['idprovincia'])]));
       break;
+      
+    case 'obtenerDistritoPorId':
+      echo json_encode($recurso->obtenerDistritoPorId(["iddistrito" => $recurso->limpiarCadena($_GET['iddistrito'])]));
+      break;
 
     case 'buscarCorreo':
       echo json_encode($recurso->buscarCorreo(["correo" => $recurso->limpiarCadena($_GET['correo'])]));
       break;
-    
+
+    // OBTENER TODOS LOS UBIGEOS
+    case 'obtenerTodosDepartamentos':
+      echo json_encode($recurso->obtenerTodosDepartamentos());
+      break;
+    case 'obtenerTodosProvincias':
+      echo json_encode($recurso->obtenerTodosProvincias());
+      break;
+    case 'obtenerTodosDistritos':
+      echo json_encode($recurso->obtenerTodosDistritos());
+      break;
+    case 'obtenerTodosNacionalidades':
+      echo json_encode($recurso->obtenerTodosNacionalidades());
+      break;
   }
 }
