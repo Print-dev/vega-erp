@@ -51,3 +51,28 @@ BEGIN
 END $$
 
 CALL sp_search_cliente_numdoc('20607656372')
+
+DROP PROCEDURE IF EXISTS sp_actualizar_cliente;
+DELIMITER $$
+CREATE PROCEDURE sp_actualizar_cliente
+(
+	IN _idcliente			INT,
+    IN _iddistrito			INT,
+    IN _ndocumento			CHAR(20),
+    IN _razonsocial			VARCHAR(130),
+    IN _representantelegal			VARCHAR(130),
+    IN _telefono			 char(15),
+    IN _correo			VARCHAR(130),
+    IN _direccion			VARCHAR(130)
+)
+BEGIN 
+	UPDATE clientes SET
+    iddistrito = _iddistrito,
+    ndocumento = nullif(_ndocumento, ''),
+    razonsocial = _razonsocial,
+    representantelegal = nullif(_representantelegal, ''),
+    telefono = _telefono,
+    correo = _correo,
+    direccion = _direccion
+    WHERE idcliente = _idcliente;
+END $$

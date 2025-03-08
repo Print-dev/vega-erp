@@ -171,6 +171,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     const rreserva = await freserva.json();
     return rreserva;
   }
+  async function actualizarCliente(idcliente) {
+    const clienteAct = new FormData();
+    clienteAct.append("operation", "actualizarCliente");
+    clienteAct.append("iddistrito", $q("#distrito").value );
+    clienteAct.append("ndocumento", $q("#ndocumento").value ? $q("#ndocumento").value : '');
+    clienteAct.append("razonsocial", $q("#razonsocial").value);
+    clienteAct.append("representantelegal", $q("#representantelegal").value ? $q("#representantelegal").value : '');
+    clienteAct.append("telefono", $q("#telefono").value);
+    clienteAct.append("correo", $q("#correo").value);
+    clienteAct.append("direccion", $q("#direccion").value);
+    clienteAct.append("idcliente", idcliente);
+
+    const fclienteAct = await fetch(`${host}cliente.controller.php`, {
+      method: "POST",
+      body: clienteAct,
+    });
+    const rclienteAct = await fclienteAct.json();
+    return rclienteAct;
+  }
 
   async function actualizarEstadoDp(iddetallepresentacion, estado) {
     const detallepre = new FormData();
@@ -591,6 +610,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dp = await obtenerDPporId(idcontrato); //esto en realidad es id detalle presentacion
     idprovincia = dp[0]?.idprovincia
     idartista = dp[0]?.idusuario;
+    idcliente = dp[0]?.idcliente;
     const contrato = await obtenerContratoPorDP(idcontrato) //esto en realidad es id detalle presentacion
     console.log("contratoo al dar click al btn contrato -> ", contrato)
     if (contrato.length > 0) {
@@ -605,11 +625,73 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       }
       if (pagoAdelantadoO50) {
-        window.open(
+        const cliente = await verificarDatosIncompletosCliente(dp[0]?.idcliente);
+        const contratoExiste = await obtenerContratoPorDP(idcontrato); //esto en realidad es id detalle presentacion
+        console.log(contratoExiste);
+        idcontrato = contratoExiste[0]?.idcontrato
+        console.log("idcontrato existente -> " + idcontrato)
+
+
+        console.log(cliente);
+        if (contratoExiste.length > 0) {
+          let pago50 = false
+          const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
+          console.log("pagos -> ", pagos)
+          pagosExistentes = pagos
+
+          totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
+
+          console.log("Total pagado: ", totalPagado);
+
+
+          pagos.forEach(pago => {
+            if (pago?.estado == 3) {
+              pago50 = true
+            }
+          });
+          console.log("pago50 bool -> ", pago50)
+          if (pago50) {
+            const datosIncompletos = await verificarDatosIncompletosCliente(idcliente);
+            console.log("datosIncompletos -> ", datosIncompletos);
+            
+            // Verificar si es un array y tiene al menos un elemento
+            if (!Array.isArray(datosIncompletos) || datosIncompletos.length === 0) {
+              console.error("Error: datosIncompletos no es un array válido o está vacío", datosIncompletos);
+              return;
+            }
+            
+            let incompleto = false;
+            const datosCliente = datosIncompletos[0]; // Extraer el primer objeto del array
+            
+            for (const clave in datosCliente) {
+              if (datosCliente[clave] === null || datosCliente[clave] === "") {
+                incompleto = true;
+                break;
+              }
+            }
+            console.log("incompleto? ??? : ", incompleto)
+            if (incompleto) {
+              modalDatosClienteIncompleto = new bootstrap.Modal(
+                $q("#modal-datosclienteincompletos")
+              );
+              modalDatosClienteIncompleto.show();
+              await renderizarDatosClienteIncompleto(cliente[0]);
+              return
+            }
+            window.open(
+              `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0]?.idcontrato
+              }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
+            );
+            return
+
+          }          
+        } 
+
+        /* window.open(
           `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contrato[0]?.idcontrato
           }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
         );
-        return
+        return */
       }
     }
     showToast("Aun no puedes generar contrato hasta pagar el adelanto del 50%", "ERROR")
@@ -680,7 +762,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     console.log(cliente);
     if (contratoExiste.length > 0) {
-      let pago50 = false
       const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
       console.log("pagos -> ", pagos)
       pagosExistentes = pagos
@@ -688,46 +769,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
 
       console.log("Total pagado: ", totalPagado);
-
-
-      pagos.forEach(pago => {
-        if (pago?.tipo_pago == 3) {
-          pago50 = true
-        }
-      });
-      console.log("pago50 bool -> ", pago50)
-      if (pago50) {
-        let incompleto = false
-        const datosIncompletos = await verificarDatosIncompletosCliente(idcliente)
-        for (const clave in datosIncompletos) {
-          if (datosIncompletos[clave] === null || datosIncompletos[clave] === "") {
-            //console.log(`El campo "${clave}" está vacío. Deteniendo el ciclo.`);
-            incompleto = true;
-            break;
-          }
-          //console.log(`${clave}: ${datosIncompletos[clave]}`);
-        }
-        if (incompleto) {
-          modalDatosClienteIncompleto = new bootstrap.Modal(
-            $q("#modal-datosclienteincompletos")
-          );
-          modalDatosClienteIncompleto.show();
-          await renderizarDatosClienteIncompleto(cliente[0]);
-          return
-        }
-        window.open(
-          `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0]?.idcontrato
-          }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
-        );
-
-      }
-      else if (!pago50) { // ESTO ES CUANDO ES 25%  
+      
+       // ESTO ES CUANDO ES 25%  
         modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
         modalDatosContrato.show();
         console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
         //$q("#btnGenerarReserva").hidden = false
         $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
-      }
+      
     } else {
       console.log("iddetallepresentacion -> ", iddetallepresentacion)
       const contrato = await registrarContrato(iddetallepresentacion, 1);
@@ -774,6 +823,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   //  ******************************************* EVENTOS *******************************************************
+  $q("#btnActualizarDatosCliente").addEventListener("click", async ()=> {
+    alert("actualziando")
+    await actualizarCliente() // me quede aca, falta exraewr el idcliente desdde antes de ir al btnactualizardatoscliewnte
+  })
+
   $q("#btnActualizarPropuesta").addEventListener("click", async () => {
     let abonoGarantia = parseFloat($q("#abonogarantia").value.trim());
     let abonoPublicidad = parseFloat($q("#abonopublicidad").value.trim());

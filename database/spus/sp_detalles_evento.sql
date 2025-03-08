@@ -89,7 +89,8 @@ BEGIN
     LEFT JOIN reservas RE ON RE.idpagocontrato = PC.idpagocontrato
     WHERE 
     (DP.ncotizacion IS NULL OR DP.ncotizacion LIKE CONCAT('%', COALESCE(_ncotizacion, ''), '%'))
-    AND (CLI.ndocumento LIKE CONCAT('%', COALESCE(_ndocumento, ''), '%') OR _ndocumento IS NULL);
+    AND (CLI.ndocumento LIKE CONCAT('%', COALESCE(_ndocumento, ''), '%') OR _ndocumento IS NULL)
+    GROUP BY DP.iddetalle_presentacion, CO.idcontrato;
 
 END //
 

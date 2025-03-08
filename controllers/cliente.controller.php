@@ -62,5 +62,22 @@ if (isset($_POST['operation'])) {
 
       echo json_encode($respuesta);
       break;
+
+      case 'actualizarCliente':
+        $cleanData = [
+          'iddistrito' => $contrato->limpiarCadena($_POST['iddistrito']),
+          'ndocumento' => $contrato->limpiarCadena($_POST['ndocumento']) ? $contrato->limpiarCadena($_POST['ndocumento']) : '',
+          'razonsocial' => $contrato->limpiarCadena($_POST['razonsocial']),
+          'representantelegal' => $contrato->limpiarCadena($_POST['representantelegal']) ? $contrato->limpiarCadena($_POST['representantelegal']) : '',
+          'telefono' => $contrato->limpiarCadena($_POST['telefono']),
+          'correo' => $contrato->limpiarCadena($_POST['correo']),
+          'direccion' => $contrato->limpiarCadena($_POST['direccion']),
+          'idcliente' => $contrato->limpiarCadena($_POST['idcliente']),
+        ];
+    
+        $update = $cliente->actualizarCliente($cleanData);
+
+        echo json_encode($update);
+        break;
   }
 }

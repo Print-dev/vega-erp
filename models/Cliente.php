@@ -40,6 +40,26 @@ class Cliente extends ExecQuery
     }
   }
 
+  public function actualizarCliente($params = []):  bool
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_actualizar_cliente(?,?,?,?,?,?,?,?)");
+      $rpt = $cmd->execute(array(
+        $params['iddistrito'],
+        $params['ndocumento'],
+        $params['razonsocial'],
+        $params['representantelegal'],
+        $params['telefono'],
+        $params['correo'],
+        $params['direccion'],
+        $params['idcliente'],
+      ));
+      return $rpt;
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function verificarDatosIncompletosCliente($params = []): array
   {
     try {
