@@ -232,7 +232,13 @@
                                 <textarea class="form-control" id="propuestacliente" rows="3"></textarea>
                             </div>
                         </div>
-
+                        <div class="col-md-12 mt-3">
+                                <div class="form-floating">
+                                    <input type="text" id="acuerdo" name="acuerdo"
+                                        class="form-control">
+                                    <label for="acuerdo" class="form-label">Acuerdo (%)</label>
+                                </div>
+                            </div>
                     </div>
                 </div>
             </div>

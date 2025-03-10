@@ -27,6 +27,7 @@ if (isset($_POST['operation'])) {
         'abonogarantia' => $convenio->limpiarCadena($_POST['abonogarantia']),
         'abonopublicidad'   => $convenio->limpiarCadena($_POST['abonopublicidad']),
         'propuestacliente'    => $convenio->limpiarCadena($_POST['propuestacliente']),
+        'acuerdo'    => $convenio->limpiarCadena($_POST['acuerdo']),
         'estado' => $convenio->limpiarCadena($_POST['estado'])
       ];
 
@@ -63,6 +64,7 @@ if (isset($_POST['operation'])) {
         'abonogarantia'=>$convenio->limpiarCadena($_POST['abonogarantia']),
         'abonopublicidad'=>$convenio->limpiarCadena($_POST['abonopublicidad']),
         'propuestacliente'=>$convenio->limpiarCadena($_POST['propuestacliente']),
+        'acuerdo'=>$convenio->limpiarCadena($_POST['acuerdo']),
         'estado'=>$convenio->limpiarCadena($_POST['estado']),
       ];
 

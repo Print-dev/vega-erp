@@ -176,6 +176,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     pago.append("abonogarantia", $q("#abonogarantia").value);
     pago.append("abonopublicidad", $q("#abonopublicidad").value);
     pago.append("propuestacliente", $q("#propuestacliente").value);
+    pago.append("acuerdo", $q("#acuerdo").value);
     pago.append("estado", estado);
 
     const fpago = await fetch(`${host}convenio.controller.php`, {
@@ -241,6 +242,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     convenioupdate.append("abonogarantia", $q("#abonogarantia").value);
     convenioupdate.append("abonopublicidad", $q("#abonopublicidad").value);
     convenioupdate.append("propuestacliente", $q("#propuestacliente").value);
+    convenioupdate.append("acuerdo", $q("#acuerdo").value);
     convenioupdate.append("estado", estado);
 
     const fconvenioupdate = await fetch(`${host}convenio.controller.php`, {
@@ -409,10 +411,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             <td>
               ${x.estado == 2 ? '' : parseInt(x.estadoPropConvenio) == 2 ? `<button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generara Convenio">
                   Generar Convenio
-                </button>`  : parseInt(x.estado_convenio == 2) ? `<button type="button" class="btn btn-sm btn-warning btn-propuesta" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
-                  Detalles Propuesta
                 </button>` : parseInt(x.modalidad) == 1
           ? `
+                      <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
+                         Detalles Propuesta
+                      </button>
                       <button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generara Convenio">
                         Generar Convenio
                       </button>
@@ -579,8 +582,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const convenio = await obtenerConvenioPorId(convenioExiste[0]?.idconvenio)
     console.log("CONVEIO OBTENIDO: ", convenio)
     if (convenio.length > 0) {
-      window.open(`http://localhost/vega-erp/generators/generadores_pdf/contrato_convenio/contratoconvenio.php?idconvenio=${convenio[0]?.idconvenio}`)
-      return
+      if(convenio[0]?.estado == 2){
+        window.open(`http://localhost/vega-erp/generators/generadores_pdf/contrato_convenio/contratoconvenio.php?idconvenio=${convenio[0]?.idconvenio}`)
+        return
+      }else{
+        showToast("Aun no ha sido aprobada la propuesta del cliente", "ERROR");
+        return  
+      }
 
     }
     else {
@@ -608,6 +616,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       $q("#abonogarantia").value = convenio[0]?.abono_garantia
       $q("#abonopublicidad").value = convenio[0]?.abono_publicidad
       $q("#propuestacliente").value = convenio[0]?.propuesta_cliente
+      $q("#acuerdo").value = convenio[0]?.acuerdo
       $q("#btnGuardarPendiente").hidden = true
       $q("#btnActualizarPropuesta").hidden = false
       iddetallepresentacion = idpropuesta // esto en realidad es el iddetalle_presentacion

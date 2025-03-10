@@ -19,7 +19,8 @@ BEGIN
         DP.referencia,
         DISDP.distrito as distrito_evento, PRODP.provincia as provincia_evento, DEDP.departamento as departamento_evento,
         DP.igv,
-		C.abono_garantia, C.abono_publicidad
+		C.abono_garantia, C.abono_publicidad,
+        C.acuerdo
 	FROM convenios C
 	LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = C.iddetalle_presentacion
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.iddetalle_presentacion
@@ -41,6 +42,7 @@ CREATE PROCEDURE sp_registrar_convenio (
     IN _abono_garantia DOUBLE,
     IN _abono_publicidad DOUBLE,
     IN _propuesta_cliente text,
+    IN _acuerdo			VARCHAR(130),
     IN _estado int
 )
 BEGIN
@@ -51,8 +53,8 @@ BEGIN
         SET existe_error = 1;
     END;
     
-    INSERT INTO convenios (iddetalle_presentacion, abono_garantia, abono_publicidad, propuesta_cliente, estado)
-    VALUES (_iddetalle_presentacion, _abono_garantia, _abono_publicidad, _propuesta_cliente, _estado);
+    INSERT INTO convenios (iddetalle_presentacion, abono_garantia, abono_publicidad, propuesta_cliente, acuerdo, estado)
+    VALUES (_iddetalle_presentacion, _abono_garantia, _abono_publicidad, _propuesta_cliente, _acuerdo, _estado);
     
     IF existe_error = 1 THEN
         SET _idconvenio = -1;
@@ -83,6 +85,7 @@ CREATE PROCEDURE sp_actualizar_convenio
     IN _abono_garantia		decimal(7,2) ,
     IN _abono_publicidad 	decimal(7,2) ,
     IN _propuesta_cliente 	TEXT,
+    IN _acuerdo				varchar(130),
     IN _estado				INT
 )
 BEGIN 
@@ -90,6 +93,7 @@ BEGIN
     abono_garantia = _abono_garantia,
     abono_publicidad = _abono_publicidad,
     propuesta_cliente = _propuesta_cliente,
+    acuerdo			 = _acuerdo,
     estado = _estado,
     updated_at = now()
     WHERE idconvenio = _idconvenio;

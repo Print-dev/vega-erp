@@ -240,27 +240,18 @@
 </div>
 
 <!-- MODAL PARA COTIZAR DE MANERA CONTRATO -->
-<!-- <div class="modal fade" id="modal-previacotizacion" tabindex="-1" aria-labelledby="modalPreviaCotizacion" aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="modal-fechasagenda" tabindex="-1" aria-labelledby="modalfechasagenda" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalPreviaCotizacion">Previa Cotizacion</h1>
+                <h1 class="modal-title fs-5" id="modalfechasagenda">Fechas ocupadas</h1>
                 <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn-close"></a>
             </div>
             <div class="modal-body">
-                <table class="table rounded">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Departamento</th>
-                            <th>Provincia</th>
-                            <th>Dificultad</th>
-                            <th>Precio S/.</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tInfoCotizacion">
-                        
-                    </tbody>
-                    
+                <table class="table rounded">                    
+                    <div class="contenedor-fechasocupadas">
+
+                    </div>                    
                 </table>
             </div>
             <div class="modal-footer">
@@ -269,7 +260,7 @@
             </div>
         </div>
     </div>
-</div> -->
+</div>
 
 
 <!-- MODAL PARA CONTRATO CONVENIO -->

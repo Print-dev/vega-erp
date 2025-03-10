@@ -138,6 +138,18 @@ document.addEventListener('DOMContentLoaded', async function () {
     return dpfecha
   }
 
+  async function obtenerAgendaArtista(idusuario, iddetalle_presentacion) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerAgendaArtista");
+    params.append("idusuario", idusuario ? idusuario : "");
+    params.append(
+      "iddetallepresentacion",
+      iddetalle_presentacion ? iddetalle_presentacion : ""
+    );
+    const data = await getDatos(`${host}agenda.controller.php`, params);
+    return data;
+  }
+
   /* async function obtenerCotizacion(iddetallepresentacion) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerCotizacion");
@@ -569,6 +581,15 @@ document.addEventListener('DOMContentLoaded', async function () {
     
 
   });
+
+  $q("#fechapresentacion").addEventListener("change", async()=>{
+    //const agenda = await obtenerAgendaArtista($q("#artista").value, null)
+    // ACA PRIMERO OBTENER SI LA FECHA SELCCIONADA ES IGUAL A UUNA FECHA YA OCUPADA
+    /* $q("#modal-fechasagenda")
+    agenda.forEach(age => {
+      
+    }); */
+  })
 
 
   $q("#form-atencion-clientes").addEventListener("submit", async (e) => {

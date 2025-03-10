@@ -113,7 +113,7 @@ $host = "http://localhost/vega-erp/";
     color: #000;
     display: flex;
     align-items: center;
-    width: 240px; /* Mantener tamaño fijo */
+    width: 230px; /* Mantener tamaño fijo */
     padding: 10px; /* Ajuste uniforme */
     transition: background-color 0.1s, color 0.1s;
 }

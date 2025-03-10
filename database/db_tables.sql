@@ -149,6 +149,7 @@ create table convenios (
     abono_garantia	decimal(7,2) null,
     abono_publicidad decimal(7,2) null,
 	propuesta_cliente text not null,
+    acuerdo			varchar(130) not null,
     estado			int null default 1, -- 1 = pendiente, 2 = aprobada, 3 = no aprobado
     created_at		datetime null default now(),
     updated_at		datetime null ,
