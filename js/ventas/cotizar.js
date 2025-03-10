@@ -128,6 +128,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     return fpersona
   }
 
+  async function obtenerDpPorFecha(idusuario, fechapresentacion) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerDpPorFecha");
+    params.append("idusuario", idusuario);
+    params.append("fechapresentacion", fechapresentacion);
+    const dpfecha = await getDatos(`${host}detalleevento.controller.php`, params)
+    console.log(dpfecha);
+    return dpfecha
+  }
+
   /* async function obtenerCotizacion(iddetallepresentacion) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerCotizacion");
@@ -190,9 +200,20 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   // ****************************** REGISTRAR DATOS ****************************** //
 
-  async function registrarCliente() {
+  async function registrarCliente(tipodoc) {
+    const ndocumento = $q("#ndocumento").value.trim();
+    
+    // Determinar el tipo de documento
+    let tipodocu = "";
+    if (ndocumento.length == 8) {
+        tipodocu = 1;
+    } else if (ndocumento.length == 11) {
+        tipodocu = 2;
+    }
+
     const cliente = new FormData();
     cliente.append("operation", "registrarCliente");
+    cliente.append("tipodoc", tipodocu);
     cliente.append("iddistrito", $q("#distrito").value ? $q("#distrito").value : '');
     cliente.append("ndocumento", $q("#ndocumento").value ? $q("#ndocumento").value : '');
     cliente.append("razonsocial", $q("#razonsocial").value ? $q("#razonsocial").value : '');
@@ -218,27 +239,51 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
   async function registrarDetalleEvento(idcliente, ncotizacion) {
+    const horainicio = $q("#horainicio").value;
+    const horafinal = $q("#horafinal").value;
+    const fechapresentacion = $q("#fechapresentacion").value;
+    const validez = parseInt($q("#validez").value, 10) || 0; // Convertir validez a número
 
+    // Validar que la hora final no sea menor a la de inicio
+    if (horafinal <= horainicio) {
+        console.error("Error: La hora final no puede ser menor o igual a la hora de inicio.");
+        showToast("La hora final no puede ser menor o igual a la hora de inicio.", "ERROR");
+        return null;
+    }
+
+    // Validar que la validez no sea mayor a la diferencia de días entre hoy y la fecha de presentación
+    const fechaHoy = new Date();
+    const fechaEvento = new Date(fechapresentacion);
+    const diferenciaDias = Math.floor((fechaEvento - fechaHoy) / (1000 * 60 * 60 * 24));
+
+    if (validez > diferenciaDias) {
+        console.error("Error: La validez no puede ser mayor a la fecha de presentación.");
+        showToast("La validez no puede ser mayor a la cantidad de días restantes hasta la fecha de presentación.", "ERROR");
+        return null;
+    }
+
+    // Si pasa las validaciones, se procede a registrar
     const detalle = new FormData();
     detalle.append("operation", "registrarDetallePresentacion");
     detalle.append("idusuario", $q("#artista").value); // id artista
     detalle.append("idcliente", idcliente);
     detalle.append("iddistrito", $q("#distrito2").value);
     detalle.append("ncotizacion", ncotizacion ? ncotizacion : '');
-    detalle.append("fechapresentacion", $q("#fechapresentacion").value);
-    detalle.append("horainicio", $q("#horainicio").value);
-    detalle.append("horafinal", $q("#horafinal").value);
+    detalle.append("fechapresentacion", fechapresentacion);
+    detalle.append("horainicio", horainicio);
+    detalle.append("horafinal", horafinal);
     detalle.append("establecimiento", $q("#establecimiento").value);
     detalle.append("referencia", $q("#referencia").value);
     detalle.append("tipoevento", $q("#tipoevento").value);
     detalle.append("modalidad", $q("#modalidad").value);
-    detalle.append("validez", $q("#validez").value ? $q("#validez").value : '');
+    detalle.append("validez", validez);
     detalle.append("igv", $q("#igv").checked ? 1 : 0);
 
     const fdetalle = await fetch(`${host}detalleevento.controller.php`, {
-      method: "POST",
-      body: detalle,
+        method: "POST",
+        body: detalle,
     });
+
     const rdetalle = await fdetalle.json();
     return rdetalle;
   }
@@ -308,17 +353,61 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
   //Muestra los datos en los campos
-  function showDatos(data) {
+  async function showDatos(data) {
     console.log(data)
     $q("#razonsocial").value = data.razonsocial;
     $q("#representantelegal").value = data.representantelegal ? data.representantelegal : '';
     $q("#telefono").value = data.telefono;
-    $q("#correo").value = data.correo;
-    $q("#nacionalidad").value = data.idnacionalidad;
-    $q("#departamento").value = data.iddepartamento;
-    $q("#provincia").value = data.idprovincia;
-    $q("#distrito").value = data.iddistrito;
+    $q("#correo").value = data.correo;    
     $q("#direccion").value = data.direccion;
+    if (data.iddistrito) {
+      await cargarUbigeoDesdeDistrito(data.iddistrito);
+    }
+  }
+
+  async function cargarUbigeoDesdeDistrito(idDistrito) {
+    try {
+      // 1️⃣ Obtener datos del distrito
+      let distrito = await fetch(`${host}recurso.controller.php?operation=obtenerDistritoPorId&iddistrito=${idDistrito}`).then(res => res.json());
+      console.log("TODAS LAS DISTRTITOS OBTENIDOAS  -> ", distrito)
+
+      // 2️⃣ Obtener todas las provincias y marcar la seleccionada
+      let provincias = await fetch(`${host}recurso.controller.php?operation=obtenerTodosProvincias`).then(res => res.json());
+      console.log("TODAS LAS PROVINCIAS OBTENIDOAS  -> ", provincias)
+      let provinciaSeleccionada = provincias.find(p => p.idprovincia == distrito[0].idprovincia);
+      console.log("LA PROVINCIA SELCCIONADA - ", provinciaSeleccionada)
+
+      $q("#provincia").innerHTML = provincias.map(p =>
+        `<option value="${p.idprovincia}" ${p.idprovincia === distrito[0].idprovincia ? "selected" : ""}>${p.provincia}</option>`
+      ).join("");
+
+      // 3️⃣ Obtener todas los departamentos y marcar el correcto
+      let departamentos = await fetch(`${host}recurso.controller.php?operation=obtenerTodosDepartamentos`).then(res => res.json());
+      console.log("TODOS LOS DEPARTAMENTOS OBTENIDOS -> ", departamentos)
+      console.log("LA PROVINCIA SELCCIONADA - ", provinciaSeleccionada)
+      let departamentoSeleccionado = departamentos.find(d => d.iddepartamento === provinciaSeleccionada.iddepartamento);
+      console.log("DEPARTAMENTO SELCCIONADO -> ", departamentoSeleccionado)
+      $q("#departamento").innerHTML = departamentos.map(d =>
+        `<option value="${d.iddepartamento}" ${d.iddepartamento === provinciaSeleccionada.iddepartamento ? "selected" : ""}>${d.departamento}</option>`
+      ).join("");
+
+      // 4️⃣ Obtener todas las nacionalidades y marcar la correcta
+      let nacionalidades = await fetch(`${host}recurso.controller.php?operation=obtenerTodosNacionalidades`).then(res => res.json());
+      console.log("NACIONALIDADES TODAS OBTENIDAS : ",nacionalidades)
+      let nacionalidadSeleccionada = nacionalidades.find(n => n.idnacionalidad === departamentoSeleccionado.idnacionalidad);
+      $q("#nacionalidad").innerHTML = nacionalidades.map(n =>
+        `<option value="${n.idnacionalidad}" ${n.idnacionalidad === departamentoSeleccionado.idnacionalidad ? "selected" : ""}>${n.nacionalidad}</option>`
+      ).join("");
+
+      // 5️⃣ Obtener todos los distritos y seleccionar el correcto
+      let distritos = await fetch(`${host}recurso.controller.php?operation=obtenerTodosDistritos`).then(res => res.json());
+      $q("#distrito").innerHTML = distritos.map(d =>
+        `<option value="${d.iddistrito}" ${d.iddistrito === idDistrito ? "selected" : ""}>${d.distrito}</option>`
+      ).join("");
+
+    } catch (error) {
+      console.error("Error cargando ubigeo:", error);
+    }
   }
 
   //resetea los campos
@@ -427,7 +516,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             console.log("data cliente sunat: ", dataCliente);
             $q("#container-representantelegal").hidden = true
             //showDataCliente(dataCliente)
-            $q("#nacionalidad").value = 31 ? 31 : '';
+            //$q("#nacionalidad").value = 31 ? 31 : '';
             $q("#razonsocial").value = dataCliente.nombre + " " + dataCliente.apellidoPaterno + " " + dataCliente.apellidoMaterno;
             $q("#direccion").value = dataCliente.direccion;
           }
@@ -445,6 +534,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
     //return isValid;
   }
+  
 
   // ************************************* EVENTOS ************************************* //
 
@@ -482,32 +572,69 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 
   $q("#form-atencion-clientes").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    isReset = true;
-    await validateNumDoc(); //valida que el numero de caracteres y otras validaciones sean correctas
-    //const validateFields = validateData(); //Valida que los campos no esten vacios
-    //const validarClaveAcceso = validarClave($q("#claveacceso").value); //valida la clave de acceso
+    try {
+      e.preventDefault();
+      isReset = true;
+      await validateNumDoc(); //valida que el numero de caracteres y otras validaciones sean correctas
+      //const validateFields = validateData(); //Valida que los campos no esten vacios
+      //const validarClaveAcceso = validarClave($q("#claveacceso").value); //valida la clave de acceso
 
-    //const numericTelefono = /^[0-9]+$/.test($q("#telefono1").value); //valida que sean numeros
-    //    const unikeUser = await searchNomUser($q("#usuario").value);// valida que el nom usuario sea unico
-    //const unikeEmail = await existeCorreo($q("#correo").value);
-    //console.log("email encontrado -> ", unikeEmail);
-    //const existResp = await existeResponsable(parseInt($q("#area").value)); //valida que no exista un responsable en el area elegida
-    //if (parseInt($q("#nivel").value) === 2 && isNaN(parseInt($q("#area").value))) { selectArea = false; }
+      //const numericTelefono = /^[0-9]+$/.test($q("#telefono1").value); //valida que sean numeros
+      //    const unikeUser = await searchNomUser($q("#usuario").value);// valida que el nom usuario sea unico
+      //const unikeEmail = await existeCorreo($q("#correo").value);
+      //console.log("email encontrado -> ", unikeEmail);
+      //const existResp = await existeResponsable(parseInt($q("#area").value)); //valida que no exista un responsable en el area elegida
+      //if (parseInt($q("#nivel").value) === 2 && isNaN(parseInt($q("#area").value))) { selectArea = false; }
 
-    //if (unikeEmail.length === 0) {
-    //console.log($q("#apellidos").value.toUpperCase());
-    //console.log($q("#nombres").value.toUpperCase());
+      //if (unikeEmail.length === 0) {
+      //console.log($q("#apellidos").value.toUpperCase());
+      //console.log($q("#nombres").value.toUpperCase());
+      console.log("artista -> ", $q("#artista").value)
+      console.log("fechapresentacion->", $q("#fechapresentacion").value)
+      const fechaOcupada = await obtenerDpPorFecha($q("#artista").value, $q("#fechapresentacion").value)
+      console.log("fecha ocupada: ", fechaOcupada)
+      if (await ask("¿Estas seguro de registrar?")) {
+        if(fechaOcupada.length > 0){
+          showToast("Esta fecha ya esta tomada por otro evento.", "ERROR");
+          return
+        }
+        else if (idcliente == -1) {
+          //CONVENIO Y CONTRATO CUANDO NO EXISTE AUN EL CLIENTE
+          const data = await registrarCliente();
+          console.log(data);
+          //alert("registrando persona")
+          if (data.idcliente > 0) {
+            //GENERAR NUMERO RANDOM ALEATORIO DE 9 DIGITOS
+            const cotizaciones = await obtenerCotizacionesPorModalidad()
+            console.log("cotizaciones -> ", cotizaciones.at(-1))
+            const ultimaCotizacion = cotizaciones.at(-1); // Última cotización registrada
 
-    if (await ask("¿Estas seguro de registrar?")) {
+            const nuevoNCotizacion = generarNuevoNCotizacion(ultimaCotizacion);
+            console.log("Nuevo número de cotización ->", nuevoNCotizacion);
+            ncotizacion = nuevoNCotizacion
 
-      if (idcliente == -1) {
-        //CONVENIO Y CONTRATO CUANDO NO EXISTE AUN EL CLIENTE
-        const data = await registrarCliente();
-        console.log(data);
-        //alert("registrando persona")
-        if (data.idcliente > 0) {
+            if ($q("#modalidad").value == 1) {
+              detalleevento = await registrarDetalleEvento(data.idcliente);
+              console.log(detalleevento);
+            } else if ($q("#modalidad").value == 2) {
+              detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
+              console.log(detalleevento);
+            }
+
+            if (detalleevento.iddetalleevento > 0) {
+              window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
+            } else {
+              showToast("Hubo un error al registrar la atencion", "ERROR");
+            }
+          } else {
+            showToast("Hubo un error al registrar los datos del cliente", "ERROR");
+          }
+        }
+        else {
+          // CONVENIO Y CONTRATO CUANDO YA EXISTE EL CLIENTE
+          //alert(`REGISTRANDO CON UN CLIENTE YA EXISTENE ${idcliente}`)
           //GENERAR NUMERO RANDOM ALEATORIO DE 9 DIGITOS
+
           const cotizaciones = await obtenerCotizacionesPorModalidad()
           console.log("cotizaciones -> ", cotizaciones.at(-1))
           const ultimaCotizacion = cotizaciones.at(-1); // Última cotización registrada
@@ -517,10 +644,10 @@ document.addEventListener('DOMContentLoaded', async function () {
           ncotizacion = nuevoNCotizacion
 
           if ($q("#modalidad").value == 1) {
-            detalleevento = await registrarDetalleEvento(data.idcliente);
+            detalleevento = await registrarDetalleEvento(idcliente);
             console.log(detalleevento);
           } else if ($q("#modalidad").value == 2) {
-            detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
+            detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
             console.log(detalleevento);
           }
 
@@ -529,37 +656,11 @@ document.addEventListener('DOMContentLoaded', async function () {
           } else {
             showToast("Hubo un error al registrar la atencion", "ERROR");
           }
-        } else {
-          showToast("Hubo un error al registrar los datos del cliente", "ERROR");
         }
       }
-      else {
-        // CONVENIO Y CONTRATO CUANDO YA EXISTE EL CLIENTE
-        //alert(`REGISTRANDO CON UN CLIENTE YA EXISTENE ${idcliente}`)
-        //GENERAR NUMERO RANDOM ALEATORIO DE 9 DIGITOS
-
-        const cotizaciones = await obtenerCotizacionesPorModalidad()
-        console.log("cotizaciones -> ", cotizaciones.at(-1))
-        const ultimaCotizacion = cotizaciones.at(-1); // Última cotización registrada
-
-        const nuevoNCotizacion = generarNuevoNCotizacion(ultimaCotizacion);
-        console.log("Nuevo número de cotización ->", nuevoNCotizacion);
-        ncotizacion = nuevoNCotizacion
-
-        if ($q("#modalidad").value == 1) {
-          detalleevento = await registrarDetalleEvento(idcliente);
-          console.log(detalleevento);
-        } else if ($q("#modalidad").value == 2) {
-          detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
-          console.log(detalleevento);
-        }
-
-        if (detalleevento.iddetalleevento > 0) {
-          window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
-        } else {
-          showToast("Hubo un error al registrar la atencion", "ERROR");
-        }
-      }
+    } catch (error) {
+      showToast("Un error ha ocurrido", "ERROR")
+      return
     }
     /* } else {
       let message = "";
@@ -586,16 +687,4 @@ document.addEventListener('DOMContentLoaded', async function () {
       $q("#container-validez").hidden = false
     }
   })
-
- /*  $q("#btnGenerarCotizacion").addEventListener("click", async (e) => {
-    //const tarifaArtista = await obtenerTarifasPorProvincia()
-    //    const cotizacion = await obtenerCotizacion(iddetalleevento)
-    console.log("clickeando")
-    window.open(`http://localhost/vega-erp/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${2500}`)
-    return
-  })
- */
-  // ************************************* FUNCIONES AUTOMATICAS ************************************* //
-
-  //async function
 });

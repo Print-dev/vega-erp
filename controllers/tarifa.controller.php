@@ -2,7 +2,7 @@
 
 <?php
 require_once '../models/Tarifario.php';
-header("Access-Control-Allow-Origin: http://localhost:80");
+header("Access-Control-Allow-Origin: *");
 header("Content-type: application/json; charset=utf-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Métodos permitidos
 header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Encabezados permitidos
@@ -19,7 +19,8 @@ if(isset($_GET['operation'])){
 
     case 'obtenerTarifasPorProvincia':
         $cleanData = [
-          'iddepartamento' => $tarifa->limpiarCadena($_GET['iddepartamento'])
+          'iddepartamento' => $tarifa->limpiarCadena($_GET['iddepartamento']), 
+          'idusuario' => $tarifa->limpiarCadena($_GET['idusuario']) 
         ];
         echo json_encode($tarifa->obtenerTarifasPorProvincia($cleanData));
         break;

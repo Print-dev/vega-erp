@@ -8,9 +8,10 @@ class Cliente extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_cliente(@idcliente,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_cliente(@idcliente,?,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
+          $params['tipodoc'],
           $params['iddistrito'],
           $params['ndocumento'],
           $params['razonsocial'],

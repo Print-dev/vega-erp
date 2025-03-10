@@ -123,8 +123,8 @@
                             <div class="col-md-3">
                                 <div class="form-floating">
                                     <select name="nacionalidad" id="nacionalidad" class="form-select" required>
-                                        <option value="">Selecciona</option>
-                                        <option value="31">Peru</option>
+                                        <option value="" selected>Selecciona</option>
+                                        <option value="31">Peruana</option>
                                     </select>
                                     <label for="nacionalidad" class="form-label">Nacionalidad</label>
                                 </div>
@@ -166,7 +166,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating">
-                                    <input type="number" id="telefono" name="telefono" maxlength="9"
+                                    <input type="number" id="telefono" name="telefono" maxlength="9" min="0"
                                         class="form-control">
                                     <label for="telefono" class="form-label">Telefono</label>
                                 </div>

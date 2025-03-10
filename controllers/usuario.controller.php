@@ -1,14 +1,14 @@
 <?php
 
 session_start();
-header("Access-Control-Allow-Origin: http://localhost:80");
+header("Access-Control-Allow-Origin: *");
 header("Content-type: application/json; charset=utf-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Métodos permitidos
 header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Encabezados permitidos
 // cuando se pone en visible true se pone como dropdown
 $accesos = [
   'Administrador' => [
-    ['modulo' => 'ventas', 'ruta' => '', 'texto' => 'Ventas', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-folder'],
+    ['modulo' => 'ventas', 'ruta' => '', 'texto' => 'Ventas', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-chart-simple'],
 
     ['modulo' => 'ventas', 'ruta' => 'listar-atencion-cliente', 'subruta' => '', 'texto' => 'Atención cliente', 'visible' => false, 'icono' => 'fa-solid fa-list'],
     ['modulo' => 'ventas', 'ruta' => 'actualizar-atencion-cliente', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''],
@@ -22,6 +22,20 @@ $accesos = [
     ['modulo' => 'utilitario', 'ruta' => 'registrar-usuario', 'subruta' => 'usuarios', 'visible' => false],
     ['modulo' => 'utilitario', 'ruta' => 'listar-tarifas', 'subruta' => 'tarifas', 'texto' => 'Tarifario', 'visible' => false, 'icono' => 'fa-solid fa-list'],
     ['modulo' => 'utilitario', 'ruta' => 'registrar-tarifa', 'subruta' => 'tarifas', 'visible' => false],
+
+
+    ['modulo' => 'pyp', 'ruta' => '', 'texto' => 'Planeamiento', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-lightbulb'],
+
+    ['modulo' => 'pyp', 'ruta' => 'listar-planeamientos', 'subruta' => 'planeamientos', 'texto' => 'Planeamientos', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'pyp', 'ruta' => 'registrar-planeamiento', 'subruta' => 'planeamientos', 'visible' => false],
+
+/*     ['modulo' => 'postpro', 'ruta' => '', 'texto' => 'Post-producción', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-folder'],
+    ['modulo' => 'myp', 'ruta' => '', 'texto' => 'Marketing y publicidad', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-folder'],
+    ['modulo' => 'cym', 'ruta' => '', 'texto' => 'Community Manager', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-folder'], */
+
+
+
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
 
 
 

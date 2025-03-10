@@ -43,6 +43,7 @@ if (isset($_POST['operation'])) {
   switch ($_POST['operation']) {
     case 'registrarCliente':
       $cleanData = [
+        'tipodoc'   => $cliente->limpiarCadena($_POST['tipodoc']) ? $cliente->limpiarCadena($_POST['tipodoc']) : '',
         'iddistrito'   => $cliente->limpiarCadena($_POST['iddistrito']) ? $cliente->limpiarCadena($_POST['iddistrito']) : '',
         'ndocumento' => $cliente->limpiarCadena($_POST['ndocumento']) ? $cliente->limpiarCadena($_POST['ndocumento']) : '',
         'razonsocial'   => $cliente->limpiarCadena($_POST['razonsocial']) ? $cliente->limpiarCadena($_POST['razonsocial']) : '',

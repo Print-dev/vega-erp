@@ -94,6 +94,68 @@ BEGIN
 
 END //
 
+DROP PROCEDURE IF EXISTS sp_obtener_agenda_artista;
+DELIMITER //
+CREATE PROCEDURE `sp_obtener_agenda_artista`(
+    IN _idusuario INT, 
+    IN _iddetalle_presentacion INT
+)
+BEGIN
+    SELECT 
+        DP.iddetalle_presentacion, 
+        CLI.ndocumento,
+        DP.ncotizacion,
+        USU.nom_usuario, USU.idusuario,
+        CLI.razonsocial, 
+        DP.tipo_evento, 
+        DP.modalidad, 
+        DP.fecha_presentacion, 
+        DP.horainicio, DP.horafinal,
+        CO.idcontrato, 
+        DP.validez,
+        DP.reserva,
+        DP.pagado50,
+        DP.establecimiento,
+        DP.referencia,
+        CON.estado AS estadoPropConvenio,
+        DP.created_at,
+        RE.vigencia AS vigencia_reserva,
+        RE.fechacreada AS fechacreada_reserva,
+        CO.idcontrato,
+        DP.estado,
+        CON.estado AS estado_convenio,
+        DISDP.distrito, PRODP.provincia, DEDP.departamento
+    FROM detalles_presentacion DP
+    LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+    LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
+    LEFT JOIN contratos CO ON CO.iddetalle_presentacion = DP.iddetalle_presentacion
+    LEFT JOIN convenios CON ON CON.iddetalle_presentacion = DP.iddetalle_presentacion
+    LEFT JOIN pagos_contrato PC ON PC.idcontrato = CO.idcontrato
+    LEFT JOIN reservas RE ON RE.idpagocontrato = PC.idpagocontrato
+	LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito
+    LEFT JOIN provincias PRODP ON PRODP.idprovincia = DISDP.idprovincia
+    LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
+    WHERE 
+        (_idusuario IS NULL OR USU.idusuario = _idusuario) AND
+        (_iddetalle_presentacion IS NULL OR DP.iddetalle_presentacion = _iddetalle_presentacion);
+END //
+DELIMITER ;
+
+
+drop procedure if exists sp_obtener_dp_por_fecha;
+DELIMITER //
+CREATE PROCEDURE `sp_obtener_dp_por_fecha`(
+	IN _idusuario	INT,
+	IN _fecha_presentacion	DATE
+)
+BEGIN
+	SELECT *
+    FROM
+    detalles_presentacion 
+    WHERE fecha_presentacion = _fecha_presentacion AND idusuario = _idusuario; -- me quede aca
+END //
+
+
 CALL sp_obtener_detalles_evento ('','');
 
 DROP PROCEDURE sp_actualizar_estado_dp;

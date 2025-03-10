@@ -81,6 +81,9 @@ $host = "http://localhost/vega-erp/";
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
 
+  <!-- JQUERY DATATABLES -->
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
   <!-- Bajas -->
   <!-- <link rel="stylesheet" href="http://localhost/vega-erp/css/baja-activo.css"> -->
 
@@ -107,14 +110,36 @@ $host = "http://localhost/vega-erp/";
 
 
   #links {
+    color: #000;
+    display: flex;
+    align-items: center;
+    width: 240px; /* Mantener tamaño fijo */
+    padding: 10px; /* Ajuste uniforme */
+    transition: background-color 0.1s, color 0.1s;
+}
+
+#links:hover {
+    background-color: #ffcc00;
     color: black;
-  }
-
-  #links:hover {
-    color: white;
     font-weight: bold;
+}
 
-  }
+.sidebar-text {
+    flex-grow: 1; /* Hace que el texto ocupe el espacio disponible */
+    white-space: nowrap; /* Evita que el texto se mueva de línea */
+}
+
+.toggle-icon {
+    transition: transform 0.1s ease;
+    margin-left: auto; /* Empuja el icono a la derecha */
+}
+
+/* Evitar desplazamiento al abrir dropdown */
+.sidebar-item .collapse {
+    transition: none !important; /* Evita movimientos raros */
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
 
   .beta-banner {
     width: 100%;
@@ -124,6 +149,9 @@ $host = "http://localhost/vega-erp/";
     padding: 10px;
     font-weight: bold;
   }
+
+
+
 </style>
 <div class="beta-banner">Versión Beta</div>
 
@@ -152,9 +180,9 @@ $host = "http://localhost/vega-erp/";
   <!-- SIDEBAR -->
   <nav
     id="sidebarMenu"
-    class="sidebar d-lg-block bg-white text-white collapse"
+    class="sidebar d-lg-block bg-white text-white collapse "
     data-simplebar>
-    <div class="sidebar-inner px-4 pt-3">
+    <div class=" px-4 pt-3"> <!-- sidebar-inner -->
       <div
         class="d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
         <div class="collapse-close d-md-none">
@@ -194,9 +222,9 @@ $host = "http://localhost/vega-erp/";
         </li>
         <?php
         foreach ($listaAcceso as $access) {
-          if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario") {
+          if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario" && $access['modulo'] !== "pyp") {
             echo "
-              <li class='nav-item'>
+              <li class='nav-item' >
                 <a href='http://localhost/vega-erp/views/{$access['modulo']}/{$access['ruta']}' class='nav-link' id='links'>
                   <i class='{$access['icono']}'></i>
                   <span class='sidebar-text mx-2'>{$access['texto']}</span>
@@ -247,6 +275,35 @@ $host = "http://localhost/vega-erp/";
               if (!$subAccess['visible'] && $subAccess['modulo'] === "utilitario" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
                 echo "
                 <li class='sidebar-item nav-item list-utilitario'>
+                  <a href='{$rutaCompleta}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                    <i class='{$subAccess['icono']}'></i>
+                    <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
+                  </a>
+                </li>";
+              }
+            }
+            echo "</ul>";
+          } else if ($access['modulo'] === "pyp" && $access['visible']) {
+            echo "
+              <li class='sidebar-item nav-item'>
+                <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#pyp'
+                  aria-expanded='false' aria-controls='pyp'>
+                  <i class='{$access['icono']}'></i>
+                  <span class='sidebar-text mx-2'>{$access['texto']}</span>
+                  <i class='fa-solid fa-angle-down ms-auto mt-2 toggle-icon'></i>
+                </a>              
+              </li> 
+              <ul id='pyp' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#pyp'>";
+
+            foreach ($listaAcceso as $subAccess) {
+              $rutaCompleta = "http://localhost/vega-erp/views/{$subAccess['modulo']}/";
+              if (!empty($subAccess['subruta'])) {
+                $rutaCompleta .= "{$subAccess['subruta']}/";
+              }
+              $rutaCompleta .= "{$subAccess['ruta']}";
+              if (!$subAccess['visible'] && $subAccess['modulo'] === "pyp" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
+                echo "
+                <li class='sidebar-item nav-item list-pyp'>
                   <a href='{$rutaCompleta}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
                     <i class='{$subAccess['icono']}'></i>
                     <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>

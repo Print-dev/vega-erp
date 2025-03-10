@@ -84,6 +84,7 @@ CREATE TABLE tarifario (
     constraint fk_provincia_tarifario_art foreign key (idprovincia) references provincias (idprovincia)
 ) ENGINE = INNODB;
 
+
 CREATE TABLE permisos (
     idpermiso INT AUTO_INCREMENT PRIMARY KEY,
     idnivelacceso INT NOT NULL,
@@ -98,6 +99,7 @@ CREATE TABLE permisos (
 
 create table clientes (
 	idcliente	int auto_increment primary key,
+    tipodoc		int not null, -- 1: dni, 2: ruc
     iddistrito	int null,
     ndocumento	CHAR(20)	null,
     razonsocial	varchar(130)  null,
@@ -108,7 +110,8 @@ create table clientes (
     constraint fk_iddistrito_cli foreign key (iddistrito) references distritos (iddistrito),
     constraint    uk_telefono         UNIQUE(telefono),
     constraint 	chk_telefono		CHECK(telefono LIKE '9%'),
-    constraint 	chk_numdocumento	check(ndocumento)
+    constraint 	uk_numdocumento_cli	unique(ndocumento),
+    constraint chk_tipodoc		check(tipodoc IN (1,2))
 )engine=innodb;
 
 create table detalles_presentacion (

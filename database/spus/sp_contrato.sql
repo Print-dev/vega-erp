@@ -9,7 +9,7 @@ CREATE PROCEDURE `obtenerContrato`(
 BEGIN
     SELECT 		
         CO.idcontrato, 
-        CLI.razonsocial, CLI.ndocumento, CLI.direccion, CLI.representantelegal, CLI.correo, CLI.telefono,
+        CLI.razonsocial, CLI.tipodoc ,CLI.ndocumento, CLI.direccion, CLI.representantelegal, CLI.correo, CLI.telefono,
         DISCLI.distrito, PROCLI.provincia, DECLI.departamento, 
         USU.nom_usuario,
         DP.fecha_presentacion,
@@ -44,7 +44,7 @@ CREATE PROCEDURE `sp_obtenerCotizacion`(
 BEGIN
     SELECT 		
         DP.iddetalle_presentacion, DP.ncotizacion,
-        CLI.razonsocial, CLI.ndocumento, CLI.direccion, CLI.representantelegal, CLI.correo, CLI.telefono,
+        CLI.razonsocial, CLI.tipodoc, CLI.ndocumento, CLI.direccion, CLI.representantelegal, CLI.correo, CLI.telefono,
         DISCLI.distrito, PROCLI.provincia, DECLI.departamento, 
         USU.nom_usuario,
         DP.fecha_presentacion,

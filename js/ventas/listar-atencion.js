@@ -199,6 +199,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const rreserva = await freserva.json();
     return rreserva;
   }
+  
   async function actualizarCliente(idcliente) {
     const clienteAct = new FormData();
     clienteAct.append("operation", "actualizarCliente");
@@ -682,7 +683,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log("datosIncompletos -> ", datosIncompletos);
 
             // Verificar si es un array y tiene al menos un elemento
-            if (!Array.isArray(datosIncompletos) || datosIncompletos.length === 0) {
+            if (!Array.isArray(datosIncompletos) || datosIncompletos.length === 0) { // me quede aca, falta implementar el de tipodoc = 2 ruc
               console.error("Error: datosIncompletos no es un array válido o está vacío", datosIncompletos);
               return;
             }
@@ -692,19 +693,36 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             for (const clave in datosCliente) {
               if (datosCliente[clave] === null || datosCliente[clave] === "") {
-                incompleto = true;
-                break;
+                if (!(datosCliente.tipodoc == 1 && clave === "representantelegal")) {
+                  console.log("DATOS CLIENTE incompleto")
+                  incompleto = true;
+                  break;
+                }
               }
             }
             console.log("incompleto? ??? : ", incompleto)
             if (incompleto) {
-              modalDatosClienteIncompleto = new bootstrap.Modal(
-                $q("#modal-datosclienteincompletos")
-              );
-              modalDatosClienteIncompleto.show();
-              await renderizarDatosClienteIncompleto(cliente[0]);
-              return
+              if (datosCliente?.tipodoc == 1) {
+                $q("#container-representantelegal").hidden = true;
+                modalDatosClienteIncompleto = new bootstrap.Modal(
+                  $q("#modal-datosclienteincompletos")
+                );
+                modalDatosClienteIncompleto.show();
+                await renderizarDatosClienteIncompleto(datosCliente);
+                return;
+              }
+              else if(datosCliente?.tipodoc == 2){
+                $q("#container-representantelegal").hidden = false;
+                modalDatosClienteIncompleto = new bootstrap.Modal(
+                  $q("#modal-datosclienteincompletos")
+                );
+                modalDatosClienteIncompleto.show();
+                await renderizarDatosClienteIncompleto(datosCliente);
+                return;
+              }
+              
             }
+            
             window.open(
               `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0]?.idcontrato
               }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
@@ -902,15 +920,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   //  ******************************************* EVENTOS *******************************************************
   $q("#btnActualizarDatosCliente").addEventListener("click", async () => {
-    alert("actualziando")
-    const clienteDatosActualizados = await actualizarCliente(idcliente) // me quede aca, falta exraewr el idcliente desdde antes de ir al btnactualizardatoscliewnte
-    console.log("cliente datos aactuaizado=??? ", clienteDatosActualizados)
-    if(clienteDatosActualizados){
-      console.log("Cliente actualizadoooooooooooo")
-      modalDatosClienteIncompleto.hide()
-      return
-    }else{
-      showToast("Un error ha ocurrido", "ERROR")
+    try {
+      const clienteDatosActualizados = await actualizarCliente(idcliente) // me quede aca, falta exraewr el idcliente desdde antes de ir al btnactualizardatoscliewnte
+      console.log("cliente datos aactuaizado=??? ", clienteDatosActualizados)
+      if(clienteDatosActualizados){
+        console.log("Cliente actualizadoooooooooooo")
+        showToast("Datos de cliente actualizado", "SUCCESS")
+        modalDatosClienteIncompleto.hide()
+        return
+      }else{
+        showToast("Un error ha ocurrido", "ERROR")
+        return
+      }
+    } catch (error) {
+      showToast("Un error ha ocurrido", "ERROR")  
       return
     }
   })
@@ -1034,8 +1057,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   })
 
   $q("#btnGenerarCotizacion").addEventListener("click", async (e) => {
-    //const tarifaArtista = await obtenerTarifasPorProvincia()
-    //    const cotizacion = await obtenerCotizacion(iddetalleevento)
     console.log("clickeando");
     window.open(
       `http://localhost/vega-erp/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${2500}`

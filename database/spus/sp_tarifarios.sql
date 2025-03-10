@@ -6,15 +6,17 @@ DROP PROCEDURE IF EXISTS sp_obtener_tarifario_por_provincia;
 DELIMITER $$
 CREATE PROCEDURE sp_obtener_tarifario_por_provincia
 (
-	IN _iddepartamento INT
+	IN _iddepartamento INT,
+    IN _idusuario INT
 )
 BEGIN
 	SELECT 
-	T.idtarifario, T.precio, PR.idprovincia, D.iddepartamento
-    FROM tarifario T
+	T.idtarifario, T.precio, PR.idprovincia, D.iddepartamento, USU.idusuario
+    FROM usuarios USU
+    LEFT JOIN tarifario T ON T.idusuario = USU.idusuario
     LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
-    WHERE PR.iddepartamento = _iddepartamento;
+    WHERE PR.iddepartamento = _iddepartamento AND USU.idusuario = _idusuario ;
 END $$
 
 DROP PROCEDURE IF EXISTS sp_search_tarifa_artista_por_provincia;

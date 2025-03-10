@@ -52,6 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const params = new URLSearchParams();
         params.append("operation", "obtenerTarifasPorProvincia");
         params.append("iddepartamento", $q("#departamento").value);
+        params.append("idusuario", $q("#artista").value);
         const data = await getDatos(`${host}tarifa.controller.php`, params);
         return data
     }
@@ -93,6 +94,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         idartista = $q("#artista").value
         
         console.log("idartista selccionado", idartista)
+        $q("#departamento").value = ''
+        $q("#nacionalidad").value = ''
+        $q("#tb-body-tarifario").innerHTML = ''
     })
 
     $q("#nacionalidad").addEventListener("change", async () => {
@@ -106,6 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#departamento").addEventListener("change", async () => {
         const provincias = await obtenerProvincias();
         const tarifas = await obtenerTarifasPorProvincia();
+        console.log("tarifas-> ", tarifas)
 
         $q("#tb-body-tarifario").innerHTML = ''
         

@@ -54,3 +54,39 @@ function esFechaVencida(fechaVencimiento) {
 
   return fechaHoy === fechaVence;
 }
+
+function formatHour(hour) {
+  let [hh, mm, ss] = hour.split(':');
+  hh = parseInt(hh, 10);
+  let period = hh >= 12 ? 'PM' : 'AM';
+  hh = hh % 12 || 12; // Convierte 0 a 12 para el formato de 12 horas
+  return `${hh}:${mm} ${period}`;
+}
+
+function calculateDuration(start, end) {
+  let [startH, startM] = start.split(':').map(Number);
+  let [endH, endM] = end.split(':').map(Number);
+
+  let startMinutes = startH * 60 + startM;
+  let endMinutes = endH * 60 + endM;
+  let durationMinutes = endMinutes - startMinutes;
+
+  if (durationMinutes < 0) {
+      durationMinutes += 24 * 60; // Si pasa de medianoche, ajustar
+  }
+
+  let hours = Math.floor(durationMinutes / 60);
+  let minutes = durationMinutes % 60;
+
+  return `${hours} horas ${minutes > 0 ? minutes + 'minutos' : ''}`;
+}
+
+function formatDate(fecha) {
+  const meses = [
+      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ];
+  
+  let [year, month, day] = fecha.split('-');
+  return `${parseInt(day)} de ${meses[parseInt(month) - 1]} de ${year}`;
+}

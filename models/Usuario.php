@@ -118,7 +118,7 @@ class Usuario extends ExecQuery
   }
 
 
-  public function obtenerUsuarioPorNivel($params = []): array // mas que todo para obtener ARTISTAS
+  public function obtenerUsuarioPorNivel($params = []): array // mas que todo para obtener ARTISTAS, ULTIMA UPDATE: USARSE PARA FILTRAR SU AGENDA
   {
     try {
       $cmd = parent::execQ("CALL sp_obtener_usuario_por_nivel(?)");

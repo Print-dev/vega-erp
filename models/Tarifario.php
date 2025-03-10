@@ -7,10 +7,11 @@ class Tarifario extends ExecQuery
   public function obtenerTarifasPorProvincia($params = []): array
   {
     try {
-      $sp = parent::execQ("CALL sp_obtener_tarifario_por_provincia(?) ");
+      $sp = parent::execQ("CALL sp_obtener_tarifario_por_provincia(?,?) ");
       $sp->execute(
         array(    
           $params['iddepartamento'],
+          $params['idusuario'],
         )
         
       );

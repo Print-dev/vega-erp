@@ -143,4 +143,19 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
+  
+  
+  public function obtenerDpPorFecha($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("call sp_obtener_dp_por_fecha (?,?)");
+      $cmd->execute(array(
+        $params['idusuario'],
+        $params['fechapresentacion'],
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
 }

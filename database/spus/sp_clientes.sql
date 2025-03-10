@@ -4,6 +4,7 @@ DELIMITER $$
 
 CREATE PROCEDURE sp_registrar_cliente (
     OUT _idcliente INT,
+    IN _tipodoc	INT,
 	IN _iddistrito INT,
     IN _ndocumento CHAR(20),
     IN _razonsocial VARCHAR(130),
@@ -20,8 +21,8 @@ BEGIN
         SET existe_error = 1;
     END;
     
-    INSERT INTO clientes (iddistrito, ndocumento, razonsocial, representantelegal, telefono, correo, direccion)
-    VALUES (NULLIF(_iddistrito, '') , NULLIF(_ndocumento, ''), NULLIF(_razonsocial, ''), NULLIF(_representantelegal, ''), NULLIF(_telefono, ''), NULLIF(_correo, ''), NULLIF(_direccion, ''));
+    INSERT INTO clientes (tipodoc, iddistrito, ndocumento, razonsocial, representantelegal, telefono, correo, direccion)
+    VALUES (_tipodoc, NULLIF(_iddistrito, '') , NULLIF(_ndocumento, ''), NULLIF(_razonsocial, ''), NULLIF(_representantelegal, ''), NULLIF(_telefono, ''), NULLIF(_correo, ''), NULLIF(_direccion, ''));
     
     IF existe_error = 1 THEN
         SET _idcliente = -1;
@@ -40,7 +41,7 @@ CREATE PROCEDURE sp_search_cliente_numdoc
 )
 BEGIN
 	SELECT 
-    C.idcliente, C.ndocumento, C.razonsocial, C.representantelegal, C.telefono, C.correo, C.direccion, 
+    C.idcliente, C.tipodoc, C.ndocumento, C.razonsocial, C.representantelegal, C.telefono, C.correo, C.direccion, 
     NA.idnacionalidad,  D.iddepartamento, PR.idprovincia, DI.iddistrito
     FROM clientes C
     LEFT JOIN distritos DI ON DI.iddistrito = C.iddistrito
