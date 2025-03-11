@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     let data = await fetch(`${link}?${params}`);
     return data.json();
   }
-
+  
 
   /* $q("#btnGuardarAC").addEventListener("click", async function () {
     let modalCotizacion = new bootstrap.Modal($q("#modal-convenio"));
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     params.append("idnivelacceso", 6);
     const data = await getDatos(`${host}usuario.controller.php`, params)
     console.log(data);
-    $q("#artista").innerHTML = "<option value=''>Selecciona</option>";
+    $q("#artista").innerHTML = "<option value='-1'>Selecciona</option>";
     data.forEach(artista => {
       $q("#artista").innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
     });
@@ -366,6 +366,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     $q("#referencia").disabled = isblock;
     $q("#btnGuardarAC").disabled = isblock;
     $q("#btnLimpiarAC").disabled = isblock;
+    $q("#btnConsultarFecha").disabled = isblock;
+
     //selector("externo").disabled = isblock
   }
 
@@ -558,15 +560,16 @@ document.addEventListener('DOMContentLoaded', async function () {
   $q("#btnConsultarFecha").addEventListener("click", async () => {
     modalAgendaFechas = new bootstrap.Modal($q("#modal-fechasagenda"))
     modalAgendaFechas.show()
-    console.log("artista value -> ",$q("#artista").value)
+    console.log("artista value -> ", $q("#artista").value)
     const agenda = await obtenerAgendaArtista($q("#artista").value, null)
     console.log("AGENDAAAA-> ", agenda)
     $q(".contenedor-fechasocupadas").innerHTML = ''
     // ACA PRIMERO OBTENER SI LA FECHA SELCCIONADA ES IGUAL A UUNA FECHA YA OCUPADA
-    if(agenda.length > 0 ) {  
+    if (agenda.length > 0) {
       agenda.forEach((age, x) => {
-        if(age.pagado50 == 1){ 
-          $q(".contenedor-fechasocupadas").innerHTML += `
+        if (age.estadoContrato == 2 || age.estado_convenio == 2) {
+          if (age.estado == 1) {
+            $q(".contenedor-fechasocupadas").innerHTML += `
           <div class="row mb-3">
               <div class="col-md-6">
                   <strong>Lugar Presentacion N° ${x + 1}</strong>
@@ -575,13 +578,16 @@ document.addEventListener('DOMContentLoaded', async function () {
               <div class="col-md-6">
                   <strong>Fecha:</strong>
                   <p id="evento-referencia">${formatDate(age.fecha_presentacion)}</p>
+                  <strong>Hora:</strong>
+                  <p id="evento-referencia">${formatHour(age.horainicio)} - ${formatHour(age.horafinal)}</p>
               </div>
               <hr>
           </div>
         `
+          }
         }
       });
-    }else{
+    } else {
       $q(".contenedor-fechasocupadas").innerHTML = '<strong>Sin fechas proximas</strong>'
     }
   })
@@ -625,36 +631,93 @@ document.addEventListener('DOMContentLoaded', async function () {
     try {
       e.preventDefault();
       isReset = true;
-      await validateNumDoc(); //valida que el numero de caracteres y otras validaciones sean correctas
-      //const validateFields = validateData(); //Valida que los campos no esten vacios
-      //const validarClaveAcceso = validarClave($q("#claveacceso").value); //valida la clave de acceso
+      let permitirRegistrar = false;
 
-      //const numericTelefono = /^[0-9]+$/.test($q("#telefono1").value); //valida que sean numeros
-      //    const unikeUser = await searchNomUser($q("#usuario").value);// valida que el nom usuario sea unico
-      //const unikeEmail = await existeCorreo($q("#correo").value);
-      //console.log("email encontrado -> ", unikeEmail);
-      //const existResp = await existeResponsable(parseInt($q("#area").value)); //valida que no exista un responsable en el area elegida
-      //if (parseInt($q("#nivel").value) === 2 && isNaN(parseInt($q("#area").value))) { selectArea = false; }
+      await validateNumDoc(); // Validar número de caracteres y otras reglas
 
-      //if (unikeEmail.length === 0) {
-      //console.log($q("#apellidos").value.toUpperCase());
-      //console.log($q("#nombres").value.toUpperCase());
-      console.log("artista -> ", $q("#artista").value)
-      console.log("fechapresentacion->", $q("#fechapresentacion").value)
-      const fechaOcupada = await obtenerDpPorFecha($q("#artista").value, $q("#fechapresentacion").value)
-      console.log("fecha ocupada: ", fechaOcupada)
-      if (await ask("¿Estas seguro de registrar?")) {
-        if (fechaOcupada.length > 0) {
-          showToast("Esta fecha ya esta tomada por otro evento.", "ERROR");
-          return
+      const fechaSeleccionada = $q("#fechapresentacion").value;
+      const horaInicioSeleccionada = $q("#horainicio").value;
+      const horaFinalSeleccionada = $q("#horafinal").value; // Nueva variable para comparar rangos
+
+      console.log("Artista -> ", $q("#artista").value);
+      console.log("Fecha presentación ->", fechaSeleccionada);
+      console.log("Hora inicio ->", horaInicioSeleccionada);
+      console.log("Hora final ->", horaFinalSeleccionada);
+
+      const fechaOcupada = await obtenerDpPorFecha($q("#artista").value, fechaSeleccionada);
+      console.log("Fechas ocupadas recibidas: ", fechaOcupada);
+
+      if (await ask("¿Estás seguro de registrar?")) {
+        if (!fechaOcupada || !Array.isArray(fechaOcupada)) {
+          showToast("Error: No se obtuvo información de la fecha ocupada.", "ERROR");
+          return;
         }
-        else if (idcliente == -1) {
-          //CONVENIO Y CONTRATO CUANDO NO EXISTE AUN EL CLIENTE
-          const data = await registrarCliente();
-          console.log(data);
-          //alert("registrando persona")
-          if (data.idcliente > 0) {
-            //GENERAR NUMERO RANDOM ALEATORIO DE 9 DIGITOS
+
+        // 1️⃣ Verificar si hay al menos un evento vencido (estado == 2)
+        const hayEventoVencido = fechaOcupada.some(evento => evento.estado === 2);
+        console.log("¿Hay eventos vencidos?", hayEventoVencido);
+
+        // 2️⃣ Verificar si hay un evento con la **misma fecha y superposición de horario**
+        const horarioSuperpuesto = fechaOcupada.some(evento => {
+          return evento.fecha_presentacion === fechaSeleccionada &&
+            !(
+              horaFinalSeleccionada <= evento.horainicio || // Nuevo evento termina antes del inicio del existente
+              horaInicioSeleccionada >= evento.horafinal  // Nuevo evento inicia después de que el existente terminó
+            );
+        });
+
+        console.log("¿Existe superposición de horarios?", horarioSuperpuesto);
+
+        // ❌ Si hay otro evento en la misma fecha y se superpone en el horario, NO permitir registrar
+        if (horarioSuperpuesto) {
+          showToast("No se puede registrar el evento: ya existe otro en la misma fecha y horario.", "ERROR");
+          return;
+        }
+
+        // ✅ Si hay al menos un evento vencido (estado == 2) o no hay conflicto de horarios, permitir registrar
+        if (hayEventoVencido || fechaOcupada.length === 0 || !horarioSuperpuesto) {
+          permitirRegistrar = true;
+        } else {
+          showToast("Esta fecha ya está tomada por otro evento.", "ERROR");
+          return;
+        }
+
+        if (idcliente == -1) {
+          if (permitirRegistrar) {
+            console.log("✅ SE PERMITIÓ REGISTRAR: Evento vencido o sin conflicto de horario. Cliente nuevo.");
+            const data = await registrarCliente();
+            console.log(data);
+            //alert("registrando persona")
+            if (data.idcliente > 0) {
+              //GENERAR NUMERO RANDOM ALEATORIO DE 9 DIGITOS
+              const cotizaciones = await obtenerCotizacionesPorModalidad()
+              console.log("cotizaciones -> ", cotizaciones.at(-1))
+              const ultimaCotizacion = cotizaciones.at(-1); // Última cotización registrada
+
+              const nuevoNCotizacion = generarNuevoNCotizacion(ultimaCotizacion);
+              console.log("Nuevo número de cotización ->", nuevoNCotizacion);
+              ncotizacion = nuevoNCotizacion
+
+              if ($q("#modalidad").value == 1) {
+                detalleevento = await registrarDetalleEvento(data.idcliente);
+                console.log(detalleevento);
+              } else if ($q("#modalidad").value == 2) {
+                detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
+                console.log(detalleevento);
+              }
+
+              if (detalleevento.iddetalleevento > 0) {
+                window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
+              } else {
+                showToast("Hubo un error al registrar la atencion", "ERROR");
+              }
+            } else {
+              showToast("Hubo un error al registrar los datos del cliente", "ERROR");
+            }
+          }
+        } else {
+          if (permitirRegistrar) {
+            console.log("✅ SE PERMITIÓ REGISTRAR: Evento vencido o sin conflicto de horario. Cliente existente.");
             const cotizaciones = await obtenerCotizacionesPorModalidad()
             console.log("cotizaciones -> ", cotizaciones.at(-1))
             const ultimaCotizacion = cotizaciones.at(-1); // Última cotización registrada
@@ -664,10 +727,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             ncotizacion = nuevoNCotizacion
 
             if ($q("#modalidad").value == 1) {
-              detalleevento = await registrarDetalleEvento(data.idcliente);
+              detalleevento = await registrarDetalleEvento(idcliente);
               console.log(detalleevento);
             } else if ($q("#modalidad").value == 2) {
-              detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
+              detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
               console.log(detalleevento);
             }
 
@@ -676,56 +739,15 @@ document.addEventListener('DOMContentLoaded', async function () {
             } else {
               showToast("Hubo un error al registrar la atencion", "ERROR");
             }
-          } else {
-            showToast("Hubo un error al registrar los datos del cliente", "ERROR");
-          }
-        }
-        else {
-          // CONVENIO Y CONTRATO CUANDO YA EXISTE EL CLIENTE
-          //alert(`REGISTRANDO CON UN CLIENTE YA EXISTENE ${idcliente}`)
-          //GENERAR NUMERO RANDOM ALEATORIO DE 9 DIGITOS
-
-          const cotizaciones = await obtenerCotizacionesPorModalidad()
-          console.log("cotizaciones -> ", cotizaciones.at(-1))
-          const ultimaCotizacion = cotizaciones.at(-1); // Última cotización registrada
-
-          const nuevoNCotizacion = generarNuevoNCotizacion(ultimaCotizacion);
-          console.log("Nuevo número de cotización ->", nuevoNCotizacion);
-          ncotizacion = nuevoNCotizacion
-
-          if ($q("#modalidad").value == 1) {
-            detalleevento = await registrarDetalleEvento(idcliente);
-            console.log(detalleevento);
-          } else if ($q("#modalidad").value == 2) {
-            detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
-            console.log(detalleevento);
-          }
-
-          if (detalleevento.iddetalleevento > 0) {
-            window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
-          } else {
-            showToast("Hubo un error al registrar la atencion", "ERROR");
           }
         }
       }
     } catch (error) {
-      showToast("Un error ha ocurrido", "ERROR")
-      return
+      console.error("Error capturado:", error);
+      showToast("Un error ha ocurrido", "ERROR");
     }
-    /* } else {
-      let message = "";
-      //if (!validateFields) { message = "Completa los campos"; }
-      //if (!numericTelefono) { message = "Solo numeros en el Telfono"; }
-      //if (!validarClaveAcceso) { message = "el minimo de caracteres para la clave de acceso es de 8"; }
-      //if (unikeUser.length > 0) { message = "El nombre de usuario ya existe"; }
-      //if (unikeEmail.length > 0) { message = "El correo electronico ya existe"; }
-      showToast(message, "ERROR");
-    } */
-
-    /*   if ($q("#modalidad").value == 2) {
-  
-      } */
   });
+
 
 
   $q("#modalidad").addEventListener("change", function (e) {

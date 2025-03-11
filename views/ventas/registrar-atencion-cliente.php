@@ -114,7 +114,6 @@
                             <div class="col-md-2">
                                 <div class="form-floating">
                                     <select name="artista" id="artista" class="form-select">
-                                        <option value="">Selecciona</option>
                                     </select>
                                     <label for="artista" class="form-label">Artista</label>
                                 </div>
@@ -235,7 +234,7 @@
                         <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" id="btnRegresarAC" class="btn btn-primary">
                             <i class="fa-solid fa-circle-left px-2"></i>Regresar</a>
                             <button class="btn btn-primary" type="button" id="btnConsultarFecha">
-                            <i class="fa-solid fa-magnifying-glass"></i>    Consultar fechas disponibles</button>
+                            <i class="fa-solid fa-magnifying-glass"></i>    Consultar fechas reservadas</button>
                     </div>
                 </div>
             </div>
@@ -243,7 +242,7 @@
 </div>
 
 <!-- MODAL PARA COTIZAR DE MANERA CONTRATO -->
-<div class="modal fade" id="modal-fechasagenda" tabindex="-1" aria-labelledby="modalfechasagenda" aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="modal-fechasagenda" tabindex="-1" aria-labelledby="modalfechasagenda" aria-hidden="true" >
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

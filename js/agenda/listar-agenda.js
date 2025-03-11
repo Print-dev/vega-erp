@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   //MODALES
 
   let modalInfoAgenda;
+  let modalViatico;
 
   //CALENDARIO
   let calendarEl;
@@ -76,17 +77,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     height: 700,
     initialView: "dayGridMonth", // Vista inicial (mes, semana, día)
     events: [],
-    eventClick: async function (evento) {
+    /* eventClick: async function (evento) {
+      console.log("evento -> ", evento)
       const idDetalle = evento.event.extendedProps.iddetalle_presentacion;
       await renderizarInfoAgenda(idDetalle);
       // Evento al hacer clic en una tarea
       modalInfoAgenda = new bootstrap.Modal($q("#modal-infoagendaartista"));
       modalInfoAgenda.show();
-    },
+    }, */
   });
   calendar.render();
   calendar.setOption('locale', 'es');
-
+  
 
 
   // ******************************************* EVENTOS *************************************************************
@@ -125,15 +127,21 @@ document.addEventListener("DOMContentLoaded", async () => {
           class: "badge bg-success"
         };
       }
-      agenda.push({
-        title: evento.establecimiento, // Solo el nombre del lugar
-        start: evento.fecha_presentacion, // Fecha de presentación
-        iddetalle_presentacion: evento.iddetalle_presentacion, // Guardar el ID
-        backgroundColor: "#ffcc00", // Color del fondo del evento (Naranja-Rojo)
-        borderColor: "#ffcc00",
-        textColor: "black",
-        extendedProps: { estadoBadge } // Guardamos el estado como propiedad extra
-      });
+      if(evento.estado == 1){
+        agenda.push({
+          title: evento.nom_usuario, // Solo el nombre del lugar
+          start: evento.fecha_presentacion, // Fecha de presentación
+          iddetalle_presentacion: evento.iddetalle_presentacion, // Guardar el ID
+          backgroundColor: "#ffcc00", // Color del fondo del evento (Naranja-Rojo)
+          borderColor: "#ffcc00",
+          textColor: "black",
+          extendedProps: { 
+            estadoBadge, 
+            horainicio: evento.horainicio,  // Asegurar que se pase
+            horafinal: evento.horafinal, 
+            establecimiento: evento.establecimiento } // Guardamos el estado como propiedad extra
+        });
+      }
       // Si cumple con alguna de las condiciones, se agrega al calendario
       
     });
@@ -144,14 +152,60 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     // Personalizar la apariencia de los eventos para mostrar el badge
     calendar.setOption("eventContent", function(arg) {
+      console.log("Evento extendido:", arg.event.extendedProps); // Verificar los datos
+    
+      let horaInicio = arg.event.extendedProps.horainicio ? formatHour(arg.event.extendedProps.horainicio) : "Hora no definida";
+      let horaFinal = arg.event.extendedProps.horafinal ? formatHour(arg.event.extendedProps.horafinal) : "Hora no definida";
+      
       let estado = arg.event.extendedProps.estadoBadge;
       let badgeHtml = `<span class="${estado.class}">${estado.text}</span>`;
-      
-      return { html: `<div>${arg.event.title} ${badgeHtml}</div>` };
+    
+      return {
+        html: `
+          <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between;">
+            <div>${horaInicio} - ${horaFinal}</div>
+            <div>${badgeHtml}</div>
+          </div>
+          <div style="padding: 8px">
+            <div style="font-size: 20px; font-weight: bold;">${arg.event.title}</div>
+              <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"}</div>
+              <div><strong>Tiempo:</strong> ${calculateDuration(arg.event.extendedProps.horainicio, arg.event.extendedProps.horafinal)}</div>
+              <label class="mt-3"><strong>Acuerdos:</strong></label>
+            <div style="
+          background: #fff; 
+          padding: 5px; 
+          border-radius: 5px; 
+          min-height: 40px;
+          max-width: 100%; 
+          word-wrap: break-word; 
+          overflow-wrap: break-word;
+          white-space: normal;
+        ">
+          ${arg.event.extendedProps.acuerdos || "Sin acuerdos registrados in acuerdos registrados in acuerdos registrados in acuerdos registrados"}
+        </div>
+        <hr>
+            <div><strong>FILMMAKER:</strong> Royer A.</div>
+            <button class="btn btn-primary mt-2" id="btnViatico" style="width: 100%;">Reportar Viático</button>
+
+          </div>
+          
+        `
+      };
     });
+    
+    
+    
   });
 
-  async function renderizarInfoAgenda(iddp) {
+
+  document.addEventListener("click", (e) => {
+    if (e.target && e.target.id === "btnViatico") {
+      const modalViatico = new bootstrap.Modal($q("#modal-viatico"));
+      modalViatico.show();
+    }
+  });
+  
+  /* async function renderizarInfoAgenda(iddp) {
     const dp = await obtenerAgendaArtista(null, iddp)
     console.log("dpppp-> ", dp)
     $q(".contenedor-info-agenda").innerHTML = ''
@@ -204,5 +258,5 @@ document.addEventListener("DOMContentLoaded", async () => {
       `
     });
     
-  }
+  } */
 });

@@ -73,7 +73,6 @@ BEGIN
         DP.validez,
         DP.reserva,
         DP.pagado50,
-        CON.estado as estadoPropConvenio,
         DP.created_at,
         RE.vigencia as vigencia_reserva,
         RE.fechacreada as fechacreada_reserva,
@@ -121,7 +120,6 @@ BEGIN
         DP.pagado50,
         DP.establecimiento,
         DP.referencia,
-        CON.estado AS estadoPropConvenio,
         CO.estado AS estadoContrato,
         DP.created_at,
         (SELECT RE.vigencia 
@@ -173,6 +171,7 @@ BEGIN
     WHERE fecha_presentacion = _fecha_presentacion AND idusuario = _idusuario; -- me quede aca
 END //
 
+CALL sp_obtener_dp_por_fecha (2, '2025-03-18')
 
 CALL sp_obtener_detalles_evento ('','');
 

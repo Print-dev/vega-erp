@@ -33,20 +33,11 @@ $accesos = [
     ['modulo' => 'pyp', 'ruta' => 'registrar-presupuesto', 'subruta' => 'presupuestos', 'visible' => false],
 
 
-/*     ['modulo' => 'postpro', 'ruta' => '', 'texto' => 'Post-producción', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-folder'],
-    ['modulo' => 'myp', 'ruta' => '', 'texto' => 'Marketing y publicidad', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-folder'],
-    ['modulo' => 'cym', 'ruta' => '', 'texto' => 'Community Manager', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-folder'], */
-
-
-
     ['modulo' => 'agenda', 'ruta' => 'listar-agenda', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
 
-
-
-    /* ['modulo' => 'gerencia', 'ruta' => '', 'texto' => 'Gerencia General', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-folder'],
-
-    ['modulo' => 'gerencia', 'ruta' => 'contabilidad', 'subruta' => 'contabilidad', 'texto' => 'Usuarios', 'visible' => false, 'icono' => 'fa-solid fa-list'], */
-
+  ],
+  "Artista" => [
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
   ]
 ];
 

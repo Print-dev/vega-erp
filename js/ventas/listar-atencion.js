@@ -485,9 +485,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             <td>${x.fecha_presentacion}</td>                        
             <td>${x.estado == 1 ? 'Activo' : x.estado == 2 ? 'Caducado' : ''}</td>                        
             <td>
-              ${x.estado == 2 ? '' : parseInt(x.estadoPropConvenio) == 2 ? `<button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generara Convenio">
+              ${x.estado == 2 ? '' : parseInt(x.estado_convenio) == 2 ? `<button type="button" class="btn btn-sm btn-warning btn-propuesta" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
+                         Detalles Propuesta
+                      </button><button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generara Convenio">
                   Generar Convenio
-                </button>` : parseInt(x.modalidad) == 1
+                </button>
+                ` : parseInt(x.modalidad) == 1
           ? `
                       <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
                          Detalles Propuesta
@@ -518,14 +521,14 @@ document.addEventListener("DOMContentLoaded", async () => {
           ? `<button type="button" class="btn btn-sm btn-primary btn-reserva" data-id=${x.iddetalle_presentacion} title="Generar Reserva">
               Generar Reserva
             </button>` : ``}
-              <button type="button" class="btn btn-sm btn-warning btn-actualizar" data-id=${x.iddetalle_presentacion} title="Actualizar">
-                  Actualizar  
-                </button>
+              
               
           `;
 
       // Evento para actualizar estado dp
-
+ /* <button type="button" class="btn btn-sm btn-warning btn-actualizar" data-id=${x.iddetalle_presentacion} title="Actualizar">
+                  Actualizar  
+                </button> */
       if (x.modalidad == 2) {
         const fechaCreacion = new Date(x.created_at + "T00:00:00"); // Asegurar formato correcto
         const fechaVencimiento = calcularFechaVencimiento(fechaCreacion, x.validez);
@@ -1298,8 +1301,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (dp[0]?.pagado50 == 0) {
               if (pagoContrato.idpagocontrato) {
                 const pagado50DP = await actualizarPagado50DP(iddetallepresentacion)
-                //const estadoContratoActualizado = await actualizarEstadoContrato(idcontrato, 2)
-                //console.log("estadoContratoActualizado a pagado completamente -> ", estadoContratoActualizado)
+                const estadoContratoActualizado = await actualizarEstadoContrato(idcontrato, 2)
+                console.log("estadoContratoActualizado a pagado completamente -> ", estadoContratoActualizado)
                 if (pagado50DP) {
                   await dataFilters()
                   modalDatosContrato?.hide()
@@ -1308,6 +1311,8 @@ document.addEventListener("DOMContentLoaded", async () => {
               }
             } else if (dp[0]?.pagado50 == 1) {
               if (pagoContrato.idpagocontrato) {
+                const estadoContratoActualizado = await actualizarEstadoContrato(idcontrato, 2)
+                console.log("estadoContratoActualizado a pagado completamente -> ", estadoContratoActualizado)
                 modalDatosContrato?.hide()
                 showToast("Pago guardado, ya puede generar el contrato.", "SUCCESS", 3000);
               }
