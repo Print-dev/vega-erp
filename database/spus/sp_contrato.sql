@@ -104,7 +104,7 @@ DELIMITER $$
 CREATE PROCEDURE sp_registrar_pago_contrato(
     OUT _idpagocontrato INT,
 	IN _idcontrato INT,
-    IN _monto decimal(7,2),
+    IN _monto decimal(8,2),
     IN _tipo_pago 	TINYINT, 
     IN _noperacion	VARCHAR(20),
     IN _fecha_pago DATE,

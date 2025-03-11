@@ -24,10 +24,14 @@ $accesos = [
     ['modulo' => 'utilitario', 'ruta' => 'registrar-tarifa', 'subruta' => 'tarifas', 'visible' => false],
 
 
+    
     ['modulo' => 'pyp', 'ruta' => '', 'texto' => 'Planeamiento', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-lightbulb'],
 
     ['modulo' => 'pyp', 'ruta' => 'listar-planeamientos', 'subruta' => 'planeamientos', 'texto' => 'Planeamientos', 'visible' => false, 'icono' => 'fa-solid fa-list'],
     ['modulo' => 'pyp', 'ruta' => 'registrar-planeamiento', 'subruta' => 'planeamientos', 'visible' => false],
+    ['modulo' => 'pyp', 'ruta' => 'listar-presupuestos', 'subruta' => 'presupuestos', 'texto' => 'Presupuestos', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'pyp', 'ruta' => 'registrar-presupuesto', 'subruta' => 'presupuestos', 'visible' => false],
+
 
 /*     ['modulo' => 'postpro', 'ruta' => '', 'texto' => 'Post-producción', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-folder'],
     ['modulo' => 'myp', 'ruta' => '', 'texto' => 'Marketing y publicidad', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-folder'],

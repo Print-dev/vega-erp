@@ -70,7 +70,7 @@
 
 <!-- MODAL PARA COTIZAR DE MANERA CONTRATO -->
 <div class="modal fade" id="modal-previacotizacion" tabindex="-1" aria-labelledby="modalPreviaCotizacion" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="modalPreviaCotizacion">Tarifario</h1>
@@ -82,6 +82,7 @@
                         <tr>
                             <th>Departamento</th>
                             <th>Provincia</th>
+                            <th>Tiempo Estimado</th>
                             <th>Dificultad</th>
                             <th>Precio S/.</th>
                         </tr>

@@ -1,4 +1,16 @@
 document.addEventListener("DOMContentLoaded", async () => {
+
+  let latOrigen
+  let lonOrigen
+  let calcularDificultadPrecio = []
+
+  navigator.geolocation.getCurrentPosition(function (position) {
+    latOrigen = position.coords.latitude;
+    lonOrigen = position.coords.longitude;
+    console.log(`Tu ubicación: ${latOrigen},${lonOrigen}`);
+  });
+
+  
   const host = "http://localhost/vega-erp/controllers/";
   let myTable = null;
   let idprovincia = -1;
@@ -127,7 +139,35 @@ document.addEventListener("DOMContentLoaded", async () => {
     const data = await getDatos(`${host}recurso.controller.php`, params);
     return data
   }
+  
+  async function obtenerDuracionDeViaje(lon_origen, lat_origen, lon_destino, lat_destino) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerDuracionDeViaje");
+    params.append("lon_origen", lon_origen);
+    params.append("lat_origen", lat_origen);
+    params.append("lon_destino", lon_destino);
+    params.append("lat_destino", lat_destino);
+    const data = await getDatos(`${host}maps.controller.php`, params);
+    return data
+  }
+/*   async function obtenerLongLatPorCiudad(provincia) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerLongLatPorCiudad");
+    params.append("provincia", provincia);
+    const data = await getDatos(`${host}maps.controller.php`, params);
+    return data
+  } */
+   async function obtenerLongLatPorCiudad(provincia) {
+    const Fdata = await fetch(`https://nominatim.openstreetmap.org/search?q=${provincia}&format=json`)
+    const data = await Fdata.json()
+    return data
+  } 
 
+   async function obtenerDuracionDeViaje(lon_origen, lat_origen, lon_destino, lat_destino) {
+    const Fdata = await fetch(`https://router.project-osrm.org/route/v1/driving/${lon_origen},${lat_origen};${lon_destino},${lat_destino}?overview=false`)
+    const data = await Fdata.json()
+    return data
+  } 
 
 
   // ******************************************** REGISTRAR DATOS ************************************************
@@ -313,21 +353,57 @@ document.addEventListener("DOMContentLoaded", async () => {
       } else {
         // Inicializa DataTable si no ha sido inicializado antes
         myTable = $("#table-atenciones").DataTable({
-          paging: true,
-          searching: false,
+          processing: true, // Muestra un indicador de carga
+          serverSide: true, // Activa la paginación en el servidor
+          ajax: {
+              url: `${host}detalleevento.controller.php`,
+              type: "POST",
+              data: function (d) {
+                  d.operation = "filtrarAtenciones";
+                  d.ncotizacion = $("#ncotizacion").val() || "";
+                  d.ndocumento = $("#ndocumento").val() || "";
+              }
+          },
+          columns: [
+              { data: "iddetalle_presentacion" },
+              { data: "ncotizacion", defaultContent: "No aplica" },
+              { data: "nom_usuario", defaultContent: "" },
+              { data: "ndocumento", defaultContent: "" },
+              { data: "razonsocial", defaultContent: "" },
+              {
+                  data: "tipo_evento",
+                  render: function (data) {
+                      return data == 1 ? "Público" : data == 2 ? "Privado" : "";
+                  }
+              },
+              {
+                  data: "modalidad",
+                  render: function (data) {
+                      return data == 1 ? "Convenio" : data == 2 ? "Contrato" : "";
+                  }
+              },
+              { data: "fecha_presentacion" },
+              {
+                  data: "estado",
+                  render: function (data) {
+                      return data == 1 ? "Activo" : data == 2 ? "Caducado" : "";
+                  }
+              },
+              { data: "opciones", orderable: false, searchable: false }
+          ],
           lengthMenu: [5, 10, 15, 20],
           pageLength: 5,
           language: {
-            lengthMenu: "Mostrar _MENU_ filas por página",
-            paginate: {
-              previous: "Anterior",
-              next: "Siguiente",
-            },
-            search: "Buscar:",
-            info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-            emptyTable: "No se encontraron registros",
-          },
-        });
+              lengthMenu: "Mostrar _MENU_ filas por página",
+              paginate: {
+                  previous: "Anterior",
+                  next: "Siguiente",
+              },
+              search: "Buscar:",
+              info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+              emptyTable: "No se encontraron registros",
+          }
+      });
         // if (rows.length > 0) {
         //   myTable.rows.add(rows).draw(); // Si hay filas, agrégalas.
         // }
@@ -442,7 +518,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           ? `<button type="button" class="btn btn-sm btn-primary btn-reserva" data-id=${x.iddetalle_presentacion} title="Generar Reserva">
               Generar Reserva
             </button>` : ``}
-              
+              <button type="button" class="btn btn-sm btn-warning btn-actualizar" data-id=${x.iddetalle_presentacion} title="Actualizar">
+                  Actualizar  
+                </button>
               
           `;
 
@@ -648,6 +726,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     idprovincia = dp[0]?.idprovincia
     idartista = dp[0]?.idusuario;
     idcliente = dp[0]?.idcliente;
+
+    const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
+    console.log("longlatCiudad->>>", longlatCiudad)
+    const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen,latOrigen,longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
+    const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
+    calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
+
     const contrato = await obtenerContratoPorDP(idcontrato) //esto en realidad es id detalle presentacion
     console.log("contratoo al dar click al btn contrato -> ", contrato)
     if (contrato.length > 0) {
@@ -734,7 +819,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             
             window.open(
               `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0]?.idcontrato
-              }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
+              }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${calcularDificultadPrecio?.costoDificultad}`
             );
             return
 
@@ -813,6 +898,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     idcontrato = contratoExiste[0]?.idcontrato
     console.log("idcontrato existente -> " + idcontrato)
 
+    const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
+    console.log("longlatCiudad->>>", longlatCiudad)
+    const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen,latOrigen,longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
+    const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
+    calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
 
     console.log(cliente);
     if (contratoExiste.length > 0) {
@@ -854,17 +944,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     provincia = dp[0]?.provincia;
     iddetalleevento = dp[0]?.iddetalle_presentacion;
 
+    const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
+    console.log("longlatCiudad->>>", longlatCiudad)
+    const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen,latOrigen,longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
+    const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
+    calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
+    
+
     $q("#tInfoCotizacion").innerHTML = "";
-    dp.forEach((detdp) => {
-      $q("#tInfoCotizacion").innerHTML = `
+    $q("#tInfoCotizacion").innerHTML = `
         <tr>
-          <td>${detdp.departamento}</td>
-          <td>${detdp.provincia}</td>
-          <td>Alta</td>
-          <td>2000</td>
+          <td>${dp[0]?.departamento}</td>
+          <td>${dp[0]?.provincia}</td>
+          <td>${calcularDificultadPrecio?.horasEstimadas}</td>
+          <td>${calcularDificultadPrecio?.dificultad}</td>
+          <td>${calcularDificultadPrecio?.costoDificultad}</td>
         </tr>
       `;
-    });
   }
 
   async function renderizarDatosClienteIncompleto(cliente) {
@@ -1068,7 +1164,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   $q("#btnGenerarCotizacion").addEventListener("click", async (e) => {
     console.log("clickeando");
     window.open(
-      `http://localhost/vega-erp/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${2500}`
+      `http://localhost/vega-erp/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${calcularDificultadPrecio?.costoDificultad}`
     );
     return;
   });
@@ -1097,9 +1193,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("tarifa->", tarifa);
 
     if (igv == 0) {
-      precioFinal = parseFloat(tarifa[0]?.precio) + 2500;
+      precioFinal = parseFloat(tarifa[0]?.precio) + calcularDificultadPrecio?.costoDificultad;
     } else if (igv == 1) {
-      precioFinal = (parseFloat(tarifa[0]?.precio) + 2500) * 1.18; // Se multiplica por 1.18 para agregar IGV
+      precioFinal = (parseFloat(tarifa[0]?.precio) + calcularDificultadPrecio?.costoDificultad) * 1.18; // Se multiplica por 1.18 para agregar IGV
     }
 
     precio25 = precioFinal * 0.25;
@@ -1152,9 +1248,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("tarifa->", tarifa);
 
     if (igv == 0) {
-      precioFinal = parseFloat(tarifa[0]?.precio) + 2500;
+      precioFinal = parseFloat(tarifa[0]?.precio) + calcularDificultadPrecio?.costoDificultad;
     } else if (igv == 1) {
-      precioFinal = (parseFloat(tarifa[0]?.precio) + 2500) * 1.18; // Se multiplica por 1.18 para agregar IGV
+      precioFinal = (parseFloat(tarifa[0]?.precio) + calcularDificultadPrecio?.costoDificultad) * 1.18; // Se multiplica por 1.18 para agregar IGV
     }
 
     precio25 = precioFinal * 0.25;

@@ -29,10 +29,9 @@
                                         id="ndocumento"
                                         placeholder="Nª Documento / RUC."
                                         class="form-control"
-                                        
-                                        
-                                        autofocus
-                                        >
+
+
+                                        autofocus>
                                     <span class="input-group-text btn-primary" style="cursor: pointer;" id="search">
                                         <i class="fa-solid fa-magnifying-glass"></i>
                                     </span>
@@ -125,7 +124,9 @@
                                     <input type="date" class="form-control" id="fechapresentacion" autocomplete="off">
                                     <label for="fechapresentacion" class="form-label">Fecha de evento</label>
                                 </div>
+
                             </div>
+
                             <div class="col-md-2">
                                 <div class="form-floating">
                                     <input type="time" id="horainicio" name="horainicio"
@@ -149,8 +150,8 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-floating">                           
-                                        <textarea class="form-control" id="referencia" rows="3"></textarea>
+                                <div class="form-floating">
+                                    <textarea class="form-control" id="referencia" rows="3"></textarea>
                                     <label for="referencia" class="form-label">Referencia</label>
                                 </div>
                             </div>
@@ -185,7 +186,7 @@
                                 <div class="form-floating">
                                     <select name="nacionalidad2" id="nacionalidad2" class="form-select" ">
                                         <option value="">Selecciona</option>
-                                        <option value="31">Peru</option>
+                                        <option value=" 31">Peru</option>
                                     </select>
                                     <label for="nacionalidad2" class="form-label">Nacionalidad</label>
                                 </div>
@@ -214,7 +215,7 @@
                                     <label for="distrito2" class="form-label">Distrito</label>
                                 </div>
                             </div>
-                            
+
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="igv">
                                 <label class="form-check-label" for="igv">
@@ -233,6 +234,8 @@
                             <i class="fa-solid fa-eraser px-2"></i>Limpiar</button>
                         <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" id="btnRegresarAC" class="btn btn-primary">
                             <i class="fa-solid fa-circle-left px-2"></i>Regresar</a>
+                            <button class="btn btn-primary" type="button" id="btnConsultarFecha">
+                            <i class="fa-solid fa-magnifying-glass"></i>    Consultar fechas disponibles</button>
                     </div>
                 </div>
             </div>
@@ -245,18 +248,17 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="modalfechasagenda">Fechas ocupadas</h1>
-                <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn-close"></a>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <table class="table rounded">                    
+                <table class="table rounded">
                     <div class="contenedor-fechasocupadas">
 
-                    </div>                    
+                    </div>
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="btnGenerarCotizacion">Generar Cotizacion</button>
-                <button type="button" href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn btn-primary btnGuardarContrato" id="close-mdl-cotizacion">Guardar y cerrar</button>
+                <button type="button" class="btn btn-primary btnGuardarContrato" id="close-mdl-fechasagenda" data-bs-dismiss="modal" aria-label="Close">Cerrar</button>
             </div>
         </div>
     </div>

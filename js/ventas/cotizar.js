@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', async function () {
+
   const host = "http://localhost/vega-erp/controllers/";
   let isReset = false;
   bloquearCampos(true)
@@ -8,6 +9,9 @@ document.addEventListener('DOMContentLoaded', async function () {
   let idprovincia = -1
   let idartista = -1
   let provincia = ''
+
+  // MODAL
+  let modalAgendaFechas
 
   function $q(object = null) {
     return document.querySelector(object);
@@ -21,6 +25,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     let data = await fetch(`${link}?${params}`);
     return data.json();
   }
+
 
   /* $q("#btnGuardarAC").addEventListener("click", async function () {
     let modalCotizacion = new bootstrap.Modal($q("#modal-convenio"));
@@ -214,13 +219,13 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   async function registrarCliente(tipodoc) {
     const ndocumento = $q("#ndocumento").value.trim();
-    
+
     // Determinar el tipo de documento
     let tipodocu = "";
     if (ndocumento.length == 8) {
-        tipodocu = 1;
+      tipodocu = 1;
     } else if (ndocumento.length == 11) {
-        tipodocu = 2;
+      tipodocu = 2;
     }
 
     const cliente = new FormData();
@@ -258,9 +263,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Validar que la hora final no sea menor a la de inicio
     if (horafinal <= horainicio) {
-        console.error("Error: La hora final no puede ser menor o igual a la hora de inicio.");
-        showToast("La hora final no puede ser menor o igual a la hora de inicio.", "ERROR");
-        return null;
+      console.error("Error: La hora final no puede ser menor o igual a la hora de inicio.");
+      showToast("La hora final no puede ser menor o igual a la hora de inicio.", "ERROR");
+      return null;
     }
 
     // Validar que la validez no sea mayor a la diferencia de días entre hoy y la fecha de presentación
@@ -269,9 +274,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     const diferenciaDias = Math.floor((fechaEvento - fechaHoy) / (1000 * 60 * 60 * 24));
 
     if (validez > diferenciaDias) {
-        console.error("Error: La validez no puede ser mayor a la fecha de presentación.");
-        showToast("La validez no puede ser mayor a la cantidad de días restantes hasta la fecha de presentación.", "ERROR");
-        return null;
+      console.error("Error: La validez no puede ser mayor a la fecha de presentación.");
+      showToast("La validez no puede ser mayor a la cantidad de días restantes hasta la fecha de presentación.", "ERROR");
+      return null;
     }
 
     // Si pasa las validaciones, se procede a registrar
@@ -292,31 +297,31 @@ document.addEventListener('DOMContentLoaded', async function () {
     detalle.append("igv", $q("#igv").checked ? 1 : 0);
 
     const fdetalle = await fetch(`${host}detalleevento.controller.php`, {
-        method: "POST",
-        body: detalle,
+      method: "POST",
+      body: detalle,
     });
 
     const rdetalle = await fdetalle.json();
     return rdetalle;
   }
 
- /*  async function registrarConvenio(iddetallepresentacion, estado) {
-
-    const convenio = new FormData();
-    convenio.append("operation", "registrarConvenio");
-    convenio.append("iddetallepresentacion", iddetallepresentacion); // id artista
-    convenio.append("abonogarantia", $q("#abonogarantia").value);
-    convenio.append("abonopublicidad", $q("#abonopublicidad").value);
-    convenio.append("propuestacliente", $q("#propuestacliente").value);
-    convenio.append("estado", estado);
-
-    const fconvenio = await fetch(`${host}convenio.controller.php`, {
-      method: "POST",
-      body: convenio,
-    });
-    const rconvenio = await fconvenio.json();
-    return rconvenio;
-  } */
+  /*  async function registrarConvenio(iddetallepresentacion, estado) {
+ 
+     const convenio = new FormData();
+     convenio.append("operation", "registrarConvenio");
+     convenio.append("iddetallepresentacion", iddetallepresentacion); // id artista
+     convenio.append("abonogarantia", $q("#abonogarantia").value);
+     convenio.append("abonopublicidad", $q("#abonopublicidad").value);
+     convenio.append("propuestacliente", $q("#propuestacliente").value);
+     convenio.append("estado", estado);
+ 
+     const fconvenio = await fetch(`${host}convenio.controller.php`, {
+       method: "POST",
+       body: convenio,
+     });
+     const rconvenio = await fconvenio.json();
+     return rconvenio;
+   } */
 
   /* async function registrarContrato(iddetallepresentacion, estado) {
 
@@ -370,7 +375,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     $q("#razonsocial").value = data.razonsocial;
     $q("#representantelegal").value = data.representantelegal ? data.representantelegal : '';
     $q("#telefono").value = data.telefono;
-    $q("#correo").value = data.correo;    
+    $q("#correo").value = data.correo;
     $q("#direccion").value = data.direccion;
     if (data.iddistrito) {
       await cargarUbigeoDesdeDistrito(data.iddistrito);
@@ -405,7 +410,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
       // 4️⃣ Obtener todas las nacionalidades y marcar la correcta
       let nacionalidades = await fetch(`${host}recurso.controller.php?operation=obtenerTodosNacionalidades`).then(res => res.json());
-      console.log("NACIONALIDADES TODAS OBTENIDAS : ",nacionalidades)
+      console.log("NACIONALIDADES TODAS OBTENIDAS : ", nacionalidades)
       let nacionalidadSeleccionada = nacionalidades.find(n => n.idnacionalidad === departamentoSeleccionado.idnacionalidad);
       $q("#nacionalidad").innerHTML = nacionalidades.map(n =>
         `<option value="${n.idnacionalidad}" ${n.idnacionalidad === departamentoSeleccionado.idnacionalidad ? "selected" : ""}>${n.nacionalidad}</option>`
@@ -546,11 +551,37 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
     //return isValid;
   }
-  
+
 
   // ************************************* EVENTOS ************************************* //
 
-
+  $q("#btnConsultarFecha").addEventListener("click", async () => {
+    modalAgendaFechas = new bootstrap.Modal($q("#modal-fechasagenda"))
+    modalAgendaFechas.show()
+    const agenda = await obtenerAgendaArtista($q("#artista").value, null)
+    console.log("AGENDAAAA-> ", agenda)
+    $q(".contenedor-fechasocupadas").innerHTML = ''
+    // ACA PRIMERO OBTENER SI LA FECHA SELCCIONADA ES IGUAL A UUNA FECHA YA OCUPADA
+    if(agenda.length > 0 ) {  
+      agenda.forEach((age, x) => {
+        $q(".contenedor-fechasocupadas").innerHTML = `
+          <div class="row mb-3">
+              <div class="col-md-6">
+                  <strong>Lugar Presentacion N° ${x + 1}</strong>
+                  <p id="evento-establecimiento">${age.establecimiento}</p>
+              </div>
+              <div class="col-md-6">
+                  <strong>Fecha:</strong>
+                  <p id="evento-referencia">${formatDate(age.fecha_presentacion)}</p>
+              </div>
+              <hr>
+          </div>
+        `
+      });
+    }else{
+      $q(".contenedor-fechasocupadas").innerHTML = '<strong>Sin fechas proximas</strong>'
+    }
+  })
 
   $q("#btnLimpiarAC").addEventListener("click", () => {
     $q("#form-atencion-clientes").reset();
@@ -564,31 +595,26 @@ document.addEventListener('DOMContentLoaded', async function () {
       showToast("Se ha guardado el convenio", "SUCCESS", 1000, 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente');
     }
   }) */
-/* 
-  $q("#btnGenerarConvenio").addEventListener("click", async () => {
-    if (await ask("Confirma la acción")) {
-      const convenio = registrarConvenio(iddetalleevento, 2)
-      if (convenio) {
-        window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
+  /* 
+    $q("#btnGenerarConvenio").addEventListener("click", async () => {
+      if (await ask("Confirma la acción")) {
+        const convenio = registrarConvenio(iddetalleevento, 2)
+        if (convenio) {
+          window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
+        }
       }
-    }
-  })
- */
+    })
+   */
 
   $q("#search").addEventListener("click", async () => {
     idcliente = -1
     await validateNumDoc();
-    
+
 
   });
 
-  $q("#fechapresentacion").addEventListener("change", async()=>{
-    //const agenda = await obtenerAgendaArtista($q("#artista").value, null)
-    // ACA PRIMERO OBTENER SI LA FECHA SELCCIONADA ES IGUAL A UUNA FECHA YA OCUPADA
-    /* $q("#modal-fechasagenda")
-    agenda.forEach(age => {
-      
-    }); */
+  $q("#fechapresentacion").addEventListener("change", async () => {
+
   })
 
 
@@ -615,7 +641,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       const fechaOcupada = await obtenerDpPorFecha($q("#artista").value, $q("#fechapresentacion").value)
       console.log("fecha ocupada: ", fechaOcupada)
       if (await ask("¿Estas seguro de registrar?")) {
-        if(fechaOcupada.length > 0){
+        if (fechaOcupada.length > 0) {
           showToast("Esta fecha ya esta tomada por otro evento.", "ERROR");
           return
         }
@@ -693,9 +719,9 @@ document.addEventListener('DOMContentLoaded', async function () {
       showToast(message, "ERROR");
     } */
 
-  /*   if ($q("#modalidad").value == 2) {
-
-    } */
+    /*   if ($q("#modalidad").value == 2) {
+  
+      } */
   });
 
 

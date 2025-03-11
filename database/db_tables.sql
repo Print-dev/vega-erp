@@ -79,7 +79,7 @@ CREATE TABLE tarifario (
 	idtarifario int auto_increment primary key,
     idusuario		int not null,
     idprovincia	int not null,
-	precio			decimal(7,2) not null,
+	precio			decimal(8,2) not null,
     constraint fk_idartista_tar foreign key (idusuario) references usuarios (idusuario),
     constraint fk_provincia_tarifario_art foreign key (idprovincia) references provincias (idprovincia)
 ) ENGINE = INNODB;
@@ -146,8 +146,8 @@ create table detalles_presentacion (
 create table convenios (
 	idconvenio	int auto_increment primary key,
     iddetalle_presentacion int not null,
-    abono_garantia	decimal(7,2) null,
-    abono_publicidad decimal(7,2) null,
+    abono_garantia	decimal(8,2) null,
+    abono_publicidad decimal(8,2) null,
 	propuesta_cliente text not null,
     acuerdo			varchar(130) not null,
     estado			int null default 1, -- 1 = pendiente, 2 = aprobada, 3 = no aprobado
@@ -170,7 +170,7 @@ create table contratos (
 create table pagos_contrato (
 	idpagocontrato		int auto_increment primary key,
     idcontrato	int not null,
-    monto		decimal(7,2) not null,
+    monto		decimal(8,2) not null,
     tipo_pago	tinyint	not null, -- 1: transferencia, 2: contado
     noperacion	varchar(20) null,
     fecha_pago	date	not null ,
