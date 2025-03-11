@@ -79,7 +79,8 @@ BEGIN
         RE.fechacreada as fechacreada_reserva,
         CO.idcontrato,
 		DP.estado,
-        CON.estado as estado_convenio
+        CON.estado as estado_convenio,
+        CO.estado as estado_contrato
     FROM detalles_presentacion DP
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
@@ -94,6 +95,8 @@ BEGIN
 
 END //
 
+CALL sp_obtener_detalles_evento ('','');
+
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_artista;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_agenda_artista`(
@@ -105,7 +108,8 @@ BEGIN
         DP.iddetalle_presentacion, 
         CLI.ndocumento,
         DP.ncotizacion,
-        USU.nom_usuario, USU.idusuario,
+        USU.nom_usuario, 
+        USU.idusuario,
         CLI.razonsocial, 
         DP.tipo_evento, 
         DP.modalidad, 
@@ -118,21 +122,33 @@ BEGIN
         DP.establecimiento,
         DP.referencia,
         CON.estado AS estadoPropConvenio,
+        CO.estado AS estadoContrato,
         DP.created_at,
-        RE.vigencia AS vigencia_reserva,
-        RE.fechacreada AS fechacreada_reserva,
-        CO.idcontrato,
+        (SELECT RE.vigencia 
+         FROM reservas RE 
+         WHERE RE.idpagocontrato = (SELECT PC.idpagocontrato 
+                                    FROM pagos_contrato PC 
+                                    WHERE PC.idcontrato = CO.idcontrato 
+                                    ORDER BY PC.fecha_pago DESC LIMIT 1) 
+         ORDER BY RE.fechacreada DESC LIMIT 1) AS vigencia_reserva,
+        (SELECT RE.fechacreada 
+         FROM reservas RE 
+         WHERE RE.idpagocontrato = (SELECT PC.idpagocontrato 
+                                    FROM pagos_contrato PC 
+                                    WHERE PC.idcontrato = CO.idcontrato 
+                                    ORDER BY PC.fecha_pago DESC LIMIT 1) 
+         ORDER BY RE.fechacreada DESC LIMIT 1) AS fechacreada_reserva,
         DP.estado,
         CON.estado AS estado_convenio,
-        DISDP.distrito, PRODP.provincia, DEDP.departamento
+        DISDP.distrito, 
+        PRODP.provincia, 
+        DEDP.departamento
     FROM detalles_presentacion DP
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN contratos CO ON CO.iddetalle_presentacion = DP.iddetalle_presentacion
     LEFT JOIN convenios CON ON CON.iddetalle_presentacion = DP.iddetalle_presentacion
-    LEFT JOIN pagos_contrato PC ON PC.idcontrato = CO.idcontrato
-    LEFT JOIN reservas RE ON RE.idpagocontrato = PC.idpagocontrato
-	LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito
+    LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito
     LEFT JOIN provincias PRODP ON PRODP.idprovincia = DISDP.idprovincia
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
     WHERE 
@@ -141,6 +157,8 @@ BEGIN
 END //
 DELIMITER ;
 
+
+CALL sp_obtener_agenda_artista (2, null);
 
 drop procedure if exists sp_obtener_dp_por_fecha;
 DELIMITER //

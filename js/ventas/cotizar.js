@@ -558,13 +558,15 @@ document.addEventListener('DOMContentLoaded', async function () {
   $q("#btnConsultarFecha").addEventListener("click", async () => {
     modalAgendaFechas = new bootstrap.Modal($q("#modal-fechasagenda"))
     modalAgendaFechas.show()
+    console.log("artista value -> ",$q("#artista").value)
     const agenda = await obtenerAgendaArtista($q("#artista").value, null)
     console.log("AGENDAAAA-> ", agenda)
     $q(".contenedor-fechasocupadas").innerHTML = ''
     // ACA PRIMERO OBTENER SI LA FECHA SELCCIONADA ES IGUAL A UUNA FECHA YA OCUPADA
     if(agenda.length > 0 ) {  
       agenda.forEach((age, x) => {
-        $q(".contenedor-fechasocupadas").innerHTML = `
+        if(age.pagado50 == 1){ 
+          $q(".contenedor-fechasocupadas").innerHTML += `
           <div class="row mb-3">
               <div class="col-md-6">
                   <strong>Lugar Presentacion N° ${x + 1}</strong>
@@ -577,6 +579,7 @@ document.addEventListener('DOMContentLoaded', async function () {
               <hr>
           </div>
         `
+        }
       });
     }else{
       $q(".contenedor-fechasocupadas").innerHTML = '<strong>Sin fechas proximas</strong>'

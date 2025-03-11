@@ -114,3 +114,5 @@ BEGIN
     WHERE C.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
 END //
 
+CALL obtenerConvenioPorIdDP (5)
+

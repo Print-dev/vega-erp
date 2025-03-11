@@ -678,6 +678,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function buttonPropuesta(e) {
     idpropuesta = e.target.getAttribute("data-id");
+    idconvenio = e.target.getAttribute("data-id");
     iddetallepresentacion = e.target.getAttribute("data-id");
     // limpiar campos
 
@@ -1082,7 +1083,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       ) {
         showToast("Ingrese valores válidos", "ERROR");
       } else {
-        const convenioExiste = await obtenerConvenioPorIdDP(idconvenio)
+        console.log("iddpppp ->",iddetallepresentacion)
+        const convenioExiste = await obtenerConvenioPorIdDP(parseInt(iddetallepresentacion))
         console.log("convenio esxite? -> ", convenioExiste)
         const convenio = await obtenerConvenioPorId(convenioExiste[0]?.idconvenio)
         console.log("CONVEIO OBTENIDO: ", convenio)
@@ -1296,6 +1298,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (dp[0]?.pagado50 == 0) {
               if (pagoContrato.idpagocontrato) {
                 const pagado50DP = await actualizarPagado50DP(iddetallepresentacion)
+                //const estadoContratoActualizado = await actualizarEstadoContrato(idcontrato, 2)
+                //console.log("estadoContratoActualizado a pagado completamente -> ", estadoContratoActualizado)
                 if (pagado50DP) {
                   await dataFilters()
                   modalDatosContrato?.hide()
@@ -1355,6 +1359,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 console.log("Estado reserva actualizado", estadoReserva)
                 await dataFilters()
               } else if (dpExiste[0]?.reserva == 1) {
+
                 return
               }
             }

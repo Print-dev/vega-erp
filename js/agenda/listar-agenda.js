@@ -104,25 +104,51 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const agendaUsuario = await obtenerAgendaArtista(idUsuario);
+    console.log("agendaUsuario todo obtenido ->",agendaUsuario)
 
     // Vaciar la lista de eventos
     agenda = [];
 
     // Convertir los datos de la agenda en eventos para FullCalendar
     agendaUsuario.forEach((evento) => {
+      const esContratoValido = parseInt(evento.modalidad) === 2 && parseInt(evento.estadoContrato) === 2;
+      const esConvenioValido = parseInt(evento.modalidad) === 1 && parseInt(evento.estado_convenio) === 2;
+    
+      let estadoBadge = {
+        text: "No Confirmado",
+        class: "badge bg-danger"
+      };
+    
+      if (esContratoValido || esConvenioValido) {
+        estadoBadge = {
+          text: "Confirmado",
+          class: "badge bg-success"
+        };
+      }
       agenda.push({
-        title: "Presentacion " + evento.establecimiento, // Nombre del establecimiento
+        title: evento.establecimiento, // Solo el nombre del lugar
         start: evento.fecha_presentacion, // Fecha de presentación
         iddetalle_presentacion: evento.iddetalle_presentacion, // Guardar el ID
         backgroundColor: "#ffcc00", // Color del fondo del evento (Naranja-Rojo)
         borderColor: "#ffcc00",
         textColor: "black",
+        extendedProps: { estadoBadge } // Guardamos el estado como propiedad extra
       });
+      // Si cumple con alguna de las condiciones, se agrega al calendario
+      
     });
-
+    
     // Limpiar eventos previos y agregar los nuevos al calendario
     calendar.removeAllEvents();
     calendar.addEventSource(agenda);
+    
+    // Personalizar la apariencia de los eventos para mostrar el badge
+    calendar.setOption("eventContent", function(arg) {
+      let estado = arg.event.extendedProps.estadoBadge;
+      let badgeHtml = `<span class="${estado.class}">${estado.text}</span>`;
+      
+      return { html: `<div>${arg.event.title} ${badgeHtml}</div>` };
+    });
   });
 
   async function renderizarInfoAgenda(iddp) {
