@@ -44,18 +44,61 @@
 
 
 <div class="modal fade" id="modal-viatico" tabindex="-1" aria-labelledby="modalviatico" aria-hidden="true" data-bs-backdrop="static" >
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalviatico">Generar reporte</h1>
+                <h1 class="modal-title fs-5" id="modalviatico">Generar Viático</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body"> 
-                <div class="contenedor-info-agenda p-3">
-                    
+                <div class="contenedor-info-agenda">
+                    <div class="container-fluid">
+                        <div class="row g-3 align-items-center">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-4 text-end">
+                                    <label for="pasaje" class="form-label">Pasaje:</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <span class="input-group-text">S/.</span>
+                                        <input type="number" id="pasaje" name="pasaje" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-4 text-end">
+                                    <label for="comida" class="form-label">Comida:</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <span class="input-group-text">S/.</span>
+                                        <input type="number" id="comida" name="comida" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 align-items-center contenedor-viatico-viaje">
+                                <div class="col-md-4 text-end">
+                                    <label for="viatico" class="form-label">Viatico de viaje:</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <span class="input-group-text">S/.</span>
+                                        <input type="number" id="viatico" name="viatico" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                     
+
+                        
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer text-end">
+            <button class="btn btn-primary" id="btnGuardarViatico">Guardar</button>
+
                 <!-- <button type="button" class="btn btn-secondary" id="btnActualizarDatos">Actualizar Datos</button>
                 <button type="button" class="btn btn-primary btnGuardarContrato" id="close-mdl-datoscliente" data-bs-dismiss="modal">Cerrar</button> -->
             </div>

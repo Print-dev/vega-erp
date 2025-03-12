@@ -10,14 +10,15 @@ class Convenio extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_convenio(@idconvenio,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_convenio(@idconvenio,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['iddetallepresentacion'],
           $params['abonogarantia'],
           $params['abonopublicidad'],
+          $params['porcentajevega'],
+          $params['porcentajepromotor'],
           $params['propuestacliente'],
-          $params['acuerdo'],
           $params['estado'],
         )
       );
@@ -108,14 +109,15 @@ class Convenio extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare("CALL sp_actualizar_convenio(?,?,?,?,?,?)");
+      $cmd = $pdo->prepare("CALL sp_actualizar_convenio(?,?,?,?,?,?,?)");
       $rpt = $cmd->execute(
         array(
           $params['idconvenio'],
           $params['abonogarantia'],
           $params['abonopublicidad'],
+          $params['porcentajevega'],
+          $params['porcentajepromotor'],
           $params['propuestacliente'],
-          $params['acuerdo'],
           $params['estado']
         )
       );

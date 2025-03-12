@@ -140,7 +140,8 @@ BEGIN
         CON.estado AS estado_convenio,
         DISDP.distrito, 
         PRODP.provincia, 
-        DEDP.departamento
+        DEDP.departamento,
+        DEDP.iddepartamento
     FROM detalles_presentacion DP
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente

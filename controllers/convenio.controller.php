@@ -26,8 +26,9 @@ if (isset($_POST['operation'])) {
         'iddetallepresentacion'   => $convenio->limpiarCadena($_POST['iddetallepresentacion']),
         'abonogarantia' => $convenio->limpiarCadena($_POST['abonogarantia']),
         'abonopublicidad'   => $convenio->limpiarCadena($_POST['abonopublicidad']),
+        'porcentajevega'    => $convenio->limpiarCadena($_POST['porcentajevega']),
+        'porcentajepromotor'    => $convenio->limpiarCadena($_POST['porcentajepromotor']),
         'propuestacliente'    => $convenio->limpiarCadena($_POST['propuestacliente']),
-        'acuerdo'    => $convenio->limpiarCadena($_POST['acuerdo']),
         'estado' => $convenio->limpiarCadena($_POST['estado'])
       ];
 
@@ -63,8 +64,9 @@ if (isset($_POST['operation'])) {
         'idconvenio'=>$convenio->limpiarCadena($_POST['idconvenio']),
         'abonogarantia'=>$convenio->limpiarCadena($_POST['abonogarantia']),
         'abonopublicidad'=>$convenio->limpiarCadena($_POST['abonopublicidad']),
+        'porcentajevega'    => $convenio->limpiarCadena($_POST['porcentajevega']),
+        'porcentajepromotor'    => $convenio->limpiarCadena($_POST['porcentajepromotor']),
         'propuestacliente'=>$convenio->limpiarCadena($_POST['propuestacliente']),
-        'acuerdo'=>$convenio->limpiarCadena($_POST['acuerdo']),
         'estado'=>$convenio->limpiarCadena($_POST['estado']),
       ];
 

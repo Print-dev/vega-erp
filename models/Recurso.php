@@ -27,6 +27,17 @@ class Recurso extends ExecQuery
       }
     }
 
+    public function obtenerDepartamentoPorId($params = []): array
+    {
+      try {
+        $cmd = parent::execQ("SELECT * FROM departamentos WHERE iddepartamento = ?");
+        $cmd->execute(array($params['iddepartamento']));
+        return $cmd->fetchAll(PDO::FETCH_ASSOC);
+      } catch (Exception $e) {
+        die($e->getMessage());
+      }
+    }
+
     public function obtenerProvincias($params = []): array
     {
       try {

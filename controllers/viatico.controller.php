@@ -1,0 +1,61 @@
+
+
+<?php
+require_once '../models/Viatico.php';
+header("Access-Control-Allow-Origin: *");
+header("Content-type: application/json; charset=utf-8");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Métodos permitidos
+header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Encabezados permitidos
+$viatico = new Viatico();
+// ag order by
+if(isset($_GET['operation'])){
+  switch($_GET['operation']){
+    case 'obtenerViatico':
+        $cleanData = [
+          'iddetallepresentacion' => $_GET['iddetallepresentacion'] === "" ? null : $viatico->limpiarCadena($_GET['iddetallepresentacion'])
+        ];
+        echo json_encode($viatico->obtenerViatico($cleanData));
+        break;
+    
+  }
+}
+
+if (isset($_POST['operation'])) {
+  switch ($_POST['operation']) {
+    case 'registrarViatico':
+      $cleanData = [
+        'iddetallepresentacion'   => $viatico->limpiarCadena($_POST['iddetallepresentacion']),
+        'pasaje' => $viatico->limpiarCadena($_POST['pasaje']),
+        'comida'   => $viatico->limpiarCadena($_POST['comida']),
+        'viaje'   => $viatico->limpiarCadena($_POST['viaje']),
+      ];
+
+      $respuesta = ['idviatico' => -1];
+
+      $idviatico = $viatico->registrarViatico($cleanData);
+
+      if ($idviatico > 0) {
+        $respuesta['idviatico'] = $idviatico;
+      }
+
+      echo json_encode($respuesta);
+      break;
+
+    /* case 'actualizarTarifa':
+      $cleanData = [
+        'idtarifario'=>$tarifa->limpiarCadena($_POST['idtarifario']),
+        'precio'=>$tarifa->limpiarCadena($_POST['precio'])
+      ];
+
+      $respuesta=['update'=>false];
+
+      $update = $tarifa->actualizarTarifa($cleanData);
+
+      if($update){
+        $respuesta['update']=true;
+      }
+      echo json_encode($respuesta);
+      break; */
+  
+  }
+}

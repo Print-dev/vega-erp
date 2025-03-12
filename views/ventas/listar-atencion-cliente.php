@@ -205,44 +205,72 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalContratoConvenio">Contrato Convenio</h1>
+                <h1 class="modal-title fs-5" id="modalContratoConvenio">Propuesta de cliente</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
-                    <div class="row">
-                        <div class="row g-2">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="number" id="abonogarantia" name="abonogarantia"
-                                        class="form-control">
-                                    <label for="abonogarantia" class="form-label">Abono de garantía</label>
-                                </div>
+                    <div class="row g-3 align-items-center">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-4 text-end">
+                                <label for="abonogarantia" class="form-label">Abono de garantía:</label>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="number" id="abonopublicidad" name="abonopublicidad"
-                                        class="form-control">
-                                    <label for="abonopublicidad" class="form-label">Abono de publicidad</label>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <span class="input-group-text">S/.</span>
+                                    <input type="number" id="abonogarantia" name="abonogarantia" class="form-control">
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 mt-3">
-                            <div class="mb-3">
-                                <label for="propuestacliente" class="form-label">Propuesta de cliente</label>
-                                <textarea class="form-control" id="propuestacliente" rows="3"></textarea>
+
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-4 text-end">
+                                <label for="abonopublicidad" class="form-label">Abono de publicidad:</label>
                             </div>
-                        </div>
-                        <div class="col-md-12 mt-3">
-                                <div class="form-floating">
-                                    <input type="text" id="acuerdo" name="acuerdo"
-                                        class="form-control">
-                                    <label for="acuerdo" class="form-label">Acuerdo (%)</label>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <span class="input-group-text">S/.</span>
+                                    <input type="number" id="abonopublicidad" name="abonopublicidad" class="form-control">
                                 </div>
                             </div>
+                        </div>
+
+                        <hr>
+                            <label for="porcentajevega" class="form-label">Acuerdo %</label>
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-4 text-end">
+                                <label for="porcentajevega" class="form-label">Vega:</label>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="number" id="porcentajevega" name="porcentajevega" max="100" min="0" class="form-control">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-4 text-end">
+                                <label for="porcentajepromotor" class="form-label">Promotor:</label>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="number" id="porcentajepromotor" name="porcentajepromotor" max="100" min="0" class="form-control">
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                            <label for="propuestacliente" class="form-label">Detalle:</label>                
+                        <div class="col-md-12">
+                            <textarea class="form-control" id="propuestacliente" rows="3"></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
+
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="btnActualizarPropuesta">Actualizar</button>
                 <button type="button" class="btn btn-secondary" id="btnGuardarPendiente">Guardar pendiente</button>

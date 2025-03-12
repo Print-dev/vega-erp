@@ -222,7 +222,7 @@ $monto_texto = numeroATexto($monto_numerico);
         <tr>
             <td class="label" colspan="5" style="border: none;">
                 <strong>SEGUNDO:</strong> Que EL REPRESENTANTE en forma de Convenio, acuerda con EL ORGANIZADOR que
-                el objeto del presente será ejecutado en porcentajes <strong>(<?= strtoupper($convenioContrato[0]['acuerdo']) ?>)</strong> iguales a beneficio de
+                el objeto del presente será ejecutado en porcentajes <strong>(<?= strtoupper($convenioContrato[0]['porcentaje_vega']) . '% VEGA Y '. strtoupper($convenioContrato[0]['porcentaje_promotor']) . '% PROMOTOR'?>)</strong> iguales a beneficio de
                 ambos <?php if ($convenioContrato[0]['igv'] == 1): ?>
                     con
                 <?php elseif ($convenioContrato[0]['igv'] == 0): ?>

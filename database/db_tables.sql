@@ -117,6 +117,7 @@ create table clientes (
 create table detalles_presentacion (
 	iddetalle_presentacion	int auto_increment primary key,
     idusuario			int not null,
+    filmmaker			int not null,
     idcliente			int not null,
     iddistrito			int not null,
     ncotizacion			CHAR(9) null,
@@ -133,7 +134,8 @@ create table detalles_presentacion (
     pagado50		tinyint null default 0,
     estado			tinyint null default 1, -- 1: activo, 2:vencido
     created_at		date null default now(),
-    constraint fk_idusuario_dp foreign key (idusuario) references usuarios (idusuario),
+    constraint fk_idusuario_dp foreign key (idusuario) references usuarios (idusuario), -- artista
+    constraint fk_filmmaker_dp foreign key (filmmaker) references usuarios (idusuario), -- filmmaker
     constraint fk_idcliente_dp foreign key (idcliente) references clientes (idcliente),
     constraint fk_iddistrito_dp foreign key (iddistrito) references distritos (iddistrito),
     constraint    chk_detalle_p          CHECK(modalidad IN(1, 2)),
@@ -148,8 +150,9 @@ create table convenios (
     iddetalle_presentacion int not null,
     abono_garantia	decimal(8,2) null,
     abono_publicidad decimal(8,2) null,
+	porcentaje_vega	 int not null,
+    porcentaje_promotor int not null,
 	propuesta_cliente text not null,
-    acuerdo			varchar(130) not null,
     estado			int null default 1, -- 1 = pendiente, 2 = aprobada, 3 = no aprobado
     created_at		datetime null default now(),
     updated_at		datetime null ,
@@ -189,3 +192,11 @@ create table reservas (
     constraint fk_idpagocontrato_res foreign key (idpagocontrato) references pagos_contrato (idpagocontrato)
 ) engine = innodb;
 
+CREATE TABLE viaticos (
+	idviatico		int auto_increment primary key,
+    iddetalle_presentacion int not null,
+    pasaje			decimal(7,2) not null,
+    comida			decimal(7,2) not null,
+    viaje			decimal(8,2) null,
+    constraint fk_iddp_viatico foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
+) engine = innodb;

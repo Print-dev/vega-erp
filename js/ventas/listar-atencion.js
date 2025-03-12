@@ -209,14 +209,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function registrarConvenio(iddetallepresentacion, estado) {
-
+console.log("porcentaje vega: ", $q("#porcentajevega").value)
+console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
     const pago = new FormData();
     pago.append("operation", "registrarConvenio");
     pago.append("iddetallepresentacion", iddetallepresentacion);
     pago.append("abonogarantia", $q("#abonogarantia").value);
     pago.append("abonopublicidad", $q("#abonopublicidad").value);
+    pago.append("porcentajevega", parseInt($q("#porcentajevega").value));
+    pago.append("porcentajepromotor", parseInt($q("#porcentajepromotor").value));
     pago.append("propuestacliente", $q("#propuestacliente").value);
-    pago.append("acuerdo", $q("#acuerdo").value);
     pago.append("estado", estado);
 
     const fpago = await fetch(`${host}convenio.controller.php`, {
@@ -281,8 +283,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     convenioupdate.append("idconvenio", idconvenio);
     convenioupdate.append("abonogarantia", $q("#abonogarantia").value);
     convenioupdate.append("abonopublicidad", $q("#abonopublicidad").value);
+    convenioupdate.append("porcentajevega", parseInt($q("#porcentajevega").value));
+    convenioupdate.append("porcentajepromotor", parseInt($q("#porcentajepromotor").value));
     convenioupdate.append("propuestacliente", $q("#propuestacliente").value);
-    convenioupdate.append("acuerdo", $q("#acuerdo").value);
     convenioupdate.append("estado", estado);
 
     const fconvenioupdate = await fetch(`${host}convenio.controller.php`, {
@@ -698,7 +701,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       $q("#abonogarantia").value = convenio[0]?.abono_garantia
       $q("#abonopublicidad").value = convenio[0]?.abono_publicidad
       $q("#propuestacliente").value = convenio[0]?.propuesta_cliente
-      $q("#acuerdo").value = convenio[0]?.acuerdo
+      $q("#porcentajevega").value = convenio[0]?.porcentaje_vega
+      $q("#porcentajepromotor").value = convenio[0]?.porcentaje_promotor
       $q("#btnGuardarPendiente").hidden = true
       $q("#btnActualizarPropuesta").hidden = false
       iddetallepresentacion = idpropuesta // esto en realidad es el iddetalle_presentacion

@@ -16,6 +16,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($recurso->obtenerDepartamentos(["idnacionalidad" => $recurso->limpiarCadena($_GET['idnacionalidad'])]));
       break;
 
+    case 'obtenerDepartamentoPorId':
+      echo json_encode($recurso->obtenerDepartamentoPorId(["iddepartamento" => $recurso->limpiarCadena($_GET['iddepartamento'])]));
+      break;
+
     case 'obtenerProvincias':
       echo json_encode($recurso->obtenerProvincias(["iddepartamento" => $recurso->limpiarCadena($_GET['iddepartamento'])]));
       break;
@@ -45,5 +49,7 @@ if (isset($_GET['operation'])) {
     case 'obtenerTodosNacionalidades':
       echo json_encode($recurso->obtenerTodosNacionalidades());
       break;
+
+    
   }
 }
