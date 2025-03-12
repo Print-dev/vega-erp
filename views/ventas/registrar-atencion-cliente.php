@@ -144,7 +144,7 @@
                             <div class="col-md-4">
                                 <div class="form-floating">
                                     <input type="text" id="establecimiento" name="establecimiento"
-                                        class="form-control">
+                                        class="form-control" autocomplete="off">
                                     <label for="establecimiento" class="form-label">Establecimiento</label>
                                 </div>
                             </div>
@@ -187,7 +187,7 @@
                                         <option value="">Selecciona</option>
                                         <option value=" 31">Peru</option>
                                     </select>
-                                    <label for="nacionalidad2" class="form-label">Nacionalidad</label>
+                                    <label for="nacionalidad2" class="form-label">País</label>
                                 </div>
                             </div>
                             <div class="col-md-2">

@@ -27,7 +27,7 @@ if (isset($_POST['operation'])) {
         'iddetallepresentacion'   => $viatico->limpiarCadena($_POST['iddetallepresentacion']),
         'pasaje' => $viatico->limpiarCadena($_POST['pasaje']),
         'comida'   => $viatico->limpiarCadena($_POST['comida']),
-        'viaje'   => $viatico->limpiarCadena($_POST['viaje']),
+        'viaje'   => $viatico->limpiarCadena($_POST['viaje']) ? $viatico->limpiarCadena($_POST['viaje']) : '',
       ];
 
       $respuesta = ['idviatico' => -1];
@@ -41,21 +41,23 @@ if (isset($_POST['operation'])) {
       echo json_encode($respuesta);
       break;
 
-    /* case 'actualizarTarifa':
+    case 'actualizarViatico':
       $cleanData = [
-        'idtarifario'=>$tarifa->limpiarCadena($_POST['idtarifario']),
-        'precio'=>$tarifa->limpiarCadena($_POST['precio'])
+        'idviatico'=>$viatico->limpiarCadena($_POST['idviatico']),
+        'pasaje'=>$viatico->limpiarCadena($_POST['pasaje']),
+        'comida'=>$viatico->limpiarCadena($_POST['comida']),
+        'viaje'=>$viatico->limpiarCadena($_POST['viaje']) ? $viatico->limpiarCadena($_POST['viaje']) : ''
       ];
 
       $respuesta=['update'=>false];
 
-      $update = $tarifa->actualizarTarifa($cleanData);
+      $update = $viatico->actualizarViatico($cleanData);
 
       if($update){
         $respuesta['update']=true;
       }
       echo json_encode($respuesta);
-      break; */
+      break;
   
   }
 }

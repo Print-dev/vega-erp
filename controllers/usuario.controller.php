@@ -38,7 +38,10 @@ $accesos = [
   ],
   "Artista" => [
     ['modulo' => 'agenda', 'ruta' => 'listar-agenda', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
-  ]
+  ],
+  "Filmmaker" => [
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
+  ],
 ];
 
 if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {

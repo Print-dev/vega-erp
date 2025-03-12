@@ -17,8 +17,10 @@ BEGIN
         DP.horafinal,
         DP.establecimiento, 
         DP.referencia,
+        DP.idusuario,
         DISDP.distrito AS distrito_evento, 
         PRODP.provincia AS provincia_evento, 
+        PRODP.idprovincia AS idprovincia_evento,
         DEDP.departamento AS departamento_evento,
         DP.igv,
         CO.estado
@@ -36,6 +38,8 @@ BEGIN
 
 END $$
 
+CALL obtenerContrato(1)
+
 DROP PROCEDURE IF EXISTS `sp_obtenerCotizacion`;
 DELIMITER $$
 CREATE PROCEDURE `sp_obtenerCotizacion`(
@@ -52,8 +56,10 @@ BEGIN
         DP.horafinal,
         DP.establecimiento,
         DP.referencia,
+        DP.idusuario,
         DISDP.distrito AS distrito_evento, 
         PRODP.provincia AS provincia_evento, 
+        PRODP.idprovincia AS idprovincia_evento,
         DEDP.departamento AS departamento_evento,
         DP.igv,
         DP.validez

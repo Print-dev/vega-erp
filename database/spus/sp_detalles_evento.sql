@@ -5,6 +5,7 @@ DELIMITER $$
 CREATE PROCEDURE sp_registrar_detalle_presentacion (
     OUT _iddetalle_presentacion INT,
 	IN _idusuario int,
+    IN _filmmaker INT,
     IN _idcliente int,
 	IN _iddistrito int,
     IN _ncotizacion	char(9),
@@ -13,6 +14,7 @@ CREATE PROCEDURE sp_registrar_detalle_presentacion (
     IN _horafinal time,
     IN _establecimiento VARCHAR(80),
     IN _referencia VARCHAR(200),
+    IN _acuerdo TEXT,
     IN _tipoevento int,
     IN _modalidad int,
     IN _validez int,
@@ -26,8 +28,8 @@ BEGIN
         SET existe_error = 1;
     END;
     
-    INSERT INTO detalles_presentacion (idusuario, idcliente, iddistrito, ncotizacion, fecha_presentacion, horainicio, horafinal, establecimiento, referencia ,tipo_evento, modalidad, validez, igv)
-    VALUES (_idusuario, _idcliente, _iddistrito, NULLIF(_ncotizacion, ''), _fechapresentacion, _horainicio, _horafinal, _establecimiento, _referencia, _tipoevento, _modalidad, NULLIF(_validez, ''), _igv);
+    INSERT INTO detalles_presentacion (idusuario, filmmaker, idcliente, iddistrito, ncotizacion, fecha_presentacion, horainicio, horafinal, establecimiento, referencia, acuerdo ,tipo_evento, modalidad, validez, igv)
+    VALUES (_idusuario, nullif(_filmmaker, ''), _idcliente, _iddistrito, NULLIF(_ncotizacion, ''), _fechapresentacion, _horainicio, _horafinal, _establecimiento, _referencia, nullif(_acuerdo, ''), _tipoevento, _modalidad, NULLIF(_validez, ''), _igv);
     
     IF existe_error = 1 THEN
         SET _iddetalle_presentacion = -1;
@@ -115,6 +117,7 @@ BEGIN
         DP.fecha_presentacion, 
         DP.horainicio, DP.horafinal,
         CO.idcontrato, 
+        CON.idconvenio,
         DP.validez,
         DP.reserva,
         DP.pagado50,
@@ -122,6 +125,9 @@ BEGIN
         DP.referencia,
         CO.estado AS estadoContrato,
         DP.created_at,
+        USUFILM.idusuario as idusuariofilmmaker, 
+        PERFILM.nombres, PERFILM.apellidos,
+        DP.acuerdo,
         (SELECT RE.vigencia 
          FROM reservas RE 
          WHERE RE.idpagocontrato = (SELECT PC.idpagocontrato 
@@ -144,6 +150,8 @@ BEGIN
         DEDP.iddepartamento
     FROM detalles_presentacion DP
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+	LEFT JOIN usuarios USUFILM ON USUFILM.idusuario = DP.filmmaker
+    LEFT JOIN personas PERFILM ON PERFILM.idpersona = USUFILM.idpersona
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN contratos CO ON CO.iddetalle_presentacion = DP.iddetalle_presentacion
     LEFT JOIN convenios CON ON CON.iddetalle_presentacion = DP.iddetalle_presentacion
@@ -210,5 +218,17 @@ CREATE PROCEDURE sp_actualizar_estado_reserva_dp (
 BEGIN
 		UPDATE detalles_presentacion SET
     reserva = _reserva
+    WHERE iddetalle_presentacion = _iddetalle_presentacion; 
+END //
+
+DROP PROCEDURE sp_editar_acuerdo_evento;
+DELIMITER //
+CREATE PROCEDURE sp_editar_acuerdo_evento (
+	IN _iddetalle_presentacion INT,
+    IN _acuerdo TEXT
+)
+BEGIN
+		UPDATE detalles_presentacion SET
+    acuerdo = nullif(_acuerdo, '')
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //

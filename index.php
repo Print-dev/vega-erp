@@ -115,9 +115,9 @@ font-weight: bold;
         //console.log(data);
 
         if (data.login) {
-          if (data.rol === "RES") {
-            window.location.href = "http://localhost/vega-erp/views/reportes/reporte-activos-asignados";
-          } else {
+          if (data.rol === "Artista" || data.rol === "Filmmaker") {
+            window.location.href = "http://localhost/vega-erp/views/agenda/listar-agenda";
+          } else if(data.rol === "Administrador"){
             window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente';
           }
         } else {

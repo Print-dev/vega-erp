@@ -117,7 +117,7 @@ create table clientes (
 create table detalles_presentacion (
 	iddetalle_presentacion	int auto_increment primary key,
     idusuario			int not null,
-    filmmaker			int not null,
+    filmmaker			int  null,
     idcliente			int not null,
     iddistrito			int not null,
     ncotizacion			CHAR(9) null,
@@ -126,6 +126,7 @@ create table detalles_presentacion (
     horafinal 	time not null,
     establecimiento	varchar(80) not null,
     referencia 		varchar(200) not null,
+    acuerdo			TEXT null,
     tipo_evento		int not null, -- 1= publico, 2= privado
     modalidad		int	not null, -- 1= convenio, 2= contrato
 	validez			int		null,

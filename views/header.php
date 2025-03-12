@@ -38,6 +38,12 @@ switch ($_SESSION['login']['nivelacceso']) {
   case 'Administrador':
     $rol = "Administrador";
     break;
+  case 'Filmmaker':
+    $rol = "Filmmaker";
+    break;
+  case 'Artista':
+    $rol = "Artista";
+    break;
 }
 $host = "http://localhost/vega-erp/";
 ?>

@@ -115,14 +115,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     return fpersona
   }
 
-  async function obtenerTarifaArtistaPorProvincia(idprovincia) {
-    const params = new URLSearchParams();
-    params.append("operation", "obtenerTarifaArtistaPorProvincia");
-    params.append("idprovincia", idprovincia);
-    const fpersona = await getDatos(`${host}tarifa.controller.php`, params)
-    console.log(fpersona);
-    return fpersona
-  }
+
 
   async function obtenerCotizacionesPorModalidad() {
     const params = new URLSearchParams();
@@ -283,6 +276,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const detalle = new FormData();
     detalle.append("operation", "registrarDetallePresentacion");
     detalle.append("idusuario", $q("#artista").value); // id artista
+    detalle.append("filmmaker", null); // id artaswdyfuijopista
     detalle.append("idcliente", idcliente);
     detalle.append("iddistrito", $q("#distrito2").value);
     detalle.append("ncotizacion", ncotizacion ? ncotizacion : '');
@@ -291,6 +285,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     detalle.append("horafinal", horafinal);
     detalle.append("establecimiento", $q("#establecimiento").value);
     detalle.append("referencia", $q("#referencia").value);
+    detalle.append("acuerdo", $q("#acuerdo")?.value ? $q("#acuerdo")?.value : '');
     detalle.append("tipoevento", $q("#tipoevento").value);
     detalle.append("modalidad", $q("#modalidad").value);
     detalle.append("validez", validez);
@@ -755,6 +750,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     console.log(modalidad); 3
     if (modalidad === 1) {
       $q("#container-validez").hidden = true
+      $q("#validez").value = null
     } else {
       $q("#container-validez").hidden = false
     }

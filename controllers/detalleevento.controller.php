@@ -15,6 +15,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($detalleevento->obtenerDPporId(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
       break;
 
+    case 'obtenerAcuerdo':
+      echo json_encode($detalleevento->obtenerAcuerdo(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
+      break;
+
     case 'obtenerCotizacion':
       echo json_encode($detalleevento->obtenerCotizacion(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
       break;
@@ -41,6 +45,7 @@ if (isset($_POST['operation'])) {
     case 'registrarDetallePresentacion':
       $cleanData = [
         'idusuario'   => $detalleevento->limpiarCadena($_POST['idusuario']),
+        'filmmaker'   => $detalleevento->limpiarCadena($_POST['filmmaker']) ? $detalleevento->limpiarCadena($_POST['filmmaker']) : '',
         'idcliente' => $detalleevento->limpiarCadena($_POST['idcliente']),
         'iddistrito' => $detalleevento->limpiarCadena($_POST['iddistrito']),
         'ncotizacion' => $detalleevento->limpiarCadena($_POST['ncotizacion']) ? $detalleevento->limpiarCadena($_POST['ncotizacion']) : '',
@@ -49,6 +54,7 @@ if (isset($_POST['operation'])) {
         'horafinal'    => $detalleevento->limpiarCadena($_POST['horafinal']),
         'establecimiento'  => $detalleevento->limpiarCadena($_POST['establecimiento']),
         'referencia'  => $detalleevento->limpiarCadena($_POST['referencia']),
+        'acuerdo'  => $detalleevento->limpiarCadena($_POST['acuerdo']) ? $detalleevento->limpiarCadena($_POST['acuerdo']) : '',
         'tipoevento'  => $detalleevento->limpiarCadena($_POST['tipoevento']),
         'modalidad'  => $detalleevento->limpiarCadena($_POST['modalidad']),
         'validez'  => $detalleevento->limpiarCadena($_POST['validez']) ? $detalleevento->limpiarCadena($_POST['validez']) : '',
@@ -73,6 +79,17 @@ if (isset($_POST['operation'])) {
       ];
 
       $rpt = $detalleevento->actualizarEstadoReservaDp($cleanData);
+
+      echo json_encode($rpt);
+      break;
+
+    case 'editarAcuerdoEvento':
+      $cleanData = [
+        'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']),
+        'acuerdo'   => $detalleevento->limpiarCadena($_POST['acuerdo']),
+      ];
+
+      $rpt = $detalleevento->editarAcuerdoEvento($cleanData);
 
       echo json_encode($rpt);
       break;

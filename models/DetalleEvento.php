@@ -8,10 +8,11 @@ class DetalleEvento extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_detalle_presentacion(@iddetalleevento,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_detalle_presentacion(@iddetalleevento,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idusuario'],
+          $params['filmmaker'],
           $params['idcliente'],
           $params['iddistrito'],
           $params['ncotizacion'],
@@ -20,6 +21,7 @@ class DetalleEvento extends ExecQuery
           $params['horafinal'],
           $params['establecimiento'],
           $params['referencia'],
+          $params['acuerdo'],
           $params['tipoevento'],
           $params['modalidad'],
           $params['validez'],
@@ -63,6 +65,22 @@ class DetalleEvento extends ExecQuery
     }
   }
 
+  public function editarAcuerdoEvento($params = []): bool
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_editar_acuerdo_evento (?,?)");
+      $rpt = $cmd->execute(
+        array(
+          $params['iddetallepresentacion'],
+          $params['acuerdo'],
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+  
   public function actualizarEstadoReservaDp($params = []): bool
   {
     try {
@@ -126,6 +144,17 @@ class DetalleEvento extends ExecQuery
   {
     try {
       $cmd = parent::execQ("CALL sp_obtener_dp_porid(?)");
+      $cmd->execute(array($params['iddetallepresentacion']));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerAcuerdo($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("SELECT acuerdo FROM detalles_presentacion WHERE iddetalle_presentacion = ?");
       $cmd->execute(array($params['iddetallepresentacion']));
       return $cmd->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {

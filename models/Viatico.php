@@ -7,7 +7,7 @@ class Viatico extends ExecQuery
   public function obtenerViatico($params = []): array
   {
     try {
-      $sp = parent::execQ("SELECT * FROM viaticos WHERE iddetallepresentacion = ?");
+      $sp = parent::execQ("SELECT * FROM viaticos WHERE iddetalle_presentacion = ?");
       $sp->execute(
         array(    
           $params['iddetallepresentacion']
@@ -19,7 +19,9 @@ class Viatico extends ExecQuery
       die($e->getMessage());
     }
   }
+
   
+
   public function registrarViatico($params = []): int
   {
     try {
@@ -42,15 +44,17 @@ class Viatico extends ExecQuery
     }
   }
 
-  /* public function actualizarTarifa($params = []): bool
+  public function actualizarViatico($params = []): bool
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare("CALL sp_actualizar_tarifa(?, ?)");
+      $cmd = $pdo->prepare("CALL sp_actualizar_viatico(?,?,?,?)");
       $rpt = $cmd->execute(
         array(
-          $params['idtarifario'],
-          $params['precio']
+          $params['idviatico'],
+          $params['pasaje'],
+          $params['comida'],
+          $params['viaje']
         )
       );
       return $rpt;
@@ -58,6 +62,6 @@ class Viatico extends ExecQuery
       error_log("Error: " . $e->getMessage());
       return false;
     }
-  } */
+  }
 
 }
