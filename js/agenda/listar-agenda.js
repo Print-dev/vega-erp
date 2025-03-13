@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let latOrigen
   let lonOrigen
   let calcularDificultadPrecio = []
+  let idUsuario = -1
 
   navigator.geolocation.getCurrentPosition(function (position) {
     latOrigen = position.coords.latitude;
@@ -262,6 +263,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     height: 700,
     initialView: "dayGridMonth", // Vista inicial (mes, semana, día)
     events: [],
+    dayMaxEventRows: true, // Muestra un "Ver más" si hay muchos eventos
+    dayMaxEvents: 2,
+    eventDidMount: function (info) {
+      // Asegurar que los eventos tengan espacio dentro del modal emergente
+      info.el.style.whiteSpace = "normal";
+    },
     /* eventClick: async function (evento) {
       console.log("evento -> ", evento)
       const idDetalle = evento.event.extendedProps.iddetalle_presentacion;
@@ -393,8 +400,9 @@ document.addEventListener("DOMContentLoaded", async () => {
               
         <hr>
             ${nivelacceso == "Administrador" ? `
+              <div><strong>FILMMAKER:</strong> ${arg.event.extendedProps.nombres ? arg.event.extendedProps.nombres : 'No asignado'}</div>
               <button class="btn btn-primary mt-2" id="btnAsignarFilmmaker" style="width: 100%;" data-iddp="${arg.event.extendedProps?.iddetalle_presentacion}">Asignar Filmmaker</button>
-              ` : `<div><strong>FILMMAKER:</strong> ${arg.event.extendedProps.nombres ? arg.event.extendedProps.nombres : 'No asignado'}</div>`}
+              ` : ``}
             ${arg.event.extendedProps.idusuariofilmmaker == idusuarioLogeado ? `<button class="btn btn-primary mt-2" id="btnViatico" style="width: 100%;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}" data-iddepartamento="${arg.event.extendedProps.iddepartamento}">Reportar Viático</button>` : ''}          
             ${nivelacceso == "Administrador" ? `
               <button class="btn btn-primary mt-2" id="btnEditarAcuerdo" style="width: 100%;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}">Editar Acuerdo</button>              
@@ -414,7 +422,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   $q("#usuario")?.addEventListener("change", async (e) => {
-    const idUsuario = e.target.value;
+    idUsuario = e.target.value;
 
     if (idUsuario === "-1") {
       return; // Si no se selecciona un usuario, no hacer nada
@@ -612,6 +620,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (acuerdoEditado) {
       //$q("#text-acuerdo").innerHTML = $q("#acuerdo").value
       showToast("Acuerdo editado correctamente", "SUCCESS")
+      const agendaUsuario = await obtenerAgendaArtista(idUsuario);
+    console.log("agendaUsuario todo obtenido ->", agendaUsuario);
+
+    await configurarCalendario(agendaUsuario)
       modalAcuerdo.hide()
     }
   })
@@ -645,6 +657,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("filmmakerAsignado -> ", filmmakerAsignado)
     if (filmmakerAsignado) {
       showToast("Filmmaker asignado correctamente", "SUCCESS")
+      const agendaUsuario = await obtenerAgendaArtista(idUsuario);
+    console.log("agendaUsuario todo obtenido ->", agendaUsuario);
+
+    await configurarCalendario(agendaUsuario)
       modalFilmmaker.hide()
     }
   })

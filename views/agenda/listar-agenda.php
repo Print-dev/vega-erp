@@ -23,6 +23,11 @@
   position: relative !important;
 }
 
+.fc-more-popover {
+  max-height: 300px; /* Ajusta la altura del popup */
+  overflow-y: auto;  /* Agrega scroll si hay demasiados eventos */
+  white-space: normal; /* Permite que los textos largos se vean bien */
+}
 </style>
 
 <div class="row g-0 mb-3 contenedor-filtros-agenda">
