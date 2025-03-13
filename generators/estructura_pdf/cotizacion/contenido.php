@@ -352,15 +352,15 @@ echo $hora_final_formateada;
         </tr>
         <tr>
             <td style="width: 20px;">1</td>
-            <td style="width: 350px;">PRESENTACION ARTÍSTICA DE <?= strtoupper($cotizacion[0]['nom_usuario']); ?> </td>
-            <td style="width: 100px;"><?= restarHoras($horainicio, $horafinal); ?></td>
+            <td style="width: 345px;">PRESENTACION ARTÍSTICA DE <?= strtoupper($cotizacion[0]['nom_usuario']); ?> </td>
+            <td style="width: 90px;"><?= restarHoras($horainicio, $horafinal); ?></td>
             <td style="width: 70px;"><?php if (isset($tarifaArtista[0]['precio'])) {
-                                            echo $tarifaArtista[0]['precio'];
+                                            echo "S/. " . $tarifaArtista[0]['precio'];
                                         } else {
                                             echo 'Sin tarifa en esta provincia';
                                         } ?></td>
             <td><?php if (isset($tarifaArtista[0]['precio'])) {
-                    echo $tarifaArtista[0]['precio'];
+                    echo "S/. " . $tarifaArtista[0]['precio'];
                 } else {
                     echo 'Sin tarifa en esta provincia';
                 } ?></td>
@@ -369,8 +369,8 @@ echo $hora_final_formateada;
             <td>2</td>
             <td>Puesto en la locacion de <?php echo $provincia; ?></td>
             <td></td>
-            <td><?php echo $precio; ?></td>
-            <td><?php echo $precio; ?></td>
+            <td><?php echo "S/. " . $precio; ?></td>
+            <td><?php echo "S/. " . $precio; ?></td>
         </tr>
         <tr>
             <td colspan="3" style="text-align: right; border: none;">(Opcional)</td>
@@ -378,7 +378,7 @@ echo $hora_final_formateada;
             <td><?php if ($cotizacion[0]['igv'] == 0) {
                     echo 'no incluye';
                 } else if ($cotizacion[0]['igv'] == 1) {
-                    echo $igv;
+                    echo "S/. " . $igv;
                 } ?></td>
         </tr>
         <tr>
@@ -386,15 +386,15 @@ echo $hora_final_formateada;
             <td><strong>TOTAL</strong></td>
             <td><?php if ($cotizacion[0]['igv'] == 0) {
                     if (isset($tarifaArtista[0]['precio'])) {
-                        echo $tarifaArtista[0]['precio'] + $precio;
+                        echo "S/. " . $tarifaArtista[0]['precio'] + $precio;
                     } else {
-                        echo $precio;
+                        echo "S/. " . $precio;
                     }
                 } else if ($cotizacion[0]['igv'] == 1) {
                     if (isset($tarifaArtista[0]['precio'])) {
-                        echo ($tarifaArtista[0]['precio'] + $precio) + $igv;
+                        echo "S/. " . ($tarifaArtista[0]['precio'] + $precio) + $igv;
                     } else {
-                        echo $precio + $igv;
+                        echo "S/. " . $precio + $igv;
                     }
                 } ?></td>
         </tr>

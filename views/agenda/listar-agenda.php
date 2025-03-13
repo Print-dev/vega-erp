@@ -16,6 +16,13 @@
         padding: 5px;
         font-size: 14px;
     }
+
+    .filmmaker-select {
+  pointer-events: auto !important;
+  z-index: 9999 !important;
+  position: relative !important;
+}
+
 </style>
 
 <div class="row g-0 mb-3 contenedor-filtros-agenda">
@@ -146,7 +153,7 @@
 </div>
 
 <div class="modal fade" id="modal-monto" tabindex="-1" aria-labelledby="modalmonto" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="modalmonto">Monto</h1>
@@ -154,10 +161,35 @@
             </div>
             <div class="modal-body">
                 <div class="contenedor-monto p-3">
+                    
                 </div>
             </div>
             <div class="modal-footer text-end">
                 <button type="button" class="btn btn-secondary" id="btnGuardarAcuerdo">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-filmmaker" tabindex="-1" aria-labelledby="modalfilmmaker" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalfilmmaker">Asignar Filmmaker</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="contenedor-filmmaker p-3">
+                    <div class="form-floating">
+                        <select name="filmmaker" id="filmmaker" class="form-select">
+                            <option value="-1" selected>Selecciona</option>
+                        </select>
+                        <label for="filmmaker" class="form-label">Filmmaker</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer text-end">
+                <button type="button" class="btn btn-secondary" id="btnGuardarFilmmaker">Guardar</button>
             </div>
         </div>
     </div>

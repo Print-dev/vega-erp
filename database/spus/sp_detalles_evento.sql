@@ -232,3 +232,15 @@ BEGIN
     acuerdo = nullif(_acuerdo, '')
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
+
+DROP PROCEDURE sp_asignarfilmmaker_dp;
+DELIMITER //
+CREATE PROCEDURE sp_asignarfilmmaker_dp (
+	IN _iddetalle_presentacion INT,
+    IN _filmmaker INT
+)
+BEGIN
+		UPDATE detalles_presentacion SET
+    filmmaker = nullif(_filmmaker, '')
+    WHERE iddetalle_presentacion = _iddetalle_presentacion; 
+END //

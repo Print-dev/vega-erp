@@ -1,4 +1,16 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  //VARIABLES LONGITUDES Y LATITUDES
+  let latOrigen
+  let lonOrigen
+  let calcularDificultadPrecio = []
+
+  navigator.geolocation.getCurrentPosition(function (position) {
+    latOrigen = position.coords.latitude;
+    lonOrigen = position.coords.longitude;
+    console.log(`Tu ubicación: ${latOrigen},${lonOrigen}`);
+  });
+
+
   //VARIABLES
   let agenda = [];
   let iddp = -1
@@ -16,6 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let modalViatico;
   let modalAcuerdo
   let modalMonto;
+  let modalFilmmaker
 
   //CALENDARIO
   let calendarEl;
@@ -127,6 +140,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data
   }
 
+  async function obtenerFilmmakers() { // PARA OBTENER DATOS DE CLIENTE Y DE EVENTO (NO INCLUYE TARIFARIO NI COSTO EN PRESENTACION DE TAL LOCAL)
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerFilmmakers");
+    const data = await getDatos(`${host}recurso.controller.php`, params);
+    return data
+  }
+
   async function obtenerTarifaArtistaPorProvincia(idprovincia, idusuario) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerTarifaArtistaPorProvincia");
@@ -135,6 +155,42 @@ document.addEventListener("DOMContentLoaded", async () => {
     const fpersona = await getDatos(`${host}tarifa.controller.php`, params)
     console.log(fpersona);
     return fpersona
+  }
+
+  async function obtenerLongLatPorCiudad(provincia) {
+    $q(".contenedor-monto").innerHTML = "<p class='text-center'>Cargando...</p>";
+
+    const Fdata = await fetch(`https://nominatim.openstreetmap.org/search?q=${provincia}&format=json`)
+    const data = await Fdata.json()
+    return data
+  } 
+
+  async function obtenerDuracionDeViaje(lon_origen, lat_origen, lon_destino, lat_destino) {
+    try {
+      $q(".contenedor-monto").innerHTML = "<p class='text-center'>Cargando...</p>";
+      const url = `https://router.project-osrm.org/route/v1/driving/${lon_origen},${lat_origen};${lon_destino},${lat_destino}?overview=false`;
+      const Fdata = await fetch(url);
+      
+      if (!Fdata.ok) {
+        throw new Error(`Error ${Fdata.status}: ${Fdata.statusText}`);
+      }
+  
+      const data = await Fdata.json();
+      return data;
+    } catch (error) {
+      showToast(`Error al obtener la duración del viaje: ${error.message}`, "ERROR");
+      console.log("Error al obtener la duración del viaje -> ", error);
+      return null; // Devuelve null en caso de error
+    }
+  }
+  
+
+  async function obtenerDPporId(iddp) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerDPporId");
+    params.append("iddetallepresentacion", iddp);
+    const data = await getDatos(`${host}detalleevento.controller.php`, params);
+    return data;
   }
 
   // *************************************** REGISTRAR DATOS ***************************************************************
@@ -184,6 +240,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     const racuerdo = await facuerdo.json();
     return racuerdo;
+  }
+
+  async function asignarFilmmakerDP(iddetallepresentacion) {
+    const filmmaker = new FormData();
+    filmmaker.append("operation", "asignarFilmmakerDP");
+    filmmaker.append("iddetallepresentacion", iddetallepresentacion);
+    filmmaker.append("filmmaker", $q("#filmmaker").value);
+
+    const ffilmmaker = await fetch(`${host}detalleevento.controller.php`, {
+      method: "POST",
+      body: filmmaker,
+    });
+    const rfilmmaker = await ffilmmaker.json();
+    return rfilmmaker;
   }
 
   // ****************************************** CONFIGURACION DE CALENDARIO **********************************************************
@@ -305,7 +375,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           ${nivelacceso == "Administrador" || arg.event.extendedProps.idusuariofilmmaker == idusuarioLogeado ? `
             <label class="mt-3"><strong>Acuerdos:</strong></label>
             <hr>
-            <div style="
+            <div id="text-acuerdo" style="
           background: #fff; 
           padding: 5px; 
           border-radius: 5px; 
@@ -322,9 +392,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             ` : ''}
               
         <hr>
-            <div><strong>FILMMAKER:</strong> ${arg.event.extendedProps.nombres ? arg.event.extendedProps.nombres : 'No asignado'}</div>
+            ${nivelacceso == "Administrador" ? `
+              <button class="btn btn-primary mt-2" id="btnAsignarFilmmaker" style="width: 100%;" data-iddp="${arg.event.extendedProps?.iddetalle_presentacion}">Asignar Filmmaker</button>
+              ` : `<div><strong>FILMMAKER:</strong> ${arg.event.extendedProps.nombres ? arg.event.extendedProps.nombres : 'No asignado'}</div>`}
             ${arg.event.extendedProps.idusuariofilmmaker == idusuarioLogeado ? `<button class="btn btn-primary mt-2" id="btnViatico" style="width: 100%;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}" data-iddepartamento="${arg.event.extendedProps.iddepartamento}">Reportar Viático</button>` : ''}          
-            ${nivelacceso == "Administrador" ? `<button class="btn btn-primary mt-2" id="btnEditarAcuerdo" style="width: 100%;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}">Editar Acuerdo</button>` : ''}
+            ${nivelacceso == "Administrador" ? `
+              <button class="btn btn-primary mt-2" id="btnEditarAcuerdo" style="width: 100%;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}">Editar Acuerdo</button>              
+              ` : ''}
             ${nivelacceso == "Artista" ? `<button class="btn btn-primary mt-2" id="btnVerMontos" style="width: 100%;" data-idcontrato="${arg.event.extendedProps?.idcontrato}" data-idconvenio="${arg.event.extendedProps?.idconvenio}">Ver Monto</button>` : ''}
           </div>
         `,
@@ -377,7 +451,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         $q("#acuerdo").value = acuerdoObtenido[0].acuerdo
       }
     }
+    if(e.target && e.target.id === "btnAsignarFilmmaker"){
+      iddp = e.target.getAttribute("data-iddp")
+      console.log("iddp -> ", iddp)
+      modalFilmmaker = new bootstrap.Modal($q("#modal-filmmaker"));
+      modalFilmmaker.show();
+      const filmmakers = await obtenerFilmmakers()
+      console.log("filmmakers -> ", filmmakers)
+      $q("#filmmaker").innerHTML = "<option value=''>Selecciona</option>"
+      filmmakers.forEach(filmmaker => {
+        $q("#filmmaker").innerHTML += `<option value="${filmmaker.idusuario}">${filmmaker.nom_usuario}</option>`
+      })
+      
+    }
     if(e.target && e.target.id === "btnVerMontos"){
+      $q(".contenedor-monto").innerHTML = ''
       const idcontrato = e.target.getAttribute("data-idcontrato")
       const idconvenio = e.target.getAttribute("data-idconvenio")
       modalAcuerdo = new bootstrap.Modal($q("#modal-monto"));
@@ -386,49 +474,100 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("idcontrato -> ", idcontrato)
       console.log("idconvenio -> ", idconvenio)
       //let monto = 0;
-      if(idcontrato){
-        $q(".contenedor-monto").innerHTML = ''
-        const contrato = await obtenerContrato(idcontrato)
-        console.log("contrato -> ", contrato)
+      if (idcontrato != "null") {  // Verifica si idcontrato tiene un valor válido
+        const contrato = await obtenerContrato(idcontrato);
+        console.log("contrato -> ", contrato);
+      
+        const tarifaArtista = await obtenerTarifaArtistaPorProvincia(
+          contrato[0]?.idprovincia_evento,
+          contrato[0]?.idusuario
+        );
+        console.log("tarifaArtista -> ", tarifaArtista);
+        //await renderizarUbigeoPresentacion(contrato[0]?.iddetalle_presentacion);
+        const dp = await obtenerDPporId(contrato[0]?.iddetalle_presentacion);
+        console.log(dp);
+    
+        const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
+        console.log("longlatCiudad->>>", longlatCiudad)
+        const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen,latOrigen,longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
+        const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
+        calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
+        const precioArtista = parseFloat(tarifaArtista[0]?.precio) || 0;
+        const costoDificultad = parseFloat(calcularDificultadPrecio?.costoDificultad) || 0;
+        const igv = (precioArtista + costoDificultad) * 0.18;
+        
+        const total = contrato[0]?.igv == 0 
+          ? precioArtista + costoDificultad
+          : precioArtista + costoDificultad + igv;
+        
+                    
 
-        const tarifaArtista = await obtenerTarifaArtistaPorProvincia(contrato[0].idprovincia_evento, contrato[0].idusuario)
-        console.log("tarifaArtista -> ", tarifaArtista)
-        //monto = contrato[0].monto
         $q(".contenedor-monto").innerHTML = `
           <div class="table-responsive d-flex justify-content-center">
-                    <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Descripción</th>
-                                <th>Tiempo</th>
-                                <th>Costo</th>
-                                <th>Total</th>  
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Presentacion artistica de ${contrato[0]?.nom_usuario}</td>
-                                <td>${calculateDuration(contrato[0]?.horainicio, contrato[0]?.horafinal)}</td>
-                                <td>S/. ${tarifaArtista[0].precio}</td>
-                                <td>S/. ${tarifaArtista[0].precio}</td>
-                            </tr>
-                            
-                        </tbody>
-                    </table>
-                </div> // ME QUEDA AAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA VERIFICAR pq no tenderiza en el htmlll
-        `
-      }
-      if(idconvenio){
-        $q(".contenedor-monto").innerHTML = ''
-        const convenio = await obtenerContratoConvenio(idconvenio)
-        console.log("convenio -> ", convenio)
+            <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
+              <thead class="table-dark">
+                <tr>
+                  <th>Descripción</th>
+                  <th>Tiempo</th>
+                  <th>Costo</th>
+                  <th>Total</th>  
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Presentacion artistica de ${contrato[0]?.nom_usuario}</td>
+                  <td>${calculateDuration(contrato[0]?.horainicio, contrato[0]?.horafinal)}</td>
+                  <td>S/. ${tarifaArtista[0]?.precio || 0}</td>
+                  <td>S/. ${tarifaArtista[0]?.precio || 0}</td>
+                </tr>
+                <tr>
+                  <td>Puesto en la locacion de ${contrato[0]?.provincia}</td>
+                  <td>${calcularDificultadPrecio?.horasEstimadas}</td>
+                  <td>S/. ${calcularDificultadPrecio?.costoDificultad}</td>
+                  <td>S/. ${calcularDificultadPrecio?.costoDificultad}</td>
+                </tr>
+                <tr>
+                  <td colspan="2" class="text-end">(Opcional)</td>                  
+                  <td colspan="1">IGV (18%)</td>                  
+                  <td>${contrato[0]?.igv == 0 ? 'No incluye' : contrato[0]?.igv == 1 ? `S/. ${igv.toFixed(2)}` : ''}</td>                  
+                </tr>
+                <tr>
+                  <td colspan="3" class="text-end">TOTAL</td>                  
+                  <td><strong>S/. ${total.toFixed(2)}</strong></td>                                    
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        `;
+      } else if (idconvenio != "null") {  // Solo entra aquí si idcontrato NO es válido
+        $q(".contenedor-monto").innerHTML = "";
+
+        const convenio = await obtenerContratoConvenio(idconvenio);
+        console.log("convenio -> ", convenio);
         $q(".contenedor-monto").innerHTML = `
-          <label class="form-label"><strong>Porcentaje promotor:</strong> ${convenio[0]?.porcentaje_promotor}%</label>
-          </br>?
-          <label class="form-label"><strong>Porcentaje Vega:</strong> ${convenio[0]?.porcentaje_vega}%</label>
-        `
-        //monto = convenio[0].monto
+          <div class="table-responsive d-flex justify-content-center">
+            <table class="table table-striped table-hover text-center align-middle w-auto mx-auto">
+              <thead class="table-dark">
+                <tr>
+                  <th>Concepto</th>
+                  <th>Porcentaje</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Promotor</td>
+                  <td>${convenio[0]?.porcentaje_promotor || 0}%</td>
+                </tr>
+                <tr>
+                  <td>Vega</td>
+                  <td>${convenio[0]?.porcentaje_vega || 0}%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        `;
       }
+      
 //      showToast(`El monto a pagar es de S/. ${monto}`, "INFO")
     }
   }); // ME QUEDE ACA -> REVISAR EL MODAL DE VIATICO
@@ -471,6 +610,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const acuerdoEditado = await editarAcuerdoEvento(iddp)
     console.log("ACUERDO EDITADO -> ", acuerdoEditado)
     if (acuerdoEditado) {
+      //$q("#text-acuerdo").innerHTML = $q("#acuerdo").value
       showToast("Acuerdo editado correctamente", "SUCCESS")
       modalAcuerdo.hide()
     }
@@ -499,7 +639,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       return
     }
   })
+
+  $q("#btnGuardarFilmmaker").addEventListener("click", async () => {
+    const filmmakerAsignado = await asignarFilmmakerDP(iddp)
+    console.log("filmmakerAsignado -> ", filmmakerAsignado)
+    if (filmmakerAsignado) {
+      showToast("Filmmaker asignado correctamente", "SUCCESS")
+      modalFilmmaker.hide()
+    }
+  })
   
+  // *********************************** RENDERIZACION **********************************************************
 
 
 });

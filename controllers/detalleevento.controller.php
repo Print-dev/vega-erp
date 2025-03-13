@@ -94,6 +94,17 @@ if (isset($_POST['operation'])) {
       echo json_encode($rpt);
       break;
 
+    case 'asignarFilmmakerDP':
+      $cleanData = [
+        'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']),
+        'filmmaker'   => $detalleevento->limpiarCadena($_POST['filmmaker']),
+      ];
+
+      $rpt = $detalleevento->asignarFilmmakerDP($cleanData);
+
+      echo json_encode($rpt);
+      break;
+
     case 'actualizarPagado50DP':
       $cleanData = [
         'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']),

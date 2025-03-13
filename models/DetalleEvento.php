@@ -80,6 +80,22 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
+
+  public function asignarFilmmakerDP($params = []): bool
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_asignarfilmmaker_dp (?,?)");
+      $rpt = $cmd->execute(
+        array(
+          $params['iddetallepresentacion'],
+          $params['filmmaker'],
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
   
   public function actualizarEstadoReservaDp($params = []): bool
   {

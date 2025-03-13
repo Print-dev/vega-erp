@@ -127,4 +127,15 @@ class Recurso extends ExecQuery
       }
     }
 
+    public function obtenerFilmmakers(): array
+    {
+      try {
+        $cmd = parent::execQ("SELECT * FROM usuarios WHERE idnivelacceso = 11");
+        $cmd->execute();
+        return $cmd->fetchAll(PDO::FETCH_ASSOC);
+      } catch (Exception $e) {
+        die($e->getMessage());
+      }
+    }
+
 }

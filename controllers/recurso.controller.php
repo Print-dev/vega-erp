@@ -36,6 +36,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($recurso->buscarCorreo(["correo" => $recurso->limpiarCadena($_GET['correo'])]));
       break;
 
+    case 'obtenerFilmmakers':
+      echo json_encode($recurso->obtenerFilmmakers());
+      break;
+
     // OBTENER TODOS LOS UBIGEOS
     case 'obtenerTodosDepartamentos':
       echo json_encode($recurso->obtenerTodosDepartamentos());

@@ -660,13 +660,57 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
    */
 
   async function buttonConvenio(e) {
-    idconvenio = e.target.getAttribute("data-id");
+    idconvenio = e.target.getAttribute("data-id"); //esto en realidad es id detalle presentacion
     const convenioExiste = await obtenerConvenioPorIdDP(idconvenio)
+    const dp = await obtenerDPporId(idconvenio); 
     console.log("convenio esxite? -> ", convenioExiste)
     const convenio = await obtenerConvenioPorId(convenioExiste[0]?.idconvenio)
     console.log("CONVEIO OBTENIDO: ", convenio)
     if (convenio.length > 0) {
       if(convenio[0]?.estado == 2){
+        const datosIncompletos = await verificarDatosIncompletosCliente(dp[0]?.idcliente);
+        console.log("datosIncompletos -> ", datosIncompletos);
+
+        // Verificar si es un array y tiene al menos un elemento
+        if (!Array.isArray(datosIncompletos) || datosIncompletos.length === 0) { // me quede aca, falta implementar el de tipodoc = 2 ruc
+          console.error("Error: datosIncompletos no es un array válido o está vacío", datosIncompletos);
+          return;
+        }
+
+        let incompleto = false;
+        const datosCliente = datosIncompletos[0]; // Extraer el primer objeto del array
+
+        for (const clave in datosCliente) {
+          if (datosCliente[clave] === null || datosCliente[clave] === "") {
+            if (!(datosCliente.tipodoc == 1 && clave === "representantelegal")) {
+              console.log("DATOS CLIENTE incompleto")
+              incompleto = true;
+              break;
+            }
+          }
+        }
+        console.log("incompleto? ??? : ", incompleto)
+        if (incompleto) {
+          if (datosCliente?.tipodoc == 1) {
+            $q("#container-representantelegal").hidden = true;
+            modalDatosClienteIncompleto = new bootstrap.Modal(
+              $q("#modal-datosclienteincompletos")
+            );
+            modalDatosClienteIncompleto.show();
+            await renderizarDatosClienteIncompleto(datosCliente);
+            return;
+          }
+          else if(datosCliente?.tipodoc == 2){
+            $q("#container-representantelegal").hidden = false;
+            modalDatosClienteIncompleto = new bootstrap.Modal(
+              $q("#modal-datosclienteincompletos")
+            );
+            modalDatosClienteIncompleto.show();
+            await renderizarDatosClienteIncompleto(datosCliente);
+            return;
+          }
+          
+        }
         window.open(`http://localhost/vega-erp/generators/generadores_pdf/contrato_convenio/contratoconvenio.php?idconvenio=${convenio[0]?.idconvenio}`)
         return
       }else{
@@ -729,8 +773,8 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
 
   async function buttonContrato(e) {
     let pagoAdelantadoO50 = false
-    idcontrato = e.target.getAttribute("data-id");
-    const dp = await obtenerDPporId(idcontrato); //esto en realidad es id detalle presentacion
+    idcontrato = e.target.getAttribute("data-id");//esto en realidad es id detalle presentacion
+    const dp = await obtenerDPporId(idcontrato); 
     idprovincia = dp[0]?.idprovincia
     idartista = dp[0]?.idusuario;
     idcliente = dp[0]?.idcliente;

@@ -12,6 +12,7 @@ BEGIN
         CLI.razonsocial, CLI.tipodoc ,CLI.ndocumento, CLI.direccion, CLI.representantelegal, CLI.correo, CLI.telefono,
         DISCLI.distrito, PROCLI.provincia, DECLI.departamento, 
         USU.nom_usuario,
+        DP.iddetalle_presentacion,
         DP.fecha_presentacion,
         DP.horainicio,
         DP.horafinal,
