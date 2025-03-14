@@ -80,7 +80,7 @@ CREATE TABLE tarifario (
 	idtarifario int auto_increment primary key,
     idusuario		int not null,
     idprovincia	int not null,
-	precio			decimal(8,2) not null,
+	precio			decimal(10,2) not null,
     constraint fk_idartista_tar foreign key (idusuario) references usuarios (idusuario),
     constraint fk_provincia_tarifario_art foreign key (idprovincia) references provincias (idprovincia)
 ) ENGINE = INNODB;
@@ -150,8 +150,8 @@ create table detalles_presentacion (
 create table convenios (
 	idconvenio	int auto_increment primary key,
     iddetalle_presentacion int not null,
-    abono_garantia	decimal(8,2) null,
-    abono_publicidad decimal(8,2) null,
+    abono_garantia	decimal(10,2) null,
+    abono_publicidad decimal(10,2) null,
 	porcentaje_vega	 int not null,
     porcentaje_promotor int not null,
 	propuesta_cliente text not null,
@@ -175,7 +175,7 @@ create table contratos (
 create table pagos_contrato (
 	idpagocontrato		int auto_increment primary key,
     idcontrato	int not null,
-    monto		decimal(8,2) not null,
+    monto		decimal(10,2) not null,
     tipo_pago	tinyint	not null, -- 1: transferencia, 2: contado
     noperacion	varchar(20) null,
     fecha_pago	date	not null ,
@@ -199,22 +199,27 @@ CREATE TABLE viaticos (
     iddetalle_presentacion int not null,
     pasaje			decimal(7,2) not null,
     comida			decimal(7,2) not null,
-    viaje			decimal(8,2) null,
+    viaje			decimal(10,2) null,
     constraint fk_iddp_viatico foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 ) engine = innodb;
 
 -- CONTABILIDAD 
 CREATE TABLE cajachica (
 	idcajachica	int auto_increment primary key,
-    ccinicial 	double (8,2) not null,
-    incremento	double (8,2) not null,
-    ccfinal		double (8,2) not null
+    ccinicial 	double (10,2) not null,
+    incremento	double (10,2) not null,
+    ccfinal		double (10,2) not null,
+    estado 		tinyint null default 1, -- 1- abierta, 2- cerrada
+    fecha_cierre datetime null,
+    fecha_apertura	datetime default now(),
+    constraint ck_estado_cajch	check (estado IN (1,2))
 ) engine = innodb;
 
 CREATE TABLE gastos_cajachica (
 	idgasto		int auto_increment primary key,
     idcajachica		int not null,
-    concepto	varchar(300) not null,
-    monto		double (8,2) not null,
-    constraint fk_idcaja_gastos foreign key (idcajachica) references cajachica (idcajachica) ON DELETE cascade
+    fecha_gasto	datetime default now(),
+    concepto	varchar(250) not null,
+    monto		double (10,2) not null,
+    constraint fk_idcaja_gastos foreign key (idcajachica) references cajachica (idcajachica)
 ) engine = innodb;

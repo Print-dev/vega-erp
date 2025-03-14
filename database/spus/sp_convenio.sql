@@ -85,8 +85,8 @@ DELIMITER $$
 CREATE PROCEDURE sp_actualizar_convenio
 (
 	IN _idconvenio			INT,
-    IN _abono_garantia		decimal(8,2) ,
-    IN _abono_publicidad 	decimal(8,2) ,
+    IN _abono_garantia		decimal(10,2) ,
+    IN _abono_publicidad 	decimal(10,2) ,
     IN _porcentaje_vega int,
     IN _porcentaje_promotor int,
     IN _propuesta_cliente 	TEXT,

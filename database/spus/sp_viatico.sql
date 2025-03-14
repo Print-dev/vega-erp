@@ -5,9 +5,9 @@ DELIMITER $$
 CREATE PROCEDURE sp_registrar_viatico(
     OUT _idviatico INT,
 	IN _iddetalle_presentacion INT,
-    IN _pasaje decimal(7,2),
-    IN _comida	decimal(7,2),
-    IN _viaje	decimal(8,2)
+    IN _pasaje decimal(10,2),
+    IN _comida	decimal(10,2),
+    IN _viaje	decimal(10,2)
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;

@@ -10,16 +10,33 @@
                 <div class="col-md-6 col-lg-5"> <!-- Contenedor con ancho limitado -->
                     <!-- Primera fila: C.C. Inicial y Incrementar C.C. Inicial -->
                     <div class="row g-2">
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-floating">
                                 <input type="text" id="ccinicial" name="ccinicial" class="form-control" placeholder="C.C.Inicial">
                                 <label for="ccinicial" class="form-label">C.C.Inicial</label>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-floating">
-                                <input type="text" id="incremento" name="incremento" class="form-control" placeholder="Incrementar C.C.Inicial">
-                                <label for="incremento" class="form-label">Incrementar C.C.Inicial</label>
+                                    <select id="operacionCC" name="operacionCC" class="form-select">
+                                        <option value="agregar">Agregar</option>
+                                        <option value="quitar">Quitar</option>
+                                    </select>
+                                    <label for="operacionCC" class="form-label">Operación</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <input type="text" id="incremento" name="incremento" class="form-control" placeholder="Monto">
+                                    <label for="incremento" class="form-label">Monto</label>
+                                </div>
+                            </div>
+                        <div class="col-md-1">
+                        <button type="button" class="btn btn-primary" id="btnGuardarIncremento">Guardar</button>
+                        </div>
+                        <div class="col-md-5 mb-5">
+                            <div class="form-floating">
+                                <label for="nuevoMonto" class="form-label" id="nuevoMonto"></label>
                             </div>
                         </div>
                     </div>
@@ -32,21 +49,16 @@
 
             <div class="card-body d-flex justify-content-center">
                 <div class="table-responsive" style="max-width: 800px; width: 100%;"> <!-- Contenedor con ancho limitado -->
-                    <table class="table table-striped table-hover text-center align-middle" id="table-tarifarios">
+                    <table class="table table-striped table-hover text-center align-middle">
                         <thead class="table-dark">
                             <tr>
+                                <th style="min-width: 100px;">Fecha</th>
                                 <th style="min-width: 300px; max-width: 500px; white-space: normal;">Concepto</th>
                                 <th style="min-width: 150px;">Costo</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td class="text-start" style="word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
-                                    Compra de 2 audífonos
-                                </td>
-                                <td>S/. 80.00</td>
-                            </tr>
-
+                        <tbody class="tbody-gastos">
+                        
                         </tbody>
                     </table>
                 </div>

@@ -17,6 +17,18 @@ if(isset($_GET['operation'])){
     case 'obtenerCajaChicaPorId':
         echo json_encode($cajachica->obtenerCajaChicaPorId(['idcajachica'=>$cajachica->limpiarCadena($_GET['idcajachica'])]));
         break;
+
+    case 'obtenerGastosPorCaja':
+        echo json_encode($cajachica->obtenerGastosPorCaja(['idcajachica'=>$cajachica->limpiarCadena($_GET['idcajachica'])]));
+        break;
+    
+    case 'filtrarCajasChicas':
+        $cleanData = [
+          'fechaapertura' => $_GET['fechaapertura'] === "" ? null : $cajachica->limpiarCadena($_GET['fechaapertura']),
+          'fechacierre' => $_GET['fechacierre'] === "" ? null : $cajachica->limpiarCadena($_GET['fechacierre'])
+        ];
+        echo json_encode($cajachica->filtrarCajasChicas($cleanData));
+        break;
     
   }
 }
@@ -59,23 +71,27 @@ if (isset($_POST['operation'])) {
       echo json_encode($respuesta);
       break;
 
-   /*  case 'actualizarViatico':
+    case 'actualizarEstadoCaja':
       $cleanData = [
-        'idviatico'=>$viatico->limpiarCadena($_POST['idviatico']),
-        'pasaje'=>$viatico->limpiarCadena($_POST['pasaje']),
-        'comida'=>$viatico->limpiarCadena($_POST['comida']),
-        'viaje'=>$viatico->limpiarCadena($_POST['viaje']) ? $viatico->limpiarCadena($_POST['viaje']) : ''
+        'idcajachica'=>$cajachica->limpiarCadena($_POST['idcajachica']),
+        'estado'=>$cajachica->limpiarCadena($_POST['estado']),
       ];
 
-      $respuesta=['update'=>false];
+      $update = $cajachica->actualizarEstadoCaja($cleanData);
 
-      $update = $viatico->actualizarViatico($cleanData);
+      echo json_encode($update);
+      break;
 
-      if($update){
-        $respuesta['update']=true;
-      }
-      echo json_encode($respuesta);
-      break; */
+    case 'actualizarCCfinal':
+      $cleanData = [
+        'idcajachica'=>$cajachica->limpiarCadena($_POST['idcajachica']),
+        'ccfinal'=>$cajachica->limpiarCadena($_POST['ccfinal']),
+      ];
+
+      $update = $cajachica->actualizarCCfinal($cleanData);
+
+      echo json_encode($update);
+      break;
   
   }
 }

@@ -11,7 +11,7 @@ class CajaChica extends ExecQuery
             $cmd = parent::execQ("
             SELECT * FROM cajachica 
             ORDER BY idcajachica DESC 
-            LIMIT 1;
+            LIMIT 1
             ");
             $cmd->execute();
             return $cmd->fetchAll(PDO::FETCH_ASSOC);
@@ -20,11 +20,36 @@ class CajaChica extends ExecQuery
         }
     }
 
+    public function obtenerGastosPorCaja($params = []): array
+    {
+        try {
+            $cmd = parent::execQ("SELECT * FROM gastos_cajachica WHERE idcajachica = ?");
+            $cmd->execute(array($params['idcajachica']));
+            return $cmd->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+    }
+    
     public function obtenerCajaChicaPorId($params = []): array
     {
         try {
             $cmd = parent::execQ("SELECT * FROM cajachica WHERE idcajachica = ?");
             $cmd->execute(array($params['idcajachica']));
+            return $cmd->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+    }
+    
+    public function filtrarCajasChicas($params = []): array
+    {
+        try {
+            $cmd = parent::execQ("call sp_filtrar_cajachica(?,?)");
+            $cmd->execute(array(
+                $params['fechaapertura'],
+                $params['fechacierre'],
+            ));
             return $cmd->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             die($e->getMessage());
@@ -71,4 +96,41 @@ class CajaChica extends ExecQuery
             return -1;
         }
     }
+
+    public function actualizarEstadoCaja($params = []): bool
+    {
+      try {
+        $pdo = parent::getConexion();
+        $cmd = $pdo->prepare("CALL sp_actualizar_estado_caja(?, ?)");
+        $rpt = $cmd->execute(
+          array(
+            $params['idcajachica'],
+            $params['estado']
+          )
+        );
+        return $rpt;
+      } catch (Exception $e) {
+        error_log("Error: " . $e->getMessage());
+        return false;
+      }
+    }
+
+    public function actualizarCCfinal($params = []): bool
+    {
+      try {
+        $pdo = parent::getConexion();
+        $cmd = $pdo->prepare("CALL sp_actualizar_ccfinal(?, ?)");
+        $rpt = $cmd->execute(
+          array(
+            $params['idcajachica'],
+            $params['ccfinal']
+          )
+        );
+        return $rpt;
+      } catch (Exception $e) {
+        error_log("Error: " . $e->getMessage());
+        return false;
+      }
+    }
 }
+

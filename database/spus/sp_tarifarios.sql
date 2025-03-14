@@ -62,7 +62,7 @@ CREATE PROCEDURE sp_registrar_tarifa
 	OUT _idtarifario INT,
     IN _idusuario INT,
     IN _idprovincia int,
-    IN _precio decimal(8,2)
+    IN _precio decimal(10,2)
 )
 BEGIN
 	DECLARE existe_error INT DEFAULT 0;
