@@ -111,6 +111,7 @@ BEGIN
         DP.ncotizacion,
         USU.nom_usuario, 
         USU.idusuario,
+        USU.color,
         CLI.razonsocial, 
         DP.tipo_evento, 
         DP.modalidad, 
@@ -165,7 +166,7 @@ END //
 DELIMITER ;
 
 
-CALL sp_obtener_agenda_artista (2, null);
+CALL sp_obtener_agenda_artista (null, null);
 
 drop procedure if exists sp_obtener_dp_por_fecha;
 DELIMITER //

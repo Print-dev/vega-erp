@@ -53,12 +53,13 @@ class Usuario extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_usuario(@idusuario,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_usuario(@idusuario,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idpersona'],
           $params['nom_usuario'],
           $params['claveacceso'],
+          $params['color'],
           $params['idnivelacceso'],
         )
       );

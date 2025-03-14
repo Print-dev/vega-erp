@@ -66,6 +66,7 @@ CREATE TABLE usuarios
     idpersona	INT NOT NULL,
     nom_usuario VARCHAR(30) NOT NULL,
     claveacceso VARBINARY(255) not null, 
+    color		CHAR(7) null,
 	estado 		TINYINT NOT NULL DEFAULT 1, -- 1=activo, 2=baja/inactivo/suspendido/baneado/inhabilitado
 	create_at	  DATETIME			  NOT NULL DEFAULT NOW(),
     update_at	  DATETIME			  NULL,
@@ -200,4 +201,20 @@ CREATE TABLE viaticos (
     comida			decimal(7,2) not null,
     viaje			decimal(8,2) null,
     constraint fk_iddp_viatico foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
+) engine = innodb;
+
+-- CONTABILIDAD 
+CREATE TABLE cajachica (
+	idcajachica	int auto_increment primary key,
+    ccinicial 	double (8,2) not null,
+    incremento	double (8,2) not null,
+    ccfinal		double (8,2) not null
+) engine = innodb;
+
+CREATE TABLE gastos_cajachica (
+	idgasto		int auto_increment primary key,
+    idcajachica		int not null,
+    concepto	varchar(300) not null,
+    monto		double (8,2) not null,
+    constraint fk_idcaja_gastos foreign key (idcajachica) references cajachica (idcajachica) ON DELETE cascade
 ) engine = innodb;

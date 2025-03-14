@@ -81,6 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     params.append("idpersona", idpersona);
     params.append("nom_usuario", $q("#nom_usuario").value.trim());
     params.append("claveacceso", $q("#claveacceso").value);
+    params.append("color", $q("#color").value ?  $q("#color").value : '');
     params.append("idnivelacceso", $q("#idnivelacceso").value);
     const resp = await fetch(`${host}usuario.controller.php`, {
       method: 'POST',
@@ -264,6 +265,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
   // ********************************* EVENTOS Y CARGA DE DATOS *********************************
+
+  $q("#idnivelacceso").addEventListener("change", async (e) => {
+    console.log("valor -> ", e.target.value);
+    if(e.target.value == "6"){
+      $q(".contenedor-color").hidden = false
+    }else{
+      $q(".contenedor-color").hidden = true
+    }
+  })
 
   $q("#search").addEventListener("click", async () => {
     await validateNumDoc();

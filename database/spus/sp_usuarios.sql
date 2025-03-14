@@ -7,6 +7,7 @@ CREATE PROCEDURE sp_registrar_usuario
     IN _idpersona INT,
     IN _nom_usuario VARCHAR(120),
     IN _claveacceso VARBINARY(255),
+    IN _color CHAR(7),
     IN _idnivelacceso INT
 )
 BEGIN
@@ -17,8 +18,8 @@ BEGIN
         SET existe_error = 1;
 	END;
     
-    INSERT INTO usuarios (idpersona, nom_usuario, claveacceso, idnivelacceso)VALUES 
-		(_idpersona, _nom_usuario, _claveacceso, _idnivelacceso);
+    INSERT INTO usuarios (idpersona, nom_usuario, claveacceso, color, idnivelacceso)VALUES 
+		(_idpersona, _nom_usuario, _claveacceso, nullif(_color, ''), _idnivelacceso);
         
 	IF existe_error= 1 THEN
 		SET _idusuario = -1;

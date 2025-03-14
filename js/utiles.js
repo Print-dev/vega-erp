@@ -133,7 +133,7 @@ function calcularPrecio(duracionSegundos) {
   // Convertir duración a horas y minutos
   let horas = Math.floor(duracionSegundos / 3600);
   let minutos = Math.round((duracionSegundos % 3600) / 60);
-
+  
   let dificultad = "";
   let costoDificultad = 0;
 

@@ -33,6 +33,15 @@ $accesos = [
     ['modulo' => 'pyp', 'ruta' => 'registrar-presupuesto', 'subruta' => 'presupuestos', 'visible' => false],
 
 
+
+    
+    ['modulo' => 'contabilidad', 'ruta' => '', 'texto' => 'Contabilidad', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-lightbulb'],
+
+    ['modulo' => 'contabilidad', 'ruta' => 'caja-chica', 'subruta' => 'caja-chica', 'texto' => 'Caja Chica', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'contabilidad', 'ruta' => 'registrar-caja', 'subruta' => 'caja-chica', 'visible' => false],
+
+
+
     ['modulo' => 'agenda', 'ruta' => 'listar-agenda', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
 
   ],
@@ -160,6 +169,7 @@ if (isset($_POST['operation'])) {
         'idpersona' => $usuario->limpiarCadena($_POST['idpersona']),
         'nom_usuario' => $usuario->limpiarCadena($_POST['nom_usuario']),
         'claveacceso' => password_hash($clave, PASSWORD_BCRYPT),
+        'color' =>  $usuario->limpiarCadena($_POST['color']) ? $usuario->limpiarCadena($_POST['color']) : '',
         'idnivelacceso' => $usuario->limpiarCadena($_POST['idnivelacceso'])
       ];
 

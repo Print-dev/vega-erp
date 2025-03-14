@@ -228,7 +228,7 @@ $host = "http://localhost/vega-erp/";
         </li>
         <?php
         foreach ($listaAcceso as $access) {
-          if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario" && $access['modulo'] !== "pyp") {
+          if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario" && $access['modulo'] !== "pyp" && $access['modulo'] !== "contabilidad") {
             echo "
               <li class='nav-item' >
                 <a href='http://localhost/vega-erp/views/{$access['modulo']}/{$access['ruta']}' class='nav-link' id='links'>
@@ -310,6 +310,35 @@ $host = "http://localhost/vega-erp/";
               if (!$subAccess['visible'] && $subAccess['modulo'] === "pyp" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
                 echo "
                 <li class='sidebar-item nav-item list-pyp'>
+                  <a href='{$rutaCompleta}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                    <i class='{$subAccess['icono']}'></i>
+                    <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
+                  </a>
+                </li>";
+              }
+            }
+            echo "</ul>";
+          } else if ($access['modulo'] === "contabilidad" && $access['visible']) {
+            echo "
+              <li class='sidebar-item nav-item'>
+                <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#contabilidad'
+                  aria-expanded='false' aria-controls='contabilidad'>
+                  <i class='{$access['icono']}'></i>
+                  <span class='sidebar-text mx-2'>{$access['texto']}</span>
+                  <i class='fa-solid fa-angle-down ms-auto mt-2 toggle-icon'></i>
+                </a>              
+              </li> 
+              <ul id='contabilidad' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#contabilidad'>";
+
+            foreach ($listaAcceso as $subAccess) {
+              $rutaCompleta = "http://localhost/vega-erp/views/{$subAccess['modulo']}/";
+              if (!empty($subAccess['subruta'])) {
+                $rutaCompleta .= "{$subAccess['subruta']}/";
+              }
+              $rutaCompleta .= "{$subAccess['ruta']}";
+              if (!$subAccess['visible'] && $subAccess['modulo'] === "contabilidad" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
+                echo "
+                <li class='sidebar-item nav-item list-contabilidad'>
                   <a href='{$rutaCompleta}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
                     <i class='{$subAccess['icono']}'></i>
                     <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>

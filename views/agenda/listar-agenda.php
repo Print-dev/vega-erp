@@ -17,16 +17,51 @@
         font-size: 14px;
     }
 
-    .filmmaker-select {
-  pointer-events: auto !important;
-  z-index: 9999 !important;
-  position: relative !important;
-}
+    .fc-daygrid-event {
+        white-space: nowrap;
+        /* Evita que los eventos se expandan en varias líneas */
+        overflow: hidden;
+        /* Oculta el contenido extra */
+        text-overflow: ellipsis;
+        /* Muestra "..." cuando el texto es muy largo */
+        max-width: 100%;
+        /* Ajusta al ancho disponible */
+    }
 
-.fc-more-popover {
-  max-height: 300px; /* Ajusta la altura del popup */
-  overflow-y: auto;  /* Agrega scroll si hay demasiados eventos */
-  white-space: normal; /* Permite que los textos largos se vean bien */
+    .contenedor-calendario {
+        position: relative;
+        width: 100%;
+        height: calc(100vh - 100px);
+        /* Ajusta el 100% de la altura menos 100px para margen */
+        min-height: 500px;
+        /* Asegura una altura mínima */
+        max-height: 100vh;
+        /* Evita que crezca demasiado */
+        overflow: visible !important;
+        resize: vertical;
+        /* Permite ajuste manual si es necesario */
+    }
+
+    #calendar {
+        width: 100%;
+        height: 100%;
+        /* Hace que el calendario ocupe toda la altura del contenedor */
+    }
+
+    .fc-popover {
+        position: absolute !important;
+        z-index: 9999 !important;
+        width: auto;
+        max-width: 400px;
+        max-height: 530px;
+        overflow-y: auto;
+        background: white;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+    }
+
+    .fc .fc-more-popover .fc-popover-body {
+    min-width: 300px;
 }
 </style>
 
@@ -54,8 +89,10 @@
     </div>
 </div>
 
-<div id='calendar'></div>
+<div class="contenedor-calendario">
+    <div id='calendar'></div>
 
+</div>
 
 <div class="modal fade" id="modal-viatico" tabindex="-1" aria-labelledby="modalviatico" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog">
@@ -166,7 +203,7 @@
             </div>
             <div class="modal-body">
                 <div class="contenedor-monto p-3">
-                    
+
                 </div>
             </div>
             <div class="modal-footer text-end">
@@ -208,8 +245,8 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js"></script>
 
 <script>
-        const idusuarioLogeado = "<?php echo $_SESSION['login']['idusuario']; ?>"
-        const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
+    const idusuarioLogeado = "<?php echo $_SESSION['login']['idusuario']; ?>"
+    const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
 </script>
 
 <script src="http://localhost/vega-erp/js/agenda/listar-agenda.js"></script>

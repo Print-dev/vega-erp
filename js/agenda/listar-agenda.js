@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   console.log("idusuario logeado", idusuarioLogeado)
 
-  console.log("NIVEL ACCESO DE USUARIO -> ",nivelacceso)
+  console.log("NIVEL ACCESO DE USUARIO -> ", nivelacceso)
   //MODALES
 
   let modalInfoAgenda;
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ****************************************** OBTENER DATOS **********************************************************
 
   (async () => {
-    if(nivelacceso != "Artista"){
+    if (nivelacceso != "Artista") {
       const niveles = await obtenerNiveles();
       $q("#nivelacceso").innerHTML = `<option value="">Selecciona</option>`;
       niveles.forEach((nivel) => {
@@ -61,9 +61,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         ).innerHTML += `<option value="${nivel.idnivelacceso}">${nivel.nivelacceso}</option>`;
       });
     }
-    
 
-    
+
+
   })();
 
   async function obtenerAgendaArtista(idusuario, iddetalle_presentacion) {
@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     params.append("idnivelacceso", $q("#nivelacceso").value);
     const data = await getDatos(`${host}usuario.controller.php`, params);
     console.log(data);
-    $q("#usuario").innerHTML = "<option value='-1'>Selecciona</option>";
+    $q("#usuario").innerHTML = "<option value='-1'>Todos</option>";
     data.forEach((artista) => {
       $q(
         "#usuario"
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const data = await getDatos(`${host}viatico.controller.php`, params);
     return data
   }
-  
+
   async function obtenerAcuerdo(iddetallepresentacion) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerAcuerdo");
@@ -164,18 +164,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     const Fdata = await fetch(`https://nominatim.openstreetmap.org/search?q=${provincia}&format=json`)
     const data = await Fdata.json()
     return data
-  } 
+  }
 
   async function obtenerDuracionDeViaje(lon_origen, lat_origen, lon_destino, lat_destino) {
     try {
       $q(".contenedor-monto").innerHTML = "<p class='text-center'>Cargando...</p>";
       const url = `https://router.project-osrm.org/route/v1/driving/${lon_origen},${lat_origen};${lon_destino},${lat_destino}?overview=false`;
       const Fdata = await fetch(url);
-      
+
       if (!Fdata.ok) {
         throw new Error(`Error ${Fdata.status}: ${Fdata.statusText}`);
       }
-  
+
       const data = await Fdata.json();
       return data;
     } catch (error) {
@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return null; // Devuelve null en caso de error
     }
   }
-  
+
 
   async function obtenerDPporId(iddp) {
     const params = new URLSearchParams();
@@ -265,10 +265,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     events: [],
     dayMaxEventRows: true, // Muestra un "Ver más" si hay muchos eventos
     dayMaxEvents: 2,
-    eventDidMount: function (info) {
-      // Asegurar que los eventos tengan espacio dentro del modal emergente
-      info.el.style.whiteSpace = "normal";
-    },
     /* eventClick: async function (evento) {
       console.log("evento -> ", evento)
       const idDetalle = evento.event.extendedProps.iddetalle_presentacion;
@@ -281,8 +277,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   calendar.render();
   calendar.setOption("locale", "es");
 
-  
-  if(nivelacceso == "Artista"){
+
+  if (nivelacceso == "Artista") {
     $q("#nivelacceso").remove()
     $q("#usuario").remove()
     $q(".contenedor-filtros-agenda").remove()
@@ -323,8 +319,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           title: evento.nom_usuario, // Solo el nombre del lugar
           start: evento.fecha_presentacion, // Fecha de presentación
           iddetalle_presentacion: evento.iddetalle_presentacion, // Guardar el ID
-          backgroundColor: "#ffcc00", // Color del fondo del evento (Naranja-Rojo)
-          borderColor: "#ffcc00",
+          backgroundColor: `${evento.color}`, // Color del fondo del evento (Naranja-Rojo)
+          borderColor: `${evento.color}`,
           textColor: "black",
           extendedProps: {
             estadoBadge,
@@ -364,67 +360,79 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       return {
         html: `
-          <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between;">
-            <div>${horaInicio} - ${horaFinal}</div>
-            <div>${badgeHtml}</div>
-          </div>
-          <div style="padding: 8px; word-wrap: break-word; 
-          overflow-wrap: break-word;
-          white-space: normal;">
-            <div style="font-size: 20px; font-weight: bold;" class="mb-3">${arg.event.title
+            <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
+              <div>${horaInicio} - ${horaFinal}</div>
+              <div>${badgeHtml}</div>
+            </div>
+            <div style="padding: 8px; word-wrap: break-word; 
+            overflow-wrap: break-word;
+            white-space: normal;">
+              <div style="font-size: 20px; font-weight: bold;">${arg.event.title
           }</div>
-              <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
+                <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
           }</div>
-              <div><strong>Tiempo:</strong> ${calculateDuration(
+                <div><strong>Tiempo:</strong> ${calculateDuration(
             arg.event.extendedProps.horainicio,
             arg.event.extendedProps.horafinal
           )}</div>
-          ${nivelacceso == "Administrador" || arg.event.extendedProps.idusuariofilmmaker == idusuarioLogeado ? `
-            <label class="mt-3"><strong>Acuerdos:</strong></label>
-            <hr>
-            <div id="text-acuerdo" style="
-          background: #fff; 
-          padding: 5px; 
-          border-radius: 5px; 
-          min-height: 100px;
-          max-width: 100%; 
-          word-wrap: break-word; 
-          overflow-wrap: break-word;
-          white-space: normal;
-        ">
-          ${arg.event.extendedProps.acuerdo ||
-          "Sin acuerdos registrados"
-          }
-        </div>
-            ` : ''}
-              
-        <hr>
-            ${nivelacceso == "Administrador" ? `
-              <div><strong>FILMMAKER:</strong> ${arg.event.extendedProps.nombres ? arg.event.extendedProps.nombres : 'No asignado'}</div>
-              <button class="btn btn-primary mt-2" id="btnAsignarFilmmaker" style="width: 100%;" data-iddp="${arg.event.extendedProps?.iddetalle_presentacion}">Asignar Filmmaker</button>
-              ` : ``}
-            ${arg.event.extendedProps.idusuariofilmmaker == idusuarioLogeado ? `<button class="btn btn-primary mt-2" id="btnViatico" style="width: 100%;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}" data-iddepartamento="${arg.event.extendedProps.iddepartamento}">Reportar Viático</button>` : ''}          
-            ${nivelacceso == "Administrador" ? `
-              <button class="btn btn-primary mt-2" id="btnEditarAcuerdo" style="width: 100%;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}">Editar Acuerdo</button>              
-              ` : ''}
-            ${nivelacceso == "Artista" ? `<button class="btn btn-primary mt-2" id="btnVerMontos" style="width: 100%;" data-idcontrato="${arg.event.extendedProps?.idcontrato}" data-idconvenio="${arg.event.extendedProps?.idconvenio}">Ver Monto</button>` : ''}
+            ${nivelacceso == "Administrador" || arg.event.extendedProps.idusuariofilmmaker == idusuarioLogeado ? `
+              <label ><strong>Acuerdos:</strong></label>
+              <div id="text-acuerdo" class="mt-1" style="
+            background: #fff; 
+            padding: 5px; 
+            border-radius: 5px; 
+            word-wrap: break-word; 
+            overflow-wrap: break-word;
+            white-space: normal;
+          ">
+            ${arg.event.extendedProps.acuerdo ||
+            "Sin acuerdos registrados"
+            }
           </div>
+              ` : ''}
+              ${nivelacceso == "Administrador" ? `
+                <div class="mt-2"><strong>FILMMAKER:</strong> ${arg.event.extendedProps.nombres ? arg.event.extendedProps.nombres : 'No asignado'}</div>
+              ` : ''}
+        
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+                ${nivelacceso == "Administrador" ? `
+                  <button class="btn btn-primary" id="btnAsignarFilmmaker" style="flex: 1;" data-iddp="${arg.event.extendedProps?.iddetalle_presentacion}">Filmmaker</button>
+                  <button class="btn btn-primary" id="btnEditarAcuerdo" style="flex: 1;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}">Acuerdo</button>
+                ` : ``}
+        
+                ${arg.event.extendedProps.idusuariofilmmaker == idusuarioLogeado ? `
+                  <button class="btn btn-primary" id="btnViatico" style="flex: 1;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}" data-iddepartamento="${arg.event.extendedProps.iddepartamento}">Reportar Viático</button>
+                ` : ''}
+        
+                ${nivelacceso == "Artista" ? `
+                  <button class="btn btn-primary" id="btnVerMontos" style="flex: 1;" data-idcontrato="${arg.event.extendedProps?.idcontrato}" data-idconvenio="${arg.event.extendedProps?.idconvenio}">Ver Monto</button>
+                ` : ''}
+              </div>
         `,
       };
     });
   }
+
 
   // ******************************************* EVENTOS *************************************************************
 
   $q("#nivelacceso")?.addEventListener("change", async () => {
     console.log("nivel ccceso escogido: ", $q("#nivelacceso").value);
     await obtenerArtistas();
+    const agendaUsuario = await obtenerAgendaArtista(null || '');
+      console.log("agendaUsuario todo obtenido ->", agendaUsuario);
+
+      await configurarCalendario(agendaUsuario)
   });
 
   $q("#usuario")?.addEventListener("change", async (e) => {
     idUsuario = e.target.value;
 
     if (idUsuario === "-1") {
+      const agendaUsuario = await obtenerAgendaArtista(null || '');
+      console.log("agendaUsuario todo obtenido ->", agendaUsuario);
+
+      await configurarCalendario(agendaUsuario)
       return; // Si no se selecciona un usuario, no hacer nada
     }
 
@@ -434,7 +442,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await configurarCalendario(agendaUsuario)
 
     // Vaciar la lista de eventos
-    
+
   });
 
   document.addEventListener("click", async (e) => {
@@ -448,18 +456,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       modalViatico.show();
       await renderizarInfoAgenda(iddp, iddepartamento)
     }
-    if(e.target && e.target.id === "btnEditarAcuerdo"){
+    if (e.target && e.target.id === "btnEditarAcuerdo") {
       iddp = e.target.getAttribute("data-iddp");
       modalAcuerdo = new bootstrap.Modal($q("#modal-acuerdo"));
       modalAcuerdo.show();
       $q("#acuerdo").value = ""
       const acuerdoObtenido = await obtenerAcuerdo(iddp)
       console.log("acuerdoObtenido -> ", acuerdoObtenido)
-      if(acuerdoObtenido.length > 0){
+      if (acuerdoObtenido.length > 0) {
         $q("#acuerdo").value = acuerdoObtenido[0].acuerdo
       }
     }
-    if(e.target && e.target.id === "btnAsignarFilmmaker"){
+    if (e.target && e.target.id === "btnAsignarFilmmaker") {
       iddp = e.target.getAttribute("data-iddp")
       console.log("iddp -> ", iddp)
       modalFilmmaker = new bootstrap.Modal($q("#modal-filmmaker"));
@@ -470,22 +478,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       filmmakers.forEach(filmmaker => {
         $q("#filmmaker").innerHTML += `<option value="${filmmaker.idusuario}">${filmmaker.nom_usuario}</option>`
       })
-      
+
     }
-    if(e.target && e.target.id === "btnVerMontos"){
+    if (e.target && e.target.id === "btnVerMontos") {
       $q(".contenedor-monto").innerHTML = ''
       const idcontrato = e.target.getAttribute("data-idcontrato")
       const idconvenio = e.target.getAttribute("data-idconvenio")
       modalAcuerdo = new bootstrap.Modal($q("#modal-monto"));
       modalAcuerdo.show();
-      
+
       console.log("idcontrato -> ", idcontrato)
       console.log("idconvenio -> ", idconvenio)
       //let monto = 0;
       if (idcontrato != "null") {  // Verifica si idcontrato tiene un valor válido
         const contrato = await obtenerContrato(idcontrato);
         console.log("contrato -> ", contrato);
-      
+
         const tarifaArtista = await obtenerTarifaArtistaPorProvincia(
           contrato[0]?.idprovincia_evento,
           contrato[0]?.idusuario
@@ -494,21 +502,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         //await renderizarUbigeoPresentacion(contrato[0]?.iddetalle_presentacion);
         const dp = await obtenerDPporId(contrato[0]?.iddetalle_presentacion);
         console.log(dp);
-    
+
         const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
         console.log("longlatCiudad->>>", longlatCiudad)
-        const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen,latOrigen,longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
+        const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
         const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
         calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
         const precioArtista = parseFloat(tarifaArtista[0]?.precio) || 0;
         const costoDificultad = parseFloat(calcularDificultadPrecio?.costoDificultad) || 0;
         const igv = (precioArtista + costoDificultad) * 0.18;
-        
-        const total = contrato[0]?.igv == 0 
+
+        const total = contrato[0]?.igv == 0
           ? precioArtista + costoDificultad
           : precioArtista + costoDificultad + igv;
-        
-                    
+
+
 
         $q(".contenedor-monto").innerHTML = `
           <div class="table-responsive d-flex justify-content-center">
@@ -575,8 +583,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
         `;
       }
-      
-//      showToast(`El monto a pagar es de S/. ${monto}`, "INFO")
+
+      //      showToast(`El monto a pagar es de S/. ${monto}`, "INFO")
     }
   }); // ME QUEDE ACA -> REVISAR EL MODAL DE VIATICO
 
@@ -621,9 +629,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       //$q("#text-acuerdo").innerHTML = $q("#acuerdo").value
       showToast("Acuerdo editado correctamente", "SUCCESS")
       const agendaUsuario = await obtenerAgendaArtista(idUsuario);
-    console.log("agendaUsuario todo obtenido ->", agendaUsuario);
+      console.log("agendaUsuario todo obtenido ->", agendaUsuario);
 
-    await configurarCalendario(agendaUsuario)
+      await configurarCalendario(agendaUsuario)
       modalAcuerdo.hide()
     }
   })
@@ -646,7 +654,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   $q("#btnActualizarViatico").addEventListener("click", async () => {
     const viaticoActualizado = await actualizarViatico(idviatico)
     console.log("viaticoActualizado -> ", viaticoActualizado)
-    if(viaticoActualizado.update){
+    if (viaticoActualizado.update) {
       showToast("Viático actualizado correctamente", "SUCCESS")
       return
     }
@@ -658,13 +666,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (filmmakerAsignado) {
       showToast("Filmmaker asignado correctamente", "SUCCESS")
       const agendaUsuario = await obtenerAgendaArtista(idUsuario);
-    console.log("agendaUsuario todo obtenido ->", agendaUsuario);
+      console.log("agendaUsuario todo obtenido ->", agendaUsuario);
 
-    await configurarCalendario(agendaUsuario)
+      await configurarCalendario(agendaUsuario)
       modalFilmmaker.hide()
     }
   })
-  
+
   // *********************************** RENDERIZACION **********************************************************
 
 
