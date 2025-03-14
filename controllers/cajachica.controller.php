@@ -8,28 +8,33 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Mét
 header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Encabezados permitidos
 $cajachica = new CajaChica();
 // ag order by
-if(isset($_GET['operation'])){
-  switch($_GET['operation']){
+if (isset($_GET['operation'])) {
+  switch ($_GET['operation']) {
     case 'obtenerUltimaCCFinal':
-        echo json_encode($cajachica->obtenerUltimaCCFinal());
-        break;
-    
+      echo json_encode($cajachica->obtenerUltimaCCFinal());
+      break;
+
     case 'obtenerCajaChicaPorId':
-        echo json_encode($cajachica->obtenerCajaChicaPorId(['idcajachica'=>$cajachica->limpiarCadena($_GET['idcajachica'])]));
-        break;
+      echo json_encode($cajachica->obtenerCajaChicaPorId(['idcajachica' => $cajachica->limpiarCadena($_GET['idcajachica'])]));
+      break;
+
+    case 'obtenerGastoPorId':
+      echo json_encode($cajachica->obtenerGastoPorId(['idgasto' => $cajachica->limpiarCadena($_GET['idgasto'])]));
+      break;
 
     case 'obtenerGastosPorCaja':
-        echo json_encode($cajachica->obtenerGastosPorCaja(['idcajachica'=>$cajachica->limpiarCadena($_GET['idcajachica'])]));
-        break;
-    
+      echo json_encode($cajachica->obtenerGastosPorCaja(['idcajachica' => $cajachica->limpiarCadena($_GET['idcajachica'])]));
+      break;
+
     case 'filtrarCajasChicas':
-        $cleanData = [
-          'fechaapertura' => $_GET['fechaapertura'] === "" ? null : $cajachica->limpiarCadena($_GET['fechaapertura']),
-          'fechacierre' => $_GET['fechacierre'] === "" ? null : $cajachica->limpiarCadena($_GET['fechacierre'])
-        ];
-        echo json_encode($cajachica->filtrarCajasChicas($cleanData));
-        break;
-    
+      $cleanData = [
+        'fechaapertura' => empty($_GET['fechaapertura']) ? null : $cajachica->limpiarCadena($_GET['fechaapertura']),
+        'fechacierre' => empty($_GET['fechacierre']) ? null : $cajachica->limpiarCadena($_GET['fechacierre']),
+        'mes' => empty($_GET['mes']) ? null : (int) $_GET['mes'],
+        'año_semana' => empty($_GET['año_semana']) ? null : intval($_GET['año_semana'])
+      ];
+      echo json_encode($cajachica->filtrarCajasChicas($cleanData));
+      break;
   }
 }
 
@@ -52,7 +57,7 @@ if (isset($_POST['operation'])) {
 
       echo json_encode($respuesta);
       break;
-      
+
     case 'registrarGasto':
       $cleanData = [
         'idcajachica'   => $cajachica->limpiarCadena($_POST['idcajachica']),
@@ -60,12 +65,12 @@ if (isset($_POST['operation'])) {
         'monto'   => $cajachica->limpiarCadena($_POST['monto']),
       ];
 
-      $respuesta = ['idcaja' => -1];
+      $respuesta = ['idgasto' => -1];
 
-      $idcaja = $cajachica->registrarGasto($cleanData);
+      $idgasto = $cajachica->registrarGasto($cleanData);
 
-      if ($idcaja > 0) {
-        $respuesta['idcaja'] = $idcaja;
+      if ($idgasto > 0) {
+        $respuesta['idgasto'] = $idgasto;
       }
 
       echo json_encode($respuesta);
@@ -73,8 +78,8 @@ if (isset($_POST['operation'])) {
 
     case 'actualizarEstadoCaja':
       $cleanData = [
-        'idcajachica'=>$cajachica->limpiarCadena($_POST['idcajachica']),
-        'estado'=>$cajachica->limpiarCadena($_POST['estado']),
+        'idcajachica' => $cajachica->limpiarCadena($_POST['idcajachica']),
+        'estado' => $cajachica->limpiarCadena($_POST['estado']),
       ];
 
       $update = $cajachica->actualizarEstadoCaja($cleanData);
@@ -84,14 +89,24 @@ if (isset($_POST['operation'])) {
 
     case 'actualizarCCfinal':
       $cleanData = [
-        'idcajachica'=>$cajachica->limpiarCadena($_POST['idcajachica']),
-        'ccfinal'=>$cajachica->limpiarCadena($_POST['ccfinal']),
+        'idcajachica' => $cajachica->limpiarCadena($_POST['idcajachica']),
+        'ccfinal' => $cajachica->limpiarCadena($_POST['ccfinal']),
       ];
 
       $update = $cajachica->actualizarCCfinal($cleanData);
 
       echo json_encode($update);
       break;
-  
+
+    case 'actualizarIncremento':
+      $cleanData = [
+        'idcajachica' => $cajachica->limpiarCadena($_POST['idcajachica']),
+        'incremento' => $cajachica->limpiarCadena($_POST['incremento']),
+      ];
+
+      $update = $cajachica->actualizarIncremento($cleanData);
+
+      echo json_encode($update);
+      break;
   }
 }

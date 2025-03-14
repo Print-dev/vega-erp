@@ -711,8 +711,7 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
           }
           
         }
-        window.open(`http://localhost/vega-erp/generators/generadores_pdf/contrato_convenio/contratoconvenio.php?idconvenio=${convenio[0]?.idconvenio}`)
-        return
+         // ACA SALE ERROR AUNQWEU YA LLENE TODOS LOS DATOS AUN SIGUE SALIENDO EL MODAL PARA LLENAR LOS DATOS IN OMPLETOS
       }else{
         showToast("Aun no ha sido aprobada la propuesta del cliente", "ERROR");
         return  

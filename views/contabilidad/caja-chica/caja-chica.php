@@ -21,19 +21,46 @@
                                 <div class="card-body border-0">
 
                                     <div class="row">
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <div class="form-floating">
-                                                <input type="date" name="" id="fechaapertura" class="form-control filter" autocomplete="off">
-                                                <label for="fechaapertura" class="form-label">Fecha de apertura</label>
+                                                <input type="date" id="fechaapertura" class="form-control filter">
+                                                <label for="fechaapertura">Filtro Fecha de apertura</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <div class="form-floating">
-                                                <input type="date" name="" id="fechacierre" class="form-control filter" autocomplete="off">
-                                                <label for="fechacierre">Fecha de cierre</label>
+                                                <input type="date" id="fechacierre" class="form-control filter">
+                                                <label for="fechacierre">Filtro Fecha de cierre</label>
                                             </div>
-                                        </div>                                        
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <select id="mes" class="form-control filter">
+                                                    <option value="">Seleccionar Mes</option>
+                                                    <option value="1">Enero</option>
+                                                    <option value="2">Febrero</option>
+                                                    <option value="3">Marzo</option>
+                                                    <option value="4">Abril</option>
+                                                    <option value="5">Mayo</option>
+                                                    <option value="6">Junio</option>
+                                                    <option value="7">Julio</option>
+                                                    <option value="8">Agosto</option>
+                                                    <option value="9">Septiembre</option>
+                                                    <option value="10">Octubre</option>
+                                                    <option value="11">Noviembre</option>
+                                                    <option value="12">Diciembre</option>
+                                                </select>
+                                                <label for="mes">Filtrar por Mes</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-floating">
+                                                <input type="week" id="año_semana" class="form-control filter">
+                                                <label for="año_semana">Filtrar por Semana</label>
+                                            </div>
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
                             <hr>
@@ -66,12 +93,44 @@
         </div>
     </div>
 
-<?php require_once '../../footer.php' ?>
+    <div class="modal fade" id="modal-gastos" tabindex="-1" aria-labelledby="modalgastos" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalgastos">Registro de Gastos</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover text-center align-middle w-auto mx-auto">
+                            <thead class="table-dark">
+                                <th>Fecha</th>
+                                <th>Concepto</th>
+                                <th>Monto</th>
+                            </thead>
+                            <tbody class="tbody-reg-gastos">
 
-<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+                            </tbody>
+                            <tfoot class="monto">
+                                <tr>
+                                    <td colspan="2" class="text-end">Total:</td>
+                                    <td class="text-center" id="totalGastos"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
 
-<script src="http://localhost/vega-erp/js/contabilidad/listar-cajachica.js"></script>
+            </div>
+        </div>
+    </div>
 
-</body>
+    <?php require_once '../../footer.php' ?>
 
-</html>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+    <script src="http://localhost/vega-erp/js/contabilidad/listar-cajachica.js"></script>
+
+    </body>
+
+    </html>
