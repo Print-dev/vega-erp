@@ -45,3 +45,26 @@ BEGIN
     viaje = nullif(_viaje, '')
     WHERE idviatico = _idviatico;
 END $$
+
+DROP PROCEDURE IF EXISTS sp_obtener_info_viatico;
+DELIMITER $$
+CREATE PROCEDURE sp_obtener_info_viatico
+(
+	IN _idviatico INT
+)
+BEGIN
+	SELECT 
+		VIA.idviatico,
+        VIA.pasaje, VIA.comida, VIA.viaje,
+        USU.nom_usuario,
+        DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.establecimiento,
+        DE.departamento, PRO.provincia, DIS.distrito,
+        DE.iddepartamento
+    FROM viaticos VIA
+    LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = VIA.iddetalle_presentacion
+    LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+    LEFT JOIN distritos DIS ON DIS.iddistrito = DP.iddistrito
+    LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
+    LEFT JOIN departamentos DE ON DE.iddepartamento = PRO.iddepartamento
+    WHERE VIA.idviatico = _idviatico;
+END $$

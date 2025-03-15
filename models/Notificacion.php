@@ -30,7 +30,7 @@ class Notificacion extends ExecQuery
     public function obtenerNotificacionesViatico(): array
   {
     try {
-      $sp = parent::execQ("SELECT idviatico, mensaje, fecha FROM notificaciones_viatico");
+      $sp = parent::execQ("SELECT * FROM notificaciones_viatico");
       $sp->execute();
       return $sp->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {

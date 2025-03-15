@@ -702,6 +702,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   })
 
   $q("#btnGuardarFilmmaker").addEventListener("click", async () => {
+    console.log("click al btn guardar filmmaker")
     const filmmakerAsignado = await asignarFilmmakerDP(iddp)
     console.log("filmmakerAsignado -> ", filmmakerAsignado)
     if (filmmakerAsignado) {

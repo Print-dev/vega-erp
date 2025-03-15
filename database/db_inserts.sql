@@ -41,7 +41,8 @@ INSERT INTO clientes (tipodoc, iddistrito, ndocumento, razonsocial, telefono, co
 
 INSERT INTO tarifario (idusuario, idprovincia, precio) VALUES (2, 100, 3000.00);
 
-INSERT INTO cajachica (ccinicial, incremento, ccfinal) VALUES (200.00, 50.00, 258.00);
+INSERT INTO montoCajaChica (monto) values (500.00);
+INSERT INTO cajachica (idmonto ,ccinicial, incremento, ccfinal) VALUES (1, 200.00, 50.00, 258.00);
 
 INSERT INTO gastos_cajachica (idcajachica, concepto, monto) values (1, "compra de 2 audifonos", 5.00); 
 INSERT INTO gastos_cajachica (idcajachica, concepto, monto) values (1, "compra de 1 cable red", 3.00); 

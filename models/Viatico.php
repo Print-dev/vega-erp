@@ -20,6 +20,22 @@ class Viatico extends ExecQuery
     }
   }
 
+  public function obtenerInfoViatico($params = []): array
+  {
+    try {
+      $sp = parent::execQ("call sp_obtener_info_viatico (?)");
+      $sp->execute(
+        array(    
+          $params['idviatico']
+        )
+        
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   
 
   public function registrarViatico($params = []): int

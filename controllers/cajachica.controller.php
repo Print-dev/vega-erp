@@ -14,6 +14,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($cajachica->obtenerUltimaCCFinal());
       break;
 
+    case 'obtenerMontoCajaChica':
+      echo json_encode($cajachica->obtenerMontoCajaChica());
+      break;
+
     case 'obtenerCajaChicaPorId':
       echo json_encode($cajachica->obtenerCajaChicaPorId(['idcajachica' => $cajachica->limpiarCadena($_GET['idcajachica'])]));
       break;
@@ -42,6 +46,8 @@ if (isset($_POST['operation'])) {
   switch ($_POST['operation']) {
     case 'registrarCajaChica':
       $cleanData = [
+        'iddetallepresentacion'   =>  $cajachica->limpiarCadena($_POST['iddetallepresentacion']) ?  $cajachica->limpiarCadena($_POST['iddetallepresentacion']) : '',
+        'idmonto'   => $cajachica->limpiarCadena($_POST['idmonto']),
         'ccinicial'   => $cajachica->limpiarCadena($_POST['ccinicial']),
         'incremento' => $cajachica->limpiarCadena($_POST['incremento']),
         'ccfinal'   => $cajachica->limpiarCadena($_POST['ccfinal']),
@@ -94,6 +100,17 @@ if (isset($_POST['operation'])) {
       ];
 
       $update = $cajachica->actualizarCCfinal($cleanData);
+
+      echo json_encode($update);
+      break;
+
+    case 'actualizarMontoCajaChica':
+      $cleanData = [
+        'idmonto' => $cajachica->limpiarCadena($_POST['idmonto']),
+        'monto' => $cajachica->limpiarCadena($_POST['monto']),
+      ];
+
+      $update = $cajachica->actualizarMontoCajaChica($cleanData);
 
       echo json_encode($update);
       break;

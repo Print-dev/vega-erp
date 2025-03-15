@@ -155,14 +155,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             </tr>
         `;
     });
-    const ultimaCaja = await obtenerUltimaCCFinal(); // sale error aca, corregir
+    /* const ultimaCaja = await obtenerUltimaCCFinal(); // sale error aca, corregir
     console.log("fcajaestado -> ", ultimaCaja[0].estado);
 
     if (ultimaCaja[0].estado == 2) {
       $q(".contenedor-btn-nuevacaja").hidden = false
     } else {
       $q(".contenedor-btn-nuevacaja").hidden = true
-    }
+    } */
     //disabledBtnArea();
     createTable(data);
   }
@@ -229,6 +229,8 @@ document.addEventListener("DOMContentLoaded", async () => {
    */
   function buttonRegistrarGastos(e) {
     idcajachica = e.target.getAttribute("data-id");
+    window.localStorage.clear()
+    window.localStorage.setItem("idcajachica", idcajachica)
     window.location.href = `http://localhost/vega-erp/views/contabilidad/caja-chica/registrar-caja`;
     return;
   }
@@ -267,4 +269,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     return;
   }
+
+  // ***************************** EVENTOS ******************************************
+
+  $q("#btnNuevaCaja").addEventListener("click", ()=> {
+    window.localStorage.clear()
+  })
 });

@@ -9,8 +9,8 @@
                 <div class="col-md-6">
                     <h1>Caja Chica</h1>
                 </div>
-                <div class="col-md-6 text-end contenedor-btn-nuevacaja" hidden>
-                    <a href="http://localhost/vega-erp/views/contabilidad/caja-chica/registrar-caja" class="btn btn-primary">Abrir Nueva Caja</a>
+                <div class="col-md-6 text-end contenedor-btn-nuevacaja">
+                    <a href="http://localhost/vega-erp/views/contabilidad/caja-chica/registrar-caja" class="btn btn-primary" id="btnNuevaCaja">Abrir Nueva Caja</a>
                 </div>
             </div>
             <div class="row">

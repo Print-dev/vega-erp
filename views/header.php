@@ -108,7 +108,7 @@ $host = "http://localhost/vega-erp/";
 
   <!-- Notificaciones js -->
   <script src="http://localhost/vega-erp/js/notificacionGlobal.js"></script>
-  
+
 </head>
 <style>
   #encabezado-titulo {
@@ -123,33 +123,39 @@ $host = "http://localhost/vega-erp/";
     color: #000;
     display: flex;
     align-items: center;
-    width: 230px; /* Mantener tamaño fijo */
-    padding: 10px; /* Ajuste uniforme */
+    width: 230px;
+    /* Mantener tamaño fijo */
+    padding: 10px;
+    /* Ajuste uniforme */
     transition: background-color 0.1s, color 0.1s;
-}
+  }
 
-#links:hover {
+  #links:hover {
     background-color: #ffcc00;
     color: black;
     font-weight: bold;
-}
+  }
 
-.sidebar-text {
-    flex-grow: 1; /* Hace que el texto ocupe el espacio disponible */
-    white-space: nowrap; /* Evita que el texto se mueva de línea */
-}
+  .sidebar-text {
+    flex-grow: 1;
+    /* Hace que el texto ocupe el espacio disponible */
+    white-space: nowrap;
+    /* Evita que el texto se mueva de línea */
+  }
 
-.toggle-icon {
+  .toggle-icon {
     transition: transform 0.1s ease;
-    margin-left: auto; /* Empuja el icono a la derecha */
-}
+    margin-left: auto;
+    /* Empuja el icono a la derecha */
+  }
 
-/* Evitar desplazamiento al abrir dropdown */
-.sidebar-item .collapse {
-    transition: none !important; /* Evita movimientos raros */
+  /* Evitar desplazamiento al abrir dropdown */
+  .sidebar-item .collapse {
+    transition: none !important;
+    /* Evita movimientos raros */
     margin-left: 0 !important;
     padding-left: 0 !important;
-}
+  }
 
   .beta-banner {
     width: 100%;
@@ -167,12 +173,11 @@ $host = "http://localhost/vega-erp/";
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s;
-}
-.notificacion-item:hover {
+  }
+
+  .notificacion-item:hover {
     background: #e9ecef;
-}
-
-
+  }
 </style>
 <div class="beta-banner">Versión Beta</div>
 
@@ -407,7 +412,7 @@ $host = "http://localhost/vega-erp/";
                     Notificaciones
                   </a>
                   <div class="" id="list-notificaciones">
-                    
+
                   </div>
                   <a href="#" class="dropdown-item text-center fw-bold rounded-bottom py-3" id="show-all-notificaciones">
                     <svg
@@ -486,25 +491,21 @@ $host = "http://localhost/vega-erp/";
     </nav>
 
     <div class="modal fade" id="modal-notificacion" tabindex="-1" aria-labelledby="modalnotificacion" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+      <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalnotificacion">Notificacion</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="modalnotificacion">Notificación</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="contenedor-notificacion p-3">
+
             </div>
-            <div class="modal-body">
-                <div class="contenedor-notificacion p-3">
-                    <div class="form-floating">
-                      
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer text-end">
-                <button type="button" class="btn btn-secondary" id="btnGuardarFilmmaker">Guardar</button>
-            </div>
+          </div>
+
         </div>
+      </div>
     </div>
-</div>
 
     <!-- /NAVBAR-HEADER -->
     <script>

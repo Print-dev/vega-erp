@@ -23,7 +23,7 @@ BEGIN
         C.porcentaje_vega, C.porcentaje_promotor
 	FROM convenios C
 	LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = C.iddetalle_presentacion
-    LEFT JOIN clientes CLI ON CLI.idcliente = DP.iddetalle_presentacion
+    LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN distritos DISCLI ON DISCLI.iddistrito = CLI.iddistrito
     LEFT JOIN provincias PROCLI ON PROCLI.idprovincia = DISCLI.idprovincia
     LEFT JOIN departamentos DECLI ON DECLI.iddepartamento = PROCLI.iddepartamento

@@ -40,6 +40,20 @@ BEGIN
     WHERE idcajachica = _idcajachica;
 END $$
 
+DROP PROCEDURE IF EXISTS sp_actualizar_monto_cajachica;
+DELIMITER $$
+CREATE PROCEDURE sp_actualizar_monto_cajachica
+(
+	IN _idmonto			INT,
+    IN _monto			tinyint
+)
+BEGIN 
+	UPDATE montoCajaChica SET
+    monto = _monto
+    WHERE monto = _idmonto;
+END $$
+
+
 DROP PROCEDURE IF EXISTS sp_actualizar_ccfinal;
 DELIMITER $$
 CREATE PROCEDURE sp_actualizar_ccfinal
@@ -72,6 +86,8 @@ DELIMITER $$
 
 CREATE PROCEDURE sp_registrar_cajachica (
     OUT _idcajachica INT,
+    IN _iddetalle_presentacion INT,
+    IN _idmonto INT,
     IN _ccinicial DOUBLE(10,2),
     IN _incremento DOUBLE(10,2),
     IN _ccfinal DOUBLE(10,2)
@@ -85,8 +101,8 @@ BEGIN
     END;
 
     -- Insertar nueva caja chica
-    INSERT INTO cajachica (ccinicial, incremento, ccfinal, estado, fecha_cierre, fecha_apertura)
-    VALUES (_ccinicial, _incremento, _ccfinal, 1, NULL, NOW());
+    INSERT INTO cajachica (iddetalle_presentacion, ccinicial, incremento, ccfinal, estado, fecha_cierre, fecha_apertura)
+    VALUES (nullif(_iddetalle_presentacion, ''),_ccinicial, _incremento, _ccfinal, 1, NULL, NOW());
 
     -- Obtener el ID generado
     IF existe_error = 1 THEN

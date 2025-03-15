@@ -20,6 +20,17 @@ class CajaChica extends ExecQuery
         }
     }
 
+    public function obtenerMontoCajaChica(): array
+    {
+        try {
+            $cmd = parent::execQ("SELECT * FROM montoCajaChica");
+            $cmd->execute();
+            return $cmd->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+    }
+
     public function obtenerGastosPorCaja($params = []): array
     {
         try {
@@ -74,9 +85,11 @@ class CajaChica extends ExecQuery
     {
         try {
             $pdo = parent::getConexion();
-            $cmd = $pdo->prepare('CALL sp_registrar_cajachica(@idcajachica,?,?,?)');
+            $cmd = $pdo->prepare('CALL sp_registrar_cajachica(@idcajachica,?,?,?,?,?)');
             $cmd->execute(
                 array(
+                    $params['iddetallepresentacion'],
+                    $params['idmonto'],
                     $params['ccinicial'],
                     $params['incremento'],
                     $params['ccfinal']
@@ -120,6 +133,24 @@ class CajaChica extends ExecQuery
                 array(
                     $params['idcajachica'],
                     $params['estado']
+                )
+            );
+            return $rpt;
+        } catch (Exception $e) {
+            error_log("Error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function actualizarMontoCajaChica($params = []): bool
+    {
+        try {
+            $pdo = parent::getConexion();
+            $cmd = $pdo->prepare("CALL sp_actualizar_monto_cajachica(?, ?)");
+            $rpt = $cmd->execute(
+                array(
+                    $params['idmonto'],
+                    $params['monto']
                 )
             );
             return $rpt;

@@ -231,7 +231,7 @@
                 </div>
             </div>
             <div class="modal-footer text-end">
-                <button type="button" class="btn btn-secondary" id="btnGuardarFilmmaker">Guardar</button>
+                <button type="button" class="btn btn-secondary" id="btnGuardarFilmmaker">Asignar</button>
             </div>
         </div>
     </div>
@@ -244,10 +244,10 @@
 <!-- Importar idioma español -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js"></script>
 
-<script>
+<!-- <script>
     const idusuarioLogeado = "<?php echo $_SESSION['login']['idusuario']; ?>"
     const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
-</script>
+</script> -->
 
 <script src="http://localhost/vega-erp/js/agenda/listar-agenda.js"></script>
 

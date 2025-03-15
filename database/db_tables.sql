@@ -204,15 +204,24 @@ CREATE TABLE viaticos (
 ) engine = innodb;
 
 -- CONTABILIDAD 
+CREATE TABLE montoCajaChica (
+    idmonto INT AUTO_INCREMENT PRIMARY KEY,
+    monto DECIMAL(10,2) NOT NULL  -- Monto total disponible para caja chica
+) ENGINE = InnoDB;
+
 CREATE TABLE cajachica (
 	idcajachica	int auto_increment primary key,
+    iddetalle_presentacion int null,
+    idmonto		int not null,
     ccinicial 	double (10,2) not null,
     incremento	double (10,2) not null,
     ccfinal		double (10,2) not null,
     estado 		tinyint null default 1, -- 1- abierta, 2- cerrada
     fecha_cierre datetime null,
     fecha_apertura	datetime default now(),
-    constraint ck_estado_cajch	check (estado IN (1,2))
+    constraint ck_estado_cajch	check (estado IN (1,2)),
+    constraint fk_iddp_cajachicaa foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
+    constraint fk_idmonto_caja foreign key (idmonto) references montoCajaChica (idmonto)
 ) engine = innodb;
 
 CREATE TABLE gastos_cajachica (
@@ -231,7 +240,5 @@ CREATE TABLE notificaciones_viatico (
     mensaje varchar(200) NOT NULL,
     fecha datetime DEFAULT now(),
     constraint fk_idviatico_nt foreign key (idviatico) references viaticos (idviatico),
-    constraint fk_filmmamker_nt foreign key (filmmamker) references usuarios (idusuario)
-);
-
-SELECT idviatico, mensaje, fecha FROM notificaciones_viatico ;
+    constraint fk_filmmamker_nt foreign key (filmmaker) references usuarios (idusuario)
+) engine = innodb;

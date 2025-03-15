@@ -8,15 +8,21 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Mét
 header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Encabezados permitidos
 $viatico = new Viatico();
 // ag order by
-if(isset($_GET['operation'])){
-  switch($_GET['operation']){
+if (isset($_GET['operation'])) {
+  switch ($_GET['operation']) {
     case 'obtenerViatico':
-        $cleanData = [
-          'iddetallepresentacion' => $_GET['iddetallepresentacion'] === "" ? null : $viatico->limpiarCadena($_GET['iddetallepresentacion'])
-        ];
-        echo json_encode($viatico->obtenerViatico($cleanData));
-        break;
-    
+      $cleanData = [
+        'iddetallepresentacion' => $_GET['iddetallepresentacion'] === "" ? null : $viatico->limpiarCadena($_GET['iddetallepresentacion'])
+      ];
+      echo json_encode($viatico->obtenerViatico($cleanData));
+      break;
+
+    case 'obtenerInfoViatico':
+      $cleanData = [
+        'idviatico' => $_GET['idviatico'] === "" ? null : $viatico->limpiarCadena($_GET['idviatico'])
+      ];
+      echo json_encode($viatico->obtenerInfoViatico($cleanData));
+      break;
   }
 }
 
@@ -43,21 +49,20 @@ if (isset($_POST['operation'])) {
 
     case 'actualizarViatico':
       $cleanData = [
-        'idviatico'=>$viatico->limpiarCadena($_POST['idviatico']),
-        'pasaje'=>$viatico->limpiarCadena($_POST['pasaje']),
-        'comida'=>$viatico->limpiarCadena($_POST['comida']),
-        'viaje'=>$viatico->limpiarCadena($_POST['viaje']) ? $viatico->limpiarCadena($_POST['viaje']) : ''
+        'idviatico' => $viatico->limpiarCadena($_POST['idviatico']),
+        'pasaje' => $viatico->limpiarCadena($_POST['pasaje']),
+        'comida' => $viatico->limpiarCadena($_POST['comida']),
+        'viaje' => $viatico->limpiarCadena($_POST['viaje']) ? $viatico->limpiarCadena($_POST['viaje']) : ''
       ];
 
-      $respuesta=['update'=>false];
+      $respuesta = ['update' => false];
 
       $update = $viatico->actualizarViatico($cleanData);
 
-      if($update){
-        $respuesta['update']=true;
+      if ($update) {
+        $respuesta['update'] = true;
       }
       echo json_encode($respuesta);
       break;
-  
   }
 }
