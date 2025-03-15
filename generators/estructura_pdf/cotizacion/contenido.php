@@ -198,6 +198,7 @@
 </style>
 
 <?php
+date_default_timezone_set('America/Lima');
 
 function formatoHora($hora_24h)
 {

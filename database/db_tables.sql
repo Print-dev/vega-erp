@@ -223,3 +223,15 @@ CREATE TABLE gastos_cajachica (
     monto		double (10,2) not null,
     constraint fk_idcaja_gastos foreign key (idcajachica) references cajachica (idcajachica)
 ) engine = innodb;
+
+CREATE TABLE notificaciones_viatico (
+    idnotificacion_viatico INT AUTO_INCREMENT PRIMARY KEY,
+    idviatico int not null,
+    filmmaker INT NOT NULL,
+    mensaje varchar(200) NOT NULL,
+    fecha datetime DEFAULT now(),
+    constraint fk_idviatico_nt foreign key (idviatico) references viaticos (idviatico),
+    constraint fk_filmmamker_nt foreign key (filmmamker) references usuarios (idusuario)
+);
+
+SELECT idviatico, mensaje, fecha FROM notificaciones_viatico ;

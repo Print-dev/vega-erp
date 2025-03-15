@@ -165,3 +165,22 @@ $duracionSegundos = 13830.2; // Duración obtenida de la API (en segundos)
 $resultado = calcularPrecio($departamentoBase, $duracionSegundos);
 print_r($resultado);
  */
+
+function calcularTiempoTranscurrido(fechaString) {
+  const fecha = new Date(fechaString);
+  const ahora = new Date();
+  const diferencia = Math.floor((ahora - fecha) / 1000); // Diferencia en segundos
+
+  if (diferencia < 60) {
+      return `hace ${diferencia} segundos`;
+  } else if (diferencia < 3600) {
+      const minutos = Math.floor(diferencia / 60);
+      return `hace ${minutos} ${minutos === 1 ? "minuto" : "minutos"}`;
+  } else if (diferencia < 86400) {
+      const horas = Math.floor(diferencia / 3600);
+      return `hace ${horas} ${horas === 1 ? "hora" : "horas"}`;
+  } else {
+      const dias = Math.floor(diferencia / 86400);
+      return `hace ${dias} ${dias === 1 ? "día" : "días"}`;
+  }
+}

@@ -45,6 +45,10 @@
 <script>
   const host = "http://localhost/vega-erp/controllers/";
 </script>
+<script>
+    const idusuarioLogeado = "<?php echo $_SESSION['login']['idusuario']; ?>"
+    const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
+</script>
 <!-- Core -->
 <script
   src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"

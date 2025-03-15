@@ -32,7 +32,7 @@ INSERT INTO usuarios (idnivelacceso, idpersona, nom_usuario, claveacceso, color)
     (6, 2, 'Azucena Calvay', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC', '#6173cc'),
     (11,3, 'Johan Films', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC', null),
     (11,4, 'Ray Films', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC', null),
-    (11,5, 'Oscar Manuel y Orquesta', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC', '#6ccc61');
+    (6,5, 'Oscar Manuel y Orquesta', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC', '#6ccc61');
 
 INSERT INTO clientes (tipodoc, iddistrito, ndocumento, razonsocial, telefono, correo, direccion) values
 	(2 ,74, '10727547521', 'AVALOS ROMERO ROYER ALEXIS', '973189350', 'alexisjkg@gmail.com', 'Asent. FALSA 123');

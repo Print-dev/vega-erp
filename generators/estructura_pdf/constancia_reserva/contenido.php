@@ -114,6 +114,8 @@
 </style>
 
 <?php
+date_default_timezone_set('America/Lima');
+
 // DIAS
 $meses = [
     '01' => 'enero',

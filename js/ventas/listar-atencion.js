@@ -669,6 +669,7 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
     if (convenio.length > 0) {
       if(convenio[0]?.estado == 2){
         const datosIncompletos = await verificarDatosIncompletosCliente(dp[0]?.idcliente);
+        idcliente =  dp[0]?.idcliente
         console.log("datosIncompletos -> ", datosIncompletos);
 
         // Verificar si es un array y tiene al menos un elemento
@@ -712,6 +713,10 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
           
         }
          // ACA SALE ERROR AUNQWEU YA LLENE TODOS LOS DATOS AUN SIGUE SALIENDO EL MODAL PARA LLENAR LOS DATOS IN OMPLETOS
+         window.open(
+          `http://localhost/vega-erp/generators/generadores_pdf/contrato_convenio/contratoconvenio.php?idconvenio=${convenio[0]?.idconvenio}`
+        );
+        return
       }else{
         showToast("Aun no ha sido aprobada la propuesta del cliente", "ERROR");
         return  
@@ -1077,6 +1082,8 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
   //  ******************************************* EVENTOS *******************************************************
   $q("#btnActualizarDatosCliente").addEventListener("click", async () => {
     try {
+      console.log("idcliente -> ", idcliente)
+      console.log("valor direccion -> ",  $q("#direccion").value)
       const clienteDatosActualizados = await actualizarCliente(idcliente) // me quede aca, falta exraewr el idcliente desdde antes de ir al btnactualizardatoscliewnte
       console.log("cliente datos aactuaizado=??? ", clienteDatosActualizados)
       if(clienteDatosActualizados){
@@ -1123,12 +1130,16 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
     if (await ask('¿Estas seguro de aprobar la propuesta?')) {
       let abonoGarantia = parseFloat($q("#abonogarantia").value.trim());
       let abonoPublicidad = parseFloat($q("#abonopublicidad").value.trim());
+      let porcentajevega = parseFloat($q("#porcentajevega").value.trim());
+      let porcentajepromotor = parseFloat($q("#porcentajepromotor").value.trim());
       let propuestaCliente = $q("#propuestacliente").value.trim();
 
       // Validaciones correctas
       if (
         isNaN(abonoGarantia) || abonoGarantia < 0 ||  // Verificar que sea un número y no sea negativo
         isNaN(abonoPublicidad) || abonoPublicidad < 0 ||
+        isNaN(porcentajevega) || porcentajevega < 0 ||
+        isNaN(porcentajepromotor) || porcentajepromotor < 0 ||
         propuestaCliente === ""  // Verificar que el campo no esté vacío
       ) {
         showToast("Ingrese valores válidos", "ERROR");
@@ -1157,7 +1168,7 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
           if (convenioRegistrado?.idconvenio) {
             modalPropuestaCliente.hide()
             await dataFilters()
-            showToast("La propuesta se ha guardado en pendiente", "SUCCESS")
+            showToast("Se ha aprobado la propuesta", "SUCCESS")
             return
           } else {
             showToast("Un error ha ocurrido", "ERROR")
@@ -1172,12 +1183,16 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
   $q("#btnGuardarPendiente").addEventListener("click", async () => {
     let abonoGarantia = parseFloat($q("#abonogarantia").value.trim());
     let abonoPublicidad = parseFloat($q("#abonopublicidad").value.trim());
+    let porcentajevega = parseFloat($q("#porcentajevega").value.trim());
+      let porcentajepromotor = parseFloat($q("#porcentajepromotor").value.trim());
     let propuestaCliente = $q("#propuestacliente").value.trim();
 
     // Validaciones correctas
     if (
       isNaN(abonoGarantia) || abonoGarantia < 0 ||  // Verificar que sea un número y no sea negativo
       isNaN(abonoPublicidad) || abonoPublicidad < 0 ||
+      isNaN(porcentajevega) || porcentajevega < 0 ||
+      isNaN(porcentajepromotor) || porcentajepromotor < 0 ||
       propuestaCliente === ""  // Verificar que el campo no esté vacío
     ) {
       showToast("Ingrese valores válidos", "ERROR");

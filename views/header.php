@@ -105,6 +105,10 @@ $host = "http://localhost/vega-erp/";
     href="//cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" />
   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="http://localhost/vega-erp/css/global.css">
+
+  <!-- Notificaciones js -->
+  <script src="http://localhost/vega-erp/js/notificacionGlobal.js"></script>
+  
 </head>
 <style>
   #encabezado-titulo {
@@ -156,6 +160,17 @@ $host = "http://localhost/vega-erp/";
     font-weight: bold;
   }
 
+  .notificacion-item {
+    background: #f8f9fa;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.notificacion-item:hover {
+    background: #e9ecef;
+}
 
 
 </style>
@@ -389,10 +404,10 @@ $host = "http://localhost/vega-erp/";
               <div class="dropdown-menu dropdown-menu-lg dropdown-menu-center mt-2 py-0 ml-3">
                 <div class="list-group list-group-flush">
                   <a href="#" class="text-center text-primary fw-bold border-bottom border-light py-3">
-                    Notifications
+                    Notificaciones
                   </a>
                   <div class="" id="list-notificaciones">
-
+                    
                   </div>
                   <a href="#" class="dropdown-item text-center fw-bold rounded-bottom py-3" id="show-all-notificaciones">
                     <svg
@@ -406,7 +421,7 @@ $host = "http://localhost/vega-erp/";
                         d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
                         clip-rule="evenodd"></path>
                     </svg>
-                    View all
+                    Ver anteriores
                   </a>
                 </div>
               </div>
@@ -469,6 +484,28 @@ $host = "http://localhost/vega-erp/";
         </div>
       </div>
     </nav>
+
+    <div class="modal fade" id="modal-notificacion" tabindex="-1" aria-labelledby="modalnotificacion" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalnotificacion">Notificacion</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="contenedor-notificacion p-3">
+                    <div class="form-floating">
+                      
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer text-end">
+                <button type="button" class="btn btn-secondary" id="btnGuardarFilmmaker">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
     <!-- /NAVBAR-HEADER -->
     <script>
       document.querySelectorAll('.sidebar-item').forEach(item => {

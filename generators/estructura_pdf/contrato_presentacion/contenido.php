@@ -101,6 +101,8 @@
 </style>
 
 <?php
+date_default_timezone_set('America/Lima');
+
 $precioFinal = -1;
 // DIAS
 $meses = [

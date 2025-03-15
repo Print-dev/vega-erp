@@ -99,6 +99,8 @@
 </style>
 
 <?php
+date_default_timezone_set('America/Lima');
+
 // DIAS
 $meses = [
     '01' => 'enero',
@@ -193,7 +195,7 @@ $monto_texto = numeroATexto($monto_numerico);
                 debidamente representado por su gerente general Nayade Liz Vega Pascual identificada con DNI. N.º 47842296,
                 según el registro de personas jurídicas de Lima, a quién en adelante se le denominará EL REPRESENTANTE
                 de <strong><?= strtoupper($convenioContrato[0]['nom_usuario']) ?></strong>; y de la otra parte:
-                <?= ucwords(strtolower($convenioContrato[0]['razonsocial'])) ?>,
+                <?= strtoupper($convenioContrato[0]['razonsocial']) ?>,
 
                 <?php if (strlen($convenioContrato[0]['ndocumento']) == 8): ?>
                     con DNI <?= $convenioContrato[0]['ndocumento'] ?>,
@@ -205,7 +207,7 @@ $monto_texto = numeroATexto($monto_numerico);
                     con el representante legal <?= strtoupper($convenioContrato[0]['representantelegal']) ?>,
                 <?php endif; ?>
 
-                con domicilio en <?= $convenioContrato[0]['direccion'] ?>, en calidad de ORGANIZADOR(A) del evento;
+                con domicilio en <?= strtoupper($convenioContrato[0]['direccion']) ?>, en calidad de ORGANIZADOR(A) del evento;
                 ambas partes con el propósito de celebrar el presente contrato en los términos siguientes:
             </td>
 
@@ -215,8 +217,8 @@ $monto_texto = numeroATexto($monto_numerico);
                 <strong>PRIMERO:</strong> EL ORGANIZADOR contrata los servicios artísticos de <?= strtoupper($convenioContrato[0]['nom_usuario']) ?>
                 para una presentación para el día <?= $fecha_formateada ?>,
                 por <?= restarHoras($horainicio, $horafinal); ?> de SHOW a las
-                <?= $hora_inicio_formateada ?> a <?= $hora_final_formateada ?> en <strong>“<?= $convenioContrato[0]['establecimiento'] ?>”</strong>,
-                provincia de <?= $convenioContrato[0]['provincia_evento'] ?>, departamento de <?= $convenioContrato[0]['departamento_evento'] ?>.
+                <?= $hora_inicio_formateada ?> a <?= $hora_final_formateada ?> en <strong>“<?= strtoupper($convenioContrato[0]['establecimiento']) ?>”</strong>,
+                provincia de <?= strtoupper($convenioContrato[0]['provincia_evento']) ?>, departamento de <?= strtoupper($convenioContrato[0]['departamento_evento'] ) ?>.
             </td>
         </tr>
         <tr>

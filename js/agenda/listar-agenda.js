@@ -158,6 +158,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     return fpersona
   }
 
+  async function obtenerUsuarioPorId(idusuario) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerUsuarioPorId");
+    params.append("idusuario", idusuario);
+    const fpersona = await getDatos(`${host}usuario.controller.php`, params)
+    console.log(fpersona);
+    return fpersona
+  }
+
   async function obtenerLongLatPorCiudad(provincia) {
     $q(".contenedor-monto").innerHTML = "<p class='text-center'>Cargando...</p>";
 
@@ -210,6 +219,23 @@ document.addEventListener("DOMContentLoaded", async () => {
       body: viatico,
     });
     const rviatico = await fviatico.json();
+    return rviatico;
+  }
+
+  async function registrarNotificacionViatico(idviatico, filmmaker, mensaje) {
+
+    const viatico = new FormData();
+    viatico.append("operation", "registrarNotificacionViatico");
+    viatico.append("idviatico", idviatico); // id artista
+    viatico.append("filmmaker", filmmaker);
+    viatico.append("mensaje", mensaje);
+
+    const fviatico = await fetch(`${host}notificacion.controller.php`, {
+      method: "POST",
+      body: viatico,
+    });
+    const rviatico = await fviatico.json();
+    console.log("rivatico . ",rviatico )
     return rviatico;
   }
 
@@ -283,6 +309,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#usuario").remove()
     $q(".contenedor-filtros-agenda").remove()
     const agendaUsuario = await obtenerAgendaArtista(idusuarioLogeado);
+    console.log("agendaUsuario todo obtenido ->", agendaUsuario);
+
+    await configurarCalendario(agendaUsuario)
+  } else if(nivelacceso == "Filmmaker"){
+    $q("#nivelacceso").remove()
+    $q("#usuario").remove()
+    $q(".contenedor-filtros-agenda").remove()
+    const agendaUsuario = await obtenerAgendaArtista(null || '');
     console.log("agendaUsuario todo obtenido ->", agendaUsuario);
 
     await configurarCalendario(agendaUsuario)
@@ -630,7 +664,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       showToast("Acuerdo editado correctamente", "SUCCESS")
       const agendaUsuario = await obtenerAgendaArtista(idUsuario);
       console.log("agendaUsuario todo obtenido ->", agendaUsuario);
-
       await configurarCalendario(agendaUsuario)
       modalAcuerdo.hide()
     }
@@ -644,9 +677,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     const viaticoRegistrado = await registrarViatico(iddp)
     console.log("viaticoRegistrado -> ", viaticoRegistrado)
+    const usuarioFilmmaker = await obtenerUsuarioPorId(idusuarioLogeado)
+    console.log("usuarioFilmmaker -> ", usuarioFilmmaker)
     if (viaticoRegistrado.idviatico) {
       // PONER UNA SECCION ACA PARA NOTIFICAR QUE SE REGISTRO CORRECTAMENTE
+      console.log("entrando a la validacaion...")
+      const mensaje = `${usuarioFilmmaker[0]?.dato} ha reportado un viatico, haz click para ver`
+      const notificacionRegistrada = await registrarNotificacionViatico(viaticoRegistrado.idviatico, idusuarioLogeado, mensaje)
+      console.log("notificacion registrada ? -> ", notificacionRegistrada)
+      console.log("mensaje -> ", mensaje)
       showToast("Viático registrado correctamente", "SUCCESS")
+      //await 
       modalViatico.hide()
     }
   })

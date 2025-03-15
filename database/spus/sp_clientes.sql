@@ -77,3 +77,5 @@ BEGIN
     direccion = _direccion
     WHERE idcliente = _idcliente;
 END $$
+
+CALL sp_actualizar_cliente(2, 74, '72754752', 'ROYER ALEXIS AVLOS ROMEO', '', '938439212', 'alex@gmail.com', 'mi haus 69');

@@ -26,11 +26,6 @@ END $$
 
 DELIMITER ;
 
-
-CALL sp_filtrar_cajachica(NULL, NULL, NULL, NULL, '2025-03');
-
-CALL sp_filtrar_cajachica(NULL, NULL);
-
 DROP PROCEDURE IF EXISTS sp_actualizar_estado_caja;
 DELIMITER $$
 CREATE PROCEDURE sp_actualizar_estado_caja
