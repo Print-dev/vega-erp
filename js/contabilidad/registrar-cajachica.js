@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   let incrementoActual = 0;
   let ccfinalGlobal = 0;
   let ccfinalMonto = 0
+  let ccinicial = 0
 
   let idcajachicaObtenida = window.localStorage.getItem("idcajachica")
 
@@ -31,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   });
 
   // *********************************** VALIDACION DE INICIO *********************************************
-  /* async function verificarOCrearCajaChica() {
+  async function verificarOCrearCajaChica() {
     // Obtener la última caja chica con estado 1
     const cajaChicaActiva = await obtenerUltimaCCFinal();
     console.log("caja chica activa -> ", cajaChicaActiva);
@@ -57,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.error("Error al crear la caja chica.");
       }
     }
-  } */
+  } TESTEAR ACA SOLO FALTA REVISAR ESTO PQ YA TERMINE EL DE CUANDO YA EXISTE UNA CAJA CHICA, AHORA SOLO FALTA CUANDO RECIEN SE CREA
 
   //await verificarOCrearCajaChica(); // Ejecutar la validación inicial al cargar la página
 
@@ -72,8 +73,9 @@ document.addEventListener("DOMContentLoaded", async function () {
   console.log("gastos otenidos por caja chica -> ", gastos)
   if (idcajachicaObtenida) {
     if (gastos.length > 0) {
-      $q("#ccinicial").value = montoCaja[0].monto;
-      $q("#incremento").value = 0 me quede acaaaaaaaaaaaaaaaa DONDE TERMINE FUE QUE RENDERIZO SI HAY GASTOS Y PONGO EL MONTO GENERAL EN EL INPUT DE CCINICIAL, Y EN EL CASO DE QUE NO EXISTA ENTONCES REMUEVE EL LOCALSTROAGE Y TODO ESTA VACIO SOLAMENTE SE PONE EL MONTO GENERAL EN EL CCINICIAL, FALTA IMPLEMENTAR DE QUE PUEDA REGISTRAR CUANDO RECIEN SE ABRA UNA NUEVA CAJA Y SE REGISTRE EL CCINICIAL CON EL MONTO GENERAL ACTUAL Q EXISTE; 
+      $q("#ccinicial").innerHTML = `C.C.Inicial: ${montoCaja[0].monto}`;
+      ccinicial = parseFloat(montoCaja[0].monto)
+      $q("#incremento").value = 0 //me quede acaaaaaaaaaaaaaaaa DONDE TERMINE FUE QUE RENDERIZO SI HAY GASTOS Y PONGO EL MONTO GENERAL EN EL INPUT DE CCINICIAL, Y EN EL CASO DE QUE NO EXISTA ENTONCES REMUEVE EL LOCALSTROAGE Y TODO ESTA VACIO SOLAMENTE SE PONE EL MONTO GENERAL EN EL CCINICIAL, FALTA IMPLEMENTAR DE QUE PUEDA REGISTRAR CUANDO RECIEN SE ABRA UNA NUEVA CAJA Y SE REGISTRE EL CCINICIAL CON EL MONTO GENERAL ACTUAL Q EXISTE; 
       $q(".tbody-gastos").innerHTML = "";
       gastos.forEach((gasto) => {
         totalGastos += parseFloat(gasto.monto);
@@ -89,13 +91,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     $q("#totalGastos").innerText = `S/. ${totalGastos.toFixed(2)}`;
   }
   else if (montoCaja.length > 0) {
-    $q("#ccinicial").value = montoCaja[0].monto;
+    $q("#ccinicial").innerHTML = `C.C.Inicial: ${montoCaja[0].monto}`
+    ccinicial = parseFloat(montoCaja[0].monto)
     $q("#incremento").value = 0;
 
 
   }
-
-
 
   async function obtenerMontoCajaChica() {
     const params = new URLSearchParams();
@@ -228,14 +229,17 @@ document.addEventListener("DOMContentLoaded", async function () {
   // ************************************** EVENTOS *******************************************
   $q("#btnGenerarCierre").addEventListener("click", async function () {
     // Obtener todos los gastos de la caja chica activa
-    const idcajachicaUsada = idcajachicaOld !== -1 ? idcajachicaOld : idcajachicaNew;
+    const montoCaja = await obtenerMontoCajaChica()
+    console.log("obtenerMontoCajaChica -> ", montoCaja)
+
+    const idcajachicaUsada = idcajachicaObtenida !== -1 ? idcajachicaObtenida : idcajachicaNew;
     const listaGastos = await obtenerGastosPorCaja(idcajachicaUsada);
 
     // Sumar el total de los gastos
     let totalGastos = listaGastos.reduce((sum, gasto) => sum + parseFloat(gasto.monto), 0);
 
     // Obtener el monto inicial actualizado
-    let montoInicial = ccfinalGlobal ? ccfinalGlobal : ccfinalMonto;
+    let montoInicial = montoCaja[0]?.monto ? montoCaja[0]?.monto : ccfinalMonto;
     console.log("Monto inicial al generar cierre -> ", montoInicial);
     console.log("Total gastos al generar cierre -> ", totalGastos);
 
@@ -251,7 +255,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Actualizar el monto final en la BD
     await actualizarCCfinal(idcajachicaUsada, nuevoMontoFinal);
-
+    const montoCajaActualizado = await actualizarMontoCajaChica(1, nuevoMontoFinal)
+    console.log("montoCajaActualizado -> ", montoCajaActualizado)
     // Cerrar la caja chica (estado = 2)
     const cajaCerrada = await actualizarEstadoCaja(idcajachicaUsada, 2);
     if (cajaCerrada) {
@@ -261,9 +266,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   });
 
-
+  // PRIMERO VER ESTO
   $q("#btnGuardarIncremento").addEventListener("click", async function () {
-    const ccinicial = parseFloat($q("#ccinicial").value);
     const incremento = parseFloat($q("#incremento").value) || 0;
     const operacion = $q("#operacionCC").value;
 
@@ -288,24 +292,30 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Calcular el nuevo incremento total
     let nuevoIncremento = operacion === "agregar"
       ? incrementoActual + incremento
-      : Math.max(incrementoActual - incremento, 0); console.log("nuevoIncremento -> ", nuevoIncremento)
+      : Math.max(incrementoActual - incremento, 0);
+
+    console.log("nuevoIncremento -> ", nuevoIncremento)
+
     if (nuevoIncremento < 0) {
       showToast("El incremento no puede ser negativo.", "ERROR");
       return;
     }
 
+    console.log("ccfinalGlobal despues del calculo: ", ccfinalGlobal);
     // Verificar si existe una caja chica activa
-    const cajaChicaExiste = await obtenerCajaChicaPorId(idcajachicaOld);
+    const cajaChicaExiste = await obtenerCajaChicaPorId(idcajachicaObtenida);
     console.log("cajaChicaExiste -> ", cajaChicaExiste)
     if (cajaChicaExiste?.length > 0) {
       console.log("entrrando")
-      const incrementoAct = await actualizarIncremento(idcajachicaOld, nuevoIncremento); // Actualizar el incremento
+      const incrementoAct = await actualizarIncremento(idcajachicaObtenida, nuevoIncremento); // Actualizar el incremento
       console.log("incremento actualizado : ", incrementoAct)
       console.log("ccfinalGlobal -> ", ccfinalGlobal)
-      const montoFinalActualizado = await actualizarCCfinal(idcajachicaOld, ccfinalGlobal);
+      const montoFinalActualizado = await actualizarCCfinal(idcajachicaObtenida, ccfinalGlobal);
       console.log("monto final actualizado : ", montoFinalActualizado)
-
+      const montoCajaActualizado = await actualizarMontoCajaChica(1, ccfinalGlobal)
+      console.log("montoCajaActualizado -> ", montoCajaActualizado)
       incrementoActual = nuevoIncremento; // Guardar el nuevo incremento globalmente
+      console.log("incrementoActual -> ", incrementoActual)
       $q("#nuevoMonto").innerText = `Nuevo monto S/. ${parseFloat(ccfinalGlobal.toFixed(2))}`;
       return;
     }
@@ -313,7 +323,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   $q("#btnRegistrarGasto").addEventListener("click", async function () {
     // Obtener valores de los inputs
-    const ccinicial = parseFloat($q("#ccinicial").value);
     const concepto = $q("#concepto").value.trim();
     const monto = parseFloat($q("#monto").value);
 
@@ -335,7 +344,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     // Determinar cuál ID de caja chica usar
-    const idcajachicaUsada = idcajachicaOld !== -1 ? idcajachicaOld : idcajachicaNew;
+    const idcajachicaUsada = idcajachicaObtenida !== -1 ? idcajachicaObtenida : idcajachicaNew;
 
     // Registrar el gasto en la caja activa
     const nuevoGasto = await registrarGasto(idcajachicaUsada, concepto, monto);

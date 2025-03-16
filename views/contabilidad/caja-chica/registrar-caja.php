@@ -12,8 +12,8 @@
                 <div class="row g-2">
                     <div class="col-md-3">
                         <div class="form-floating">
-                            <input type="text" id="ccinicial" name="ccinicial" class="form-control" placeholder="C.C.Inicial">
-                            <label for="ccinicial" class="form-label">C.C.Inicial</label>
+                            <!-- <input type="text" id="ccinicial" name="ccinicial" class="form-control" placeholder="C.C.Inicial"> -->
+                            <label for="ccinicial" id="ccinicial" class="form-label"></label>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -92,7 +92,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalregistrarcaja">Registra Nueva Caja Chica</h1>
+                    <h1 class="modal-title fs-5" id="modalregistrarcaja">Registra Nuevo Gasto</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

@@ -45,12 +45,12 @@ DELIMITER $$
 CREATE PROCEDURE sp_actualizar_monto_cajachica
 (
 	IN _idmonto			INT,
-    IN _monto			tinyint
+    IN _monto			 DECIMAL(10,2)
 )
 BEGIN 
 	UPDATE montoCajaChica SET
     monto = _monto
-    WHERE monto = _idmonto;
+    WHERE idmonto = _idmonto;
 END $$
 
 
