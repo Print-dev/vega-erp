@@ -88,13 +88,20 @@
                                         </thead>
                                         <tbody id="tb-body-cajachica">
                                         </tbody>
+
                                     </table>
 
                                 </div>
                             </div>
+
                         </div>
                     </div>
-
+                    <div class="card-footer row">
+                        <div class="text-end">
+                            <a type="button" class="btn btn-success" id="btnGenerarExcelCaja"><i class="fa-solid fa-file-csv"></i> Generar CSV</a>
+                            <a type="button" class="btn btn-success" id="btnGenerarCierreCajaChicaFiltro"> Generar Cierre</a>
+                        </div>
+                    </div>
                     <!-- ./Modal Para elegir la especificacion -->
                 </div>
             </div>
@@ -127,6 +134,41 @@
                             </tfoot>
                         </table>
                     </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-cierrecaja" tabindex="-1" aria-labelledby="modalcierrecaja" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalcierrecaja"></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover text-center align-middle w-auto mx-auto">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Ingreso</th>
+                                    <th>Gasto</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbody-reg-cierrecaja">
+                                <!-- Aquí van los datos dinámicos -->
+                            </tbody>
+                            <tfoot class="monto">
+                                <tr>
+                                    <td class="text-center fw-bold">Total Ingreso: <span id="totalIngreso">S/. 0.00</span></td>
+                                    <td class="text-center fw-bold">Total Gasto: <span id="totalGasto">S/. 0.00</span></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
                 </div>
 
             </div>

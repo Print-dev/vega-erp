@@ -20,8 +20,8 @@
                     <div class="row">
                         <div class="card-body row g-2">
                             <h1 class="card-title">Datos de cliente</h1>
-
-                            <div class="col-md-2">
+                            <button type="button" class="btn btn-primary" id="btnBuscarCliente">Buscar</button>
+                            <!-- <div class="col-md-2">
                                 <div class="input-group" style="height: 100%;">
                                     <input type="text"
                                         style="height: 100%;"
@@ -38,6 +38,13 @@
                                 </div>
                                 <div class="d-flex" style="display: flex;">
                                     <span id="showTipoDoc" style="font-size: small; margin-left: auto; margin-right:12%"></span>
+                                </div>
+                            </div> -->
+                            <div class="col-md-2">
+                                <div class="form-floating">
+                                    <input type="text" id="ndocumento" name="ndocumento"
+                                        class="form-control" placeholder="Nª Documento / RUC.">
+                                    <label for="ndocumento" class="form-label">Nª Documento / RUC.</label>
                                 </div>
                             </div>
                             <div class="col-md-3">

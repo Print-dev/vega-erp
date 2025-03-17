@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (data.length === 0) {
       $q("#table-usuarios tbody").innerHTML = `
           <tr>
-            <td colspan="9">No encontrado</td>
+            <td colspan="9">Sin resultados</td>
           </tr>
           `;
     }

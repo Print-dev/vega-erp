@@ -267,9 +267,22 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
   }
   
   async function actualizarCliente(idcliente) {
+
+    const ndocumento = $q("#ndocumentocli").value.trim();
+
+    // Determinar el tipo de documento
+    let tipodocu = "";
+    if (ndocumento.length == 8) {
+      tipodocu = 1;
+    } else if (ndocumento.length == 11) {
+      tipodocu = 2;
+    }
+    console.log("tipodocu -> ", tipodocu);
+
     const clienteAct = new FormData();
     clienteAct.append("operation", "actualizarCliente");
     clienteAct.append("idcliente", idcliente);
+    clienteAct.append("tipodoc", tipodocu);
     clienteAct.append("iddistrito", $q("#distrito").value);
     clienteAct.append("ndocumento", $q("#ndocumentocli").value ? $q("#ndocumentocli").value : '');
     clienteAct.append("razonsocial", $q("#razonsocial").value);
@@ -487,7 +500,7 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
     if (data.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="9">No encontrado</td>
+                <td colspan="9">Sin resultados</td>
             </tr>
         `;
         return; // Salimos de la función si no hay datos
@@ -726,7 +739,15 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
             await renderizarDatosClienteIncompleto(datosCliente);
             return;
           }
-          
+          else{
+            $q("#container-representantelegal").hidden = false;
+            modalDatosClienteIncompleto = new bootstrap.Modal(
+              $q("#modal-datosclienteincompletos")
+            );
+            modalDatosClienteIncompleto.show();
+            await renderizarDatosClienteIncompleto(datosCliente);
+            return;
+          }
         }
          // ACA SALE ERROR AUNQWEU YA LLENE TODOS LOS DATOS AUN SIGUE SALIENDO EL MODAL PARA LLENAR LOS DATOS IN OMPLETOS
          window.open(

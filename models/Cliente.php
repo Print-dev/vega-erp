@@ -40,13 +40,29 @@ class Cliente extends ExecQuery
       die($e->getMessage());
     }
   }
+  
+  public function buscarCliente($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_search_cliente(?,?,?)");
+      $cmd->execute(array(
+        $params['ndocumento'],
+        $params['telefono'],
+        $params['razonsocial']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
 
   public function actualizarCliente($params = []):  bool
   {
     try {
-      $cmd = parent::execQ("CALL sp_actualizar_cliente(?,?,?,?,?,?,?,?)");
+      $cmd = parent::execQ("CALL sp_actualizar_cliente(?,?,?,?,?,?,?,?,?)");
       $rpt = $cmd->execute(array(
         $params['idcliente'],
+        $params['tipodoc'],
         $params['iddistrito'],
         $params['ndocumento'],
         $params['razonsocial'],

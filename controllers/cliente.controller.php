@@ -11,6 +11,14 @@ if (isset($_GET['operation'])) {
     case 'obtenerClientePorDoc':
       echo json_encode($cliente->obtenerClientePorDoc(['ndocumento' => $_GET['ndocumento']]));
       break;
+    case 'buscarCliente':
+      $cleanData = [
+        'ndocumento' => $_GET['ndocumento'] === "" ? null : $cliente->limpiarCadena($_GET['ndocumento']),
+        'telefono' => $_GET['telefono'] === "" ? null : $cliente->limpiarCadena($_GET['telefono']),
+        'razonsocial' => $_GET['razonsocial'] === "" ? null : $cliente->limpiarCadena($_GET['razonsocial'])
+      ];
+      echo json_encode($cliente->buscarCliente($cleanData));
+      break;
 
     case 'verificarDatosIncompletosCliente':
       echo json_encode($cliente->verificarDatosIncompletosCliente(['idcliente' => $_GET['idcliente']]));
@@ -67,6 +75,7 @@ if (isset($_POST['operation'])) {
       case 'actualizarCliente':
         $cleanData = [
           'idcliente' => $cliente->limpiarCadena($_POST['idcliente']),
+          'tipodoc' => $cliente->limpiarCadena($_POST['tipodoc']),
           'iddistrito' => $cliente->limpiarCadena($_POST['iddistrito']),
           'ndocumento' => $cliente->limpiarCadena($_POST['ndocumento']) ? $cliente->limpiarCadena($_POST['ndocumento']) : '',
           'razonsocial' => $cliente->limpiarCadena($_POST['razonsocial']),

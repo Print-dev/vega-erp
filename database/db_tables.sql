@@ -100,7 +100,7 @@ CREATE TABLE permisos (
 
 create table clientes (
 	idcliente	int auto_increment primary key,
-    tipodoc		int not null, -- 1: dni, 2: ruc
+    tipodoc		int null, -- 1: dni, 2: ruc
     iddistrito	int null,
     ndocumento	CHAR(20)	null,
     razonsocial	varchar(130)  null,
@@ -114,6 +114,9 @@ create table clientes (
     constraint 	uk_numdocumento_cli	unique(ndocumento),
     constraint chk_tipodoc		check(tipodoc IN (1,2))
 )engine=innodb;
+
+ALTER TABLE clientes 
+MODIFY COLUMN tipodoc INT NULL;
 
 create table detalles_presentacion (
 	iddetalle_presentacion	int auto_increment primary key,

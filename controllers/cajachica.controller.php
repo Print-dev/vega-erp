@@ -131,5 +131,16 @@ if (isset($_POST['operation'])) {
 
       echo json_encode($update);
       break;
+
+    case 'actualizarDecremento':
+      $cleanData = [
+        'idcajachica' => $cajachica->limpiarCadena($_POST['idcajachica']),
+        'decremento' => $cajachica->limpiarCadena($_POST['decremento']),
+      ];
+
+      $update = $cajachica->actualizarDecremento($cleanData);
+
+      echo json_encode($update);
+      break;
   }
 }

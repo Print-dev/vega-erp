@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     let data = await fetch(`${link}?${params}`);
     return data.json();
   }
-  
+
 
   /* $q("#btnGuardarAC").addEventListener("click", async function () {
     let modalCotizacion = new bootstrap.Modal($q("#modal-convenio"));
@@ -101,6 +101,17 @@ document.addEventListener('DOMContentLoaded', async function () {
     const params = new URLSearchParams();
     params.append("operation", "obtenerClientePorDoc");
     params.append("ndocumento", ndocumento);
+    const fpersona = await getDatos(`${host}cliente.controller.php`, params)
+    console.log(fpersona);
+    return fpersona
+  }
+
+  async function buscarCliente(ndocumento, telefono, razonsocial) {
+    const params = new URLSearchParams();
+    params.append("operation", "buscarCliente");
+    params.append("ndocumento", ndocumento ? ndocumento : '');
+    params.append("telefono", telefono ? telefono : '');
+    params.append("razonsocial", razonsocial ? razonsocial : '');
     const fpersona = await getDatos(`${host}cliente.controller.php`, params)
     console.log(fpersona);
     return fpersona
@@ -210,7 +221,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   // ****************************** REGISTRAR DATOS ****************************** //
 
-  async function registrarCliente(tipodoc) {
+  async function registrarCliente() {
     const ndocumento = $q("#ndocumento").value.trim();
 
     // Determinar el tipo de documento
@@ -220,6 +231,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     } else if (ndocumento.length == 11) {
       tipodocu = 2;
     }
+    console.log("tipodocu -> ", tipodocu);
+    console.log("tipodocu typeof -> ", typeof tipodocu);
 
     const cliente = new FormData();
     cliente.append("operation", "registrarCliente");
@@ -254,8 +267,26 @@ document.addEventListener('DOMContentLoaded', async function () {
     const fechapresentacion = $q("#fechapresentacion").value;
     const validez = parseInt($q("#validez").value, 10) || 0; // Convertir validez a número
 
-    // Validar que la hora final no sea menor a la de inicio
-    if (horafinal <= horainicio) {
+    // Convertir la fecha de presentación a un objeto Date
+    const fechaEvento = new Date(fechapresentacion);
+
+    // Convertir las horas en formato HH:mm a objetos Date
+    const [horaInicioHoras, horaInicioMinutos] = horainicio.split(":").map(Number);
+    const [horaFinalHoras, horaFinalMinutos] = horafinal.split(":").map(Number);
+
+    const fechaInicio = new Date(fechaEvento);
+    fechaInicio.setHours(horaInicioHoras, horaInicioMinutos, 0);
+
+    const fechaFinal = new Date(fechaEvento);
+    fechaFinal.setHours(horaFinalHoras, horaFinalMinutos, 0);
+
+    // Si la hora final es menor que la inicial, significa que el evento termina al día siguiente
+    if (fechaFinal <= fechaInicio) {
+      fechaFinal.setDate(fechaFinal.getDate() + 1);
+    }
+
+    // Validar que la hora final no sea menor o igual a la inicial
+    if (fechaFinal <= fechaInicio) {
       console.error("Error: La hora final no puede ser menor o igual a la hora de inicio.");
       showToast("La hora final no puede ser menor o igual a la hora de inicio.", "ERROR");
       return null;
@@ -263,7 +294,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Validar que la validez no sea mayor a la diferencia de días entre hoy y la fecha de presentación
     const fechaHoy = new Date();
-    const fechaEvento = new Date(fechapresentacion);
     const diferenciaDias = Math.floor((fechaEvento - fechaHoy) / (1000 * 60 * 60 * 24));
 
     if (validez > diferenciaDias) {
@@ -276,7 +306,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const detalle = new FormData();
     detalle.append("operation", "registrarDetallePresentacion");
     detalle.append("idusuario", $q("#artista").value); // id artista
-    detalle.append("filmmaker", null); // id artaswdyfuijopista
+    detalle.append("filmmaker", null); // id filmmaker (si aplica)
     detalle.append("idcliente", idcliente);
     detalle.append("iddistrito", $q("#distrito2").value);
     detalle.append("ncotizacion", ncotizacion ? ncotizacion : '');
@@ -299,6 +329,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const rdetalle = await fdetalle.json();
     return rdetalle;
   }
+
 
   /*  async function registrarConvenio(iddetallepresentacion, estado) {
  
@@ -337,8 +368,8 @@ document.addEventListener('DOMContentLoaded', async function () {
   // ************************************* FUNCIONES DE VALIDACION ************************************* //
 
   function bloquearCampos(isblock) {
-    $q("#razonsocial").disabled = isblock;
-    $q("#telefono").disabled = isblock;
+    //$q("#razonsocial").disabled = isblock;
+    //$q("#telefono").disabled = isblock;
     $q("#correo").disabled = isblock;
     $q("#nacionalidad").disabled = isblock;
     $q("#departamento").disabled = isblock;
@@ -481,7 +512,7 @@ document.addEventListener('DOMContentLoaded', async function () {
      $q("#razonsocial").value = data.razonSocial;
    } */
 
-  async function validateNumDoc() {
+  /* async function buscarClienteParams() {
     //Validaciones del num doc, guarda en una variable si es valido o no (boolean)
     const isNumeric = /^[0-9]+$/.test($q("#ndocumento").value.trim());
     const minLength = ($q("#ndocumento").value.trim().length >= 8);
@@ -490,7 +521,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const isRUC = $q("#ndocumento").value.trim().length === 11
     const isDNI = $q("#ndocumento").value.trim().length === 8
 
-    if ($q("#ndocumento").value !== "" && isNumeric && minLength && validaNumDoc) {
+    //if ($q("#ndocumento").value !== "" && isNumeric && minLength && validaNumDoc) {
       const data = await obtenerClientePorDoc($q("#ndocumento").value);
       const isblock = (data.length > 0); // confirma si la persona ya existe y bloquea los campos 
       bloquearCampos(isblock);
@@ -546,8 +577,62 @@ document.addEventListener('DOMContentLoaded', async function () {
       else if (!minLength) { showToast("El minimo es de 8 caracteres", "WARNING"); }
       else if (!validaNumDoc) { showToast("La cantidad de digitos debe ser de 8 o 20", "WARNING"); }
     }
-    //return isValid;
+  } */
+
+  async function buscarClienteParams() {
+    // Obtener valores de los inputs
+    const ndocumento = $q("#ndocumento").value.trim();
+    const telefono = $q("#telefono").value.trim();
+    const razonsocial = $q("#razonsocial").value.trim();
+
+    // Validaciones básicas para el número de documento
+    const isNumeric = /^[0-9]+$/.test(ndocumento);
+    const minLength = ndocumento.length >= 8;
+    const validaNumDoc = ndocumento.length === 8 || ndocumento.length === 11;
+    const isRUC = ndocumento.length === 11;
+    const isDNI = ndocumento.length === 8;
+
+    // 🔎 **Llamar a la función `buscarCliente` con los 3 parámetros**
+    const data = await buscarCliente(ndocumento || null, telefono || null, razonsocial || null);
+
+    const isblock = data.length > 0; // Si hay datos, bloquear campos
+    bloquearCampos(isblock);
+
+    console.log("Cliente encontrado:", data);
+
+    if (isblock) {
+      showToast("El cliente ya existe", "WARNING");
+
+      if (data[0].representantelegal) {
+        $q("#container-representantelegal").hidden = false;
+      } else {
+        $q("#container-representantelegal").hidden = true;
+      }
+
+      idcliente = data[0].idcliente;
+      showDatos(data[0]);
+      bloquearCampos(false);
+    } else {
+      // Si no existe, intentar buscar en la SUNAT (solo si es nuevo y no se está reseteando)
+      if (!isReset) {
+        if (isRUC) {
+          const dataCliente = await obtenerDataClienteRUC();
+          $q("#container-representantelegal").hidden = false;
+          $q("#razonsocial").value = dataCliente.razonSocial;
+          $q("#direccion").value = dataCliente.direccion;
+        }
+        if (isDNI) {
+          const dataCliente = await obtenerDataClienteDNI();
+          $q("#container-representantelegal").hidden = true;
+          $q("#razonsocial").value = `${dataCliente.nombre} ${dataCliente.apellidoPaterno} ${dataCliente.apellidoMaterno}`;
+          $q("#direccion").value = dataCliente.direccion;
+        }
+      }
+      $q("#btnGuardarAC").disabled = false;
+    }
   }
+
+
 
 
   // ************************************* EVENTOS ************************************* //
@@ -610,11 +695,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     })
    */
 
-  $q("#search").addEventListener("click", async () => {
+  /* $q("#search").addEventListener("click", async () => {
     idcliente = -1
-    await validateNumDoc();
+    await buscarClienteParams();
+  }); */
 
-
+  $q("#btnBuscarCliente").addEventListener("click", async () => {
+    idcliente = -1
+    await buscarClienteParams();
   });
 
   $q("#fechapresentacion").addEventListener("change", async () => {
@@ -628,7 +716,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       isReset = true;
       let permitirRegistrar = false;
 
-      await validateNumDoc(); // Validar número de caracteres y otras reglas
+      //await buscarClienteParams(); // Validar número de caracteres y otras reglas
 
       const fechaSeleccionada = $q("#fechapresentacion").value;
       const horaInicioSeleccionada = $q("#horainicio").value;

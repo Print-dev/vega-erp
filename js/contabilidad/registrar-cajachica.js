@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   let ccfinalGlobal = 0;
   let ccfinalMonto = 0;
   let ccinicial = 0;
+  let decrementoActual = 0
 
   let idcajachicaObtenida = window.localStorage.getItem("idcajachica");
   let iddp = window.localStorage.getItem("iddp")
@@ -458,7 +459,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.log("Monto en caja chica actualizado: ", montoCajaActualizado);
 
         $q("#nuevoMonto").innerText = `Nuevo monto S/. ${parseFloat(ccfinalGlobal.toFixed(2))}`;
-    } MW QUEQUE ACA LEE ABAJAO
+    }
 }); // verificar esta nueva funcion, supuestamente hace de que se actualize tanto el incfrdmento como el decremento y tambien actualiza de acuerdo a eso el monto Caja chica
 
 

@@ -1,9 +1,11 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const host = "http://localhost/vega-erp/controllers/";
   let myTable = null;
+  let listCajas = []
 
   // modales 
   let modalGastos
+  let modalCierreCaja
 
   function $q(object = null) {
     return document.querySelector(object);
@@ -103,10 +105,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         await dataFilters();
       });
       if (x.id === "busqueda_general") {
-          x.addEventListener("input", async () => {
-            await dataFilters();
-          });
-        }
+        x.addEventListener("input", async () => {
+          await dataFilters();
+        });
+      }
     });
   }
 
@@ -120,10 +122,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     params.append("mes", $q("#mes").value || "");
     let semana = $q("#año_semana").value; // Captura el valor en formato "YYYY-WW"
     if (semana) {
-        semana = semana.replace("-W", ""); // Convierte "2025-W10" en "202510"
+      semana = semana.replace("-W", ""); // Convierte "2025-W10" en "202510"
     }
     params.append("año_semana", semana || "");
-    params.append("busqueda_general", $q("#busqueda_general").value ? $q("#busqueda_general").value :'');
+    params.append("busqueda_general", $q("#busqueda_general").value ? $q("#busqueda_general").value : '');
 
     const data = await getDatos(`${host}cajachica.controller.php`, params);
     console.log("data -> ", data);
@@ -133,12 +135,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (data.length === 0) {
       $q("#table-cajaschicas tbody").innerHTML = `
             <tr>
-                <td colspan="9">No encontrado</td>
+                <td colspan="9">Sin resultados</td>
             </tr>
         `;
     }
 
+    listCajas = []
+
     data.forEach((x) => {
+      if(x.estado == 2){
+        listCajas.push({
+          fecha_apertura: x.fecha_apertura,
+          fecha_apertura: x.fecha_apertura,
+          evento: x.nom_usuario ? `${x.nom_usuario} - ${x.establecimiento}` : "No aplica",
+          montoinicial: x.ccinicial,
+          incremento: x.incremento,
+          decremento: x.decremento,
+          ccfinal: x.ccfinal,
+          estado: x.estado,
+        })
+      }
       $q("#table-cajaschicas tbody").innerHTML += `
             <tr>
                 <td>${x.fecha_apertura}</td>
@@ -158,6 +174,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             </tr>
         `;
     });
+    console.log("listCajas -> ", listCajas);
     /* const ultimaCaja = await obtenerUltimaCCFinal(); // sale error aca, corregir
     console.log("fcajaestado -> ", ultimaCaja[0].estado);
 
@@ -168,6 +185,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } */
     //disabledBtnArea();
     createTable(data);
+
   }
 
   function createTable(data) {
@@ -275,7 +293,92 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ***************************** EVENTOS ******************************************
 
-  $q("#btnNuevaCaja").addEventListener("click", ()=> {
+  $q("#btnNuevaCaja").addEventListener("click", () => {
     window.localStorage.clear()
+  })
+
+  $q("#btnGenerarCierreCajaChicaFiltro").addEventListener("click", () => {
+    modalCierreCaja = new bootstrap.Modal($q("#modal-cierrecaja"));
+    modalCierreCaja.show();
+
+    // Limpiar la tabla antes de llenarla
+    $q(".tbody-reg-cierrecaja").innerHTML = "";
+
+    // Variables para calcular totales
+    let totalIngreso = 0;
+    let totalGasto = 0;
+
+    listCajas.forEach(caja => {    
+      let ingreso = parseFloat(caja.montoinicial) || 0; // Monto inicial
+      let gasto = parseFloat(caja.ccfinal) || 0; // Monto final
+      let total = ingreso - gasto
+      console.log("total -> ", total);
+
+      /* totalIngreso += ingreso;
+      totalGasto += gasto;
+
+      // Agregar fila a la tabla
+      $q(".tbody-reg-cierrecaja").innerHTML += `
+            <tr>
+                <td>S/. ${ingreso.toFixed(2)}</td>
+                <td>S/. ${gasto.toFixed(2)}</td>
+                <td>S/. ${total.toFixed(2)}</td>
+            </tr>
+        `; */
+    });
+
+    // Actualizar los totales en el footer
+    $q("#totalIngreso").textContent = `S/. ${totalIngreso.toFixed(2)}`;
+    $q("#totalGasto").textContent = `S/. ${totalGasto.toFixed(2)}`;
+  });
+
+
+  $q("#btnGenerarExcelCaja").addEventListener("click", async () => {
+    if (listCajas.length === 0) {
+      showToast("No hay datos para exportar.", "ERROR");
+      return;
+    }
+
+    // Definir encabezados del CSV
+    const headers = [
+      "Fecha Apertura",
+      "Fecha Cierre",
+      "Evento",
+      "Monto Inicial",
+      "Incremento",
+      "Decremento",
+      "Monto Final",
+      "Estado"
+    ];
+
+    // Convertir los datos en formato CSV
+    const rows = listCajas.map(caja => [
+      caja.fecha_apertura,
+      caja.fecha_cierre || "Aún no cerrado",
+      caja.evento,
+      caja.montoinicial,
+      caja.incremento,
+      caja.decremento,
+      caja.ccfinal,
+      caja.estado === 1 ? "Abierta" : "Cerrada"
+    ]);
+
+    // Crear el contenido del CSV
+    const csvContent = [
+      headers.join(","), // Encabezados
+      ...rows.map(row => row.join(",")) // Filas de datos
+    ].join("\n");
+
+    // Crear el blob con el contenido CSV
+    const bom = "\uFEFF"; // BOM para UTF-8 (para evitar problemas con caracteres especiales)
+    const blob = new Blob([bom + csvContent], { type: "text/csv;charset=utf-8;" });
+
+    // Crear URL del blob
+    const url = URL.createObjectURL(blob);
+
+    // Configurar el enlace para descargar
+    $q("#btnGenerarExcelCaja").setAttribute("href", url);
+    $q("#btnGenerarExcelCaja").setAttribute("download", "cajachica.csv");
+    return
   })
 });

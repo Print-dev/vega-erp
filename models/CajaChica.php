@@ -214,11 +214,11 @@ class CajaChica extends ExecQuery
     {
         try {
             $pdo = parent::getConexion();
-            $cmd = $pdo->prepare("CALL sp_actualizar_incremento(?, ?)");
+            $cmd = $pdo->prepare("CALL sp_actualizar_decremento(?, ?)");
             $rpt = $cmd->execute(
                 array(
                     $params['idcajachica'],
-                    $params['incremento']
+                    $params['decremento']
                 )
             );
             return $rpt;

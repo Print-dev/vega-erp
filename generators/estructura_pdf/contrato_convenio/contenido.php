@@ -142,9 +142,14 @@ function restarHoras($horaInicio, $horaFinal)
 {
     $inicio = new DateTime($horaInicio);
     $final = new DateTime($horaFinal);
-    $intervalo = $inicio->diff($final);
 
-    $horas = $intervalo->h;
+    // Si la hora final es menor que la inicial, significa que termina al día siguiente
+    if ($final < $inicio) {
+        $final->modify('+1 day'); // Sumar un día a la hora final
+    }
+
+    $intervalo = $inicio->diff($final);
+    $horas = $intervalo->h + ($intervalo->d * 24); // Agregar días convertidos a horas
     $minutos = $intervalo->i;
 
     // Formatear la salida
@@ -158,6 +163,8 @@ function restarHoras($horaInicio, $horaFinal)
 
     return implode(" con ", $resultado);
 }
+
+
 
 
 

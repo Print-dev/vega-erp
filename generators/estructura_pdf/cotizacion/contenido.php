@@ -208,7 +208,7 @@ function formatoHora($hora_24h)
 }
 
 
-function restarHoras($horaInicio, $horaFinal)
+/* function restarHoras($horaInicio, $horaFinal)
 {
     $inicio = new DateTime($horaInicio);
     $final = new DateTime($horaFinal);
@@ -228,6 +228,34 @@ function restarHoras($horaInicio, $horaFinal)
 
     return implode(" con ", $resultado);
 }
+ */
+
+ function restarHoras($horaInicio, $horaFinal)
+ {
+     $inicio = new DateTime($horaInicio);
+     $final = new DateTime($horaFinal);
+ 
+     // Si la hora final es menor que la inicial, significa que termina al día siguiente
+     if ($final < $inicio) {
+         $final->modify('+1 day'); // Sumar un día a la hora final
+     }
+ 
+     $intervalo = $inicio->diff($final);
+     $horas = $intervalo->h + ($intervalo->d * 24); // Agregar días convertidos a horas
+     $minutos = $intervalo->i;
+ 
+     // Formatear la salida
+     $resultado = [];
+     if ($horas > 0) {
+         $resultado[] = "$horas " . ($horas == 1 ? "hora" : "horas");
+     }
+     if ($minutos > 0) {
+         $resultado[] = "$minutos " . ($minutos == 1 ? "minuto" : "minutos");
+     }
+ 
+     return implode(" con ", $resultado);
+ }
+ 
 
 // Ejemplo de uso
 $horainicio = $cotizacion[0]['horainicio']; // Ejemplo: "14:00:00"

@@ -1,7 +1,9 @@
 USE vega_producciones_erp;
 
-DELIMITER $$
+-- CALL sp_registrar_cliente (@idcliente,null, null, null, 'sr orlando', null, null, null,null);
 
+DROP PROCEDURE sp_registrar_cliente;
+DELIMITER $$
 CREATE PROCEDURE sp_registrar_cliente (
     OUT _idcliente INT,
     IN _tipodoc	INT,
@@ -22,7 +24,7 @@ BEGIN
     END;
     
     INSERT INTO clientes (tipodoc, iddistrito, ndocumento, razonsocial, representantelegal, telefono, correo, direccion)
-    VALUES (_tipodoc, NULLIF(_iddistrito, '') , NULLIF(_ndocumento, ''), NULLIF(_razonsocial, ''), NULLIF(_representantelegal, ''), NULLIF(_telefono, ''), NULLIF(_correo, ''), NULLIF(_direccion, ''));
+    VALUES (NULLIF(_tipodoc, '') , NULLIF(_iddistrito, '') , NULLIF(_ndocumento, ''), NULLIF(_razonsocial, ''), NULLIF(_representantelegal, ''), NULLIF(_telefono, ''), NULLIF(_correo, ''), NULLIF(_direccion, ''));
     
     IF existe_error = 1 THEN
         SET _idcliente = -1;
@@ -51,6 +53,31 @@ BEGIN
     WHERE C.ndocumento = _ndocumento;
 END $$
 
+DROP PROCEDURE IF EXISTS sp_search_cliente;
+DELIMITER $$
+CREATE PROCEDURE sp_search_cliente (
+    IN _ndocumento CHAR(20),
+    IN _telefono VARCHAR(15), 
+    IN _razonsocial VARCHAR(255)
+)
+BEGIN
+    SELECT 
+        C.idcliente, C.tipodoc, C.ndocumento, C.razonsocial, C.representantelegal, 
+        C.telefono, C.correo, C.direccion, 
+        NA.idnacionalidad, D.iddepartamento, PR.idprovincia, DI.iddistrito
+    FROM clientes C
+    LEFT JOIN distritos DI ON DI.iddistrito = C.iddistrito
+    LEFT JOIN provincias PR ON PR.idprovincia = DI.idprovincia
+    LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
+    LEFT JOIN nacionalidades NA ON NA.idnacionalidad = D.idnacionalidad
+    WHERE 
+        (C.ndocumento = _ndocumento OR _ndocumento IS NULL OR _ndocumento = '') 
+        AND (C.telefono = _telefono OR _telefono IS NULL OR _telefono = '') 
+        AND (C.razonsocial LIKE CONCAT('%', _razonsocial, '%') OR _razonsocial IS NULL OR _razonsocial = '');
+END $$
+
+DELIMITER ;
+
 CALL sp_search_cliente_numdoc('20607656372')
 
 DROP PROCEDURE IF EXISTS sp_actualizar_cliente;
@@ -58,6 +85,7 @@ DELIMITER $$
 CREATE PROCEDURE sp_actualizar_cliente
 (
 	IN _idcliente			INT,
+    IN _tipodoc				INT,
     IN _iddistrito			INT,
     IN _ndocumento			CHAR(20),
     IN _razonsocial			VARCHAR(130),
@@ -68,6 +96,7 @@ CREATE PROCEDURE sp_actualizar_cliente
 )
 BEGIN 
 	UPDATE clientes SET
+    tipodoc = _tipodoc,
     iddistrito = _iddistrito,
     ndocumento = nullif(_ndocumento, ''),
     razonsocial = _razonsocial,
