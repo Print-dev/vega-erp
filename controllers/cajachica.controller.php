@@ -55,6 +55,7 @@ if (isset($_POST['operation'])) {
         'idmonto'   => $cajachica->limpiarCadena($_POST['idmonto']),
         'ccinicial'   => $cajachica->limpiarCadena($_POST['ccinicial']),
         'incremento' => $cajachica->limpiarCadena($_POST['incremento']),
+        'decremento' => $cajachica->limpiarCadena($_POST['decremento']),
         'ccfinal'   => $cajachica->limpiarCadena($_POST['ccfinal']),
       ];
 

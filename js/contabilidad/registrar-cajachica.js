@@ -102,6 +102,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       1, 
       ccinicial, 
       0, 
+      0,
       0);
 
     if (nuevaCaja?.idcajachica) {
@@ -185,6 +186,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     idmonto,
     ccinicial,
     incremento,
+    decremento,
     ccfinal
   ) {
     const cajachica = new FormData();
@@ -196,6 +198,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     cajachica.append("idmonto", idmonto);
     cajachica.append("ccinicial", ccinicial);
     cajachica.append("incremento", incremento); // id artista
+    cajachica.append("decremento", decremento); // id artista
     cajachica.append("ccfinal", ccfinal);
 
     const fcajachica = await fetch(`${host}cajachica.controller.php`, {
@@ -240,6 +243,20 @@ document.addEventListener("DOMContentLoaded", async function () {
     cajaestado.append("operation", "actualizarIncremento");
     cajaestado.append("idcajachica", idcajachica);
     cajaestado.append("incremento", incremento);
+
+    const fcajaestado = await fetch(`${host}cajachica.controller.php`, {
+      method: "POST",
+      body: cajaestado,
+    });
+    const rcajaestado = await fcajaestado.json();
+    return rcajaestado;
+  }
+
+  async function actualizarDecremento(idcajachica, decremento) {
+    const cajaestado = new FormData();
+    cajaestado.append("operation", "actualizarDecremento");
+    cajaestado.append("idcajachica", idcajachica);
+    cajaestado.append("decremento", decremento);
 
     const fcajaestado = await fetch(`${host}cajachica.controller.php`, {
       method: "POST",
@@ -302,7 +319,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   });
 
   // PRIMERO VER ESTO
-  $q("#btnGuardarIncremento").addEventListener("click", async function () {
+  /* $q("#btnGuardarIncremento").addEventListener("click", async function () {
     const incremento = parseFloat($q("#incremento").value) || 0;
     const operacion = $q("#operacionCC").value;
 
@@ -327,9 +344,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Calcular el nuevo incremento total
     let nuevoIncremento =
-      operacion === "agregar"
-        ? incrementoActual + incremento
-        : Math.max(incrementoActual - incremento, 0);
+  operacion === "agregar"
+    ? incrementoActual + incremento
+    : incrementoActual - incremento;
 
     console.log("nuevoIncremento -> ", nuevoIncremento);
 
@@ -369,7 +386,81 @@ document.addEventListener("DOMContentLoaded", async function () {
       )}`;
       return;
     }
-  });
+  }); */
+
+  $q("#btnGuardarIncremento").addEventListener("click", async function () {
+    const incremento = parseFloat($q("#incremento").value) || 0;
+    const operacion = $q("#operacionCC").value;
+
+    // Validaciones
+    if (isNaN(ccinicial) || ccinicial < 0) {
+        alert("El monto inicial debe ser un número válido y mayor o igual a 0.");
+        return;
+    }
+
+    if (isNaN(incremento) || incremento <= 0) {
+        alert("El monto ingresado debe ser un número válido y mayor a 0.");
+        return;
+    }
+
+    // Determinar si se suma o se resta según la opción seleccionada
+    ccfinalGlobal = operacion === "agregar" 
+        ? ccinicial + incremento 
+        : ccinicial - incremento;
+
+    if (ccfinalGlobal < 0) {
+        showToast("El monto final no puede ser negativo.", "ERROR");
+        return;
+    }
+
+    // Calcular el nuevo incremento o decremento
+    let nuevoIncremento = incrementoActual;
+    let nuevoDecremento = decrementoActual;
+
+    if (operacion === "agregar") {
+        nuevoIncremento += incremento;
+    } else {
+        nuevoDecremento += incremento;
+    }
+
+    if (nuevoDecremento < 0) {
+        showToast("El decremento acumulado no puede ser negativo.", "ERROR");
+        return;
+    }
+
+    console.log("Nuevo incremento: ", nuevoIncremento);
+    console.log("Nuevo decremento: ", nuevoDecremento);
+    console.log("ccfinalGlobal después del cálculo: ", ccfinalGlobal);
+
+    // Verificar si existe una caja chica activa
+    const cajaChicaExiste = await obtenerCajaChicaPorId(idcajachicaObtenida || idcajachicaNew);
+    console.log("cajaChicaExiste -> ", cajaChicaExiste);
+
+    if (cajaChicaExiste?.length > 0) {
+        console.log("Actualizando valores...");
+
+        // Actualizar incremento o decremento según la operación
+        if (operacion === "agregar") {
+            const incrementoAct = await actualizarIncremento(idcajachicaObtenida || idcajachicaNew, nuevoIncremento);
+            console.log("Incremento actualizado: ", incrementoAct);
+            incrementoActual = nuevoIncremento; // Guardar nuevo incremento globalmente
+        } else {
+            const decrementoAct = await actualizarDecremento(idcajachicaObtenida || idcajachicaNew, nuevoDecremento);
+            console.log("Decremento actualizado: ", decrementoAct);
+            decrementoActual = nuevoDecremento; // Guardar nuevo decremento globalmente
+        }
+
+        // Actualizar el monto final y el monto de la caja chica
+        const montoFinalActualizado = await actualizarCCfinal(idcajachicaObtenida || idcajachicaNew, ccfinalGlobal);
+        console.log("Monto final actualizado: ", montoFinalActualizado);
+
+        const montoCajaActualizado = await actualizarMontoCajaChica(1, ccfinalGlobal);
+        console.log("Monto en caja chica actualizado: ", montoCajaActualizado);
+
+        $q("#nuevoMonto").innerText = `Nuevo monto S/. ${parseFloat(ccfinalGlobal.toFixed(2))}`;
+    } MW QUEQUE ACA LEE ABAJAO
+}); // verificar esta nueva funcion, supuestamente hace de que se actualize tanto el incfrdmento como el decremento y tambien actualiza de acuerdo a eso el monto Caja chica
+
 
   $q("#btnRegistrarGasto").addEventListener("click", async function () {
     // Obtener valores de los inputs

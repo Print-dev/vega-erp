@@ -216,6 +216,7 @@ CREATE TABLE cajachica (
     idmonto		int not null,
     ccinicial 	double (10,2) not null,
     incremento	double (10,2) not null,
+    decremento 	double (10,2) not null,
     ccfinal		double (10,2) not null,
     estado 		tinyint null default 1, -- 1- abierta, 2- cerrada
     fecha_cierre datetime null,

@@ -146,6 +146,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${x.nom_usuario ? `${x.nom_usuario} - ${x.establecimiento}` : "No aplica"}</td>
                 <td>${x.ccinicial}</td>
                 <td>${x.incremento}</td>
+                <td>${x.decremento}</td>
                 <td>${x.estado == 2 ? `<button class="btn btn-sm btn-success btn-vergastos" data-id="${x.idcajachica}">Ver Gastos</button>` : "No disponible aún."}</td>
                 <td>${x.ccfinal}</td>  
                 <td>

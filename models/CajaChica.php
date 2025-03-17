@@ -98,13 +98,14 @@ class CajaChica extends ExecQuery
     {
         try {
             $pdo = parent::getConexion();
-            $cmd = $pdo->prepare('CALL sp_registrar_cajachica(@idcajachica,?,?,?,?,?)');
+            $cmd = $pdo->prepare('CALL sp_registrar_cajachica(@idcajachica,?,?,?,?,?,?)');
             $cmd->execute(
                 array(
                     $params['iddetallepresentacion'],
                     $params['idmonto'],
                     $params['ccinicial'],
                     $params['incremento'],
+                    $params['decremento'],
                     $params['ccfinal']
                 )
             );
@@ -192,6 +193,24 @@ class CajaChica extends ExecQuery
     }
 
     public function actualizarIncremento($params = []): bool
+    {
+        try {
+            $pdo = parent::getConexion();
+            $cmd = $pdo->prepare("CALL sp_actualizar_incremento(?, ?)");
+            $rpt = $cmd->execute(
+                array(
+                    $params['idcajachica'],
+                    $params['incremento']
+                )
+            );
+            return $rpt;
+        } catch (Exception $e) {
+            error_log("Error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function actualizarDecremento($params = []): bool
     {
         try {
             $pdo = parent::getConexion();

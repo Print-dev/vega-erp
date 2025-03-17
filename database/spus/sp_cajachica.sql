@@ -12,7 +12,7 @@ CREATE PROCEDURE sp_filtrar_cajachica(
 )
 BEGIN
     SELECT 
-    CA.idcajachica, CA.idmonto, CA.ccinicial, CA.incremento, CA.ccfinal, CA.estado, CA.fecha_cierre, CA.fecha_apertura,
+    CA.idcajachica, CA.idmonto, CA.ccinicial, CA.incremento, CA.decremento, CA.ccfinal, CA.estado, CA.fecha_cierre, CA.fecha_apertura,
     DP.iddetalle_presentacion, DP.fecha_presentacion, DP.establecimiento,
 	USU.nom_usuario
     FROM cajachica CA
@@ -92,6 +92,19 @@ BEGIN
     WHERE idcajachica = _idcajachica;
 END $$
 
+DROP PROCEDURE IF EXISTS sp_actualizar_decremento;
+DELIMITER $$
+CREATE PROCEDURE sp_actualizar_decremento
+(
+	IN _idcajachica			INT,
+    IN _decremento			double (10,2)
+)
+BEGIN 
+	UPDATE cajachica SET
+    decremento = _decremento
+    WHERE idcajachica = _idcajachica;
+END $$
+
 
 DROP PROCEDURE IF EXISTS sp_registrar_cajachica;
 DELIMITER $$
@@ -102,6 +115,7 @@ CREATE PROCEDURE sp_registrar_cajachica (
     IN _idmonto INT,
     IN _ccinicial DOUBLE(10,2),
     IN _incremento DOUBLE(10,2),
+    IN _decremento DOUBLE(10,2),
     IN _ccfinal DOUBLE(10,2)
 )
 BEGIN
@@ -113,8 +127,8 @@ BEGIN
     END;
 
     -- Insertar nueva caja chica
-    INSERT INTO cajachica (iddetalle_presentacion, idmonto ,ccinicial, incremento, ccfinal, estado, fecha_cierre, fecha_apertura)
-    VALUES (nullif(_iddetalle_presentacion, ''), _idmonto ,_ccinicial, _incremento, _ccfinal, 1, NULL, NOW());
+    INSERT INTO cajachica (iddetalle_presentacion, idmonto ,ccinicial, incremento, decremento ,ccfinal, estado, fecha_cierre, fecha_apertura)
+    VALUES (nullif(_iddetalle_presentacion, ''), _idmonto ,_ccinicial, _incremento, _decremento, _ccfinal, 1, NULL, NOW());
 
     -- Obtener el ID generado
     IF existe_error = 1 THEN

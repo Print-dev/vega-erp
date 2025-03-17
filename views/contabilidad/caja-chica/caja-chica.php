@@ -80,6 +80,7 @@
                                                 <th>Evento</th>
                                                 <th>Monto Inicial</th>
                                                 <th>Incremento</th>
+                                                <th>Decremento</th>
                                                 <th>Registro de pagos</th>
                                                 <th>Monto Final</th>
                                                 <th>Opciones</th>
