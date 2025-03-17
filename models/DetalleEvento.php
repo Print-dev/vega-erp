@@ -129,6 +129,22 @@ class DetalleEvento extends ExecQuery
     }
   }
   
+  public function actualizarCajaDP($params = []): bool
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_actualizar_caja_dp (?,?)");
+      $rpt = $cmd->execute(
+        array(
+          $params['iddetallepresentacion'],
+          $params['tienecaja'],
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+  
   public function actualizarEstadoDp($params = []): bool
   {
     try {

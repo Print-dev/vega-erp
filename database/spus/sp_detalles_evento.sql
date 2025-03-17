@@ -81,7 +81,8 @@ BEGIN
         CO.idcontrato,
 		DP.estado,
         CON.estado as estado_convenio,
-        CO.estado as estado_contrato
+        CO.estado as estado_contrato,
+        DP.tienecaja
     FROM detalles_presentacion DP
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
@@ -208,6 +209,19 @@ BEGIN
     pagado50 = _pagado50
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
+
+DROP PROCEDURE sp_actualizar_caja_dp;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_caja_dp (
+	IN _iddetalle_presentacion INT,
+    IN _tienecaja TINYINT
+)
+BEGIN
+		UPDATE detalles_presentacion SET
+    tienecaja = _tienecaja
+    WHERE iddetalle_presentacion = _iddetalle_presentacion; 
+END //
+
 
 
 DROP PROCEDURE sp_actualizar_estado_reserva_dp;

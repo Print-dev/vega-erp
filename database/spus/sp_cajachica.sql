@@ -1,27 +1,39 @@
 DROP PROCEDURE IF EXISTS sp_filtrar_cajachica;
 DELIMITER $$
 
+-- CALL sp_filtrar_cajachica (null, null, null, null, 'h');
+
 CREATE PROCEDURE sp_filtrar_cajachica(
     IN _fecha_apertura DATETIME,
     IN _fecha_cierre DATETIME,
     IN _mes INT,
-    IN _año_semana INT
+    IN _año_semana INT,
+    IN _busqueda_general VARCHAR(255)
 )
 BEGIN
-    SELECT *
-    FROM cajachica
+    SELECT 
+    CA.idcajachica, CA.idmonto, CA.ccinicial, CA.incremento, CA.ccfinal, CA.estado, CA.fecha_cierre, CA.fecha_apertura,
+    DP.iddetalle_presentacion, DP.fecha_presentacion, DP.establecimiento,
+	USU.nom_usuario
+    FROM cajachica CA
+    LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = CA.iddetalle_presentacion
+    LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     WHERE 
         -- Filtrar por fecha de apertura
-        (_fecha_apertura IS NULL OR fecha_apertura >= _fecha_apertura)
+        (_fecha_apertura IS NULL OR CA.fecha_apertura >= _fecha_apertura)
         
         -- Filtrar por fecha de cierre (considerando NULL como abierto)
-        AND (_fecha_cierre IS NULL OR fecha_cierre <= _fecha_cierre OR fecha_cierre IS NULL)
+        AND (_fecha_cierre IS NULL OR CA.fecha_cierre <= _fecha_cierre OR CA.fecha_cierre IS NULL)
         
         -- Filtrar por mes (cuando _mes es diferente de NULL)
-        AND (_mes IS NULL OR MONTH(fecha_apertura) = _mes)
+        AND (_mes IS NULL OR MONTH(CA.fecha_apertura) = _mes)
         
         -- Filtrar por semana del año (cuando _año_semana es diferente de NULL)
-        AND (_año_semana IS NULL OR CONCAT(YEAR(fecha_apertura), LPAD(WEEK(fecha_apertura, 3), 2, '0')) = _año_semana);
+        AND (_año_semana IS NULL OR CONCAT(YEAR(CA.fecha_apertura), LPAD(WEEK(CA.fecha_apertura, 3), 2, '0')) = _año_semana)
+        
+        -- Filtrar por nombre de usuario y establecimiento unidos
+        AND (_busqueda_general IS NULL 
+            OR CONCAT(USU.nom_usuario, ' ', DP.establecimiento) LIKE CONCAT('%', _busqueda_general, '%'));
 END $$
 
 DELIMITER ;
@@ -101,8 +113,8 @@ BEGIN
     END;
 
     -- Insertar nueva caja chica
-    INSERT INTO cajachica (iddetalle_presentacion, ccinicial, incremento, ccfinal, estado, fecha_cierre, fecha_apertura)
-    VALUES (nullif(_iddetalle_presentacion, ''),_ccinicial, _incremento, _ccfinal, 1, NULL, NOW());
+    INSERT INTO cajachica (iddetalle_presentacion, idmonto ,ccinicial, incremento, ccfinal, estado, fecha_cierre, fecha_apertura)
+    VALUES (nullif(_iddetalle_presentacion, ''), _idmonto ,_ccinicial, _incremento, _ccfinal, 1, NULL, NOW());
 
     -- Obtener el ID generado
     IF existe_error = 1 THEN

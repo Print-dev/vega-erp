@@ -134,6 +134,7 @@ create table detalles_presentacion (
     igv				tinyint	not null,
     reserva			tinyint null default 0,
     pagado50		tinyint null default 0,
+    tienecaja		tinyint null default 0,
     estado			tinyint null default 1, -- 1: activo, 2:vencido
     created_at		date null default now(),
     constraint fk_idusuario_dp foreign key (idusuario) references usuarios (idusuario), -- artista

@@ -22,6 +22,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($cajachica->obtenerCajaChicaPorId(['idcajachica' => $cajachica->limpiarCadena($_GET['idcajachica'])]));
       break;
 
+    case 'obtenerCajaChicaPorDP':
+      echo json_encode($cajachica->obtenerCajaChicaPorDP(['iddetallepresentacion' => $cajachica->limpiarCadena($_GET['iddetallepresentacion'])]));
+      break;
+
     case 'obtenerGastoPorId':
       echo json_encode($cajachica->obtenerGastoPorId(['idgasto' => $cajachica->limpiarCadena($_GET['idgasto'])]));
       break;
@@ -35,7 +39,8 @@ if (isset($_GET['operation'])) {
         'fechaapertura' => empty($_GET['fechaapertura']) ? null : $cajachica->limpiarCadena($_GET['fechaapertura']),
         'fechacierre' => empty($_GET['fechacierre']) ? null : $cajachica->limpiarCadena($_GET['fechacierre']),
         'mes' => empty($_GET['mes']) ? null : (int) $_GET['mes'],
-        'año_semana' => empty($_GET['año_semana']) ? null : intval($_GET['año_semana'])
+        'año_semana' => empty($_GET['año_semana']) ? null : intval($_GET['año_semana']),
+        'busqueda_general' => $_GET['busqueda_general'] === "" ? null : $cajachica->limpiarCadena($_GET['busqueda_general']),
       ];
       echo json_encode($cajachica->filtrarCajasChicas($cleanData));
       break;

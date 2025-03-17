@@ -102,11 +102,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       x.addEventListener("change", async () => {
         await dataFilters();
       });
-      /* if (x.id === "telefono") {
+      if (x.id === "busqueda_general") {
           x.addEventListener("input", async () => {
             await dataFilters();
           });
-        } */
+        }
     });
   }
 
@@ -123,6 +123,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         semana = semana.replace("-W", ""); // Convierte "2025-W10" en "202510"
     }
     params.append("año_semana", semana || "");
+    params.append("busqueda_general", $q("#busqueda_general").value ? $q("#busqueda_general").value :'');
 
     const data = await getDatos(`${host}cajachica.controller.php`, params);
     console.log("data -> ", data);
@@ -142,6 +143,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <tr>
                 <td>${x.fecha_apertura}</td>
                 <td>${x.fecha_cierre || "Aún no cerrado"}</td>
+                <td>${x.nom_usuario ? `${x.nom_usuario} - ${x.establecimiento}` : "No aplica"}</td>
                 <td>${x.ccinicial}</td>
                 <td>${x.incremento}</td>
                 <td>${x.estado == 2 ? `<button class="btn btn-sm btn-success btn-vergastos" data-id="${x.idcajachica}">Ver Gastos</button>` : "No disponible aún."}</td>

@@ -53,6 +53,17 @@ class CajaChica extends ExecQuery
         }
     }
 
+    public function obtenerCajaChicaPorDP($params = []): array
+    {
+        try {
+            $cmd = parent::execQ("SELECT * FROM cajachica WHERE iddetalle_presentacion = ?");
+            $cmd->execute(array($params['iddetallepresentacion']));
+            return $cmd->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+    }
+
     public function obtenerGastoPorId($params = []): array
     {
         try {
@@ -67,12 +78,14 @@ class CajaChica extends ExecQuery
     public function filtrarCajasChicas($params = []): array
     {
         try {
-            $cmd = parent::execQ("CALL sp_filtrar_cajachica(?,?,?,?)");
+            $cmd = parent::execQ("CALL sp_filtrar_cajachica(?,?,?,?,?)");
             $cmd->execute([
                 $params['fechaapertura'],
                 $params['fechacierre'],
                 $params['mes'],
-                $params['año_semana']
+                $params['año_semana'],
+                $params['busqueda_general'],
+                
             ]);
             return $cmd->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {

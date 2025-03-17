@@ -21,19 +21,19 @@
                                 <div class="card-body border-0">
 
                                     <div class="row">
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-floating">
                                                 <input type="date" id="fechaapertura" class="form-control filter">
                                                 <label for="fechaapertura">Filtro Fecha de apertura</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-floating">
                                                 <input type="date" id="fechacierre" class="form-control filter">
                                                 <label for="fechacierre">Filtro Fecha de cierre</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-floating">
                                                 <select id="mes" class="form-control filter">
                                                     <option value="">Seleccionar Mes</option>
@@ -53,10 +53,16 @@
                                                 <label for="mes">Filtrar por Mes</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-floating">
                                                 <input type="week" id="año_semana" class="form-control filter">
                                                 <label for="año_semana">Filtrar por Semana</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-floating">
+                                                <input type="text" id="busqueda_general" class="form-control filter">
+                                                <label for="busqueda_general">Evento</label>
                                             </div>
                                         </div>
                                     </div>
@@ -71,6 +77,7 @@
                                             <tr>
                                                 <th>Fecha Apertura</th>
                                                 <th>Fecha Cierre</th>
+                                                <th>Evento</th>
                                                 <th>Monto Inicial</th>
                                                 <th>Incremento</th>
                                                 <th>Registro de pagos</th>

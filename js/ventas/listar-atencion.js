@@ -150,6 +150,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     const data = await getDatos(`${host}maps.controller.php`, params);
     return data
   }
+
+  /* async function actualizarCajaDP(iddetallepresentacion, estado) {
+    const params = new URLSearchParams();
+    params.append("operation", "actualizarCajaDP");
+    params.append("iddetallepresentacion", iddetallepresentacion);
+    params.append("tienecaja", estado);
+    const data = await getDatos(`${host}detalleevento.controller.php`, params);
+    return data;
+  } */
 /*   async function obtenerLongLatPorCiudad(provincia) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerLongLatPorCiudad");
@@ -180,6 +189,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     convenio.append("estado", estado);
 
     const fconvenio = await fetch(`${host}contrato.controller.php`, {
+      method: "POST",
+      body: convenio,
+    });
+    const rconvenio = await fconvenio.json();
+    return rconvenio;
+  }
+
+  async function actualizarCajaDP(iddetallepresentacion, estado) {
+    const convenio = new FormData();
+    convenio.append("operation", "actualizarCajaDP");
+    convenio.append("iddetallepresentacion", iddetallepresentacion); // id artista
+    convenio.append("tienecaja", estado);
+
+    const fconvenio = await fetch(`${host}detalleevento.controller.php`, {
       method: "POST",
       body: convenio,
     });
@@ -447,140 +470,120 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
     const params = new URLSearchParams();
     params.append("operation", "filtrarAtenciones");
     params.append(
-      "ncotizacion",
-      $q("#ncotizacion").value ? $q("#ncotizacion").value : ""
+        "ncotizacion",
+        $q("#ncotizacion").value ? $q("#ncotizacion").value : ""
     );
     params.append(
-      "ndocumento",
-      $q("#ndocumento").value ? $q("#ndocumento").value : ""
+        "ndocumento",
+        $q("#ndocumento").value ? $q("#ndocumento").value : ""
     );
-    //alert("asdasdd")
+
     const data = await getDatos(`${host}detalleevento.controller.php`, params);
     console.log("data -> ", data);
-    $q("#table-atenciones tbody").innerHTML = "";
+    
+    const tbody = $q("#table-atenciones tbody");
+    tbody.innerHTML = "";
 
     if (data.length === 0) {
-      $q("#table-atenciones tbody").innerHTML = `
-          <tr>
-            <td colspan="9">No encontrado</td>
-          </tr>
-          `;
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="9">No encontrado</td>
+            </tr>
+        `;
+        return; // Salimos de la función si no hay datos
     }
 
+    for (const x of data) {
 
+        tbody.innerHTML += `
+            <tr>
+                <td>${x.iddetalle_presentacion}</td>
+                <td>${x.ncotizacion ? x.ncotizacion : 'no aplica'}</td>
+                <td>${x.nom_usuario ? x.nom_usuario : ''}</td>
+                <td>${x.ndocumento ? x.ndocumento : ''}</td>
+                <td>${x.razonsocial ? x.razonsocial : ''}</td>
+                <td>${x.tipo_evento == 1 ? "Público" : x.tipo_evento == 2 ? "Privado" : ``}</td>
+                <td>${x.modalidad == 1 ? "Convenio" : x.modalidad == 2 ? "Contrato" : ``}</td>
+                <td>${x.fecha_presentacion}</td>                        
+                <td>${x.estado == 1 ? 'Activo' : x.estado == 2 ? 'Caducado' : ''}</td>                        
+                <td>
+                    ${x.estado == 2 ? '' : parseInt(x.estado_convenio) == 2 ? `
+                        <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
+                            Detalles Propuesta
+                        </button>
+                        <button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generar Convenio">
+                            Generar Convenio
+                        </button>
+                    ` : parseInt(x.modalidad) == 1 ? `
+                        <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
+                            Detalles Propuesta
+                        </button>
+                        <button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generar Convenio">
+                            Generar Convenio
+                        </button>
+                    ` : parseInt(x.modalidad) == 2 ? `
+                        <button type="button" class="btn btn-sm btn-success btn-cotizar" data-id=${x.iddetalle_presentacion} data-estado=${x.condicion} title="Cotizar">Cotizar</button>
+                    ` : ``}
 
-    data.forEach(async (x, i) => {
-      $q("#table-atenciones tbody").innerHTML += `
-          <tr>
-            <td>${x.iddetalle_presentacion}</td>
-            <td>${x.ncotizacion ? x.ncotizacion : 'no aplica'}</td>
-            <td>${x.nom_usuario ? x.nom_usuario : ''}</td>
-            <td>${x.ndocumento ? x.ndocumento : ''}</td>
-            <td>${x.razonsocial ? x.razonsocial : ''}</td>
-            <td>${x.tipo_evento == 1
-          ? "Público"
-          : x.tipo_evento == 2
-            ? "Privado"
-            : ``
-        }</td>
-            <td>${x.modalidad == 1 ? "Convenio" : x.modalidad == 2 ? "Contrato" : ``
-        }</td>
-            <td>${x.fecha_presentacion}</td>                        
-            <td>${x.estado == 1 ? 'Activo' : x.estado == 2 ? 'Caducado' : ''}</td>                        
-            <td>
-              ${x.estado == 2 ? '' : parseInt(x.estado_convenio) == 2 ? `<button type="button" class="btn btn-sm btn-warning btn-propuesta" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
-                         Detalles Propuesta
-                      </button><button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generara Convenio">
-                  Generar Convenio
-                </button>
-                ` : parseInt(x.modalidad) == 1
-          ? `
-                      <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
-                         Detalles Propuesta
-                      </button>
-                      <button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generara Convenio">
-                        Generar Convenio
-                      </button>
-                      `
-          : parseInt(x.modalidad) == 2
-            ? `
-                <button type="button" class="btn btn-sm btn-success btn-cotizar" data-id=${x.iddetalle_presentacion} 
-                  data-estado=${x.condicion} title="Cotizar">Cotizar</button>`
-            : ``
-        }
-              ${x.estado == 2 ? '' : parseInt(x.modalidad) === 2
-          ? `
-                <button type="button" class="btn btn-sm btn-secondary btn-pagar" data-id=${x.iddetalle_presentacion} title="Pagar">
-                  Pagar
-                </button>
-                <button type="button" class="btn btn-sm btn-secondary btn-contrato" data-id=${x.iddetalle_presentacion} title="Generar contrato">
-                  Generar Contrato
-                </button>
-                `
-          : ``
-        }
+                    ${x.estado == 2 ? '' : parseInt(x.modalidad) === 2 ? `
+                        <button type="button" class="btn btn-sm btn-secondary btn-pagar" data-id=${x.iddetalle_presentacion} title="Pagar">
+                            Pagar
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary btn-contrato" data-id=${x.iddetalle_presentacion} title="Generar contrato">
+                            Generar Contrato
+                        </button>
+                    ` : ``}
 
-        ${x.estado == 2 ? '' : parseInt(x.pagado50) == 1 ? `` : parseInt(x.reserva) == 1
-          ? `<button type="button" class="btn btn-sm btn-primary btn-reserva" data-id=${x.iddetalle_presentacion} title="Generar Reserva">
-              Generar Reserva
-            </button>` : ``}
-              
-              
-          `;
+                    ${x.estado == 2 ? '' : parseInt(x.pagado50) == 1 ? `` : parseInt(x.reserva) == 1 ? `
+                        <button type="button" class="btn btn-sm btn-primary btn-reserva" data-id=${x.iddetalle_presentacion} title="Generar Reserva">
+                            Generar Reserva
+                        </button>
+                    ` : ``}
 
-      // Evento para actualizar estado dp
- /* <button type="button" class="btn btn-sm btn-warning btn-actualizar" data-id=${x.iddetalle_presentacion} title="Actualizar">
-                  Actualizar  
-                </button> */
-      if (x.modalidad == 2) {
-        const fechaCreacion = new Date(x.created_at + "T00:00:00"); // Asegurar formato correcto
-        const fechaVencimiento = calcularFechaVencimiento(fechaCreacion, x.validez);
+                      ${x.tienecaja == 1 ? '' : `<button type="button" class="btn btn-sm btn-warning btn-caja" data-id=${x.iddetalle_presentacion} title="Generar Caja Chica">
+                          Generar Caja Chica  
+                      </button> `}
+                </td>
+            </tr>
+        `;
 
-        console.log("Fecha de creación:", fechaCreacion.toISOString().split("T")[0]);
-        console.log("Fecha de vencimiento:", fechaVencimiento.toISOString().split("T")[0]);
+        if (x.modalidad == 2) {
+            const fechaCreacion = new Date(x.created_at + "T00:00:00");
+            const fechaVencimiento = calcularFechaVencimiento(fechaCreacion, x.validez);
 
-        if (esFechaVencida(fechaVencimiento)) {
-          console.log("actualizando estado a vencido...")
-          if (x.vigencia_reserva) {
-            console.log("HAY UNA VIGENCIA EN RESERVA, AUN NO SE VENCERA LA PRESENTACION")
-            const fechaCreacionReserva = new Date(x.fechacreada_reserva + "T00:00:00"); // Asegurar formato correcto
-            const fechaVencimientoReserva = calcularFechaVencimiento(fechaCreacion, x.vigencia_reserva);
+            console.log("Fecha de creación:", fechaCreacion.toISOString().split("T")[0]);
+            console.log("Fecha de vencimiento:", fechaVencimiento.toISOString().split("T")[0]);
 
-            console.log("Fecha de creación de reserva:", fechaCreacionReserva.toISOString().split("T")[0]);
-            console.log("Fecha de vencimiento de reserva:", fechaVencimientoReserva.toISOString().split("T")[0]);
+            if (esFechaVencida(fechaVencimiento)) {
+                console.log("actualizando estado a vencido...");
+                if (x.vigencia_reserva) {
+                    console.log("HAY UNA VIGENCIA EN RESERVA, AUN NO SE VENCERA LA PRESENTACION");
+                    const fechaCreacionReserva = new Date(x.fechacreada_reserva + "T00:00:00");
+                    const fechaVencimientoReserva = calcularFechaVencimiento(fechaCreacion, x.vigencia_reserva);
 
-            if (esFechaVencida(fechaVencimientoReserva)) {
-              console.log("actualizando estado de contrato a caducado...")
-              const estadoContratoActualizado = await actualizarEstadoContrato(x.idcontrato, 3) // ESTADO A CADUCADO / VENCIDO
-              console.log("estado contrato actualizado a vencido -> ", estadoContratoActualizado)
-              const vencido = await actualizarEstadoDp(x.iddetalle_presentacion, 2)
-              console.log("vencido dp ?", vencido)
-              if (vencido) {
-                console.log("vencido...")
-              }
+                    console.log("Fecha de creación de reserva:", fechaCreacionReserva.toISOString().split("T")[0]);
+                    console.log("Fecha de vencimiento de reserva:", fechaVencimientoReserva.toISOString().split("T")[0]);
+
+                    if (esFechaVencida(fechaVencimientoReserva)) {
+                        console.log("actualizando estado de contrato a caducado...");
+                        const estadoContratoActualizado = await actualizarEstadoContrato(x.idcontrato, 3);
+                        console.log("estado contrato actualizado a vencido -> ", estadoContratoActualizado);
+                        const vencido = await actualizarEstadoDp(x.iddetalle_presentacion, 2);
+                        console.log("vencido dp ?", vencido);
+                    } else {
+                        console.log("aun no se vence el contrato");
+                    }
+                }
+                const vencido = await actualizarEstadoDp(x.iddetalle_presentacion, 2);
+                console.log("vencido dp ?", vencido);
             } else {
-              console.log("aun no se vence el contrato")
+                console.log("aun no se vence la presentacion registrada.");
             }
-          }
-          const vencido = await actualizarEstadoDp(x.iddetalle_presentacion, 2)
-          console.log("vencido dp ?", vencido)
-          if (vencido) {
-            console.log("vencido...")
-          }
         }
-        else {
-          console.log("aun no se vence la presentacion registrada. ...")
-
-        }
-      }
-
-      /* if (x.validez < false) {
-      } */
-
-    });
-    //disabledBtnArea();
+    }
     createTable(data);
-  }
+}
+
 
   function createTable(data) {
     let rows = $("#tb-body-atencion").find("tr");
@@ -644,6 +647,9 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
           if (e.target.classList.contains("btn-convenio")) {
             await buttonConvenio(e);
           }
+          if (e.target.classList.contains("btn-caja")) {
+            await buttonCaja(e);
+          }
           /* if(e.target.classList.contains("show-espec")){//abre el sidebar
           await btnSBUpdateActivo(e);
         }
@@ -658,6 +664,16 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
    * Abre el modal de asignar Area
    * @param {*} e evento del boton
    */
+
+  async function buttonCaja(e) {
+    iddp = e.target.getAttribute("data-id")
+    const dpActualizado = await actualizarCajaDP(iddp, 1)
+    console.log("dpActualizado -> ", dpActualizado);
+    window.localStorage.clear()
+    window.localStorage.setItem("iddp", iddp)
+    window.location.href = `http://localhost/vega-erp/views/contabilidad/caja-chica/registrar-caja`
+    return
+  }
 
   async function buttonConvenio(e) {
     idconvenio = e.target.getAttribute("data-id"); //esto en realidad es id detalle presentacion

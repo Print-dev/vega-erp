@@ -116,6 +116,17 @@ if (isset($_POST['operation'])) {
       echo json_encode($rpt);
       break;
 
+    case 'actualizarCajaDP':
+      $cleanData = [
+        'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']),
+        'tienecaja'   => $detalleevento->limpiarCadena($_POST['tienecaja']),
+      ];
+
+      $rpt = $detalleevento->actualizarCajaDP($cleanData);
+
+      echo json_encode($rpt);
+      break;
+
     case 'actualizarEstadoDp':
       $cleanData = [
         'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']),
