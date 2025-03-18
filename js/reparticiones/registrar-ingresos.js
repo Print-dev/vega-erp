@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       $q(".tbody-ingresos").innerHTML += `
         <tr>
           <td>${ingreso.tipopago == 1 ? "Transferencia" : 'Contado'}</td>
-          <td>${ingreso.concepto != null ? ingresoObtenido[0]?.noperacion : 'No aplica'}</td>
+          <td>${ingreso.noperacion != null ? ingreso.noperacion : 'No aplica'}</td>
           <td>${ingreso.descripcion}</td>
           <td>S/. ${parseFloat(ingreso.monto).toFixed(2)}</td>
         </tr>
@@ -105,6 +105,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ************************************* EVENTOS ***********************************
 
   $q("#btnRegistrarNuevoIngreso").addEventListener("click", ()=>{
+    $q("#descripcion").value = ''
+    $q("#monto").value = ''
+    $q("#tipopago").value = ''
+    $q("#noperacion").value = ''
     modalIngreso = new bootstrap.Modal($q("#modal-ingreso"))
     modalIngreso.show()
   })

@@ -177,6 +177,7 @@ if (isset($_POST['operation'])) {
         'nom_usuario' => $usuario->limpiarCadena($_POST['nom_usuario']),
         'claveacceso' => password_hash($clave, PASSWORD_BCRYPT),
         'color' =>  $usuario->limpiarCadena($_POST['color']) ? $usuario->limpiarCadena($_POST['color']) : '',
+        'porcentaje' =>  $usuario->limpiarCadena($_POST['porcentaje']) ? $usuario->limpiarCadena($_POST['porcentaje']) : '',
         'idnivelacceso' => $usuario->limpiarCadena($_POST['idnivelacceso'])
       ];
 

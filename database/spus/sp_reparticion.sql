@@ -8,7 +8,7 @@ CREATE PROCEDURE `sp_filtrar_reparticiones`(
 BEGIN
     SELECT 
        RI.idreparticion, RI.montototal, RI.montorepresentante, RI.montopromotor, RI.ingresototal, RI.montoartista, RI.montofinal, RI.estado,
-       USU.nom_usuario, DP.establecimiento, DP.iddetalle_presentacion
+       USU.nom_usuario, USU.idusuario, DP.establecimiento, DP.iddetalle_presentacion
     FROM reparticion_ingresos RI
     LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = RI.iddetalle_presentacion
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
@@ -106,8 +106,8 @@ BEGIN
     END;
 
     -- Insertar nueva caja chica
-    INSERT INTO ingresos_evento (idreparticion, descripcion ,monto, tipopago, noperacion)
-    VALUES (_idreparticion, _descripcion, _monto, _tipopago, _noperacion);
+    INSERT INTO egresos_evento (idreparticion, descripcion ,monto, tipopago, noperacion)
+    VALUES (_idreparticion, _descripcion, _monto, _tipopago, nullif(_noperacion, ''));
 
     -- Obtener el ID generado
     IF existe_error = 1 THEN

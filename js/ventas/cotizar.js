@@ -262,63 +262,68 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
   async function registrarDetalleEvento(idcliente, ncotizacion) {
-    const horainicio = $q("#horainicio").value;
-    const horafinal = $q("#horafinal").value;
-    const fechapresentacion = $q("#fechapresentacion").value;
-    const validez = parseInt($q("#validez").value, 10) || 0; // Convertir validez a número
+    const horainicio = $q("#horainicio").value.trim();
+    const horafinal = $q("#horafinal").value.trim();
+    const fechapresentacion = $q("#fechapresentacion").value.trim();
+    const iddistrito2 = $q("#distrito2").value.trim();
+    const establecimiento = $q("#establecimiento").value.trim();
+    const referencia = $q("#referencia").value.trim();
+    const tipoevento = $q("#tipoevento").value.trim();
+    const modalidad = $q("#modalidad").value.trim();
+    const validez = parseInt($q("#validez").value, 10) || 0;
 
-    // Convertir la fecha de presentación a un objeto Date
-    const fechaEvento = new Date(fechapresentacion);
+    // Si alguno de los campos clave tiene valor, se activan las validaciones
+    if (horainicio || horafinal || iddistrito2 || establecimiento || referencia || tipoevento || modalidad || validez) {
+      /* if (!horainicio || !horafinal) {
+        showToast("Debe ingresar la hora de inicio y la hora final.", "ERROR");
+        return null;
+      }
 
-    // Convertir las horas en formato HH:mm a objetos Date
-    const [horaInicioHoras, horaInicioMinutos] = horainicio.split(":").map(Number);
-    const [horaFinalHoras, horaFinalMinutos] = horafinal.split(":").map(Number);
+      // Convertir la fecha de presentación a un objeto Date
+      const fechaEvento = new Date(fechapresentacion);
+      const [horaInicioHoras, horaInicioMinutos] = horainicio.split(":").map(Number);
+      const [horaFinalHoras, horaFinalMinutos] = horafinal.split(":").map(Number);
 
-    const fechaInicio = new Date(fechaEvento);
-    fechaInicio.setHours(horaInicioHoras, horaInicioMinutos, 0);
+      const fechaInicio = new Date(fechaEvento);
+      fechaInicio.setHours(horaInicioHoras, horaInicioMinutos, 0);
 
-    const fechaFinal = new Date(fechaEvento);
-    fechaFinal.setHours(horaFinalHoras, horaFinalMinutos, 0);
+      const fechaFinal = new Date(fechaEvento);
+      fechaFinal.setHours(horaFinalHoras, horaFinalMinutos, 0);
 
-    // Si la hora final es menor que la inicial, significa que el evento termina al día siguiente
-    if (fechaFinal <= fechaInicio) {
-      fechaFinal.setDate(fechaFinal.getDate() + 1);
+      if (fechaFinal <= fechaInicio) {
+        fechaFinal.setDate(fechaFinal.getDate() + 1);
+      }
+
+      if (fechaFinal <= fechaInicio) {
+        showToast("La hora final no puede ser menor o igual a la hora de inicio.", "ERROR");
+        return null;
+      }
+
+      const fechaHoy = new Date();
+      const diferenciaDias = Math.floor((fechaEvento - fechaHoy) / (1000 * 60 * 60 * 24));
+      if (validez > diferenciaDias) {
+        showToast("La validez no puede ser mayor a la cantidad de días restantes hasta la fecha de presentación.", "ERROR");
+        return null;
+      } */
     }
 
-    // Validar que la hora final no sea menor o igual a la inicial
-    if (fechaFinal <= fechaInicio) {
-      console.error("Error: La hora final no puede ser menor o igual a la hora de inicio.");
-      showToast("La hora final no puede ser menor o igual a la hora de inicio.", "ERROR");
-      return null;
-    }
-
-    // Validar que la validez no sea mayor a la diferencia de días entre hoy y la fecha de presentación
-    const fechaHoy = new Date();
-    const diferenciaDias = Math.floor((fechaEvento - fechaHoy) / (1000 * 60 * 60 * 24));
-
-    if (validez > diferenciaDias) {
-      console.error("Error: La validez no puede ser mayor a la fecha de presentación.");
-      showToast("La validez no puede ser mayor a la cantidad de días restantes hasta la fecha de presentación.", "ERROR");
-      return null;
-    }
-
-    // Si pasa las validaciones, se procede a registrar
+    // Si pasa las validaciones, proceder con el registro
     const detalle = new FormData();
     detalle.append("operation", "registrarDetallePresentacion");
-    detalle.append("idusuario", $q("#artista").value); // id artista
-    detalle.append("filmmaker", null); // id filmmaker (si aplica)
+    detalle.append("idusuario", $q("#artista").value);
+    detalle.append("filmmaker", null);
     detalle.append("idcliente", idcliente);
-    detalle.append("iddistrito", $q("#distrito2").value);
-    detalle.append("ncotizacion", ncotizacion ? ncotizacion : '');
+    detalle.append("iddistrito", iddistrito2);
+    detalle.append("ncotizacion", ncotizacion || '');
     detalle.append("fechapresentacion", fechapresentacion);
     detalle.append("horainicio", horainicio);
     detalle.append("horafinal", horafinal);
-    detalle.append("establecimiento", $q("#establecimiento").value);
-    detalle.append("referencia", $q("#referencia").value);
-    detalle.append("acuerdo", $q("#acuerdo")?.value ? $q("#acuerdo")?.value : '');
-    detalle.append("tipoevento", $q("#tipoevento").value);
-    detalle.append("modalidad", $q("#modalidad").value);
-    detalle.append("validez", validez);
+    detalle.append("establecimiento", establecimiento);
+    detalle.append("referencia", referencia);
+    detalle.append("acuerdo", $q("#acuerdo")?.value || '');
+    detalle.append("tipoevento", tipoevento);
+    detalle.append("modalidad", modalidad);
+    detalle.append("validez", validez || '');
     detalle.append("igv", $q("#igv").checked ? 1 : 0);
 
     const fdetalle = await fetch(`${host}detalleevento.controller.php`, {
@@ -329,6 +334,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const rdetalle = await fdetalle.json();
     return rdetalle;
   }
+
 
 
   /*  async function registrarConvenio(iddetallepresentacion, estado) {
@@ -400,6 +406,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   //Muestra los datos en los campos
   async function showDatos(data) {
     console.log(data)
+    $q("#ndocumento").value = data.ndocumento;
     $q("#razonsocial").value = data.razonsocial;
     $q("#representantelegal").value = data.representantelegal ? data.representantelegal : '';
     $q("#telefono").value = data.telefono;
@@ -764,7 +771,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           showToast("Esta fecha ya está tomada por otro evento.", "ERROR");
           return;
         }
-
+        console.log("idcliente -> ", idcliente);
         if (idcliente == -1) {
           if (permitirRegistrar) {
             console.log("✅ SE PERMITIÓ REGISTRAR: Evento vencido o sin conflicto de horario. Cliente nuevo.");
@@ -785,6 +792,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                 detalleevento = await registrarDetalleEvento(data.idcliente);
                 console.log(detalleevento);
               } else if ($q("#modalidad").value == 2) {
+                detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
+                console.log(detalleevento);
+              }else{
                 detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
                 console.log(detalleevento);
               }
@@ -810,13 +820,20 @@ document.addEventListener('DOMContentLoaded', async function () {
             ncotizacion = nuevoNCotizacion
 
             if ($q("#modalidad").value == 1) {
+              console.log("idcliente-> en valor 1 ", idcliente);
               detalleevento = await registrarDetalleEvento(idcliente);
               console.log(detalleevento);
             } else if ($q("#modalidad").value == 2) {
+              console.log("idcliente-> en valor 2 ", idcliente);
+              detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
+              console.log(detalleevento);
+            }else if ($q("#modalidad").value == -1){
+              console.log("idcliente-> en valor -1 ", idcliente);
+              console.log("entrando a cuando no se selecciona ningun valor");
               detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
               console.log(detalleevento);
             }
-
+            console.log("detalle evento ->>>>>>", detalleevento);
             if (detalleevento.iddetalleevento > 0) {
               window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
             } else {

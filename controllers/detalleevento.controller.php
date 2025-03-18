@@ -15,6 +15,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($detalleevento->obtenerDPporId(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
       break;
 
+    case 'obtenerInfoDPporId':
+      echo json_encode($detalleevento->obtenerInfoDPporId(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
+      break;
+
     case 'obtenerAcuerdo':
       echo json_encode($detalleevento->obtenerAcuerdo(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
       break;
@@ -47,16 +51,16 @@ if (isset($_POST['operation'])) {
         'idusuario'   => $detalleevento->limpiarCadena($_POST['idusuario']),
         'filmmaker'   => $detalleevento->limpiarCadena($_POST['filmmaker']) ? $detalleevento->limpiarCadena($_POST['filmmaker']) : '',
         'idcliente' => $detalleevento->limpiarCadena($_POST['idcliente']),
-        'iddistrito' => $detalleevento->limpiarCadena($_POST['iddistrito']),
+        'iddistrito' => $detalleevento->limpiarCadena($_POST['iddistrito']) ? $detalleevento->limpiarCadena($_POST['iddistrito']) : '',
         'ncotizacion' => $detalleevento->limpiarCadena($_POST['ncotizacion']) ? $detalleevento->limpiarCadena($_POST['ncotizacion']) : '',
         'fechapresentacion'   => $detalleevento->limpiarCadena($_POST['fechapresentacion']),
-        'horainicio'    => $detalleevento->limpiarCadena($_POST['horainicio']),
-        'horafinal'    => $detalleevento->limpiarCadena($_POST['horafinal']),
-        'establecimiento'  => $detalleevento->limpiarCadena($_POST['establecimiento']),
-        'referencia'  => $detalleevento->limpiarCadena($_POST['referencia']),
+        'horainicio'    => $detalleevento->limpiarCadena($_POST['horainicio']) ? $detalleevento->limpiarCadena($_POST['horainicio']) : '',
+        'horafinal'    => $detalleevento->limpiarCadena($_POST['horafinal']) ? $detalleevento->limpiarCadena($_POST['horafinal']) : '',
+        'establecimiento'  => $detalleevento->limpiarCadena($_POST['establecimiento']) ? $detalleevento->limpiarCadena($_POST['establecimiento']) : '',
+        'referencia'  => $detalleevento->limpiarCadena($_POST['referencia']) ? $detalleevento->limpiarCadena($_POST['referencia']) : '',
         'acuerdo'  => $detalleevento->limpiarCadena($_POST['acuerdo']) ? $detalleevento->limpiarCadena($_POST['acuerdo']) : '',
-        'tipoevento'  => $detalleevento->limpiarCadena($_POST['tipoevento']),
-        'modalidad'  => $detalleevento->limpiarCadena($_POST['modalidad']),
+        'tipoevento'  => $detalleevento->limpiarCadena($_POST['tipoevento']) ? $detalleevento->limpiarCadena($_POST['tipoevento']) : '',
+        'modalidad'  => $detalleevento->limpiarCadena($_POST['modalidad']) ? $detalleevento->limpiarCadena($_POST['modalidad']) : '',
         'validez'  => $detalleevento->limpiarCadena($_POST['validez']) ? $detalleevento->limpiarCadena($_POST['validez']) : '',
         'igv'  => $detalleevento->limpiarCadena($_POST['igv']),
       ];

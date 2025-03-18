@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       body: viatico,
     });
     const rviatico = await fviatico.json();
-    console.log("rivatico . ",rviatico )
+    console.log("rivatico . ", rviatico)
     return rviatico;
   }
 
@@ -312,7 +312,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("agendaUsuario todo obtenido ->", agendaUsuario);
 
     await configurarCalendario(agendaUsuario)
-  } else if(nivelacceso == "Filmmaker"){
+  } else if (nivelacceso == "Filmmaker") {
     $q("#nivelacceso").remove()
     $q("#usuario").remove()
     $q(".contenedor-filtros-agenda").remove()
@@ -326,10 +326,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   // **************************************** CONFIGURACION AGENDA **********************************************************
 
   async function configurarCalendario(agendaUsuario) {
+    let incompleto = false
     agenda = [];
 
     // Convertir los datos de la agenda en eventos para FullCalendar
     agendaUsuario.forEach((evento) => {
+      incompleto = !evento.horainicio || !evento.horafinal || !evento.modalidad || !evento.establecimiento || !evento.tipo_evento
+
       const esContratoValido =
         parseInt(evento.modalidad) === 2 &&
         parseInt(evento.estadoContrato) === 2;
@@ -347,8 +350,13 @@ document.addEventListener("DOMContentLoaded", async () => {
           text: "Confirmado",
           class: "badge bg-success",
         };
+      } else if (incompleto) {
+        estadoBadge = {
+          text: "Incompleto",
+          class: "badge bg-danger",
+        };
       }
-      if (evento.estado == 1 && evento.idusuario == idusuarioLogeado || evento.idusuariofilmmaker == idusuarioLogeado || nivelacceso == "Administrador") {
+      if (evento?.estado == 1 && evento?.idusuario == idusuarioLogeado || evento?.idusuariofilmmaker == idusuarioLogeado || nivelacceso == "Administrador") {
         agenda.push({
           title: evento.nom_usuario, // Solo el nombre del lugar
           start: evento.fecha_presentacion, // Fecha de presentación
@@ -394,7 +402,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       return {
         html: `
-            <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
+            ${!incompleto ? `
+              <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
               <div>${horaInicio} - ${horaFinal}</div>
               <div>${badgeHtml}</div>
             </div>
@@ -402,13 +411,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             overflow-wrap: break-word;
             white-space: normal;">
               <div style="font-size: 20px; font-weight: bold;">${arg.event.title
-          }</div>
+            }</div>
                 <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
-          }</div>
+            }</div>
                 <div><strong>Tiempo:</strong> ${calculateDuration(
-            arg.event.extendedProps.horainicio,
-            arg.event.extendedProps.horafinal
-          )}</div>
+              arg.event.extendedProps.horainicio,
+              arg.event.extendedProps.horafinal
+            )}</div>
             ${nivelacceso == "Administrador" || arg.event.extendedProps.idusuariofilmmaker == idusuarioLogeado ? `
               <label ><strong>Acuerdos:</strong></label>
               <div id="text-acuerdo" class="mt-1" style="
@@ -420,8 +429,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             white-space: normal;
           ">
             ${arg.event.extendedProps.acuerdo ||
-            "Sin acuerdos registrados"
-            }
+              "Sin acuerdos registrados"
+              }
           </div>
               ` : ''}
               ${nivelacceso == "Administrador" ? `
@@ -442,6 +451,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                   <button class="btn btn-primary" id="btnVerMontos" style="flex: 1;" data-idcontrato="${arg.event.extendedProps?.idcontrato}" data-idconvenio="${arg.event.extendedProps?.idconvenio}">Ver Monto</button>
                 ` : ''}
               </div>
+              ` : `
+              <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
+                <div>00:00 - 00:00</div>
+                <div>${badgeHtml}</div>
+              </div>
+              <div style="padding: 8px; word-wrap: break-word; 
+            overflow-wrap: break-word;
+            white-space: normal;">
+              <div style="font-size: 20px; font-weight: bold;">${arg.event.title
+            }</div>
+            <div><strong>Click aqui para editar</strong>
+            </div>
+              `}
         `,
       };
     });
@@ -454,9 +476,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("nivel ccceso escogido: ", $q("#nivelacceso").value);
     await obtenerArtistas();
     const agendaUsuario = await obtenerAgendaArtista(null || '');
-      console.log("agendaUsuario todo obtenido ->", agendaUsuario);
+    console.log("agendaUsuario todo obtenido ->", agendaUsuario);
 
-      await configurarCalendario(agendaUsuario)
+    await configurarCalendario(agendaUsuario)
   });
 
   $q("#usuario")?.addEventListener("change", async (e) => {

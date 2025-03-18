@@ -36,6 +36,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rcajaestado;
   }
 
+  async function actualizarCCfinal(idcajachica, ccfinal) {
+    const cajaestado = new FormData();
+    cajaestado.append("operation", "actualizarCCfinal");
+    cajaestado.append("idcajachica", idcajachica);
+    cajaestado.append("ccfinal", ccfinal);
+
+    const fcajaestado = await fetch(`${host}cajachica.controller.php`, {
+      method: "POST",
+      body: cajaestado,
+    });
+    const rcajaestado = await fcajaestado.json();
+    return rcajaestado;
+  }
+
   async function obtenerUltimaCCFinal() {
     const cajaestado = new URLSearchParams();
     cajaestado.append("operation", "obtenerUltimaCCFinal");
@@ -43,7 +57,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const fcajaestado = await getDatos(`${host}cajachica.controller.php`, cajaestado)
     return fcajaestado;
   }
-
 
 
   // *********************************** OBTENER DATOS ********************************
@@ -143,8 +156,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     listCajas = []
 
     data.forEach((x) => {
-      if(x.estado == 2){
+      if (x.estado == 2) {
         listCajas.push({
+          idcajachica: x.idcajachica,
           fecha_apertura: x.fecha_apertura,
           fecha_apertura: x.fecha_apertura,
           evento: x.nom_usuario ? `${x.nom_usuario} - ${x.establecimiento}` : "No aplica",
@@ -168,7 +182,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>
                     ${x.estado == 1
           ? `<button class="btn btn-sm btn-success btn-registrar" data-id="${x.idcajachica}">Registrar Gastos</button>
-                           <button class="btn btn-sm btn-danger btn-cerrar" data-id="${x.idcajachica}">Cerrar Caja</button>`
+                           <button class="btn btn-sm btn-danger btn-cerrar" data-id="${x.idcajachica}" data-ccinicial="${x.ccinicial}">Cerrar Caja</button>`
           : "Cerrado"}
                 </td>
             </tr>
@@ -279,8 +293,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function buttonCerrarCaja(e) {
+    ccinicialMonto = e.target.getAttribute("data-ccinicial");
     idcajachica = e.target.getAttribute("data-id");
     const cajaCerrada = await actualizarEstadoCaja(idcajachica, 2);
+    const gastos = await obtenerGastosPorCaja(idcajachica)
+    
+    let totalGastos = gastos.reduce((sum, gasto) => sum + parseFloat(gasto.monto), 0);
+    let nuevoMonto = ccinicialMonto - totalGastos
+    const ccfinalActuaizado = await actualizarCCfinal(idcajachica, nuevoMonto);
+    console.log("ccfinal actualizado -> ", ccfinalActuaizado);
+    console.log("gastos -> ", nuevoMonto);
+    
     if (cajaCerrada) {
       showToast("Caja chica cerrada correctamente", "SUCCESS");
       await dataFilters();
@@ -297,24 +320,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.localStorage.clear()
   })
 
-  $q("#btnGenerarCierreCajaChicaFiltro").addEventListener("click", () => {
+  $q("#btnGenerarCierreCajaChicaFiltro").addEventListener("click", async () => {
     modalCierreCaja = new bootstrap.Modal($q("#modal-cierrecaja"));
     modalCierreCaja.show();
 
     // Limpiar la tabla antes de llenarla
     $q(".tbody-reg-cierrecaja").innerHTML = "";
 
-    // Variables para calcular totales
+    // Variables para calcular totales generales
     let totalIngreso = 0;
     let totalGasto = 0;
 
-    listCajas.forEach(caja => {    
+    // Recorremos cada caja chica de forma secuencial
+    for (const caja of listCajas) {
+      const gastosCaja = await obtenerGastosPorCaja(caja.idcajachica);
+      console.log("gastos caja ->", gastosCaja);
+
+      let totalGastos = gastosCaja.reduce((sum, gasto) => sum + parseFloat(gasto.monto), 0);
+      console.log("totalGastos >>>><", totalGastos);
+
       let ingreso = parseFloat(caja.montoinicial) || 0; // Monto inicial
-      let gasto = parseFloat(caja.ccfinal) || 0; // Monto final
-      let total = ingreso - gasto
+      let gasto = parseFloat(totalGastos) || 0; // Monto final
+      let total = ingreso - gasto;
       console.log("total -> ", total);
 
-      /* totalIngreso += ingreso;
+      totalIngreso += ingreso;
       totalGasto += gasto;
 
       // Agregar fila a la tabla
@@ -324,13 +354,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>S/. ${gasto.toFixed(2)}</td>
                 <td>S/. ${total.toFixed(2)}</td>
             </tr>
-        `; */
-    });
+        `;
+    }
 
     // Actualizar los totales en el footer
     $q("#totalIngreso").textContent = `S/. ${totalIngreso.toFixed(2)}`;
     $q("#totalGasto").textContent = `S/. ${totalGasto.toFixed(2)}`;
   });
+
 
 
   $q("#btnGenerarExcelCaja").addEventListener("click", async () => {

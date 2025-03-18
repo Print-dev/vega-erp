@@ -99,10 +99,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     $q("#incremento").value = 0;
 
     const nuevaCaja = await registrarCajaChica(
-      iddp != null ? iddp : null, 
-      1, 
-      ccinicial, 
-      0, 
+      iddp != null ? iddp : null,
+      1,
+      ccinicial,
+      0,
       0,
       0);
 
@@ -128,6 +128,15 @@ document.addEventListener("DOMContentLoaded", async function () {
     const data = await getDatos(`${host}cajachica.controller.php`, params);
     return data;
   } */
+
+
+  async function obtenerIncrementoDecrementoPorIdCaja(idcajachica) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerIncrementoDecrementoPorIdCaja");
+    params.append("idcajachica", idcajachica);
+    const data = await getDatos(`${host}cajachica.controller.php`, params);
+    return data;
+  }
 
   async function obtenerCajaChicaPorId(idcajachica) {
     const params = new URLSearchParams();
@@ -274,7 +283,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log("obtenerMontoCajaChica -> ", montoCaja);
 
     const idcajachicaUsada =
-    idcajachicaObtenida != null ? idcajachicaObtenida : idcajachicaNew;
+      idcajachicaObtenida != null ? idcajachicaObtenida : idcajachicaNew;
     const listaGastos = await obtenerGastosPorCaja(idcajachicaUsada);
     console.log("listaGastos -> ", listaGastos);
     // Sumar el total de los gastos
@@ -289,10 +298,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log("Total gastos al generar cierre -> ", totalGastos);
 
     // Validar si los gastos superan el monto inicial
-    if (totalGastos > montoInicial) {
+    /* if (totalGastos > montoInicial) {
       showToast("El total de gastos supera al monto inicial.", "ERROR");
       return;
-    }
+    } */
 
     // Calcular el nuevo monto final
     let nuevoMontoFinal = montoInicial - totalGastos;
@@ -390,77 +399,73 @@ document.addEventListener("DOMContentLoaded", async function () {
   }); */
 
   $q("#btnGuardarIncremento").addEventListener("click", async function () {
+    // Obtener el incremento y decremento actual desde la BD
+    const incrementoDecremento = await obtenerIncrementoDecrementoPorIdCaja(idcajachicaObtenida || idcajachicaNew);
+    console.log("incrementoDecremento -> ", incrementoDecremento);
+
+    // Extraer valores actuales de incremento y decremento
+    let incrementoActual = incrementoDecremento[0]?.incremento || 0;
+    let decrementoActual = incrementoDecremento[0]?.decremento || 0;
+
+    // Obtener el valor ingresado por el usuario
     const incremento = parseFloat($q("#incremento").value) || 0;
-    const operacion = $q("#operacionCC").value;
+    const operacion = $q("#operacionCC").value; // "agregar" o "quitar"
 
     // Validaciones
-    if (isNaN(ccinicial) || ccinicial < 0) {
-        alert("El monto inicial debe ser un número válido y mayor o igual a 0.");
-        return;
-    }
-
     if (isNaN(incremento) || incremento <= 0) {
-        alert("El monto ingresado debe ser un número válido y mayor a 0.");
-        return;
+      alert("El monto ingresado debe ser un número válido y mayor a 0.");
+      return;
     }
 
-    // Determinar si se suma o se resta según la opción seleccionada
-    ccfinalGlobal = operacion === "agregar" 
-        ? ccinicial + incremento 
-        : ccinicial - incremento;
-
-    if (ccfinalGlobal < 0) {
-        showToast("El monto final no puede ser negativo.", "ERROR");
-        return;
-    }
-
-    // Calcular el nuevo incremento o decremento
+    // Calcular el nuevo monto según la operación
     let nuevoIncremento = incrementoActual;
     let nuevoDecremento = decrementoActual;
+    let ccfinalGlobal;
 
     if (operacion === "agregar") {
-        nuevoIncremento += incremento;
-    } else {
-        nuevoDecremento += incremento;
+      nuevoIncremento += incremento; // Sumar al incremento existente
+      ccfinalGlobal = ccinicial + incremento;
+    } else if (operacion === "quitar") {
+      nuevoDecremento += incremento; // Sumar al decremento existente
+      ccfinalGlobal = ccinicial - incremento;
     }
 
-    if (nuevoDecremento < 0) {
-        showToast("El decremento acumulado no puede ser negativo.", "ERROR");
-        return;
+    if (ccfinalGlobal < 0) {
+      showToast("El monto final no puede ser negativo.", "ERROR");
+      return;
     }
 
     console.log("Nuevo incremento: ", nuevoIncremento);
     console.log("Nuevo decremento: ", nuevoDecremento);
     console.log("ccfinalGlobal después del cálculo: ", ccfinalGlobal);
 
-    // Verificar si existe una caja chica activa
+    // Verificar si la caja chica existe
     const cajaChicaExiste = await obtenerCajaChicaPorId(idcajachicaObtenida || idcajachicaNew);
     console.log("cajaChicaExiste -> ", cajaChicaExiste);
 
     if (cajaChicaExiste?.length > 0) {
-        console.log("Actualizando valores...");
+      console.log("Actualizando valores...");
 
-        // Actualizar incremento o decremento según la operación
-        if (operacion === "agregar") {
-            const incrementoAct = await actualizarIncremento(idcajachicaObtenida || idcajachicaNew, nuevoIncremento);
-            console.log("Incremento actualizado: ", incrementoAct);
-            incrementoActual = nuevoIncremento; // Guardar nuevo incremento globalmente
-        } else {
-            const decrementoAct = await actualizarDecremento(idcajachicaObtenida || idcajachicaNew, nuevoDecremento);
-            console.log("Decremento actualizado: ", decrementoAct);
-            decrementoActual = nuevoDecremento; // Guardar nuevo decremento globalmente
-        }
+      if (operacion === "agregar") {
+        const incrementoAct = await actualizarIncremento(idcajachicaObtenida || idcajachicaNew, nuevoIncremento);
+        console.log("Incremento actualizado: ", incrementoAct);
+      } else if (operacion === "quitar") {
+        const decrementoAct = await actualizarDecremento(idcajachicaObtenida || idcajachicaNew, nuevoDecremento);
+        console.log("Decremento actualizado: ", decrementoAct);
+      }
 
-        // Actualizar el monto final y el monto de la caja chica
-        const montoFinalActualizado = await actualizarCCfinal(idcajachicaObtenida || idcajachicaNew, ccfinalGlobal);
-        console.log("Monto final actualizado: ", montoFinalActualizado);
+      // Actualizar el monto final
+      const montoFinalActualizado = await actualizarCCfinal(idcajachicaObtenida || idcajachicaNew, ccfinalGlobal);
+      console.log("Monto final actualizado: ", montoFinalActualizado);
 
-        const montoCajaActualizado = await actualizarMontoCajaChica(1, ccfinalGlobal);
-        console.log("Monto en caja chica actualizado: ", montoCajaActualizado);
+      // Actualizar el monto en caja chica
+      const montoCajaActualizado = await actualizarMontoCajaChica(1, ccfinalGlobal);
+      console.log("Monto en caja chica actualizado: ", montoCajaActualizado);
 
-        $q("#nuevoMonto").innerText = `Nuevo monto S/. ${parseFloat(ccfinalGlobal.toFixed(2))}`;
+      $q("#nuevoMonto").innerText = `Nuevo monto S/. ${parseFloat(ccfinalGlobal.toFixed(2))}`;
     }
-}); // verificar esta nueva funcion, supuestamente hace de que se actualize tanto el incfrdmento como el decremento y tambien actualiza de acuerdo a eso el monto Caja chica
+  });
+  // verificar esta nueva funcion, supuestamente hace de que se actualize tanto el incfrdmento como el decremento y tambien actualiza de acuerdo a eso el monto Caja chica
 
 
   $q("#btnRegistrarGasto").addEventListener("click", async function () {

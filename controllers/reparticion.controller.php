@@ -23,12 +23,26 @@ if(isset($_GET['operation'])){
         ];
         echo json_encode($reparticion->obtenerIngresoPorId($cleanData));
         break;
+        
+    case 'obtenerEgresoPorId':
+        $cleanData = [
+          'idegreso' => $_GET['idegreso'] === "" ? null : $reparticion->limpiarCadena($_GET['idegreso'])
+        ];
+        echo json_encode($reparticion->obtenerEgresoPorId($cleanData));
+        break;
 
     case 'obtenerIngresoPorIdReparticion':
         $cleanData = [
           'idreparticion' => $_GET['idreparticion'] === "" ? null : $reparticion->limpiarCadena($_GET['idreparticion'])
         ];
         echo json_encode($reparticion->obtenerIngresoPorIdReparticion($cleanData));
+        break;
+
+    case 'obtenerEgresoPorIdReparticion':
+        $cleanData = [
+          'idreparticion' => $_GET['idreparticion'] === "" ? null : $reparticion->limpiarCadena($_GET['idreparticion'])
+        ];
+        echo json_encode($reparticion->obtenerEgresoPorIdReparticion($cleanData));
         break;
 
     

@@ -1,5 +1,6 @@
 USE vega_producciones_erp;
 
+DROP PROCEDURE IF EXISTS sp_registrar_usuario;
 DELIMITER $$
 CREATE PROCEDURE sp_registrar_usuario
 (
@@ -8,6 +9,7 @@ CREATE PROCEDURE sp_registrar_usuario
     IN _nom_usuario VARCHAR(120),
     IN _claveacceso VARBINARY(255),
     IN _color CHAR(7),
+    IN _porcentaje INT,
     IN _idnivelacceso INT
 )
 BEGIN
@@ -18,8 +20,8 @@ BEGIN
         SET existe_error = 1;
 	END;
     
-    INSERT INTO usuarios (idpersona, nom_usuario, claveacceso, color, idnivelacceso)VALUES 
-		(_idpersona, _nom_usuario, _claveacceso, nullif(_color, ''), _idnivelacceso);
+    INSERT INTO usuarios (idpersona, nom_usuario, claveacceso, color, porcentaje ,idnivelacceso)VALUES 
+		(_idpersona, _nom_usuario, _claveacceso, nullif(_color, ''), nullif(_porcentaje, '') ,_idnivelacceso);
         
 	IF existe_error= 1 THEN
 		SET _idusuario = -1;
@@ -36,7 +38,7 @@ CREATE PROCEDURE sp_obtener_usuario_por_id
 )
 BEGIN
 	SELECT
-		P.apellidos,P.nombres AS dato, P.num_doc, P.genero, P.telefono, P.idpersona, P.direccion, P.correo,
+		P.apellidos,P.nombres AS dato, P.num_doc, P.genero, P.telefono, P.idpersona, P.direccion, P.correo, U.porcentaje,
         U.idusuario,U.nom_usuario, U.estado,
         NA.nivelacceso
 		FROM usuarios U

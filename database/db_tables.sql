@@ -67,6 +67,7 @@ CREATE TABLE usuarios
     nom_usuario VARCHAR(30) NOT NULL,
     claveacceso VARBINARY(255) not null, 
     color		CHAR(7) null,
+    porcentaje 	INT NULL,
 	estado 		TINYINT NOT NULL DEFAULT 1, -- 1=activo, 2=baja/inactivo/suspendido/baneado/inhabilitado
 	create_at	  DATETIME			  NOT NULL DEFAULT NOW(),
     update_at	  DATETIME			  NULL,
@@ -115,24 +116,22 @@ create table clientes (
     constraint chk_tipodoc		check(tipodoc IN (1,2))
 )engine=innodb;
 
-ALTER TABLE clientes 
-MODIFY COLUMN tipodoc INT NULL;
 
 create table detalles_presentacion (
 	iddetalle_presentacion	int auto_increment primary key,
     idusuario			int not null,
     filmmaker			int  null,
     idcliente			int not null,
-    iddistrito			int not null,
+    iddistrito			int null,
     ncotizacion			CHAR(9) null,
     fecha_presentacion	date not null,
-    horainicio	time not null,
-    horafinal 	time not null,
-    establecimiento	varchar(80) not null,
-    referencia 		varchar(200) not null,
+    horainicio	time null,
+    horafinal 	time null,
+    establecimiento	varchar(80) null,
+    referencia 		varchar(200) null,
     acuerdo			TEXT null,
-    tipo_evento		int not null, -- 1= publico, 2= privado
-    modalidad		int	not null, -- 1= convenio, 2= contrato
+    tipo_evento		int null, -- 1= publico, 2= privado
+    modalidad		int null, -- 1= convenio, 2= contrato
 	validez			int		null,
     igv				tinyint	not null,
     reserva			tinyint null default 0,

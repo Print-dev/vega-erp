@@ -157,7 +157,12 @@
             <label for="color" class="col-sm-1 form-label size-label mt-3">Color:</label>
             <div class="col-sm-5">
               <input type="color" name="color" id="color" class="form-control">
-             
+            </div>
+          </div>
+          <div class="row g-2 mt-3 contenedor-porcentaje" hidden>
+            <label for="porcentaje" class="col-sm-1 form-label size-label mt-3">Porcentaje (%)</label>
+            <div class="col-sm-5">
+              <input type="porcentaje" name="porcentaje" id="porcentaje" maxlength="3" minlength="3" class="form-control">
             </div>
           </div>
 

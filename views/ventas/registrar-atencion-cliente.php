@@ -20,7 +20,6 @@
                     <div class="row">
                         <div class="card-body row g-2">
                             <h1 class="card-title">Datos de cliente</h1>
-                            <button type="button" class="btn btn-primary" id="btnBuscarCliente">Buscar</button>
                             <!-- <div class="col-md-2">
                                 <div class="input-group" style="height: 100%;">
                                     <input type="text"
@@ -114,6 +113,11 @@
                             </div>
 
                         </div>
+                        <div class="card-footer border-0">
+                            <div class="text-start">
+                                <button type="button" class="btn btn-primary" id="btnBuscarCliente">Buscar</button>
+                            </div>
+                        </div>
                         <div class="card-body  row g-2 ">
                             <hr>
                             <h1 class="card-title">Datos de evento</h1>
@@ -174,7 +178,7 @@
                             <div class="col-md-2">
                                 <div class="form-floating">
                                     <select name="modalidad" id="modalidad" class="form-select">
-                                        <option value="">Selecciona</option>
+                                        <option value="-1">Selecciona</option>
                                         <option value="1">Convenio</option>
                                         <option value="2">Contrato</option>
                                     </select>
@@ -240,8 +244,8 @@
                             <i class="fa-solid fa-eraser px-2"></i>Limpiar</button>
                         <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" id="btnRegresarAC" class="btn btn-primary">
                             <i class="fa-solid fa-circle-left px-2"></i>Regresar</a>
-                            <button class="btn btn-primary" type="button" id="btnConsultarFecha">
-                            <i class="fa-solid fa-magnifying-glass"></i>    Consultar fechas reservadas</button>
+                        <button class="btn btn-primary" type="button" id="btnConsultarFecha">
+                            <i class="fa-solid fa-magnifying-glass"></i> Consultar fechas reservadas</button>
                     </div>
                 </div>
             </div>
@@ -249,7 +253,7 @@
 </div>
 
 <!-- MODAL PARA COTIZAR DE MANERA CONTRATO -->
-<div class="modal fade" id="modal-fechasagenda" tabindex="-1" aria-labelledby="modalfechasagenda" aria-hidden="true" >
+<div class="modal fade" id="modal-fechasagenda" tabindex="-1" aria-labelledby="modalfechasagenda" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

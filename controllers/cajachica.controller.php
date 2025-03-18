@@ -34,6 +34,14 @@ if (isset($_GET['operation'])) {
       echo json_encode($cajachica->obtenerGastosPorCaja(['idcajachica' => $cajachica->limpiarCadena($_GET['idcajachica'])]));
       break;
 
+    case 'obtenerGastosPorCaja':
+      echo json_encode($cajachica->obtenerGastosPorCaja(['idcajachica' => $cajachica->limpiarCadena($_GET['idcajachica'])]));
+      break;
+
+    case 'obtenerIncrementoDecrementoPorIdCaja':
+      echo json_encode($cajachica->obtenerIncrementoDecrementoPorIdCaja(['idcajachica' => $cajachica->limpiarCadena($_GET['idcajachica'])]));
+      break;
+
     case 'filtrarCajasChicas':
       $cleanData = [
         'fechaapertura' => empty($_GET['fechaapertura']) ? null : $cajachica->limpiarCadena($_GET['fechaapertura']),

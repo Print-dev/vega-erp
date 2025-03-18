@@ -20,6 +20,17 @@ class CajaChica extends ExecQuery
         }
     }
 
+    public function obtenerIncrementoDecrementoPorIdCaja($params = []): array
+    {
+        try {
+            $cmd = parent::execQ("SELECT idcajachica, incremento, decremento FROM cajachica WHERE idcajachica = ?");
+            $cmd->execute(array($params['idcajachica']));
+            return $cmd->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+    }
+
     public function obtenerMontoCajaChica(): array
     {
         try {

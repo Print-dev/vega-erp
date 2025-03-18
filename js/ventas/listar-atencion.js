@@ -555,7 +555,11 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
 
                       ${x.tienecaja == 1 ? '' : `<button type="button" class="btn btn-sm btn-warning btn-caja" data-id=${x.iddetalle_presentacion} title="Generar Caja Chica">
                           Generar Caja Chica  
-                      </button> `}
+                      </button> `                    
+                    }
+                    <button type="button" class="btn btn-sm btn-primary btn-actualizar" data-id=${x.iddetalle_presentacion} title="Actualizar Evento">
+                        Actualizar
+                      </button>
                 </td>
             </tr>
         `;
@@ -663,6 +667,9 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
           if (e.target.classList.contains("btn-caja")) {
             await buttonCaja(e);
           }
+          if (e.target.classList.contains("btn-actualizar")) {
+            await buttonActualizar(e);
+          }
           /* if(e.target.classList.contains("show-espec")){//abre el sidebar
           await btnSBUpdateActivo(e);
         }
@@ -685,6 +692,16 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
     window.localStorage.clear()
     window.localStorage.setItem("iddp", iddp)
     window.location.href = `http://localhost/vega-erp/views/contabilidad/caja-chica/registrar-caja`
+    return
+  }
+
+  async function buttonActualizar(e) {
+    iddp = e.target.getAttribute("data-id")
+    const dpActualizado = await actualizarCajaDP(iddp, 1)
+    console.log("dpActualizado -> ", dpActualizado);
+    window.localStorage.clear()
+    window.localStorage.setItem("iddp", iddp)
+    window.location.href = `http://localhost/vega-erp/views/ventas/actualizar-atencion-cliente`
     return
   }
 

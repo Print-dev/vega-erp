@@ -1,6 +1,8 @@
 USE vega_producciones_erp;
 drop procedure if exists sp_registrar_detalle_presentacion;
 
+CALL sp_registrar_detalle_presentacion(@iddetalle_presentacion,2, null, 2, null, null, '2025-03-01', null,null,null,null,null,null,null,null,0)
+
 DELIMITER $$
 CREATE PROCEDURE sp_registrar_detalle_presentacion (
     OUT _iddetalle_presentacion INT,
@@ -29,7 +31,7 @@ BEGIN
     END;
     
     INSERT INTO detalles_presentacion (idusuario, filmmaker, idcliente, iddistrito, ncotizacion, fecha_presentacion, horainicio, horafinal, establecimiento, referencia, acuerdo ,tipo_evento, modalidad, validez, igv)
-    VALUES (_idusuario, nullif(_filmmaker, ''), _idcliente, _iddistrito, NULLIF(_ncotizacion, ''), _fechapresentacion, _horainicio, _horafinal, _establecimiento, _referencia, nullif(_acuerdo, ''), _tipoevento, _modalidad, NULLIF(_validez, ''), _igv);
+    VALUES (_idusuario, nullif(_filmmaker, ''), _idcliente, nullif(_iddistrito, ''), NULLIF(_ncotizacion, ''), _fechapresentacion, nullif(_horainicio, ''), nullif(_horafinal, ''), nullif(_establecimiento,''), nullif(_referencia,''), nullif(_acuerdo, ''), nullif(_tipoevento,''), nullif(_modalidad,''), NULLIF(_validez, ''), _igv);
     
     IF existe_error = 1 THEN
         SET _iddetalle_presentacion = -1;

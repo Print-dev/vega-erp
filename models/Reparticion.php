@@ -38,10 +38,42 @@ class Reparticion extends ExecQuery
     }
   }
 
+  public function obtenerEgresoPorId($params = []): array
+  {
+    try {
+      $sp = parent::execQ("SELECT * FROM egresos_evento WHERE idegreso = ?");
+      $sp->execute(
+        array(    
+          $params['idegreso'],
+        )
+        
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function obtenerIngresoPorIdReparticion($params = []): array
   {
     try {
       $sp = parent::execQ("SELECT * FROM ingresos_evento WHERE idreparticion = ?");
+      $sp->execute(
+        array(    
+          $params['idreparticion'],
+        )
+        
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerEgresoPorIdReparticion($params = []): array
+  {
+    try {
+      $sp = parent::execQ("SELECT * FROM egresos_evento WHERE idreparticion = ?");
       $sp->execute(
         array(    
           $params['idreparticion'],
