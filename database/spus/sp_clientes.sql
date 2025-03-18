@@ -2,7 +2,7 @@ USE vega_producciones_erp;
 
 -- CALL sp_registrar_cliente (@idcliente,null, null, null, 'sr orlando', null, null, null,null);
 
-DROP PROCEDURE sp_registrar_cliente;
+DROP PROCEDURE IF EXISTS sp_registrar_cliente;
 DELIMITER $$
 CREATE PROCEDURE sp_registrar_cliente (
     OUT _idcliente INT,
@@ -78,7 +78,7 @@ END $$
 
 DELIMITER ;
 
-CALL sp_search_cliente_numdoc('20607656372')
+-- CALL sp_search_cliente_numdoc('20607656372')
 
 DROP PROCEDURE IF EXISTS sp_actualizar_cliente;
 DELIMITER $$
@@ -107,4 +107,4 @@ BEGIN
     WHERE idcliente = _idcliente;
 END $$
 
-CALL sp_actualizar_cliente(2, 74, '72754752', 'ROYER ALEXIS AVLOS ROMEO', '', '938439212', 'alex@gmail.com', 'mi haus 69');
+-- CALL sp_actualizar_cliente(2, 74, '72754752', 'ROYER ALEXIS AVLOS ROMEO', '', '938439212', 'alex@gmail.com', 'mi haus 69');

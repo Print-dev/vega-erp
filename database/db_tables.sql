@@ -247,3 +247,38 @@ CREATE TABLE notificaciones_viatico (
     constraint fk_idviatico_nt foreign key (idviatico) references viaticos (idviatico),
     constraint fk_filmmamker_nt foreign key (filmmaker) references usuarios (idusuario)
 ) engine = innodb;
+
+CREATE TABLE reparticion_ingresos (
+	idreparticion	int auto_increment primary key,
+    iddetalle_presentacion int not null,
+    montototal		decimal(10,2) null default 0,
+    montorepresentante decimal(10,2) null default 0,
+    montopromotor	decimal(10,2) null default 0,
+    ingresototal	decimal(10,2) null default 0,
+    montoartista	decimal(10,2) null default 0,
+    montofinal		decimal(10,2) null default 0,
+    estado			tinyint null default 1, -- 1: abierto, 2: cerrado 
+	constraint fk_rep_ing foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
+    constraint fk_estado_ing check (estado IN (1, 2))
+) engine = innodb;
+
+
+CREATE TABLE ingresos_evento (
+	idingreso	int auto_increment primary key,
+    idreparticion int not null,
+    descripcion	varchar(80) not null,
+    monto		decimal(10,2) not null,
+    tipopago	tinyint	not null, -- 1: transferencia, 2: contado
+    noperacion	varchar(15) null,	
+    constraint fk_idreparticion_ing foreign key (idreparticion) references reparticion_ingresos (idreparticion)
+) engine = innodb;
+
+CREATE TABLE egresos_evento (
+	idegreso	int auto_increment primary key,
+    idreparticion int not null,
+    descripcion	varchar(80) not null,
+    monto		decimal(10,2) not null,
+    tipopago	tinyint	not null, -- 1: transferencia, 2: contado
+    noperacion	varchar(15) null,	
+    constraint fk_idreparticion_egre foreign key (idreparticion) references reparticion_ingresos (idreparticion)
+) engine = innodb;
