@@ -184,3 +184,8 @@ function calcularTiempoTranscurrido(fechaString) {
       return `hace ${dias} ${dias === 1 ? "día" : "días"}`;
   }
 }
+
+const convertirAHorasTotales = (hora) => {
+  const [hh, mm, ss] = hora.split(":").map(Number);
+  return hh * 60 + mm; // Convertimos a minutos totales
+};

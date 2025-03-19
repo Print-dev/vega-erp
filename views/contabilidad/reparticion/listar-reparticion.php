@@ -35,13 +35,9 @@
                                     <table class="table" id="table-reparticiones">
                                         <thead class="text-center">
                                             <tr>
-                                                <th>Evento</th>
-                                                <th>Monto Total</th>
-                                                <th>Monto Vega</th>
-                                                <th>Monto promotor</th>
+                                                <th>Evento</th>                                                
                                                 <th>Ingreso total</th>
-                                                <th>Monto Artista</th>
-                                                <th>Monto Rep Vega</th>
+                                                <th>Egreso total</th>
                                                 <th>Opciones</th>
                                             </tr>
                                         </thead>

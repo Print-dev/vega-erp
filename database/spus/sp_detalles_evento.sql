@@ -1,8 +1,36 @@
 USE vega_producciones_erp;
 drop procedure if exists sp_registrar_detalle_presentacion;
 
-CALL sp_registrar_detalle_presentacion(@iddetalle_presentacion,2, null, 2, null, null, '2025-03-01', null,null,null,null,null,null,null,null,0)
+-- CALL sp_registrar_detalle_presentacion(@iddetalle_presentacion,2, null, 2, null, null, '2025-03-01', null,null,null,null,null,null,null,null,0)
+DROP PROCEDURE IF EXISTS sp_actualizar_detalle_presentacion;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_detalle_presentacion (
+	IN _iddetalle_presentacion INT,
+    IN _fechapresentacion date,
+    IN _horainicio time,
+    IN _horafinal time,
+    IN _establecimiento VARCHAR(80),
+    IN _referencia VARCHAR(200),
+    IN _tipoevento int,
+	IN _validez int,
+    IN _iddistrito int,
+    IN _igv TINYINT
+)
+BEGIN
+	UPDATE detalles_presentacion SET
+	fecha_presentacion = _fechapresentacion,
+	horainicio = _horainicio,
+	horafinal = _horafinal,
+	establecimiento = _establecimiento,
+	referencia = nullif(_referencia, ''),
+	tipo_evento = _tipoevento,
+	validez = nullif(_validez, ''),
+	iddistrito = _iddistrito,
+	igv = _igv
+	WHERE iddetalle_presentacion = _iddetalle_presentacion; 
+END //
 
+DROP PROCEDURE IF EXISTS sp_registrar_detalle_presentacion;
 DELIMITER $$
 CREATE PROCEDURE sp_registrar_detalle_presentacion (
     OUT _iddetalle_presentacion INT,
@@ -99,8 +127,6 @@ BEGIN
 
 END //
 
-CALL sp_obtener_detalles_evento ('','');
-
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_artista;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_agenda_artista`(
@@ -169,8 +195,6 @@ END //
 DELIMITER ;
 
 
-CALL sp_obtener_agenda_artista (null, null);
-
 drop procedure if exists sp_obtener_dp_por_fecha;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_dp_por_fecha`(
@@ -184,11 +208,7 @@ BEGIN
     WHERE fecha_presentacion = _fecha_presentacion AND idusuario = _idusuario; -- me quede aca
 END //
 
-CALL sp_obtener_dp_por_fecha (2, '2025-03-18')
-
-CALL sp_obtener_detalles_evento ('','');
-
-DROP PROCEDURE sp_actualizar_estado_dp;
+DROP PROCEDURE if exists sp_actualizar_estado_dp;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_estado_dp (
 	IN _iddetalle_presentacion INT,
@@ -200,7 +220,7 @@ BEGIN
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
 
-DROP PROCEDURE sp_actualizar_pagado50_dp;
+DROP PROCEDURE if exists sp_actualizar_pagado50_dp;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_pagado50_dp (
 	IN _iddetalle_presentacion INT,
@@ -212,7 +232,7 @@ BEGIN
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
 
-DROP PROCEDURE sp_actualizar_caja_dp;
+DROP PROCEDURE if exists sp_actualizar_caja_dp;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_caja_dp (
 	IN _iddetalle_presentacion INT,
@@ -226,7 +246,7 @@ END //
 
 
 
-DROP PROCEDURE sp_actualizar_estado_reserva_dp;
+DROP PROCEDURE if exists sp_actualizar_estado_reserva_dp;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_estado_reserva_dp (
 	IN _iddetalle_presentacion INT,
@@ -238,7 +258,7 @@ BEGIN
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
 
-DROP PROCEDURE sp_editar_acuerdo_evento;
+DROP PROCEDURE if exists sp_editar_acuerdo_evento;
 DELIMITER //
 CREATE PROCEDURE sp_editar_acuerdo_evento (
 	IN _iddetalle_presentacion INT,
@@ -250,7 +270,7 @@ BEGIN
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
 
-DROP PROCEDURE sp_asignarfilmmaker_dp;
+DROP PROCEDURE if exists sp_asignarfilmmaker_dp;
 DELIMITER //
 CREATE PROCEDURE sp_asignarfilmmaker_dp (
 	IN _iddetalle_presentacion INT,

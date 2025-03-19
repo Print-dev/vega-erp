@@ -44,7 +44,6 @@ if(isset($_GET['operation'])){
         ];
         echo json_encode($reparticion->obtenerEgresoPorIdReparticion($cleanData));
         break;
-
     
   }
 }
@@ -53,13 +52,7 @@ if (isset($_POST['operation'])) {
   switch ($_POST['operation']) {
     case 'registrarReparticion':
       $cleanData = [
-        'iddetallepresentacion'   => $reparticion->limpiarCadena($_POST['iddetallepresentacion']) ?  $reparticion->limpiarCadena($_POST['iddetallepresentacion']) : '',
-        'montototal' => $reparticion->limpiarCadena($_POST['montototal']) ? $reparticion->limpiarCadena($_POST['montototal']) : '',
-        'montorepresentante'   => $reparticion->limpiarCadena($_POST['montorepresentante']) ? $reparticion->limpiarCadena($_POST['montorepresentante']) : '',
-        'montopromotor'   => $reparticion->limpiarCadena($_POST['montopromotor']) ? $reparticion->limpiarCadena($_POST['montopromotor']) : '',
-        'ingresototal'   => $reparticion->limpiarCadena($_POST['ingresototal']) ? $reparticion->limpiarCadena($_POST['ingresototal']) : '',
-        'montoartista'   => $reparticion->limpiarCadena($_POST['montoartista']) ? $reparticion->limpiarCadena($_POST['montoartista']) : '',
-        'montofinal'   => $reparticion->limpiarCadena($_POST['montofinal']) ? $reparticion->limpiarCadena($_POST['montofinal']) : '',
+        'iddetallepresentacion'   => $reparticion->limpiarCadena($_POST['iddetallepresentacion']) ?  $reparticion->limpiarCadena($_POST['iddetallepresentacion']) : ''
       ];
 
       $respuesta = ['idreparticion' => -1];

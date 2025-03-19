@@ -402,7 +402,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       return {
         html: `
-            ${!incompleto ? `
+            ${arg.event.extendedProps.estadoBadge.text == "Incompleto" ? 
+              `
+              <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
+                <div>00:00 - 00:00</div>
+                <div>${badgeHtml}</div>
+              </div>
+              <div style="padding: 8px; word-wrap: break-word; 
+            overflow-wrap: break-word;
+            white-space: normal;">
+              <div style="font-size: 20px; font-weight: bold;">${arg.event.title
+            }</div>
+            <div><strong>Click aqui para editar</strong>
+            </div>
+              ` :
+              
+
+              `
               <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
               <div>${horaInicio} - ${horaFinal}</div>
               <div>${badgeHtml}</div>
@@ -451,18 +467,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                   <button class="btn btn-primary" id="btnVerMontos" style="flex: 1;" data-idcontrato="${arg.event.extendedProps?.idcontrato}" data-idconvenio="${arg.event.extendedProps?.idconvenio}">Ver Monto</button>
                 ` : ''}
               </div>
-              ` : `
-              <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
-                <div>00:00 - 00:00</div>
-                <div>${badgeHtml}</div>
-              </div>
-              <div style="padding: 8px; word-wrap: break-word; 
-            overflow-wrap: break-word;
-            white-space: normal;">
-              <div style="font-size: 20px; font-weight: bold;">${arg.event.title
-            }</div>
-            <div><strong>Click aqui para editar</strong>
-            </div>
               `}
         `,
       };

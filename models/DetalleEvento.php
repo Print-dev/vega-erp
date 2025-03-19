@@ -4,6 +4,36 @@ require_once 'ExecQuery.php';
 
 class DetalleEvento extends ExecQuery
 {
+  public function actualizarDetallePresentacion($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('CALL sp_actualizar_detalle_presentacion(?,?,?,?,?,?,?,?,?,?)');
+      $act = $cmd->execute(
+        array(
+          $params['iddetallepresentacion'],
+          $params['fechapresentacion'],
+          $params['horainicio'],
+          $params['horafinal'],
+          $params['establecimiento'],
+          $params['referencia'],
+          $params['tipoevento'],
+          $params['validez'],
+          $params['iddistrito'],
+          $params['igv'],
+        )
+      );
+      
+      return $act;
+    } catch (PDOException $e) {
+      // Registrar detalles del error en el log
+      error_log("Error en registrarDetallePresentacion: " . $e->getMessage());
+
+      // Retornar detalles del error
+      die($e->getMessage());
+    }
+  }
+  
   public function registrarDetallePresentacion($params = []): int
   {
     try {
@@ -39,6 +69,8 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
+
+
 
   public function filtrarAtenciones($params = []): array
   {

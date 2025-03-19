@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     params.append("iddetallepresentacion", iddetallepresentacion);
     const data = await getDatos(`${host}convenio.controller.php`, params);
     console.log("dataa line 33-> ", data);
-    const convenioPropuesta = await obtenerConvenioPorId(data[0].idconvenio)
+    const convenioPropuesta = await obtenerConvenioPorId(data[0]?.idconvenio)
     return convenioPropuesta;
   }
 
@@ -187,13 +187,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       } */
       $q("#table-reparticiones tbody").innerHTML += `
             <tr>
-                <td>${x.nom_usuario} - ${x.establecimiento}</td>
-                <td>${x.montototal ? x.montototal : 0}</td>
-                <td>${x.montorepresentante ? x.montorepresentante : 0}</td>
-                <td>${x.montopromotor ? x.montopromotor : 0}</td>
+                <td>${x.nom_usuario} - ${x.establecimiento}</td>            
                 <td>${x.ingresototal ? x.ingresototal : 0}</td>
-                <td>${x.montoartista ? x.montoartista : 0}</td>
-                <td>${x.montofinal ? x.montofinal : 0}</td>  
+                <td>${x.egresototal ? x.egresototal : 0}</td>
                 <td>
                     ${x.estado == 1
           ? `<button class="btn btn-sm btn-success btn-ingresos" data-id="${x.idreparticion}" data-iddp="${x.iddetalle_presentacion}">Registrar Ingresos</button>
@@ -302,7 +298,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     modalCalculoReparticion.show()
 
     // PRIMERO SEGUNDO para obtener el gasto general de evento
-    $q("#tbody-ingresos").innerHTML = ``
+    $q(".tbody-ingresos").innerHTML = ``
     // ME QUEDE ACA**********************************************************************************************************
  
     iddp = e.target.getAttribute("data-iddp")

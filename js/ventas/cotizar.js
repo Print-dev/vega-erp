@@ -261,6 +261,19 @@ document.addEventListener('DOMContentLoaded', async function () {
     return rcliente;
   }
 
+  async function registrarReparticion(iddetallepresentacion) {
+    const reparticion = new FormData();
+    reparticion.append("operation", "registrarReparticion");
+    reparticion.append("iddetallepresentacion", iddetallepresentacion);
+
+    const freparticion = await fetch(`${host}reparticion.controller.php`, {
+        method: "POST",
+        body: reparticion,
+    });
+    const rreparticion = await freparticion.json();
+    return rreparticion;
+}
+
   async function registrarDetalleEvento(idcliente, ncotizacion) {
     const horainicio = $q("#horainicio").value.trim();
     const horafinal = $q("#horafinal").value.trim();
@@ -790,12 +803,18 @@ document.addEventListener('DOMContentLoaded', async function () {
 
               if ($q("#modalidad").value == 1) {
                 detalleevento = await registrarDetalleEvento(data.idcliente);
+                const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                console.log("repa registrado -> ", repaRegistrado);
                 console.log(detalleevento);
               } else if ($q("#modalidad").value == 2) {
                 detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
+                const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                console.log("repa registrado -> ", repaRegistrado);
                 console.log(detalleevento);
               }else{
                 detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
+                const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                console.log("repa registrado -> ", repaRegistrado);
                 console.log(detalleevento);
               }
 
@@ -822,15 +841,21 @@ document.addEventListener('DOMContentLoaded', async function () {
             if ($q("#modalidad").value == 1) {
               console.log("idcliente-> en valor 1 ", idcliente);
               detalleevento = await registrarDetalleEvento(idcliente);
+              const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+              console.log("repa registrado -> ", repaRegistrado);
               console.log(detalleevento);
             } else if ($q("#modalidad").value == 2) {
               console.log("idcliente-> en valor 2 ", idcliente);
               detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
+              const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                console.log("repa registrado -> ", repaRegistrado);
               console.log(detalleevento);
             }else if ($q("#modalidad").value == -1){
               console.log("idcliente-> en valor -1 ", idcliente);
               console.log("entrando a cuando no se selecciona ningun valor");
               detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
+              const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                console.log("repa registrado -> ", repaRegistrado);
               console.log(detalleevento);
             }
             console.log("detalle evento ->>>>>>", detalleevento);
@@ -860,4 +885,6 @@ document.addEventListener('DOMContentLoaded', async function () {
       $q("#container-validez").hidden = false
     }
   })
+
+  
 });

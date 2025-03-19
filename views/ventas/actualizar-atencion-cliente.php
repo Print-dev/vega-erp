@@ -109,7 +109,7 @@
                 </div>
                 <div class="card-footer d-flex justify-content-end">
                     <div class="d-flex gap-2">
-                        <button type="submit" id="btnActualizarEvento" class="btn btn-primary">
+                        <button type="button" id="btnActualizarEvento" class="btn btn-primary">
                             <i class="fa-solid fa-floppy-disk px-2"></i>Actualizar</button>                        
                         <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" id="btnRegresarAC" class="btn btn-primary">
                             <i class="fa-solid fa-circle-left px-2"></i>Regresar</a>

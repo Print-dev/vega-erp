@@ -76,6 +76,25 @@ if (isset($_POST['operation'])) {
       echo json_encode($respuesta);
       break;
       
+    case 'actualizarDetallePresentacion':
+      $cleanData = [
+        'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']) ? $detalleevento->limpiarCadena($_POST['iddetallepresentacion']) : '',
+        'fechapresentacion'   => $detalleevento->limpiarCadena($_POST['fechapresentacion']) ? $detalleevento->limpiarCadena($_POST['fechapresentacion']) : '',
+        'horainicio'   => $detalleevento->limpiarCadena($_POST['horainicio']) ? $detalleevento->limpiarCadena($_POST['horainicio']) : '',
+        'horafinal'   => $detalleevento->limpiarCadena($_POST['horafinal']) ? $detalleevento->limpiarCadena($_POST['horafinal']) : '',
+        'establecimiento'   => $detalleevento->limpiarCadena($_POST['establecimiento']) ? $detalleevento->limpiarCadena($_POST['establecimiento']) : '',
+        'referencia'   => $detalleevento->limpiarCadena($_POST['referencia']) ? $detalleevento->limpiarCadena($_POST['referencia']) : '',
+        'tipoevento'   => $detalleevento->limpiarCadena($_POST['tipoevento']) ? $detalleevento->limpiarCadena($_POST['tipoevento']) : '',
+        'validez'   => $detalleevento->limpiarCadena($_POST['validez']) ? $detalleevento->limpiarCadena($_POST['validez']) : '',
+        'iddistrito'   => $detalleevento->limpiarCadena($_POST['iddistrito']) ? $detalleevento->limpiarCadena($_POST['iddistrito']) : '',
+        'igv'   => $detalleevento->limpiarCadena($_POST['igv']) ? $detalleevento->limpiarCadena($_POST['igv']) : '',
+      ];
+
+      $rpt = $detalleevento->actualizarDetallePresentacion($cleanData);
+
+      echo json_encode($rpt);
+      break;
+
     case 'actualizarEstadoReservaDp':
       $cleanData = [
         'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']),

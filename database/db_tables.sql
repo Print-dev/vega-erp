@@ -249,13 +249,7 @@ CREATE TABLE notificaciones_viatico (
 
 CREATE TABLE reparticion_ingresos (
 	idreparticion	int auto_increment primary key,
-    iddetalle_presentacion int not null,
-    montototal		decimal(10,2) null default 0,
-    montorepresentante decimal(10,2) null default 0,
-    montopromotor	decimal(10,2) null default 0,
-    ingresototal	decimal(10,2) null default 0,
-    montoartista	decimal(10,2) null default 0,
-    montofinal		decimal(10,2) null default 0,
+    iddetalle_presentacion int not null,    
     estado			tinyint null default 1, -- 1: abierto, 2: cerrado 
 	constraint fk_rep_ing foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
     constraint fk_estado_ing check (estado IN (1, 2))

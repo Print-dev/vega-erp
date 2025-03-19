@@ -7,7 +7,7 @@ CREATE PROCEDURE `sp_filtrar_reparticiones`(
 )
 BEGIN
     SELECT 
-       RI.idreparticion, RI.montototal, RI.montorepresentante, RI.montopromotor, RI.ingresototal, RI.montoartista, RI.montofinal, RI.estado,
+       RI.idreparticion, RI.estado,
        USU.nom_usuario, USU.idusuario, DP.establecimiento, DP.iddetalle_presentacion
     FROM reparticion_ingresos RI
     LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = RI.iddetalle_presentacion
@@ -21,16 +21,9 @@ END //
 
 DROP PROCEDURE IF EXISTS sp_registrar_reparticion;
 DELIMITER $$
-
 CREATE PROCEDURE sp_registrar_reparticion (
     OUT _idreparticion INT,
-    IN _iddetalle_presentacion INT,
-    IN _montototal DECIMAL(10,2),
-    IN _montorepresentante  DECIMAL(10,2),
-    IN _montopromotor DECIMAL(10,2),
-    IN _ingresototal DECIMAL(10,2),
-    IN _montoartista DECIMAL(10,2),
-    IN _montofinal DECIMAL(10,2)
+    IN _iddetalle_presentacion INT
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
@@ -41,8 +34,8 @@ BEGIN
     END;
 
     -- Insertar nueva caja chica
-    INSERT INTO reparticion_ingresos (iddetalle_presentacion, montototal ,montorepresentante, montopromotor, ingresototal ,montoartista, montofinal)
-    VALUES (nullif(_iddetalle_presentacion, ''), nullif(_montototal, '') , nullif(_montorepresentante , ''), nullif(_montopromotor ,''), nullif(_ingresototal ,''), nullif(_montoartista , ''), nullif(_montofinal , ''));
+    INSERT INTO reparticion_ingresos (iddetalle_presentacion)
+    VALUES (nullif(_iddetalle_presentacion, ''));
 
     -- Obtener el ID generado
     IF existe_error = 1 THEN
