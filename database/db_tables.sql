@@ -34,9 +34,9 @@ CREATE TABLE personas
 (
 	idpersona     int auto_increment  primary key,
 	num_doc       varchar(20)         not null,
-	apellidos     varchar(100)        not null,
-	nombres	      varchar(100)        not null,
-	genero        char(1)             not null,
+	apellidos     varchar(100)        null,
+	nombres	      varchar(100)        null,
+	genero        char(1)             null,
     direccion	  VARCHAR(150)	  	  NULL,
 	telefono      char(15)		      null,
     telefono2	  char(15)			  null,
@@ -137,14 +137,14 @@ create table detalles_presentacion (
     reserva			tinyint null default 0,
     pagado50		tinyint null default 0,
     tienecaja		tinyint null default 0,
-    estado			tinyint null default 1, -- 1: activo, 2:vencido
+    estado			tinyint null default 1, -- 1: activo, 2:vencido, 3: cancelado
     created_at		date null default now(),
     constraint fk_idusuario_dp foreign key (idusuario) references usuarios (idusuario), -- artista
     constraint fk_filmmaker_dp foreign key (filmmaker) references usuarios (idusuario), -- filmmaker
     constraint fk_idcliente_dp foreign key (idcliente) references clientes (idcliente),
     constraint fk_iddistrito_dp foreign key (iddistrito) references distritos (iddistrito),
     constraint    chk_detalle_p          CHECK(modalidad IN(1, 2)),
-    constraint ck_estado_dp				check(estado IN (1,2)),
+    constraint ck_estado_dp				check(estado IN (1,2,3)),
     constraint ck_tevento_dp				check(tipo_evento IN (1,2)),
     constraint	uk_ncotizacion 			UNIQUE(ncotizacion),
     constraint uk_idp 					UNIQUE(iddetalle_presentacion)

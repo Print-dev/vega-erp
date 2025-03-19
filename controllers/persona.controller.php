@@ -29,15 +29,15 @@ if (isset($_POST['operation'])) {
   switch ($_POST['operation']) {
     case 'registrarPersona':
       $cleanData = [
-        'num_doc'   => $persona->limpiarCadena($_POST['num_doc']),
-        'apellidos' => $persona->limpiarCadena($_POST['apellidos']),
-        'nombres'   => $persona->limpiarCadena($_POST['nombres']),
-        'genero'    => $persona->limpiarCadena($_POST['genero']),
-        'direccion' => $persona->limpiarCadena($_POST['direccion']),
-        'telefono'  => $persona->limpiarCadena($_POST['telefono']),
-        'telefono2' => $persona->limpiarCadena($_POST['telefono2']),
-        'correo'    => $persona->limpiarCadena($_POST['correo']),
-        'iddistrito' => $persona->limpiarCadena($_POST['iddistrito'])
+        'num_doc'   => $persona->limpiarCadena($_POST['num_doc']) ? $persona->limpiarCadena($_POST['num_doc']) : '',
+        'apellidos' => $persona->limpiarCadena($_POST['apellidos']) ? $persona->limpiarCadena($_POST['apellidos']) : '',
+        'nombres'   => $persona->limpiarCadena($_POST['nombres']) ? $persona->limpiarCadena($_POST['nombres']) : '',
+        'genero'    => $persona->limpiarCadena($_POST['genero']) ? $persona->limpiarCadena($_POST['genero']) : '',
+        'direccion' => $persona->limpiarCadena($_POST['direccion']) ? $persona->limpiarCadena($_POST['direccion']) : '',
+        'telefono'  => $persona->limpiarCadena($_POST['telefono']) ? $persona->limpiarCadena($_POST['telefono']) : '',
+        'telefono2' => $persona->limpiarCadena($_POST['telefono2']) ? $persona->limpiarCadena($_POST['telefono2']) : '',
+        'correo'    => $persona->limpiarCadena($_POST['correo']) ? $persona->limpiarCadena($_POST['correo']) : '',
+        'iddistrito' => $persona->limpiarCadena($_POST['iddistrito']) ? $persona->limpiarCadena($_POST['iddistrito']) : ''
       ];
 
       $respuesta = ['idpersona' => -1];

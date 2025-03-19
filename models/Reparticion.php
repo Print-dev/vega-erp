@@ -9,10 +9,12 @@ class Reparticion extends ExecQuery
   public function filtrarReparticiones($params = []): array
   {
     try {
-      $sp = parent::execQ("CALL sp_filtrar_reparticiones(?)");
+      $sp = parent::execQ("CALL sp_filtrar_reparticiones(?,?,?)");
       $sp->execute(
         array(    
-          $params['evento'],
+          $params['nomusuario'],
+          $params['establecimiento'],
+          $params['fechapresentacion'],
         )
         
       );

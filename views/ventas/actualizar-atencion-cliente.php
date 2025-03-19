@@ -113,8 +113,7 @@
                             <i class="fa-solid fa-floppy-disk px-2"></i>Actualizar</button>                        
                         <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" id="btnRegresarAC" class="btn btn-primary">
                             <i class="fa-solid fa-circle-left px-2"></i>Regresar</a>
-                        <button class="btn btn-primary" type="button" id="btnConsultarFecha">
-                            <i class="fa-solid fa-magnifying-glass"></i> Consultar fechas reservadas</button>
+                       
                     </div>
                 </div>
             </div>

@@ -36,6 +36,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rcajaestado;
   }
 
+  async function actualizarMontoCajaChica(idmonto, monto) {
+    const cajaestado = new FormData();
+    cajaestado.append("operation", "actualizarMontoCajaChica");
+    cajaestado.append("idmonto", idmonto);
+    cajaestado.append("monto", monto);
+
+    const fcajaestado = await fetch(`${host}cajachica.controller.php`, {
+      method: "POST",
+      body: cajaestado,
+    });
+    const rcajaestado = await fcajaestado.json();
+    return rcajaestado;
+  }
+
   async function actualizarCCfinal(idcajachica, ccfinal) {
     const cajaestado = new FormData();
     cajaestado.append("operation", "actualizarCCfinal");
@@ -295,15 +309,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function buttonCerrarCaja(e) {
     ccinicialMonto = e.target.getAttribute("data-ccinicial");
     idcajachica = e.target.getAttribute("data-id");
+    
     const cajaCerrada = await actualizarEstadoCaja(idcajachica, 2);
     const gastos = await obtenerGastosPorCaja(idcajachica)
-    
+
     let totalGastos = gastos.reduce((sum, gasto) => sum + parseFloat(gasto.monto), 0);
     let nuevoMonto = ccinicialMonto - totalGastos
+    const montoCajaActualizado = await actualizarMontoCajaChica(
+      1,
+      nuevoMonto
+    );
+    console.log("montoCajaActualizado -> ", montoCajaActualizado);
     const ccfinalActuaizado = await actualizarCCfinal(idcajachica, nuevoMonto);
     console.log("ccfinal actualizado -> ", ccfinalActuaizado);
     console.log("gastos -> ", nuevoMonto);
-    
+
     if (cajaCerrada) {
       showToast("Caja chica cerrada correctamente", "SUCCESS");
       await dataFilters();

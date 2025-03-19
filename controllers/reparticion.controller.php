@@ -12,7 +12,9 @@ if(isset($_GET['operation'])){
   switch($_GET['operation']){
     case 'filtrarReparticiones':
         $cleanData = [
-          'evento' => $_GET['evento'] === "" ? null : $reparticion->limpiarCadena($_GET['evento'])
+          'nomusuario' => $_GET['nomusuario'] === "" ? null : $reparticion->limpiarCadena($_GET['nomusuario']),
+          'establecimiento' => $_GET['establecimiento'] === "" ? null : $reparticion->limpiarCadena($_GET['establecimiento']),
+          'fechapresentacion' => $_GET['fechapresentacion'] === "" ? null : $reparticion->limpiarCadena($_GET['fechapresentacion']),
         ];
         echo json_encode($reparticion->filtrarReparticiones($cleanData));
         break;

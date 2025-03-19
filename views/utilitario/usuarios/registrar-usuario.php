@@ -24,7 +24,7 @@
                   class="form-control"
                   minlength="8"
                   maxlength="20"
-                  required
+                  
                   autofocus
                   title="Ingresa solo números.">
                 <span class="input-group-text btn-primary" style="cursor: pointer;" id="search">
@@ -38,19 +38,19 @@
 
             <div class="col-md-3">
               <div class="form-floating">
-                <input type="text" autocomplete="off" class="form-control" id="apellidos" minlength="3" required>
+                <input type="text" autocomplete="off" class="form-control" id="apellidos" minlength="3" >
                 <label for="apellidos" class="form-label">Apellidos</label>
               </div>
             </div>
             <div class="col-md-3">
               <div class="form-floating">
-                <input type="text" autocomplete="off" class="form-control" id="nombres" required>
+                <input type="text" autocomplete="off" class="form-control" id="nombres" >
                 <label for="nombres" class="form-label">Nombres</label>
               </div>
             </div>
             <div class="col-md-2">
               <div class="form-floating">
-                <select name="genero" id="genero" class="form-select" required>
+                <select name="genero" id="genero" class="form-select" >
                   <option value="">Selecciona</option>
                   <option value="F">Femenino</option>
                   <option value="M">Masculino</option>
@@ -102,7 +102,7 @@
           <div class="row g-2 mb-5 mt-3 form-group">
             <div class="col-md-3">
               <div class="form-floating">
-                <select name="nacionalidad" id="nacionalidad" class="form-select" required">
+                <select name="nacionalidad" id="nacionalidad" class="form-select" ">
                   <option value="">Selecciona</option>
                   <option value="31">Peru</option>
                 </select>
@@ -111,21 +111,21 @@
             </div>
             <div class="col-md-3">
               <div class="form-floating">
-                <select name="departamento" id="departamento" class="form-select" required">
+                <select name="departamento" id="departamento" class="form-select" ">
                 </select>
                 <label for="departamento" class="form-label">Departamento</label>
               </div>
             </div>
             <div class="col-md-3">
               <div class="form-floating">
-                <select name="provincia" id="provincia" class="form-select" required">
+                <select name="provincia" id="provincia" class="form-select" ">
                 </select>
                 <label for="provincia" class="form-label">Provincia</label>
               </div>
             </div>
             <div class="col-md-3 ">
               <div class="form-floating">
-                <select name="distrito" id="distrito" class="form-select" required">
+                <select name="distrito" id="distrito" class="form-select" ">
                 </select>
                 <label for="distrito" class="form-label">Distrito</label>
               </div>
@@ -136,19 +136,19 @@
             <h5>Datos del usuario</h5>
             <label for="nom_usuario" class="col-sm-1 form-label size-label mt-3">Nombre Usuario:</label>
             <div class="col-sm-5">
-              <input type="text" id="nom_usuario" class="form-control" autocomplete="off">
+              <input type="text" id="nom_usuario" class="form-control" autocomplete="off" required>
             </div>
           </div>
           <div class="row g-2 mb-3 mt-3 form-group">
             <label for="claveacceso" class="col-sm-1 form-label size-label mt-3">Contraseña:</label>
             <div class="col-sm-5">
-              <input type="password" id="claveacceso" class="form-control" autocomplete="off">
+              <input type="password" id="claveacceso" class="form-control" autocomplete="off" required>
             </div>
           </div>
           <div class="row g-2 mt-3">
             <label for="idnivelacceso" class="col-sm-1 form-label size-label mt-3">Nivel/Rol:</label>
             <div class="col-sm-5">
-              <select name="idnivelacceso" id="idnivelacceso" class="form-select filters">
+              <select name="idnivelacceso" id="idnivelacceso" class="form-select filters" required>
                 <option value="">Selecciona</option>
               </select>
             </div>
@@ -156,13 +156,13 @@
           <div class="row g-2 mt-3 contenedor-color" hidden>
             <label for="color" class="col-sm-1 form-label size-label mt-3">Color:</label>
             <div class="col-sm-5">
-              <input type="color" name="color" id="color" class="form-control">
+              <input type="color" name="color" id="color" class="form-control" required>
             </div>
           </div>
           <div class="row g-2 mt-3 contenedor-porcentaje" hidden>
             <label for="porcentaje" class="col-sm-1 form-label size-label mt-3">Porcentaje (%)</label>
             <div class="col-sm-5">
-              <input type="porcentaje" name="porcentaje" id="porcentaje" maxlength="3" minlength="3" class="form-control">
+              <input type="porcentaje" name="porcentaje" id="porcentaje" maxlength="2" minlength="2" class="form-control" required>
             </div>
           </div>
 

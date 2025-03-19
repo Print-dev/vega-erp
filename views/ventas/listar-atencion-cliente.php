@@ -31,6 +31,19 @@
                                                 <label for="ndocumento">Nº Documento/RUC</label>
                                             </div>
                                         </div>
+                                        <div class="col-md-2">
+                                            <div class="form-floating">
+                                                <select name="nomusuario" id="nomusuario" class="form-select filter" required>
+                                                </select>
+                                                <label for="nomusuario">Artista</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control filter" id="establecimiento" autocomplete="off">
+                                                <label for="establecimiento">Lugar/establecimiento</label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -41,13 +54,13 @@
                             <table class="table" id="table-atenciones">
                                 <thead class="text-center">
                                     <tr>
-                                        <th>#</th>
                                         <th>N° Cotizacion</th>
                                         <th>Artista</th>
                                         <th>N° Documento/RUC</th>
                                         <th>Cliente</th>
                                         <th>Tipo evento</th>
                                         <th>Modalidad</th>
+                                        <th>Lugar</th>
                                         <th>Fecha presentacion</th>
                                         <th>Estado</th>
                                         <th>Opciones</th>
@@ -236,7 +249,7 @@
                         </div>
 
                         <hr>
-                            <label for="porcentajevega" class="form-label">Acuerdo %</label>
+                        <label for="porcentajevega" class="form-label">Acuerdo %</label>
                         <div class="row g-3 align-items-center">
                             <div class="col-md-4 text-end">
                                 <label for="porcentajevega" class="form-label">Vega:</label>
@@ -262,7 +275,7 @@
                             </div>
                         </div>
                         <hr>
-                            <label for="propuestacliente" class="form-label">Detalle:</label>                
+                        <label for="propuestacliente" class="form-label">Detalle:</label>
                         <div class="col-md-12">
                             <textarea class="form-control" id="propuestacliente" rows="3"></textarea>
                         </div>

@@ -55,15 +55,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function registrarPersona() {
     const persona = new FormData();
     persona.append("operation", "registrarPersona");
-    persona.append("num_doc", $q("#num_doc").value);
-    persona.append("apellidos", $q("#apellidos").value);
-    persona.append("nombres", $q("#nombres").value);
-    persona.append("genero", $q("#genero").value);
-    persona.append("direccion", $q("#direccion").value);
-    persona.append("telefono", $q("#telefono1").value);
-    persona.append("telefono2", $q("#telefono2").value);
-    persona.append("correo", $q("#correo").value);
-    persona.append("iddistrito", $q("#distrito").value);
+    persona.append("num_doc", $q("#num_doc").value ? $q("#num_doc").value : '');
+    persona.append("apellidos", $q("#apellidos").value ? $q("#apellidos").value : '');
+    persona.append("nombres", $q("#nombres").value ?  $q("#nombres").value : '');
+    persona.append("genero", $q("#genero").value ?  $q("#genero").value : '');
+    persona.append("direccion", $q("#direccion").value ?  $q("#direccion").value : '');
+    persona.append("telefono", $q("#telefono1").value ? $q("#telefono1").value : '');
+    persona.append("telefono2", $q("#telefono2").value ? $q("#telefono2").value :'');
+    persona.append("correo", $q("#correo").value ? $q("#correo").value :'');
+    persona.append("iddistrito", $q("#distrito").value ? $q("#distrito").value : '');
 
     const fpersonas = await fetch(`${host}persona.controller.php`, {
       method: "POST",

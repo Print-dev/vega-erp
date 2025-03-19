@@ -38,7 +38,9 @@ if (isset($_GET['operation'])) {
     case 'filtrarAtenciones':
       $cleanData = [
         'ncotizacion' => $_GET['ncotizacion'] === "" ? null : $detalleevento->limpiarCadena($_GET['ncotizacion']),
-        'ndocumento' => $_GET['ndocumento'] === "" ? null : $detalleevento->limpiarCadena($_GET['ndocumento'])
+        'ndocumento' => $_GET['ndocumento'] === "" ? null : $detalleevento->limpiarCadena($_GET['ndocumento']),
+        'nomusuario' => $_GET['nomusuario'] === "" ? null : $detalleevento->limpiarCadena($_GET['nomusuario']),
+        'establecimiento' => $_GET['establecimiento'] === "" ? null : $detalleevento->limpiarCadena($_GET['establecimiento']),
       ];
       echo json_encode($detalleevento->filtrarAtenciones($cleanData));
       break;

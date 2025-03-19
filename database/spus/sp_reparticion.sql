@@ -3,18 +3,22 @@ USE vega_producciones_erp;
 drop procedure if exists sp_filtrar_reparticiones;
 DELIMITER //
 CREATE PROCEDURE `sp_filtrar_reparticiones`(
-    IN _evento VARCHAR(120)
+    IN _nom_usuario VARCHAR(30),
+    IN _establecimiento VARCHAR(80),
+    IN _fecha_presentacion DATE
 )
 BEGIN
     SELECT 
        RI.idreparticion, RI.estado,
-       USU.nom_usuario, USU.idusuario, DP.establecimiento, DP.iddetalle_presentacion
+       USU.nom_usuario, USU.idusuario, USU.porcentaje,
+       DP.establecimiento, DP.fecha_presentacion, DP.iddetalle_presentacion
     FROM reparticion_ingresos RI
     LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = RI.iddetalle_presentacion
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     WHERE 
-     (_evento IS NULL 
-            OR CONCAT(USU.nom_usuario, ' ', DP.establecimiento) LIKE CONCAT('%', _evento, '%'));
+    (USU.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%') OR _nom_usuario IS NULL)
+    AND (DP.establecimiento LIKE CONCAT('%', COALESCE(_establecimiento, ''), '%') OR _establecimiento IS NULL)
+    AND (DP.fecha_presentacion LIKE CONCAT('%', COALESCE(_fecha_presentacion, ''), '%') OR _fecha_presentacion IS NULL);
 END //
 
 -- CALL sp_registrar_reparticion (@idreparticion,1, 0,0,0,0,0,0);

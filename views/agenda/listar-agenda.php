@@ -61,8 +61,31 @@
     }
 
     .fc .fc-more-popover .fc-popover-body {
-    min-width: 300px;
-}
+        min-width: 300px;
+    }
+
+    /* Estilo para el botón "+X more" */
+    .fc .fc-more-link {
+        background-color: #007bff;
+        /* Color azul */
+        color: white;
+        /* Texto en blanco */
+        padding: 4px 8px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 14px;
+        display: inline-block;
+        text-align: center;
+        width: 100%;
+    }
+
+    /* Cambiar color cuando el usuario pase el mouse */
+    .fc .fc-more-link:hover {
+        background-color: #0056b3;
+        /* Azul más oscuro */
+        text-decoration: none;
+        cursor: pointer;
+    }
 </style>
 
 <div class="row g-0 mb-3 contenedor-filtros-agenda">
@@ -249,7 +272,8 @@
     const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
 </script> -->
 
-<script src="http://localhost/vega-erp/js/agenda/listar-agenda.js"></script>
+<script src="http://localhost/vega-erp/js/agenda/obtencion-agenda-nivel.js"></script> 
+<script src="http://localhost/vega-erp/js/agenda/listar-agenda.js"></script> 
 
 </body>
 

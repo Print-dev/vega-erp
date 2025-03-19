@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const data = await getDatos(`${host}reparticion.controller.php`, params);
     return data;
   }
+  
 
   const ingresos = await obtenerIngresoPorIdReparticion(idreparticion)
   console.log("ingresos -> ", ingresos);

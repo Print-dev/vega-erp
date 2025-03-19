@@ -105,8 +105,8 @@ BEGIN
 	SELECT
 		US.idusuario, NA.nivelacceso, PE.num_doc, PE.nombres, PE.apellidos, US.nom_usuario, PE.telefono, US.estado
 	FROM usuarios US
-	INNER JOIN personas PE ON PE.idpersona = US.idpersona
-    INNER JOIN nivelaccesos NA ON NA.idnivelacceso = US.idnivelacceso
+	left JOIN personas PE ON PE.idpersona = US.idpersona
+    left JOIN nivelaccesos NA ON NA.idnivelacceso = US.idnivelacceso
 	WHERE NA.nivelacceso LIKE CONCAT('%', COALESCE(_nivelacceso, ''), '%')
 	  AND PE.num_doc LIKE CONCAT('%', COALESCE(_num_doc, ''), '%') 
 	  AND PE.nombres LIKE CONCAT('%', COALESCE(_nombres, ''), '%') 

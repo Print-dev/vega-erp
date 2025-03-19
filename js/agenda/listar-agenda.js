@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let latOrigen
   let lonOrigen
   let calcularDificultadPrecio = []
-  let idUsuario = -1
+  let idUsuario
 
   navigator.geolocation.getCurrentPosition(function (position) {
     latOrigen = position.coords.latitude;
@@ -51,32 +51,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ****************************************** OBTENER DATOS **********************************************************
 
-  (async () => {
-    if (nivelacceso != "Artista") {
-      const niveles = await obtenerNiveles();
-      $q("#nivelacceso").innerHTML = `<option value="">Selecciona</option>`;
-      niveles.forEach((nivel) => {
-        $q(
-          "#nivelacceso"
-        ).innerHTML += `<option value="${nivel.idnivelacceso}">${nivel.nivelacceso}</option>`;
-      });
-    }
-
-
-
-  })();
-
-  async function obtenerAgendaArtista(idusuario, iddetalle_presentacion) {
-    const params = new URLSearchParams();
-    params.append("operation", "obtenerAgendaArtista");
-    params.append("idusuario", idusuario ? idusuario : "");
-    params.append(
-      "iddetallepresentacion",
-      iddetalle_presentacion ? iddetalle_presentacion : ""
-    );
-    const data = await getDatos(`${host}agenda.controller.php`, params);
-    return data;
+  //(async () => {
+  if (nivelacceso != "Artista") {
+    const niveles = await obtenerNiveles();
+    $q("#nivelacceso").innerHTML = `<option value="">Selecciona</option>`;
+    niveles.forEach((nivel) => {
+      $q(
+        "#nivelacceso"
+      ).innerHTML += `<option value="${nivel.idnivelacceso}">${nivel.nivelacceso}</option>`;
+    });
   }
+
+
+
+  //})();
+
+
 
   async function obtenerNiveles() {
     const data = await getDatos(
@@ -87,13 +77,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data;
   }
 
-  async function obtenerArtistas() {
+  async function obtenerUsuarios() {
     const params = new URLSearchParams();
     params.append("operation", "obtenerUsuarioPorNivel");
     params.append("idnivelacceso", $q("#nivelacceso").value);
     const data = await getDatos(`${host}usuario.controller.php`, params);
     console.log(data);
-    $q("#usuario").innerHTML = "<option value='-1'>Todos</option>";
+    $q("#usuario").innerHTML = "<option value=''>Todos</option>";
     data.forEach((artista) => {
       $q(
         "#usuario"
@@ -285,23 +275,47 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ****************************************** CONFIGURACION DE CALENDARIO **********************************************************
   calendarEl = document.getElementById("calendar");
+
+  function ajustarEventos() {
+    if (window.innerWidth < 768) {
+      calendar.setOption("dayMaxEvents", 0); // En móviles, siempre mostrar "+X more"
+    } else {
+      calendar.setOption("dayMaxEvents", 3); // En PC, mostrar hasta 3 eventos antes de colapsar
+    }
+  }
+
   const calendar = new FullCalendar.Calendar(calendarEl, {
     height: 700,
-    initialView: "dayGridMonth", // Vista inicial (mes, semana, día)
-    events: [],
-    dayMaxEventRows: true, // Muestra un "Ver más" si hay muchos eventos
-    dayMaxEvents: 2,
-    /* eventClick: async function (evento) {
+    initialView: "dayGridMonth", // Vista inicial: mes
+    headerToolbar: {
+      left: "prev,next today",
+      center: "title",
+      right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth", // Filtros de vista
+    },
+    events: [], // Aquí se cargarán los eventos dinámicamente
+    locale: "es",
+    dayMaxEvents: 1, // Muestra hasta 3 eventos antes de colapsar
+    eventLimitClick: "popover", // Muestra un popover con los eventos restantes
+    eventClick: async function (evento) {
       console.log("evento -> ", evento)
-      const idDetalle = evento.event.extendedProps.iddetalle_presentacion;
+      if (evento.event.extendedProps.estadoBadge.text == "Incompleto") {
+        window.localStorage.clear()
+        window.localStorage.setItem("iddp", evento.event.extendedProps.iddetalle_presentacion)
+        window.location.href = `http://localhost/vega-erp/views/ventas/actualizar-atencion-cliente`
+      }
+      /* const idDetalle = evento.event.extendedProps.iddetalle_presentacion;
       await renderizarInfoAgenda(idDetalle);
       // Evento al hacer clic en una tarea
       modalInfoAgenda = new bootstrap.Modal($q("#modal-infoagendaartista"));
-      modalInfoAgenda.show();
-    }, */
+      modalInfoAgenda.show(); */
+    },
   });
   calendar.render();
   calendar.setOption("locale", "es");
+  ajustarEventos(); // Aplicar ajuste inicial
+
+  // Detectar cambios de tamaño de pantalla y ajustar eventos
+  window.addEventListener("resize", ajustarEventos);
 
 
   if (nivelacceso == "Artista") {
@@ -326,6 +340,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // **************************************** CONFIGURACION AGENDA **********************************************************
 
   async function configurarCalendario(agendaUsuario) {
+    console.log("agendaUsuario -> ", agendaUsuario);
     let incompleto = false
     agenda = [];
 
@@ -356,7 +371,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           class: "badge bg-danger",
         };
       }
-      if (evento?.estado == 1 && evento?.idusuario == idusuarioLogeado || evento?.idusuariofilmmaker == idusuarioLogeado || nivelacceso == "Administrador") {
+      if (evento?.estado == 1 && evento?.idusuario == idusuarioLogeado || evento?.idusuariofilmmaker == idusuarioLogeado || nivelacceso == "Administrador") { // REVISAR ESTAS VALIDACIONES nivelacceso == "Filmmaker"
         agenda.push({
           title: evento.nom_usuario, // Solo el nombre del lugar
           start: evento.fecha_presentacion, // Fecha de presentación
@@ -388,7 +403,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Personalizar la apariencia de los eventos para mostrar el badge
     calendar.setOption("eventContent", function (arg) {
-      console.log("Evento extendido:", arg.event.extendedProps); // Verificar los datos
+      //      console.log("Evento extendido:", arg.event.extendedProps); // Verificar los datos
 
       let horaInicio = arg.event.extendedProps.horainicio
         ? formatHour(arg.event.extendedProps.horainicio)
@@ -402,8 +417,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       return {
         html: `
-            ${arg.event.extendedProps.estadoBadge.text == "Incompleto" ? 
-              `
+            ${arg.event.extendedProps.estadoBadge.text == "Incompleto" ?
+            `
               <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
                 <div>00:00 - 00:00</div>
                 <div>${badgeHtml}</div>
@@ -416,9 +431,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             <div><strong>Click aqui para editar</strong>
             </div>
               ` :
-              
 
-              `
+
+            `
               <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
               <div>${horaInicio} - ${horaFinal}</div>
               <div>${badgeHtml}</div>
@@ -478,31 +493,118 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   $q("#nivelacceso")?.addEventListener("change", async () => {
     console.log("nivel ccceso escogido: ", $q("#nivelacceso").value);
-    await obtenerArtistas();
-    const agendaUsuario = await obtenerAgendaArtista(null || '');
-    console.log("agendaUsuario todo obtenido ->", agendaUsuario);
+    await obtenerUsuarios();
+    const nivel = $q("#nivelacceso").value
 
-    await configurarCalendario(agendaUsuario)
+    // MANEJADOR DE AGENDAS SEGUN NIVEL/ROL DE USUARIO
+    await manejadorAgendaPorNivel(nivel)
   });
+
+  async function manejadorAgendaPorNivel(nivelacceso) {
+    let agendaUsuario = []
+    switch (nivelacceso) {
+      case "1":
+        await configurarCalendario([])
+        break;
+      case '2':
+        await configurarCalendario([])
+
+        break;
+      case '3':
+        await configurarCalendario([])
+
+        break;
+      case '4':
+        await configurarCalendario([])
+
+        break;
+      case '5':
+        await configurarCalendario([])
+
+        break;
+      case "6":
+        console.log("idUsuario ->", idUsuario);
+        if (idUsuario === "-1") {
+          agendaUsuario = await obtenerAgendaArtista(null || '');
+          console.log("agendaUsuario todo obtenido ->", agendaUsuario);
+
+          await configurarCalendario(agendaUsuario)
+          return; // Si no se selecciona un usuario, no hacer nada
+        }
+        agendaUsuario = await obtenerAgendaArtista(idUsuario);
+        console.log("agendaUsuario todo obtenido ->", agendaUsuario);
+
+        if (agendaUsuario.length > 0) {
+          await configurarCalendario(agendaUsuario)
+        } else {
+          await configurarCalendario([])
+        }
+
+        break;
+      case '7':
+        await configurarCalendario([])
+
+        break;
+      case '8':
+        await configurarCalendario([])
+
+        break;
+      case '9':
+        await configurarCalendario([])
+
+        break;
+      case '10':
+        await configurarCalendario([])
+
+        break;
+      case '11':
+        console.log("idUsuario ->", idUsuario);
+        if (idUsuario === "-1") {
+          agendaUsuario = await obtenerAgendaFilmmaker(null || '');
+          console.log("agendaUsuario todo obtenido ->", agendaUsuario);
+
+          await configurarCalendario(agendaUsuario)
+          return; // Si no se selecciona un usuario, no hacer nada
+        }
+          agendaUsuario = await obtenerAgendaFilmmaker(idUsuario);
+        console.log("agendaUsuario todo obtenido ->", agendaUsuario);
+
+        if (agendaUsuario.length > 0) {
+          await configurarCalendario(agendaUsuario)
+        } else {
+          await configurarCalendario([])
+        }
+        await configurarCalendario([])
+        
+        break;
+      case '12':
+        await configurarCalendario([])
+
+        break;
+      case '13':
+        await configurarCalendario([])
+
+        break;
+      case '14':
+        await configurarCalendario([])
+
+        break;
+      case '15':
+        await configurarCalendario([])
+
+        break;
+
+      default:
+        break;
+    }
+  }
 
   $q("#usuario")?.addEventListener("change", async (e) => {
     idUsuario = e.target.value;
-
-    if (idUsuario === "-1") {
-      const agendaUsuario = await obtenerAgendaArtista(null || '');
-      console.log("agendaUsuario todo obtenido ->", agendaUsuario);
-
-      await configurarCalendario(agendaUsuario)
-      return; // Si no se selecciona un usuario, no hacer nada
-    }
-
-    const agendaUsuario = await obtenerAgendaArtista(idUsuario);
-    console.log("agendaUsuario todo obtenido ->", agendaUsuario);
-
-    await configurarCalendario(agendaUsuario)
-
-    // Vaciar la lista de eventos
-
+    const nivel = $q("#nivelacceso").value
+    console.log("nivel  ->>>>", nivel);
+    console.log("idUsuario  ->>>>", idUsuario);
+    await manejadorAgendaPorNivel(nivel)
   });
 
   document.addEventListener("click", async (e) => {

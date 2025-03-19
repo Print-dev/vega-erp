@@ -32,6 +32,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ******************************************** OBTENCION DE DATOS **********************************************************
 
+  async function obtenerArtistas() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerUsuarioPorNivel");
+    params.append("idnivelacceso", 6);
+    const data = await getDatos(`${host}usuario.controller.php`, params);
+    console.log(data);
+    $q("#nomusuario").innerHTML = "<option value=''>Todos</option>";
+    data.forEach((artista) => {
+      $q(
+        "#nomusuario"
+      ).innerHTML += `<option value="${artista.nom_usuario}">${artista.nom_usuario}</option>`;
+    });
+  }
+  await obtenerArtistas()
+
+
   async function obtenerUsuarioPorId(idusuario) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerUsuarioPorId");
@@ -142,7 +158,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       x.addEventListener("change", async () => {
         await dataFilters();
       });
-      if (x.id === "evento") {
+      if (x.id === "nomusuario") {
+        x.addEventListener("change", async () => {
+          await dataFilters();
+        });
+      }
+      if (x.id === "establecimiento") {
+        x.addEventListener("input", async () => {
+          await dataFilters();
+        });
+      }
+      if (x.id === "fechapresentacion") {
         x.addEventListener("input", async () => {
           await dataFilters();
         });
@@ -155,7 +181,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function dataFilters() {
     const params = new URLSearchParams();
     params.append("operation", "filtrarReparticiones");
-    params.append("evento", $q("#evento").value || "");
+    params.append("nomusuario", $q("#nomusuario").value ? $q("#nomusuario").value : '');
+    params.append("establecimiento", $q("#establecimiento").value ? $q("#establecimiento").value :'');
+    params.append("fechapresentacion", $q("#fechapresentacion").value ?  $q("#fechapresentacion").value : '');
 
     const data = await getDatos(`${host}reparticion.controller.php`, params);
     console.log("data -> ", data);
@@ -187,14 +215,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       } */
       $q("#table-reparticiones tbody").innerHTML += `
             <tr>
-                <td>${x.nom_usuario} - ${x.establecimiento}</td>            
-                <td>${x.ingresototal ? x.ingresototal : 0}</td>
-                <td>${x.egresototal ? x.egresototal : 0}</td>
+                <td>${x.nom_usuario}</td>            
+                <td>${x.establecimiento ? x.establecimiento : ''}</td>            
+                <td>${x.fecha_presentacion}</td>                           
                 <td>
                     ${x.estado == 1
           ? `<button class="btn btn-sm btn-success btn-ingresos" data-id="${x.idreparticion}" data-iddp="${x.iddetalle_presentacion}">Registrar Ingresos</button>
               <button class="btn btn-sm btn-success btn-egresos" data-id="${x.idreparticion}" data-iddp="${x.iddetalle_presentacion}">Registrar Egresos</button>
-              <button class="btn btn-sm btn-success btn-precio" data-id="${x.idreparticion}" data-iddp="${x.iddetalle_presentacion}" data-idusuario="${x.idusuario}">Calcular Precios</button>`
+              <button class="btn btn-sm btn-success btn-precio" data-id="${x.idreparticion}" data-iddp="${x.iddetalle_presentacion}" data-idusuario="${x.idusuario}" data-nomusuario="${x.nom_usuario}" data-porcentajeart="${x.porcentaje}">Calcular Precios</button>`
           : "Cerrado"}
                 </td>
             </tr>
@@ -300,10 +328,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     // PRIMERO SEGUNDO para obtener el gasto general de evento
     $q(".tbody-ingresos").innerHTML = ``
     // ME QUEDE ACA**********************************************************************************************************
- 
+
     iddp = e.target.getAttribute("data-iddp")
     idreparticion = e.target.getAttribute("data-id")
     idusuario = e.target.getAttribute("data-idusuario")
+    porcentajeArt = e.target.getAttribute("data-porcentajeart")
+    nomArtista = e.target.getAttribute("data-nomusuario")
     console.log("idddpd-> ", iddp);
     const convenioPropuesta = await obtenerConvenioPorIdDP(iddp)
     console.log("convenio propuesta -> ", convenioPropuesta);
@@ -315,6 +345,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     // segundo paso obtener gasto general de evento y dividir montos de acuerdo al porcentaje del convenio tanto de vega como del promotor
     const egresos = await obtenerEgresoPorIdReparticion(idreparticion)
     const ingresos = await obtenerIngresoPorIdReparticion(idreparticion)
+
+    $q(".tbody-ingresos").innerHTML = ``
+
     totalEgresos = egresos.reduce(
       (sum, egreso) => sum + parseFloat(egreso.monto),
       0
@@ -325,16 +358,57 @@ document.addEventListener("DOMContentLoaded", async () => {
       0
     );
 
+    // RENDERIZAR INGRESOS Y MONTO TOTAL
+    if (ingresos.length > 0) {
+      $q(".tbody-ingresos").innerHTML = "";
+      ingresos.forEach((ingreso) => {
+        $q(".tbody-ingresos").innerHTML += `
+          <tr>
+            <td>${ingreso.descripcion}</td>
+            <td>S/. ${parseFloat(ingreso.monto).toFixed(2)}</td>
+          </tr>
+        `;
+      });
+    }
+    $q("#totalIngresos").innerText = `S/. ${totalIngresos.toFixed(2)}`;
+
+    if (egresos.length > 0) {
+      $q(".tbody-egresos").innerHTML = "";
+      egresos.forEach((egreso) => {
+        $q(".tbody-egresos").innerHTML += `
+          <tr>
+            <td>${egreso.descripcion}</td>
+            <td>S/. ${parseFloat(egreso.monto).toFixed(2)}</td>
+          </tr>
+        `;
+      });
+    }
+    $q("#totalEgresos").innerText = `S/. ${totalEgresos.toFixed(2)}`;
+
+
+
     console.log("monto total egresos -> ", totalEgresos);
     console.log("monto total ingresos -> ", totalIngresos);
 
     GastoGeneralEvento = parseFloat(totalIngresos - totalEgresos)
     console.log("gasto general evento -> ", GastoGeneralEvento);
+    $q("#gastoGeneralEvento").innerText = `Gasto General de Evento S/. ${GastoGeneralEvento.toFixed(2)}`
+
 
     montoCorrespondienteVega = parseFloat(GastoGeneralEvento * porcentajeVega)
     montoCorrespondientePromotor = parseFloat(GastoGeneralEvento * porcentajePromotor)
     console.log("monto correspondiente vega -> ", montoCorrespondienteVega);
     console.log("monto correspondiente promotor -> ", montoCorrespondientePromotor);
+
+    $q(".contenedor-ganancias").innerHTML = `
+      <div class="col-md-6">
+          <label for="">Ganancias Promotor: S/. ${montoCorrespondientePromotor.toFixed(2)}</label>
+      </div>
+      <div class="col-md-6">
+          <label for="">Ganancias Vega: S/. ${montoCorrespondienteVega.toFixed(2)}</label>
+      </div>
+    `
+
 
     // tercer paso calcular gastos unicos de vega - ingreso total
 
@@ -343,20 +417,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     const gastos = await obtenerGastosPorCaja(cajaChica[0]?.idcajachica)
     console.log("gastos -> ", gastos);
 
+    $q(".tbody-cajachica").innerHTML = ''
+
     totalGastos = gastos.reduce(
       (sum, gasto) => sum + parseFloat(gasto.monto),
       0
     );
 
+    if (gastos.length > 0 || gastos.length == 0) {
+
+      gastos.forEach((gasto) => {
+        $q(".tbody-cajachica").innerHTML += `
+          <tr>
+            <td>${gasto.concepto}</td>
+            <td>S/. ${parseFloat(gasto.monto).toFixed(2)}</td>
+          </tr>
+        `;
+      });
+    }
+    $q("#totalcajachica").innerText = `S/. ${totalGastos.toFixed(2)}`;
+
     console.log("total de gastos de caja chica -> ", totalGastos);
     ingresoTotalEvento = montoCorrespondienteVega - totalGastos
 
     console.log("ingreso total de evento ->>", ingresoTotalEvento);
+    $q("#ingresoTotalEvento").innerText = `Ingreso total de evento: S/. ${ingresoTotalEvento.toFixed(2)}`
+
     const usuario = await obtenerUsuarioPorId(idusuario)
     console.log("usuario ->", usuario);
     porcentajeArtista = parseFloat(`0.${usuario[0]?.porcentaje}`)
     console.log("porcentajeArtista -> ", porcentajeArtista);
-    
+
     // calcular porcentaje restante para vega 
     porcentajeCorrespondienteVega = parseFloat(`0.${100 - parseInt(usuario[0]?.porcentaje)}`)
     console.log("porcentajeCorrespondienteVega -> ", porcentajeCorrespondienteVega)
@@ -364,6 +455,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     montoCorrespondienteVegaFinal = parseFloat(ingresoTotalEvento * porcentajeCorrespondienteVega)
     console.log("montoCorrespondienteArtista -> ", montoCorrespondienteArtista);
     console.log("montoCorrespondienteVegaFinal -> ", montoCorrespondienteVegaFinal);
-
+    
+    $q(".contenedor-reparticion").innerHTML = `
+    <div class="col-md-6">
+          <label for="" class="fw-bolder text-white">Ganancias ${nomArtista} (${porcentajeArt}%): S/. ${montoCorrespondienteArtista.toFixed(2)}</label>
+      </div>
+      <div class="col-md-6">
+          <label for="" class="fw-bolder text-white">Ganancias Vega (${100 - parseInt(usuario[0]?.porcentaje)}%): S/. ${montoCorrespondienteVegaFinal.toFixed(2)}</label>
+      </div>
+    `
   }
 });

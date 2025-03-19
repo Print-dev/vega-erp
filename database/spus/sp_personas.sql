@@ -1,7 +1,7 @@
 USE vega_producciones_erp;
 
+DROP PROCEDURE IF EXISTS sp_registrar_persona;
 DELIMITER $$
-
 CREATE PROCEDURE sp_registrar_persona (
     OUT _idpersona INT,
     IN _num_doc VARCHAR(20),
@@ -23,7 +23,7 @@ BEGIN
     END;
     
     INSERT INTO personas (num_doc, apellidos, nombres, genero, direccion, telefono, telefono2, correo, iddistrito)
-    VALUES (_num_doc, _apellidos, _nombres, _genero, _direccion, _telefono, _telefono2, NULLIF(_correo, ''), _iddistrito);
+    VALUES (nullif(_num_doc, ''), nullif(_apellidos,''), nullif(_nombres,''),nullif(_genero, ''), nullif(_direccion,''), nullif(_telefono,''), nullif(_telefono2,''), NULLIF(_correo, ''), nullif(_iddistrito,''));
     
     IF existe_error = 1 THEN
         SET _idpersona = -1;

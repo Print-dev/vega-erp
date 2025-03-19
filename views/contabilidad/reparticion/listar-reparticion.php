@@ -9,7 +9,7 @@
                     <h1>Reparticiones</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <!-- <a href="http://localhost/vega-erp/views/utilitario/usuarios/registrar-usuario" class="btn btn-primary"></a> -->
+                    <!-- <a href="http://localhost/vega-erp/views/utilitario/usuarios/registrar-usuario" class="btn btn-primary"></a> nomusuario -->
                 </div>
             </div>
             <div class="row">
@@ -21,9 +21,21 @@
                                     <div class="row">
                                         <div class="col-md-2">
                                             <div class="form-floating">
-                                                <input type="text" class="form-control filter" id="evento" autocomplete="off">
-
-                                                <label for="evento" class="form-label">Evento</label>
+                                                <select name="nomusuario" id="nomusuario" class="form-select filter" required>
+                                                </select>
+                                                <label for="nomusuario">Artista</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control filter" id="establecimiento" autocomplete="off">
+                                                <label for="establecimiento" class="form-label">Lugar/Establecimiento</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-floating">
+                                                <input type="date" class="form-control filter" id="fechapresentacion" autocomplete="off">
+                                                <label for="fechapresentacion" class="form-label">Fecha presentacion</label>
                                             </div>
                                         </div>
                                     </div>
@@ -35,9 +47,11 @@
                                     <table class="table" id="table-reparticiones">
                                         <thead class="text-center">
                                             <tr>
-                                                <th>Evento</th>                                                
-                                                <th>Ingreso total</th>
-                                                <th>Egreso total</th>
+                                                <th>Evento</th>
+                                                <th>Lugar/Establecimiento</th>
+                                                <th>Fecha presentacion</th>
+                                                <!--                                                 <th>Ingreso total</th>
+                                                <th>Egreso total</th> -->
                                                 <th>Opciones</th>
                                             </tr>
                                         </thead>
@@ -55,7 +69,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modal-calculoreparticion" tabindex="-1" aria-labelledby="modalcalculoreparticion" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal fade" id="modal-calculoreparticion" tabindex="-1" aria-labelledby="modalcalculoreparticion" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -65,52 +79,105 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <!-- Contenedor de ingresos (Izquierda) -->
-                        <div class="col-md-6">
-                            <h4 class="fw-bold text-center">Ingresos</h4>
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover text-center align-middle">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th style="min-width: 100px;">Descripción</th>
-                                            <th style="min-width: 100px;">Ingreso (+ S/.)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="tbody-ingresos">
-                                        <!-- Filas dinámicas aquí -->
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td class="text-end fw-bold">Total:</td>
-                                            <td class="text-center fw-bold" id="totalIngresos">S/. 0.00</td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                    <!-- Contenedor de ingresos (Izquierda) -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4 class="fw-bold text-center">Ingresos</h4>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover text-center align-middle">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th style="min-width: 100px;">Descripción</th>
+                                                        <th style="min-width: 100px;">Ingreso (+ S/.)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="tbody-ingresos">
+                                                    <!-- Filas dinámicas aquí -->
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td class="text-end fw-bold">Total:</td>
+                                                        <td class="text-center fw-bold" id="totalIngresos">S/. 0.00</td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Contenedor de egresos (Derecha) -->
+                                    <div class="col-md-6">
+                                        <h4 class="fw-bold text-center">Egresos</h4>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover text-center align-middle">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th style="min-width: 100px;">Descripción</th>
+                                                        <th style="min-width: 100px;">Egresos (- S/.)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="tbody-egresos">
+                                                    <!-- Filas dinámicas aquí -->
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td class="text-end fw-bold">Total:</td>
+                                                        <td class="text-center fw-bold" id="totalEgresos">S/. 0.00</td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="text-end">
+                                    <label for="" id="gastoGeneralEvento"></label>
+                                </div>
                             </div>
                         </div>
+                        <hr>
+                        <div class="card-body">
+                            <div class="row text-center contenedor-ganancias">
 
-                        <!-- Contenedor de egresos (Derecha) -->
-                        <div class="col-md-6">
-                            <h4 class="fw-bold text-center">Egresos</h4>
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover text-center align-middle">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th style="min-width: 100px;">Descripción</th>
-                                            <th style="min-width: 100px;">Egresos (- S/.)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="tbody-egresos">
-                                        <!-- Filas dinámicas aquí -->
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td class="text-end fw-bold">Total:</td>
-                                            <td class="text-center fw-bold" id="totalEgresos">S/. 0.00</td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="card-body">
+                            <div class="card-body">
+                                <h4 class="fw-bold">Gastos unicos Vega</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover text-center align-middle">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th style="min-width: 100px;">Descripcion</th>
+                                                <th style="min-width: 100px;">Costo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="tbody-cajachica">
+                                            <!-- Filas dinámicas aquí -->
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td class="text-end fw-bold">Total:</td>
+                                                <td class="text-center fw-bold" id="totalcajachica">S/. 0.00</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-footer ">
+                                <div class="text-end">
+                                    <h5 class="fw-bold" id="ingresoTotalEvento"></h5>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="card-body bg-primary">
+                            <div class="row text-center contenedor-reparticion">
+
                             </div>
                         </div>
                     </div>

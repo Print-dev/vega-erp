@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log(`Tu ubicación: ${latOrigen},${lonOrigen}`);
   });
 
-  
+
   const host = "http://localhost/vega-erp/controllers/";
   let myTable = null;
   let idprovincia = -1;
@@ -48,6 +48,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ***************************************** OBTENER DATOS ********************************
 
+  async function obtenerArtistas() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerUsuarioPorNivel");
+    params.append("idnivelacceso", 6);
+    const data = await getDatos(`${host}usuario.controller.php`, params);
+    console.log(data);
+    $q("#nomusuario").innerHTML = "<option value=''>Todos</option>";
+    data.forEach((artista) => {
+      $q(
+        "#nomusuario"
+      ).innerHTML += `<option value="${artista.nom_usuario}">${artista.nom_usuario}</option>`;
+    });
+  }
+
+  await obtenerArtistas()
 
   async function obtenerDPporId(iddp) {
     const params = new URLSearchParams();
@@ -139,7 +154,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const data = await getDatos(`${host}recurso.controller.php`, params);
     return data
   }
-  
+
   async function obtenerDuracionDeViaje(lon_origen, lat_origen, lon_destino, lat_destino) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerDuracionDeViaje");
@@ -159,24 +174,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     const data = await getDatos(`${host}detalleevento.controller.php`, params);
     return data;
   } */
-/*   async function obtenerLongLatPorCiudad(provincia) {
-    const params = new URLSearchParams();
-    params.append("operation", "obtenerLongLatPorCiudad");
-    params.append("provincia", provincia);
-    const data = await getDatos(`${host}maps.controller.php`, params);
-    return data
-  } */
-   async function obtenerLongLatPorCiudad(provincia) {
+  /*   async function obtenerLongLatPorCiudad(provincia) {
+      const params = new URLSearchParams();
+      params.append("operation", "obtenerLongLatPorCiudad");
+      params.append("provincia", provincia);
+      const data = await getDatos(`${host}maps.controller.php`, params);
+      return data
+    } */
+  async function obtenerLongLatPorCiudad(provincia) {
     const Fdata = await fetch(`https://nominatim.openstreetmap.org/search?q=${provincia}&format=json`)
     const data = await Fdata.json()
     return data
-  } 
+  }
 
-   async function obtenerDuracionDeViaje(lon_origen, lat_origen, lon_destino, lat_destino) {
+  async function obtenerDuracionDeViaje(lon_origen, lat_origen, lon_destino, lat_destino) {
     const Fdata = await fetch(`https://router.project-osrm.org/route/v1/driving/${lon_origen},${lat_origen};${lon_destino},${lat_destino}?overview=false`)
     const data = await Fdata.json()
     return data
-  } 
+  }
 
 
   // ******************************************** REGISTRAR DATOS ************************************************
@@ -232,8 +247,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function registrarConvenio(iddetallepresentacion, estado) {
-console.log("porcentaje vega: ", $q("#porcentajevega").value)
-console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
+    console.log("porcentaje vega: ", $q("#porcentajevega").value)
+    console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
     const pago = new FormData();
     pago.append("operation", "registrarConvenio");
     pago.append("iddetallepresentacion", iddetallepresentacion);
@@ -265,7 +280,7 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
     const rreserva = await freserva.json();
     return rreserva;
   }
-  
+
   async function actualizarCliente(idcliente) {
 
     const ndocumento = $q("#ndocumentocli").value.trim();
@@ -395,54 +410,54 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
           processing: true, // Muestra un indicador de carga
           serverSide: true, // Activa la paginación en el servidor
           ajax: {
-              url: `${host}detalleevento.controller.php`,
-              type: "POST",
-              data: function (d) {
-                  d.operation = "filtrarAtenciones";
-                  d.ncotizacion = $("#ncotizacion").val() || "";
-                  d.ndocumento = $("#ndocumento").val() || "";
-              }
+            url: `${host}detalleevento.controller.php`,
+            type: "POST",
+            data: function (d) {
+              d.operation = "filtrarAtenciones";
+              d.ncotizacion = $("#ncotizacion").val() || "";
+              d.ndocumento = $("#ndocumento").val() || "";
+            }
           },
           columns: [
-              { data: "iddetalle_presentacion" },
-              { data: "ncotizacion", defaultContent: "No aplica" },
-              { data: "nom_usuario", defaultContent: "" },
-              { data: "ndocumento", defaultContent: "" },
-              { data: "razonsocial", defaultContent: "" },
-              {
-                  data: "tipo_evento",
-                  render: function (data) {
-                      return data == 1 ? "Público" : data == 2 ? "Privado" : "";
-                  }
-              },
-              {
-                  data: "modalidad",
-                  render: function (data) {
-                      return data == 1 ? "Convenio" : data == 2 ? "Contrato" : "";
-                  }
-              },
-              { data: "fecha_presentacion" },
-              {
-                  data: "estado",
-                  render: function (data) {
-                      return data == 1 ? "Activo" : data == 2 ? "Caducado" : "";
-                  }
-              },
-              { data: "opciones", orderable: false, searchable: false }
+            { data: "iddetalle_presentacion" },
+            { data: "ncotizacion", defaultContent: "No aplica" },
+            { data: "nom_usuario", defaultContent: "" },
+            { data: "ndocumento", defaultContent: "" },
+            { data: "razonsocial", defaultContent: "" },
+            {
+              data: "tipo_evento",
+              render: function (data) {
+                return data == 1 ? "Público" : data == 2 ? "Privado" : "";
+              }
+            },
+            {
+              data: "modalidad",
+              render: function (data) {
+                return data == 1 ? "Convenio" : data == 2 ? "Contrato" : "";
+              }
+            },
+            { data: "fecha_presentacion" },
+            {
+              data: "estado",
+              render: function (data) {
+                return data == 1 ? "Activo" : data == 2 ? "Caducado" : "";
+              }
+            },
+            { data: "opciones", orderable: false, searchable: false }
           ],
           lengthMenu: [5, 10, 15, 20],
           pageLength: 5,
           language: {
-              lengthMenu: "Mostrar _MENU_ filas por página",
-              paginate: {
-                  previous: "Anterior",
-                  next: "Siguiente",
-              },
-              search: "Buscar:",
-              info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-              emptyTable: "No se encontraron registros",
+            lengthMenu: "Mostrar _MENU_ filas por página",
+            paginate: {
+              previous: "Anterior",
+              next: "Siguiente",
+            },
+            search: "Buscar:",
+            info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            emptyTable: "No se encontraron registros",
           }
-      });
+        });
         // if (rows.length > 0) {
         //   myTable.rows.add(rows).draw(); // Si hay filas, agrégalas.
         // }
@@ -473,6 +488,16 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
           await dataFilters();
         });
       }
+      if (x.id === "nomusuario") {
+        x.addEventListener("input", async () => {
+          await dataFilters();
+        });
+      }
+      if (x.id === "establecimiento") {
+        x.addEventListener("input", async () => {
+          await dataFilters();
+        });
+      }
     });
   }
 
@@ -483,44 +508,47 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
     const params = new URLSearchParams();
     params.append("operation", "filtrarAtenciones");
     params.append(
-        "ncotizacion",
-        $q("#ncotizacion").value ? $q("#ncotizacion").value : ""
+      "ncotizacion",
+      $q("#ncotizacion").value ? $q("#ncotizacion").value : ""
     );
     params.append(
-        "ndocumento",
-        $q("#ndocumento").value ? $q("#ndocumento").value : ""
+      "ndocumento",
+      $q("#ndocumento").value ? $q("#ndocumento").value : ""
     );
+    params.append("nomusuario", $q("#nomusuario").value ? $q("#nomusuario").value : "")
+    params.append("establecimiento", $q("#establecimiento").value ? $q("#establecimiento").value : "")
 
     const data = await getDatos(`${host}detalleevento.controller.php`, params);
     console.log("data -> ", data);
-    
+
     const tbody = $q("#table-atenciones tbody");
     tbody.innerHTML = "";
 
     if (data.length === 0) {
-        tbody.innerHTML = `
+      tbody.innerHTML = `
             <tr>
                 <td colspan="9">Sin resultados</td>
             </tr>
         `;
-        return; // Salimos de la función si no hay datos
+      return; // Salimos de la función si no hay datos
     }
 
     for (const x of data) {
 
-        tbody.innerHTML += `
+      tbody.innerHTML += `
             <tr>
-                <td>${x.iddetalle_presentacion}</td>
                 <td>${x.ncotizacion ? x.ncotizacion : 'no aplica'}</td>
                 <td>${x.nom_usuario ? x.nom_usuario : ''}</td>
                 <td>${x.ndocumento ? x.ndocumento : ''}</td>
                 <td>${x.razonsocial ? x.razonsocial : ''}</td>
                 <td>${x.tipo_evento == 1 ? "Público" : x.tipo_evento == 2 ? "Privado" : ``}</td>
                 <td>${x.modalidad == 1 ? "Convenio" : x.modalidad == 2 ? "Contrato" : ``}</td>
+                <td>${x.establecimiento ? x.establecimiento : ``}</td>
                 <td>${x.fecha_presentacion}</td>                        
-                <td>${x.estado == 1 ? 'Activo' : x.estado == 2 ? 'Caducado' : ''}</td>                        
+                <td>${x.estado == 1 ? 'Activo' : x.estado == 2 ? 'Caducado' : x.estado == 3 ? 'Cancelado' : ''}</td>                        
                 <td>
-                    ${x.estado == 2 ? '' : parseInt(x.estado_convenio) == 2 ? `
+                    ${x.estado == 3 ? '' : `
+                        ${x.estado == 2 ? '' : parseInt(x.estado_convenio) == 2 ? `
                         <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
                             Detalles Propuesta
                         </button>
@@ -553,18 +581,25 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
                         </button>
                     ` : ``}
 
-                      ${x.tienecaja == 1 ? '' : `<button type="button" class="btn btn-sm btn-warning btn-caja" data-id=${x.iddetalle_presentacion} title="Generar Caja Chica">
+                      ${x.tienecaja == 1 ? '' : x.modalidad == 2 ? '' : `<button type="button" class="btn btn-sm btn-warning btn-caja" data-id=${x.iddetalle_presentacion} title="Generar Caja Chica">
                           Generar Caja Chica  
-                      </button> `                    
-                    }
+                      </button> `
+          }
                     <button type="button" class="btn btn-sm btn-primary btn-actualizar" data-id=${x.iddetalle_presentacion} title="Actualizar Evento">
                         Actualizar
                       </button>
+                    <button type="button" class="btn btn-sm btn-danger btn-cancelar" data-id=${x.iddetalle_presentacion} title="Cancelar Evento">
+                        Cancelar
+                      </button>
+                      `}
                 </td>
             </tr>
         `;
 
+      if (x.estado !== 3) {
         if (x.modalidad == 2) {
+          if (x.validez !== null) {
+            console.log("x.validez -> ", x.validez);
             const fechaCreacion = new Date(x.created_at + "T00:00:00");
             const fechaVencimiento = calcularFechaVencimiento(fechaCreacion, x.validez);
 
@@ -572,34 +607,36 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
             console.log("Fecha de vencimiento:", fechaVencimiento.toISOString().split("T")[0]);
 
             if (esFechaVencida(fechaVencimiento)) {
-                console.log("actualizando estado a vencido...");
-                if (x.vigencia_reserva) {
-                    console.log("HAY UNA VIGENCIA EN RESERVA, AUN NO SE VENCERA LA PRESENTACION");
-                    const fechaCreacionReserva = new Date(x.fechacreada_reserva + "T00:00:00");
-                    const fechaVencimientoReserva = calcularFechaVencimiento(fechaCreacion, x.vigencia_reserva);
+              console.log("actualizando estado a vencido...");
+              if (x.vigencia_reserva) {
+                console.log("HAY UNA VIGENCIA EN RESERVA, AUN NO SE VENCERA LA PRESENTACION");
+                const fechaCreacionReserva = new Date(x.fechacreada_reserva + "T00:00:00");
+                const fechaVencimientoReserva = calcularFechaVencimiento(fechaCreacion, x.vigencia_reserva);
 
-                    console.log("Fecha de creación de reserva:", fechaCreacionReserva.toISOString().split("T")[0]);
-                    console.log("Fecha de vencimiento de reserva:", fechaVencimientoReserva.toISOString().split("T")[0]);
+                console.log("Fecha de creación de reserva:", fechaCreacionReserva.toISOString().split("T")[0]);
+                console.log("Fecha de vencimiento de reserva:", fechaVencimientoReserva.toISOString().split("T")[0]);
 
-                    if (esFechaVencida(fechaVencimientoReserva)) {
-                        console.log("actualizando estado de contrato a caducado...");
-                        const estadoContratoActualizado = await actualizarEstadoContrato(x.idcontrato, 3);
-                        console.log("estado contrato actualizado a vencido -> ", estadoContratoActualizado);
-                        const vencido = await actualizarEstadoDp(x.iddetalle_presentacion, 2);
-                        console.log("vencido dp ?", vencido);
-                    } else {
-                        console.log("aun no se vence el contrato");
-                    }
+                if (esFechaVencida(fechaVencimientoReserva)) {
+                  console.log("actualizando estado de contrato a caducado...");
+                  const estadoContratoActualizado = await actualizarEstadoContrato(x.idcontrato, 3);
+                  console.log("estado contrato actualizado a vencido -> ", estadoContratoActualizado);
+                  const vencido = await actualizarEstadoDp(x.iddetalle_presentacion, 2);
+                  console.log("vencido dp ?", vencido);
+                } else {
+                  console.log("aun no se vence el contrato");
                 }
-                const vencido = await actualizarEstadoDp(x.iddetalle_presentacion, 2);
-                console.log("vencido dp ?", vencido);
+              }
+              const vencido = await actualizarEstadoDp(x.iddetalle_presentacion, 2);
+              console.log("vencido dp ?", vencido);
             } else {
-                console.log("aun no se vence la presentacion registrada.");
+              console.log("aun no se vence la presentacion registrada.");
             }
+          }
         }
+      }
     }
     createTable(data);
-}
+  }
 
 
   function createTable(data) {
@@ -670,6 +707,9 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
           if (e.target.classList.contains("btn-actualizar")) {
             await buttonActualizar(e);
           }
+          if (e.target.classList.contains("btn-cancelar")) {
+            await buttonCancelar(e);
+          }
           /* if(e.target.classList.contains("show-espec")){//abre el sidebar
           await btnSBUpdateActivo(e);
         }
@@ -697,25 +737,36 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
 
   async function buttonActualizar(e) {
     iddp = e.target.getAttribute("data-id")
-    const dpActualizado = await actualizarCajaDP(iddp, 1)
-    console.log("dpActualizado -> ", dpActualizado);
     window.localStorage.clear()
     window.localStorage.setItem("iddp", iddp)
     window.location.href = `http://localhost/vega-erp/views/ventas/actualizar-atencion-cliente`
     return
   }
 
+  async function buttonCancelar(e) {
+    iddp = e.target.getAttribute("data-id")
+    window.localStorage.clear()
+    if (await ask("¿Estas seguro de cancelar el evento?")) {
+      if (await ask("¿Estas seguro? (Confirmacion x2)")) {
+        const cancelado = await actualizarEstadoDp(iddp, 3)
+        console.log("cancelado ?>???? ", cancelado);
+      }
+    }
+    await dataFilters()
+    return
+  }
+
   async function buttonConvenio(e) {
     idconvenio = e.target.getAttribute("data-id"); //esto en realidad es id detalle presentacion
     const convenioExiste = await obtenerConvenioPorIdDP(idconvenio)
-    const dp = await obtenerDPporId(idconvenio); 
+    const dp = await obtenerDPporId(idconvenio);
     console.log("convenio esxite? -> ", convenioExiste)
     const convenio = await obtenerConvenioPorId(convenioExiste[0]?.idconvenio)
     console.log("CONVEIO OBTENIDO: ", convenio)
     if (convenio.length > 0) {
-      if(convenio[0]?.estado == 2){
+      if (convenio[0]?.estado == 2) {
         const datosIncompletos = await verificarDatosIncompletosCliente(dp[0]?.idcliente);
-        idcliente =  dp[0]?.idcliente
+        idcliente = dp[0]?.idcliente
         console.log("datosIncompletos -> ", datosIncompletos);
 
         // Verificar si es un array y tiene al menos un elemento
@@ -747,7 +798,7 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
             await renderizarDatosClienteIncompleto(datosCliente);
             return;
           }
-          else if(datosCliente?.tipodoc == 2){
+          else if (datosCliente?.tipodoc == 2) {
             $q("#container-representantelegal").hidden = false;
             modalDatosClienteIncompleto = new bootstrap.Modal(
               $q("#modal-datosclienteincompletos")
@@ -756,7 +807,7 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
             await renderizarDatosClienteIncompleto(datosCliente);
             return;
           }
-          else{
+          else {
             $q("#container-representantelegal").hidden = false;
             modalDatosClienteIncompleto = new bootstrap.Modal(
               $q("#modal-datosclienteincompletos")
@@ -766,14 +817,14 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
             return;
           }
         }
-         // ACA SALE ERROR AUNQWEU YA LLENE TODOS LOS DATOS AUN SIGUE SALIENDO EL MODAL PARA LLENAR LOS DATOS IN OMPLETOS
-         window.open(
+        // ACA SALE ERROR AUNQWEU YA LLENE TODOS LOS DATOS AUN SIGUE SALIENDO EL MODAL PARA LLENAR LOS DATOS IN OMPLETOS
+        window.open(
           `http://localhost/vega-erp/generators/generadores_pdf/contrato_convenio/contratoconvenio.php?idconvenio=${convenio[0]?.idconvenio}`
         );
         return
-      }else{
+      } else {
         showToast("Aun no ha sido aprobada la propuesta del cliente", "ERROR");
-        return  
+        return
       }
 
     }
@@ -832,14 +883,14 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
   async function buttonContrato(e) {
     let pagoAdelantadoO50 = false
     idcontrato = e.target.getAttribute("data-id");//esto en realidad es id detalle presentacion
-    const dp = await obtenerDPporId(idcontrato); 
+    const dp = await obtenerDPporId(idcontrato);
     idprovincia = dp[0]?.idprovincia
     idartista = dp[0]?.idusuario;
     idcliente = dp[0]?.idcliente;
 
     const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
     console.log("longlatCiudad->>>", longlatCiudad)
-    const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen,latOrigen,longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
+    const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
     const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
     calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
 
@@ -915,7 +966,7 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
                 await renderizarDatosClienteIncompleto(datosCliente);
                 return;
               }
-              else if(datosCliente?.tipodoc == 2){
+              else if (datosCliente?.tipodoc == 2) {
                 $q("#container-representantelegal").hidden = false;
                 modalDatosClienteIncompleto = new bootstrap.Modal(
                   $q("#modal-datosclienteincompletos")
@@ -924,9 +975,9 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
                 await renderizarDatosClienteIncompleto(datosCliente);
                 return;
               }
-              
+
             }
-            
+
             window.open(
               `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0]?.idcontrato
               }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${calcularDificultadPrecio?.costoDificultad}`
@@ -1010,7 +1061,7 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
 
     const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
     console.log("longlatCiudad->>>", longlatCiudad)
-    const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen,latOrigen,longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
+    const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
     const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
     calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
 
@@ -1056,10 +1107,10 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
 
     const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
     console.log("longlatCiudad->>>", longlatCiudad)
-    const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen,latOrigen,longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
+    const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
     const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
     calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
-    
+
 
     $q("#tInfoCotizacion").innerHTML = "";
     $q("#tInfoCotizacion").innerHTML = `
@@ -1116,7 +1167,7 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
 
       // 4️⃣ Obtener todas las nacionalidades y marcar la correcta
       let nacionalidades = await fetch(`${host}recurso.controller.php?operation=obtenerTodosNacionalidades`).then(res => res.json());
-      console.log("NACIONALIDADES TODAS OBTENIDAS : ",nacionalidades)
+      console.log("NACIONALIDADES TODAS OBTENIDAS : ", nacionalidades)
       let nacionalidadSeleccionada = nacionalidades.find(n => n.idnacionalidad === departamentoSeleccionado.idnacionalidad);
       $q("#nacionalidad").innerHTML = nacionalidades.map(n =>
         `<option value="${n.idnacionalidad}" ${n.idnacionalidad === departamentoSeleccionado.idnacionalidad ? "selected" : ""}>${n.nacionalidad}</option>`
@@ -1134,23 +1185,25 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
   }
 
   //  ******************************************* EVENTOS *******************************************************
+
+
   $q("#btnActualizarDatosCliente").addEventListener("click", async () => {
     try {
       console.log("idcliente -> ", idcliente)
-      console.log("valor direccion -> ",  $q("#direccion").value)
+      console.log("valor direccion -> ", $q("#direccion").value)
       const clienteDatosActualizados = await actualizarCliente(idcliente) // me quede aca, falta exraewr el idcliente desdde antes de ir al btnactualizardatoscliewnte
       console.log("cliente datos aactuaizado=??? ", clienteDatosActualizados)
-      if(clienteDatosActualizados){
+      if (clienteDatosActualizados) {
         console.log("Cliente actualizadoooooooooooo")
         showToast("Datos de cliente actualizado", "SUCCESS")
         modalDatosClienteIncompleto.hide()
         return
-      }else{
+      } else {
         showToast("Un error ha ocurrido", "ERROR")
         return
       }
     } catch (error) {
-      showToast("Un error ha ocurrido", "ERROR")  
+      showToast("Un error ha ocurrido", "ERROR")
       return
     }
   })
@@ -1198,7 +1251,7 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
       ) {
         showToast("Ingrese valores válidos", "ERROR");
       } else {
-        console.log("iddpppp ->",iddetallepresentacion)
+        console.log("iddpppp ->", iddetallepresentacion)
         const convenioExiste = await obtenerConvenioPorIdDP(parseInt(iddetallepresentacion))
         console.log("convenio esxite? -> ", convenioExiste)
         const convenio = await obtenerConvenioPorId(convenioExiste[0]?.idconvenio)
@@ -1238,7 +1291,7 @@ console.log("porcentajepromotor: ", $q("#porcentajepromotor").value)
     let abonoGarantia = parseFloat($q("#abonogarantia").value.trim());
     let abonoPublicidad = parseFloat($q("#abonopublicidad").value.trim());
     let porcentajevega = parseFloat($q("#porcentajevega").value.trim());
-      let porcentajepromotor = parseFloat($q("#porcentajepromotor").value.trim());
+    let porcentajepromotor = parseFloat($q("#porcentajepromotor").value.trim());
     let propuestaCliente = $q("#propuestacliente").value.trim();
 
     // Validaciones correctas
