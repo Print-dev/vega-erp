@@ -267,6 +267,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rpago;
   }
 
+  async function registrarAgendaEdicion(iddetallepresentacion) {
+    const body = new FormData();
+    body.append("operation", "registrarAgendaEdicion");
+    body.append("iddetallepresentacion", iddetallepresentacion);
+
+    const fbody = await fetch(`${host}agenda.controller.php`, {
+      method: "POST",
+      body: body,
+    });
+    const rbody = await fbody.json();
+    return rbody;
+  }
+
   async function actualizarEstadoReservaDp(iddetallepresentacion, estreserva) {
     const reserva = new FormData();
     reserva.append("operation", "actualizarEstadoReservaDp");
@@ -1261,6 +1274,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           console.log("convenio aprobad? -> ", convenioaprobado)
           if (convenioaprobado?.update) {
             await dataFilters()
+            const agendaEdicionRegistrada = await registrarAgendaEdicion(iddetallepresentacion)
+            console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
             modalPropuestaCliente.hide()
 
             showToast("Se ha aprobado la propuesta", "SUCCESS")
@@ -1271,6 +1286,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
         } else {
           const convenioRegistrado = await registrarConvenio(iddetallepresentacion, 2)
+          // PONER EL REGISTRR AGENDA ASIGNACIONES aca tambien
+          const agendaEdicionRegistrada = await registrarAgendaEdicion(iddetallepresentacion)
+          console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
           console.log("convenio registrado a aprobado:-> ", convenioRegistrado)
           if (convenioRegistrado?.idconvenio) {
             modalPropuestaCliente.hide()

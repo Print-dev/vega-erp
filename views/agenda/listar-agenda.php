@@ -100,7 +100,16 @@
                         <label for="nivelacceso" class="form-label">Nivel/Rol</label>
                     </div>
                 </div>
-                <div class="col-md-2 ">
+                <div class="col-md-2 contenedor-select-tipo-filtro-edicion" hidden>
+                    <div class="form-floating">
+                        <select name="tipofiltroedicion" id="tipofiltroedicion" class="form-select" required>
+                            <option value="1" selected>Todas las Agendas</option>
+                            <option value="2">Por Usuario</option>
+                        </select>
+                        <label for="tipofiltroedicion" class="form-label">Tipo Filtro</label>
+                    </div>
+                </div>
+                <div class="col-md-2 contenedor-select-usuario">
                     <div class="form-floating">
                         <select name="usuario" id="usuario" class="form-select" required>
                         </select>

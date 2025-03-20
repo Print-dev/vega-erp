@@ -202,6 +202,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data;
   }
 
+  // ************************************** OBTENCION DE AGENDAS **************************************************************
+  async function obtenerTodasLasAgendasEdicion() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerTodasLasAgendasEdicion");
+    const data = await getDatos(`${host}agenda.controller.php`, params);
+    return data;
+  }
+
+  async function obtenerAgendaEdicionPorEditorYGeneral(idusuario) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerAgendaEdicionPorEditorYGeneral");
+    params.append("idusuario", idusuario);
+    const data = await getDatos(`${host}agenda.controller.php`, params);
+    return data;
+  } ME QUEDE ACA , falta filtrarlos por idusuario para obtener tanto todas las tareas de todoso los usuarios y de tan solo un usuario
+
   // *************************************** REGISTRAR DATOS ***************************************************************
 
   async function registrarViatico(iddetallepresentacion) {
@@ -342,18 +358,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
   if (nivelacceso == "Artista") {
+    agenda = []
     $q("#nivelacceso").remove()
     $q("#usuario").remove()
     $q(".contenedor-filtros-agenda").remove()
-    const agendaUsuario = await obtenerAgendaArtista(idusuarioLogeado);
+    const agendaUsuario = await obtenerAgenda(idusuarioLogeado, null, 6);
     console.log("agendaUsuario todo obtenido ->", agendaUsuario);
 
     await configurarCalendario(agendaUsuario)
   } else if (nivelacceso == "Filmmaker") {
+    agenda = []
     $q("#nivelacceso").remove()
     $q("#usuario").remove()
     $q(".contenedor-filtros-agenda").remove()
-    const agendaUsuario = await obtenerAgendaArtista(null || '');
+    const agendaUsuario = await obtenerAgenda(null, null, 11);
     console.log("agendaUsuario todo obtenido ->", agendaUsuario);
 
     await configurarCalendario(agendaUsuario)
@@ -365,7 +383,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function configurarCalendario(agendaUsuario) {
     console.log("agendaUsuario -> ", agendaUsuario);
     let incompleto = false
-    agenda = [];
+
 
     // Convertir los datos de la agenda en eventos para FullCalendar
     for (const evento of agendaUsuario) {
@@ -375,19 +393,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         !evento.modalidad ||
         !evento.establecimiento ||
         !evento.tipo_evento;
-  
+
       const esContratoValido =
         parseInt(evento.modalidad) === 2 &&
         parseInt(evento.estadoContrato) === 2;
       const esConvenioValido =
         parseInt(evento.modalidad) === 1 &&
         parseInt(evento.estado_convenio) === 2;
-  
+
       let estadoBadge = {
         text: "No Confirmado",
         class: "badge bg-danger",
       };
-  
+
       if (esContratoValido || esConvenioValido) {
         estadoBadge = {
           text: "Confirmado",
@@ -398,13 +416,26 @@ document.addEventListener("DOMContentLoaded", async () => {
           text: "Incompleto",
           class: "badge bg-danger",
         };
+      } else if (evento.estado == 3) {
+        estadoBadge = {
+          text: "Cancelado",
+          class: "badge bg-danger",
+        };
+      } else if (evento.estado == 2) {
+        estadoBadge = {
+          text: "Caducado",
+          class: "badge bg-danger",
+        };
       }
-  
+
       // Ahora podemos esperar la obtención del filmmaker
       const filmmakerObtenido = await obtenerFilmmakerAsignado(evento.iddetalle_presentacion);
       console.log("filmmakerObtenido -> ", filmmakerObtenido);
-  
-      if (evento?.estado == 1 && evento?.idusuario == idusuarioLogeado || nivelacceso == "Administrador") {
+
+      if (nivelacceso) { //evento?.estado == 1 &&  evento?.idusuario == idusuarioLogeado || filmmakerObtenido[0]?.idusuario == idusuarioLogeado || 
+        //console.log("entre pq soy admin");
+        console.log("Evento agregado a la agenda:", evento);
+
         agenda.push({
           title: evento.nom_usuario,
           start: evento.fecha_presentacion,
@@ -424,6 +455,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             idusuariofilmmaker: filmmakerObtenido[0]?.idusuario,
             idcontrato: evento.idcontrato,
             idconvenio: evento.idconvenio,
+            estado: evento.estado
           },
         });
       }
@@ -431,6 +463,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Limpiar eventos previos y agregar los nuevos al calendario
     calendar.removeAllEvents();
     calendar.addEventSource(agenda);
+
+    console.log("Eventos agregados al calendario:", calendar.getEvents());
+    console.log("Cantidad de eventos en el calendario:", calendar.getEvents().length);
+
 
     // Personalizar la apariencia de los eventos para mostrar el badge
     calendar.setOption("eventContent", function (arg) {
@@ -445,7 +481,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       let estado = arg.event.extendedProps.estadoBadge;
       let badgeHtml = `<span class="${estado.class}">${estado.text}</span>`;
-
+      console.log("ENTRANDO ANTES DE RENDERIZAR TODO");
       return {
         html: `
             ${arg.event.extendedProps.estadoBadge.text == "Incompleto" ?
@@ -462,9 +498,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <div><strong>Click aqui para editar</strong>
             </div>
               ` :
-
-
-            `
+            arg.event.extendedProps.estado == 3 || arg.event.extendedProps.estado == 2 ? `
               <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
               <div>${horaInicio} - ${horaFinal}</div>
               <div>${badgeHtml}</div>
@@ -473,15 +507,32 @@ document.addEventListener("DOMContentLoaded", async () => {
             overflow-wrap: break-word;
             white-space: normal;">
               <div style="font-size: 20px; font-weight: bold;">${arg.event.title
-            }</div>
+              }</div>
                 <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
-            }</div>
+              }</div>
                 <div><strong>Tiempo:</strong> ${calculateDuration(
-              arg.event.extendedProps.horainicio,
-              arg.event.extendedProps.horafinal
-            )}</div>
+                arg.event.extendedProps.horainicio,
+                arg.event.extendedProps.horafinal
+              )}</div>` :
 
-            ${nivelacceso == "Administrador"  ? `
+              `
+              <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
+              <div>${horaInicio} - ${horaFinal}</div>
+              <div>${badgeHtml}</div>
+            </div>
+            <div style="padding: 8px; word-wrap: break-word; 
+            overflow-wrap: break-word;
+            white-space: normal;">
+              <div style="font-size: 20px; font-weight: bold;">${arg.event.title
+              }</div>
+                <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
+              }</div>
+                <div><strong>Tiempo:</strong> ${calculateDuration(
+                arg.event.extendedProps.horainicio,
+                arg.event.extendedProps.horafinal
+              )}</div>
+
+            ${nivelacceso == "Administrador" ? `
               <label ><strong>Acuerdos:</strong></label>
               <div id="text-acuerdo" class="mt-1" style="
             background: #fff; 
@@ -492,8 +543,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             white-space: normal;
           ">
             ${arg.event.extendedProps.acuerdo ||
-              "Sin acuerdos registrados"
-              }
+                "Sin acuerdos registrados"
+                }
           </div>
               ` : ''}
               ${nivelacceso == "Administrador" ? `
@@ -524,16 +575,36 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ******************************************* EVENTOS *************************************************************
 
   $q("#nivelacceso")?.addEventListener("change", async () => {
+    $q(".contenedor-select-tipo-filtro-edicion").hidden = true
     console.log("nivel ccceso escogido: ", $q("#nivelacceso").value);
     await obtenerUsuarios();
     const nivel = $q("#nivelacceso").value
+    if ($q("#nivelacceso").value == 10) {
+      $q(".contenedor-select-tipo-filtro-edicion").hidden = false
+      $q(".contenedor-select-usuario").hidden = true
+    }
 
     // MANEJADOR DE AGENDAS SEGUN NIVEL/ROL DE USUARIO
     await manejadorAgendaPorNivel(nivel)
   });
+  //$q(".contenedor-select-usuario").hidden = true
+  $q("#tipofiltroedicion").addEventListener("change", async () => {
+    console.log("valor del select filtro adentor- > ", $q("#tipofiltroedicion").value);
+    if ($q("#tipofiltroedicion").value == 2) {
+      $q(".contenedor-select-usuario").hidden = false
+      console.log("entrando con solo usuarios");
+      await manejadorAgendaPorNivel("10")
+    }
+    else if ($q("#tipofiltroedicion").value == 1) {
+      console.log("obteniendo todas las agendas");
+      $q(".contenedor-select-usuario").hidden = true
+      await manejadorAgendaPorNivel("10")
+    }
+  })
 
   async function manejadorAgendaPorNivel(nivelacceso) {
     let agendaUsuario = []
+    let agendasEdicion = []
     switch (nivelacceso) {
       case "1":
         await configurarCalendario([])
@@ -554,16 +625,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         await configurarCalendario([])
 
         break;
-      case "6":
+      case "6": // ARTISTAS
+        agenda = [];
         console.log("idUsuario ->", idUsuario);
         if (idUsuario === "-1") {
-          agendaUsuario = await obtenerAgendaArtista(null || '');
+          agendaUsuario = await obtenerAgenda(null, null, 6);
           console.log("agendaUsuario todo obtenido ->", agendaUsuario);
 
           await configurarCalendario(agendaUsuario)
           return; // Si no se selecciona un usuario, no hacer nada
         }
-        agendaUsuario = await obtenerAgendaArtista(idUsuario);
+        agendaUsuario = await obtenerAgenda(idUsuario, null, 6);
         console.log("agendaUsuario todo obtenido ->", agendaUsuario);
 
         if (agendaUsuario.length > 0) {
@@ -585,20 +657,30 @@ document.addEventListener("DOMContentLoaded", async () => {
         await configurarCalendario([])
 
         break;
-      case '10':
+      case '10': // EDICION Y PUBLICIDAD
+        agenda = [];
+        console.log("valor del select -> ", $q("#tipofiltroedicion").value);
+        if ($q("#tipofiltroedicion").value == 1) {
+          agendasEdicion = await obtenerTodasLasAgendasEdicion()
+          console.log("todas las agendas edicion -> ", agendasEdicion);
+          await configurarCalendario(agendasEdicion)
+          return
+        } 
+              
         await configurarCalendario([])
 
         break;
-      case '11':
+      case '11': // FILMMAKERS
+        agenda = [];
         console.log("idUsuario ->", idUsuario);
         if (idUsuario === "-1") {
-          agendaUsuario = await obtenerAgendaFilmmaker(null || '');
+          agendaUsuario = await obtenerAgenda(null, null, 11);
           console.log("agendaUsuario todo obtenido ->", agendaUsuario);
 
           await configurarCalendario(agendaUsuario)
           return; // Si no se selecciona un usuario, no hacer nada
         }
-          agendaUsuario = await obtenerAgendaFilmmaker(idUsuario);
+        agendaUsuario = await obtenerAgenda(idUsuario, null, 11);
         console.log("agendaUsuario todo obtenido ->", agendaUsuario);
 
         if (agendaUsuario.length > 0) {
@@ -606,22 +688,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
           await configurarCalendario([])
         }
-        await configurarCalendario([])
-        
-        break;
-      case '12':
-        await configurarCalendario([])
-
-        break;
-      case '13':
-        await configurarCalendario([])
-
-        break;
-      case '14':
-        await configurarCalendario([])
-
-        break;
-      case '15':
         await configurarCalendario([])
 
         break;
@@ -822,7 +888,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (acuerdoEditado) {
       //$q("#text-acuerdo").innerHTML = $q("#acuerdo").value
       showToast("Acuerdo editado correctamente", "SUCCESS")
-      const agendaUsuario = await obtenerAgendaArtista(idUsuario);
+      const agendaUsuario = await obtenerAgenda(idUsuario);
       console.log("agendaUsuario todo obtenido ->", agendaUsuario);
       await configurarCalendario(agendaUsuario)
       modalAcuerdo.hide()
@@ -843,7 +909,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       // PONER UNA SECCION ACA PARA NOTIFICAR QUE SE REGISTRO CORRECTAMENTE
       console.log("entrando a la validacaion...")
       const mensaje = `${usuarioFilmmaker[0]?.dato} ha reportado un viatico, haz click para ver`
-      const notificacionRegistrada = await registrarNotificacion(idusuarioLogeado, 1,viaticoRegistrado.idviatico, mensaje)
+      const notificacionRegistrada = await registrarNotificacion(idusuarioLogeado, 1, viaticoRegistrado.idviatico, mensaje)
       console.log("notificacion registrada ? -> ", notificacionRegistrada)
       console.log("mensaje -> ", mensaje)
       showToast("Viático registrado correctamente", "SUCCESS")
@@ -869,7 +935,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("filmmakerAsignado -> ", filmmakerAsignado)
     if (filmmakerAsignado.idasignacion) {
       showToast("Filmmaker asignado correctamente", "SUCCESS")
-      const agendaUsuario = await obtenerAgendaArtista(idUsuario);
+      const agendaUsuario = await obtenerAgenda(idUsuario);
       console.log("agendaUsuario todo obtenido ->", agendaUsuario);
 
       await configurarCalendario(agendaUsuario)

@@ -12,9 +12,18 @@ async function getDatos(link, params) {
     return data.json();
 }
 
-async function obtenerAgendaArtista(idusuario, iddetalle_presentacion) {
+async function obtenerAgenda(idusuario, iddetalle_presentacion, idnivelacceso) {
     const params = new URLSearchParams();
-    params.append("operation", "obtenerAgendaArtista");
+    params.append("operation", "obtenerAgenda");
+    params.append("idusuario", idusuario ? idusuario : "");
+    params.append("iddetallepresentacion", iddetalle_presentacion ? iddetalle_presentacion : "");
+    params.append("idnivelacceso", idnivelacceso ? idnivelacceso : "");
+    const data = await getDatos(`${host}agenda.controller.php`, params);
+    return data;
+}
+/* async function obtenerAgendaFilmmaker(idusuario, iddetalle_presentacion) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerAgenda");
     params.append("idusuario", idusuario ? idusuario : "");
     params.append(
         "iddetallepresentacion",
@@ -22,15 +31,4 @@ async function obtenerAgendaArtista(idusuario, iddetalle_presentacion) {
     );
     const data = await getDatos(`${host}agenda.controller.php`, params);
     return data;
-}
-async function obtenerAgendaFilmmaker(idusuario, iddetalle_presentacion) {
-    const params = new URLSearchParams();
-    params.append("operation", "obtenerAgendaArtista");
-    params.append("idusuario", idusuario ? idusuario : "");
-    params.append(
-        "iddetallepresentacion",
-        iddetalle_presentacion ? iddetalle_presentacion : ""
-    );
-    const data = await getDatos(`${host}agenda.controller.php`, params);
-    return data;
-}
+} */

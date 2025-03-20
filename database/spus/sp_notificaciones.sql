@@ -1,5 +1,6 @@
 USE vega_producciones_erp;
 
+-- DROP PROCEDURE `sp_registrar_notificacion_viatico` 
 DROP PROCEDURE IF EXISTS `sp_registrar_notificacion`;
 DELIMITER $$
 
