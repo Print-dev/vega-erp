@@ -17,7 +17,15 @@ if(isset($_GET['operation'])){
         ];
         echo json_encode($agenda->obtenerAgendaArtista($cleanData));
         break;
-        
+      
+    case 'obtenerFilmmakerAsignado':
+        $cleanData = [
+          'iddetallepresentacion' => $_GET['iddetallepresentacion'] === "" ? null : $agenda->limpiarCadena($_GET['iddetallepresentacion']),
+        ];
+        echo json_encode($agenda->obtenerFilmmakerAsignado($cleanData));
+        break;
+      
+    
     
   }
 }

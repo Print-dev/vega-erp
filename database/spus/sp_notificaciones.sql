@@ -1,45 +1,49 @@
 USE vega_producciones_erp;
 
-DROP PROCEDURE IF EXISTS `sp_registrar_notificacion_viatico`;
+DROP PROCEDURE IF EXISTS `sp_registrar_notificacion`;
 DELIMITER $$
 
-CREATE PROCEDURE sp_registrar_notificacion_viatico(
-    OUT _idnotificacion_viatico INT,
-    IN _idviatico INT,
-    IN _filmmaker INT,
+CREATE PROCEDURE sp_registrar_notificacion(
+    OUT _idnotificacion INT,
+    IN _idusuariodest INT,
+    IN _idusuariorem INT,
+    IN _tipo INT,
+    IN _idreferencia INT,
     IN _mensaje VARCHAR(200)
 )
 BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    DECLARE existe_error INT DEFAULT 0;
+    
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
     BEGIN
-        SET _idnotificacion_viatico = -1; -- Devolver -1 si hay error
+        SET existe_error = 1;
     END;
     
     -- Insertar la notificación
-    INSERT INTO notificaciones_viatico (idviatico, filmmaker, mensaje) 
-    VALUES (_idviatico, _filmmaker, _mensaje);
+    INSERT INTO notificaciones (idusuariodest, idusuariorem, tipo, idreferencia, mensaje) 
+    VALUES (_idusuariodest, idusuariorem , _tipo, _idreferencia, _mensaje);
 
-    -- Obtener el ID generado
-    SET _idnotificacion_viatico = LAST_INSERT_ID();
+    IF existe_error = 1 THEN
+        SET _idnotificacion = -1;
+    ELSE
+        SET _idnotificacion = LAST_INSERT_ID();
+    END IF;
 END $$
 
 DELIMITER ;
 
 -- CALL sp_registrar_notificacion_viatico (@idnotificacion, 1, 3, 'Johan envio un viatico');
 
-DROP PROCEDURE IF EXISTS sp_obtener_notificaciones_viatico;
+DROP PROCEDURE IF EXISTS sp_obtener_notificaciones;
 DELIMITER $$
-CREATE PROCEDURE sp_obtener_notificaciones_viatico
+CREATE PROCEDURE sp_obtener_notificaciones
 (
 	IN _iddepartamento INT,
     IN _idusuario INT
 )
 BEGIN
 	SELECT 
-	T.idtarifario, T.precio, PR.idprovincia, D.iddepartamento, USU.idusuario
-    FROM usuarios USU
-    LEFT JOIN tarifario T ON T.idusuario = USU.idusuario
-    LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
-    LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
-    WHERE PR.iddepartamento = _iddepartamento AND USU.idusuario = _idusuario ;
+		*
+    FROM notificaciones NOTIF
+    WHERE NOTIF.idusuario = _idusuario;
 END $$

@@ -157,6 +157,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     return fpersona
   }
 
+  async function obtenerFilmmakerAsignado(iddetallepresentacion) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerFilmmakerAsignado");
+    params.append("iddetallepresentacion", iddetallepresentacion);
+    const fpersona = await getDatos(`${host}agenda.controller.php`, params)
+    console.log(fpersona);
+    return fpersona
+  }
+
   async function obtenerLongLatPorCiudad(provincia) {
     $q(".contenedor-monto").innerHTML = "<p class='text-center'>Cargando...</p>";
 
@@ -212,12 +221,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rviatico;
   }
 
-  async function registrarNotificacionViatico(idviatico, filmmaker, mensaje) {
-
+  async function registrarNotificacion(filmmaker, tipo, idviatico, mensaje) {
     const viatico = new FormData();
-    viatico.append("operation", "registrarNotificacionViatico");
-    viatico.append("idviatico", idviatico); // id artista
-    viatico.append("filmmaker", filmmaker);
+    viatico.append("operation", "registrarNotificacion");
+    viatico.append("idusuariodest", 1); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
+    viatico.append("idusuariorem", filmmaker); // id usuario envia la notificacion
+    viatico.append("tipo", tipo);
+    viatico.append("idreferencia", idviatico);
     viatico.append("mensaje", mensaje);
 
     const fviatico = await fetch(`${host}notificacion.controller.php`, {
@@ -259,11 +269,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     return racuerdo;
   }
 
-  async function asignarFilmmakerDP(iddetallepresentacion) {
+  /* async function asignarFilmmakerDP(iddetallepresentacion) {
     const filmmaker = new FormData();
     filmmaker.append("operation", "asignarFilmmakerDP");
     filmmaker.append("iddetallepresentacion", iddetallepresentacion);
     filmmaker.append("filmmaker", $q("#filmmaker").value);
+
+    const ffilmmaker = await fetch(`${host}detalleevento.controller.php`, {
+      method: "POST",
+      body: filmmaker,
+    });
+    const rfilmmaker = await ffilmmaker.json();
+    return rfilmmaker;
+  } */
+  async function asignarAgenda(iddetallepresentacion) {
+    const filmmaker = new FormData();
+    filmmaker.append("operation", "asignarAgenda");
+    filmmaker.append("iddetallepresentacion", iddetallepresentacion);
+    filmmaker.append("idusuario", $q("#filmmaker").value);
 
     const ffilmmaker = await fetch(`${host}detalleevento.controller.php`, {
       method: "POST",
@@ -345,21 +368,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     agenda = [];
 
     // Convertir los datos de la agenda en eventos para FullCalendar
-    agendaUsuario.forEach((evento) => {
-      incompleto = !evento.horainicio || !evento.horafinal || !evento.modalidad || !evento.establecimiento || !evento.tipo_evento
-
+    for (const evento of agendaUsuario) {
+      incompleto =
+        !evento.horainicio ||
+        !evento.horafinal ||
+        !evento.modalidad ||
+        !evento.establecimiento ||
+        !evento.tipo_evento;
+  
       const esContratoValido =
         parseInt(evento.modalidad) === 2 &&
         parseInt(evento.estadoContrato) === 2;
       const esConvenioValido =
         parseInt(evento.modalidad) === 1 &&
         parseInt(evento.estado_convenio) === 2;
-
+  
       let estadoBadge = {
         text: "No Confirmado",
         class: "badge bg-danger",
       };
-
+  
       if (esContratoValido || esConvenioValido) {
         estadoBadge = {
           text: "Confirmado",
@@ -371,32 +399,35 @@ document.addEventListener("DOMContentLoaded", async () => {
           class: "badge bg-danger",
         };
       }
-      if (evento?.estado == 1 && evento?.idusuario == idusuarioLogeado || evento?.idusuariofilmmaker == idusuarioLogeado || nivelacceso == "Administrador") { // REVISAR ESTAS VALIDACIONES nivelacceso == "Filmmaker"
+  
+      // Ahora podemos esperar la obtención del filmmaker
+      const filmmakerObtenido = await obtenerFilmmakerAsignado(evento.iddetalle_presentacion);
+      console.log("filmmakerObtenido -> ", filmmakerObtenido);
+  
+      if (evento?.estado == 1 && evento?.idusuario == idusuarioLogeado || nivelacceso == "Administrador") {
         agenda.push({
-          title: evento.nom_usuario, // Solo el nombre del lugar
-          start: evento.fecha_presentacion, // Fecha de presentación
-          iddetalle_presentacion: evento.iddetalle_presentacion, // Guardar el ID
-          backgroundColor: `${evento.color}`, // Color del fondo del evento (Naranja-Rojo)
+          title: evento.nom_usuario,
+          start: evento.fecha_presentacion,
+          iddetalle_presentacion: evento.iddetalle_presentacion,
+          backgroundColor: `${evento.color}`,
           borderColor: `${evento.color}`,
           textColor: "black",
           extendedProps: {
             estadoBadge,
-            horainicio: evento.horainicio, // Asegurar que se pase
+            horainicio: evento.horainicio,
             horafinal: evento.horafinal,
             establecimiento: evento.establecimiento,
             iddepartamento: evento.iddepartamento,
-            nombres: evento.nombres,
+            filmmaker: filmmakerObtenido[0]?.nombres || "No asignado",
             idusuario: evento.idusuario,
             acuerdo: evento.acuerdo,
-            idusuariofilmmaker: evento.idusuariofilmmaker,
+            idusuariofilmmaker: filmmakerObtenido[0]?.idusuario,
             idcontrato: evento.idcontrato,
             idconvenio: evento.idconvenio,
-          }, // Guardamos el estado como propiedad extra
+          },
         });
       }
-      // Si cumple con alguna de las condiciones, se agrega al calendario
-    });
-
+    }
     // Limpiar eventos previos y agregar los nuevos al calendario
     calendar.removeAllEvents();
     calendar.addEventSource(agenda);
@@ -449,7 +480,8 @@ document.addEventListener("DOMContentLoaded", async () => {
               arg.event.extendedProps.horainicio,
               arg.event.extendedProps.horafinal
             )}</div>
-            ${nivelacceso == "Administrador" || arg.event.extendedProps.idusuariofilmmaker == idusuarioLogeado ? `
+
+            ${nivelacceso == "Administrador"  ? `
               <label ><strong>Acuerdos:</strong></label>
               <div id="text-acuerdo" class="mt-1" style="
             background: #fff; 
@@ -465,7 +497,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
               ` : ''}
               ${nivelacceso == "Administrador" ? `
-                <div class="mt-2"><strong>FILMMAKER:</strong> ${arg.event.extendedProps.nombres ? arg.event.extendedProps.nombres : 'No asignado'}</div>
+                <div class="mt-2"><strong>FILMMAKER:</strong> ${arg.event.extendedProps.filmmaker ? arg.event.extendedProps.filmmaker : 'No asignado'}</div>
               ` : ''}
         
               <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
@@ -811,7 +843,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       // PONER UNA SECCION ACA PARA NOTIFICAR QUE SE REGISTRO CORRECTAMENTE
       console.log("entrando a la validacaion...")
       const mensaje = `${usuarioFilmmaker[0]?.dato} ha reportado un viatico, haz click para ver`
-      const notificacionRegistrada = await registrarNotificacionViatico(viaticoRegistrado.idviatico, idusuarioLogeado, mensaje)
+      const notificacionRegistrada = await registrarNotificacion(idusuarioLogeado, 1,viaticoRegistrado.idviatico, mensaje)
       console.log("notificacion registrada ? -> ", notificacionRegistrada)
       console.log("mensaje -> ", mensaje)
       showToast("Viático registrado correctamente", "SUCCESS")
@@ -831,9 +863,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   $q("#btnGuardarFilmmaker").addEventListener("click", async () => {
     console.log("click al btn guardar filmmaker")
-    const filmmakerAsignado = await asignarFilmmakerDP(iddp)
+    console.log("iddp-- > ", iddp);
+    console.log("valor filmamker elegido -> ", $q("#filmmaker").value);
+    const filmmakerAsignado = await asignarAgenda(iddp)
     console.log("filmmakerAsignado -> ", filmmakerAsignado)
-    if (filmmakerAsignado) {
+    if (filmmakerAsignado.idasignacion) {
       showToast("Filmmaker asignado correctamente", "SUCCESS")
       const agendaUsuario = await obtenerAgendaArtista(idUsuario);
       console.log("agendaUsuario todo obtenido ->", agendaUsuario);

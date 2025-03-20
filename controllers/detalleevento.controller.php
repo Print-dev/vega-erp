@@ -51,7 +51,6 @@ if (isset($_POST['operation'])) {
     case 'registrarDetallePresentacion':
       $cleanData = [
         'idusuario'   => $detalleevento->limpiarCadena($_POST['idusuario']),
-        'filmmaker'   => $detalleevento->limpiarCadena($_POST['filmmaker']) ? $detalleevento->limpiarCadena($_POST['filmmaker']) : '',
         'idcliente' => $detalleevento->limpiarCadena($_POST['idcliente']),
         'iddistrito' => $detalleevento->limpiarCadena($_POST['iddistrito']) ? $detalleevento->limpiarCadena($_POST['iddistrito']) : '',
         'ncotizacion' => $detalleevento->limpiarCadena($_POST['ncotizacion']) ? $detalleevento->limpiarCadena($_POST['ncotizacion']) : '',
@@ -119,7 +118,7 @@ if (isset($_POST['operation'])) {
       echo json_encode($rpt);
       break;
 
-    case 'asignarFilmmakerDP':
+    /* case 'asignarFilmmakerDP':
       $cleanData = [
         'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']),
         'filmmaker'   => $detalleevento->limpiarCadena($_POST['filmmaker']),
@@ -128,6 +127,22 @@ if (isset($_POST['operation'])) {
       $rpt = $detalleevento->asignarFilmmakerDP($cleanData);
 
       echo json_encode($rpt);
+      break; */
+    case 'asignarAgenda':
+      $cleanData = [
+        'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']),
+        'idusuario'   => $detalleevento->limpiarCadena($_POST['idusuario']),
+      ];
+
+      $respuesta = ['idasignacion' => -1];
+
+      $idasignacion = $detalleevento->asignarAgenda($cleanData);
+
+      if ($idasignacion > 0) {
+        $respuesta['idasignacion'] = $idasignacion;
+      }
+
+      echo json_encode($respuesta);
       break;
 
     case 'actualizarPagado50DP':

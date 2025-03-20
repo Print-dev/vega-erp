@@ -18,7 +18,17 @@ class Agenda extends ExecQuery
       die($e->getMessage());
     }
   }
+
+  public function obtenerFilmmakerAsignado($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_filmmaker_asignado(?)");
+      $cmd->execute(array(
+        $params['iddetallepresentacion']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
 }
-
-
-

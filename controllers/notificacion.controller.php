@@ -9,8 +9,14 @@ $notificacion = new Notificacion();
 
 if(isset($_GET['operation'])){
   switch($_GET['operation']){
-    case 'obtenerNotificacionesViatico':
+    /* case 'obtenerNotificacionesViatico':
         echo json_encode($notificacion->obtenerNotificacionesViatico());
+        break; */
+    case 'obtenerNotificaciones':
+        $cleanData = [
+          'idusuariodest'   => $notificacion->limpiarCadena($_GET['idusuariodest']),
+        ];
+        echo json_encode($notificacion->obtenerNotificaciones($cleanData));
         break;
   }
 }
@@ -18,7 +24,7 @@ if(isset($_GET['operation'])){
 
 if (isset($_POST['operation'])) {
   switch ($_POST['operation']) {
-    case 'registrarNotificacionViatico':
+    /* case 'registrarNotificacionViatico':
       $cleanData = [
         'idviatico'   => $notificacion->limpiarCadena($_POST['idviatico']),
         'filmmaker' => $notificacion->limpiarCadena($_POST['filmmaker']),
@@ -28,6 +34,25 @@ if (isset($_POST['operation'])) {
       $respuesta = ['idnotificacion' => -1];
 
       $idnotificacion = $notificacion->registrarNotificacionViatico($cleanData);
+
+      if ($idnotificacion > 0) {
+        $respuesta['idnotificacion'] = $idnotificacion;
+      }
+
+      echo json_encode($respuesta);
+      break; */
+    case 'registrarNotificacion':
+      $cleanData = [
+        'idusuariodest'   => $notificacion->limpiarCadena($_POST['idusuariodest']),
+        'idusuariorem'   => $notificacion->limpiarCadena($_POST['idusuariorem']),
+        'tipo' => $notificacion->limpiarCadena($_POST['tipo']),
+        'idreferencia'   => $notificacion->limpiarCadena($_POST['idreferencia']),
+        'mensaje'   => $notificacion->limpiarCadena($_POST['mensaje']),
+      ];
+
+      $respuesta = ['idnotificacion' => -1];
+
+      $idnotificacion = $notificacion->registrarNotificacion($cleanData);
 
       if ($idnotificacion > 0) {
         $respuesta['idnotificacion'] = $idnotificacion;

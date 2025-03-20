@@ -15,21 +15,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   console.log("NIVEL ACCESO USER LOGEADO --> ", nivelacceso);
   if (nivelacceso == "Administrador") {
-    obtenerNotificacionesViatico();
+    obtenerNotificaciones();
   }
 
   // ******************************************* OBTENER DATOS *****************************************
 
-  async function obtenerNotificacionesViatico() {
+  async function obtenerNotificaciones() {
     const params = new URLSearchParams();
-    params.append("operation", "obtenerNotificacionesViatico");
+    params.append("operation", "obtenerNotificaciones");
+    params.append("idusuariodest", 1);
     const notificaciones = await getDatos(
       `${host}notificacion.controller.php`,
       params
     );
-    mostrarNotificaciones(notificaciones, notificaciones[0]?.filmmaker);
+    mostrarNotificaciones(notificaciones, 1); // cambiar esto luego
     
-  }
+  }// ME QUEDE ACA
 
   async function obtenerUsuarioPorId(idusuario) {
     const params = new URLSearchParams();
@@ -51,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   //* *********************************** RENDERIZACIONES *************************************************
 
-  function mostrarNotificaciones(notificaciones, filmmaker) {
+  function mostrarNotificaciones(notificaciones, idusuario) {
     const contenedor = document.getElementById("list-notificaciones");
     contenedor.innerHTML = ""; // Limpiar el contenedor antes de agregar nuevas notificaciones
 
@@ -72,7 +73,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       notificacionElemento.addEventListener("click", async () => {
         modalNotificacion = new bootstrap.Modal($q("#modal-notificacion"))
         modalNotificacion.show()
-        const usuario = await obtenerUsuarioPorId(filmmaker)
+        const usuario = await obtenerUsuarioPorId(idusuario)
         const infoViatico = await obtenerInfoViatico(notificacion.idviatico)
         cargarNotificacionEnModal(notificacion, usuario[0], infoViatico[0]);
         console.log("usuario -> ", usuario)

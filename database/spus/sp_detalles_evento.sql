@@ -35,7 +35,6 @@ DELIMITER $$
 CREATE PROCEDURE sp_registrar_detalle_presentacion (
     OUT _iddetalle_presentacion INT,
 	IN _idusuario int,
-    IN _filmmaker INT,
     IN _idcliente int,
 	IN _iddistrito int,
     IN _ncotizacion	char(9),
@@ -58,8 +57,8 @@ BEGIN
         SET existe_error = 1;
     END;
     
-    INSERT INTO detalles_presentacion (idusuario, filmmaker, idcliente, iddistrito, ncotizacion, fecha_presentacion, horainicio, horafinal, establecimiento, referencia, acuerdo ,tipo_evento, modalidad, validez, igv)
-    VALUES (_idusuario, nullif(_filmmaker, ''), _idcliente, nullif(_iddistrito, ''), NULLIF(_ncotizacion, ''), _fechapresentacion, nullif(_horainicio, ''), nullif(_horafinal, ''), nullif(_establecimiento,''), nullif(_referencia,''), nullif(_acuerdo, ''), nullif(_tipoevento,''), nullif(_modalidad,''), NULLIF(_validez, ''), _igv);
+    INSERT INTO detalles_presentacion (idusuario, idcliente, iddistrito, ncotizacion, fecha_presentacion, horainicio, horafinal, establecimiento, referencia, acuerdo ,tipo_evento, modalidad, validez, igv)
+    VALUES (_idusuario, _idcliente, nullif(_iddistrito, ''), NULLIF(_ncotizacion, ''), _fechapresentacion, nullif(_horainicio, ''), nullif(_horafinal, ''), nullif(_establecimiento,''), nullif(_referencia,''), nullif(_acuerdo, ''), nullif(_tipoevento,''), nullif(_modalidad,''), NULLIF(_validez, ''), _igv);
     
     IF existe_error = 1 THEN
         SET _iddetalle_presentacion = -1;
@@ -162,8 +161,6 @@ BEGIN
         DP.referencia,
         CO.estado AS estadoContrato,
         DP.created_at,
-        USUFILM.idusuario as idusuariofilmmaker, 
-        PERFILM.nombres, PERFILM.apellidos,
         DP.acuerdo,
         (SELECT RE.vigencia 
          FROM reservas RE 
@@ -187,8 +184,6 @@ BEGIN
         DEDP.iddepartamento
     FROM detalles_presentacion DP
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
-	LEFT JOIN usuarios USUFILM ON USUFILM.idusuario = DP.filmmaker
-    LEFT JOIN personas PERFILM ON PERFILM.idpersona = USUFILM.idpersona
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN contratos CO ON CO.iddetalle_presentacion = DP.iddetalle_presentacion
     LEFT JOIN convenios CON ON CON.iddetalle_presentacion = DP.iddetalle_presentacion
@@ -277,14 +272,15 @@ BEGIN
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
 
+-- quitar luego
 DROP PROCEDURE if exists sp_asignarfilmmaker_dp;
 DELIMITER //
 CREATE PROCEDURE sp_asignarfilmmaker_dp (
 	IN _iddetalle_presentacion INT,
-    IN _filmmaker INT
+    IN _idusuario INT
 )
 BEGIN
-		UPDATE detalles_presentacion SET
-    filmmaker = nullif(_filmmaker, '')
+		UPDATE detalles_presentacion_asignados SET
+    idusuario = nullif(_idusuario, '')
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //

@@ -38,11 +38,10 @@ class DetalleEvento extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_detalle_presentacion(@iddetalleevento,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_detalle_presentacion(@iddetalleevento,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idusuario'],
-          $params['filmmaker'],
           $params['idcliente'],
           $params['iddistrito'],
           $params['ncotizacion'],
@@ -115,7 +114,7 @@ class DetalleEvento extends ExecQuery
     }
   }
 
-  public function asignarFilmmakerDP($params = []): bool
+  /* public function asignarFilmmakerDP($params = []): bool
   {
     try {
       $cmd = parent::execQ("CALL sp_asignarfilmmaker_dp (?,?)");
@@ -126,6 +125,23 @@ class DetalleEvento extends ExecQuery
         )
       );
       return $rpt;
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  } */
+  public function asignarAgenda($params = []): int
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_asignar_agenda (@idasignacion,?,?)");
+      $cmd->execute(
+        array(
+          $params['iddetallepresentacion'],
+          $params['idusuario'],
+        )
+      );
+      $respuesta = $pdo->query("SELECT @idasignacion AS idasignacion")->fetch(PDO::FETCH_ASSOC);
+      return $respuesta['idasignacion'];    
     } catch (Exception $e) {
       die($e->getMessage());
     }

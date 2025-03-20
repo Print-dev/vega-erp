@@ -247,7 +247,6 @@
                 <div class="contenedor-filmmaker p-3">
                     <div class="form-floating">
                         <select name="filmmaker" id="filmmaker" class="form-select">
-                            <option value="-1" selected>Selecciona</option>
                         </select>
                         <label for="filmmaker" class="form-label">Filmmaker</label>
                     </div>

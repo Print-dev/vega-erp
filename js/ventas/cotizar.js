@@ -324,7 +324,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     const detalle = new FormData();
     detalle.append("operation", "registrarDetallePresentacion");
     detalle.append("idusuario", $q("#artista").value);
-    detalle.append("filmmaker", null);
     detalle.append("idcliente", idcliente);
     detalle.append("iddistrito", iddistrito2);
     detalle.append("ncotizacion", ncotizacion || '');
@@ -803,11 +802,12 @@ document.addEventListener('DOMContentLoaded', async function () {
 
               if ($q("#modalidad").value == 1) {
                 detalleevento = await registrarDetalleEvento(data.idcliente);
+                const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                console.log("repa registrado -> ", repaRegistrado);
                 console.log(detalleevento);
               } else if ($q("#modalidad").value == 2) {
                 detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
-                const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
-                console.log("repa registrado -> ", repaRegistrado);
+                
                 console.log(detalleevento);
               }else{
                 detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
@@ -815,7 +815,7 @@ document.addEventListener('DOMContentLoaded', async function () {
               }
 
               if (detalleevento.iddetalleevento > 0) {
-                window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
+                //window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
               } else {
                 showToast("Hubo un error al registrar la atencion", "ERROR");
               }
@@ -837,12 +837,13 @@ document.addEventListener('DOMContentLoaded', async function () {
             if ($q("#modalidad").value == 1) {
               console.log("idcliente-> en valor 1 ", idcliente);
               detalleevento = await registrarDetalleEvento(idcliente);
+              const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                console.log("repa registrado -> ", repaRegistrado);
               console.log(detalleevento);
             } else if ($q("#modalidad").value == 2) {
               console.log("idcliente-> en valor 2 ", idcliente);
               detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
-              const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
-                console.log("repa registrado -> ", repaRegistrado);
+              
               console.log(detalleevento);
             }else if ($q("#modalidad").value == -1){
               console.log("idcliente-> en valor -1 ", idcliente);
@@ -852,7 +853,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
             console.log("detalle evento ->>>>>>", detalleevento);
             if (detalleevento.iddetalleevento > 0) {
-              window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
+              //window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
             } else {
               showToast("Hubo un error al registrar la atencion", "ERROR");
             }

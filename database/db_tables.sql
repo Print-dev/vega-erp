@@ -120,7 +120,6 @@ create table clientes (
 create table detalles_presentacion (
 	iddetalle_presentacion	int auto_increment primary key,
     idusuario			int not null,
-    filmmaker			int  null,
     idcliente			int not null,
     iddistrito			int null,
     ncotizacion			CHAR(9) null,
@@ -140,7 +139,6 @@ create table detalles_presentacion (
     estado			tinyint null default 1, -- 1: activo, 2:vencido, 3: cancelado
     created_at		date null default now(),
     constraint fk_idusuario_dp foreign key (idusuario) references usuarios (idusuario), -- artista
-    constraint fk_filmmaker_dp foreign key (filmmaker) references usuarios (idusuario), -- filmmaker
     constraint fk_idcliente_dp foreign key (idcliente) references clientes (idcliente),
     constraint fk_iddistrito_dp foreign key (iddistrito) references distritos (iddistrito),
     constraint    chk_detalle_p          CHECK(modalidad IN(1, 2)),
@@ -149,6 +147,14 @@ create table detalles_presentacion (
     constraint	uk_ncotizacion 			UNIQUE(ncotizacion),
     constraint uk_idp 					UNIQUE(iddetalle_presentacion)
 )engine=innodb;
+
+CREATE TABLE agenda_asignaciones (
+    idasignacion INT AUTO_INCREMENT PRIMARY KEY,
+    iddetalle_presentacion INT NOT NULL,
+    idusuario INT NOT NULL,
+    FOREIGN KEY (iddetalle_presentacion) REFERENCES detalles_presentacion(iddetalle_presentacion) ON DELETE CASCADE,
+    FOREIGN KEY (idusuario) REFERENCES usuarios(idusuario) ON DELETE CASCADE
+);
 
 create table convenios (
 	idconvenio	int auto_increment primary key,
@@ -240,12 +246,28 @@ CREATE TABLE gastos_cajachica (
 CREATE TABLE notificaciones_viatico (
     idnotificacion_viatico INT AUTO_INCREMENT PRIMARY KEY,
     idviatico int not null,
-    filmmaker INT NOT NULL,
+    idusuario INT NOT NULL,
     mensaje varchar(200) NOT NULL,
     fecha datetime DEFAULT now(),
     constraint fk_idviatico_nt foreign key (idviatico) references viaticos (idviatico),
-    constraint fk_filmmamker_nt foreign key (filmmaker) references usuarios (idusuario)
+    constraint fk_filmmamker_nt foreign key (idusuario) references usuarios (idusuario)
 ) engine = innodb;
+
+CREATE TABLE notificaciones (
+    idnotificacion INT AUTO_INCREMENT PRIMARY KEY,
+    idusuariodest INT NOT NULL,-- Usuario que recibe la notificación
+    idusuariorem INT NOT NULL, -- usuario que envia la notificacion
+    tipo INT NOT NULL, -- 1- viatico
+    idreferencia INT NOT NULL, -- ID del registro relacionado
+    mensaje VARCHAR(200) NOT NULL,
+    estado INT NULL DEFAULT 1, 
+    fecha DATETIME DEFAULT NOW(),
+    constraint fk_usuario_notif foreign key (idusuariodest) references usuarios(idusuario),
+    constraint fk_usuario_rem foreign key (idusuariorem) references usuarios(idusuario),
+    constraint chk_tipo check(tipo IN (1)),
+    constraint chk_estado_not check(estado IN (1,2))
+);
+
 
 CREATE TABLE reparticion_ingresos (
 	idreparticion	int auto_increment primary key,
