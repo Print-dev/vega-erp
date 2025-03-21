@@ -316,7 +316,8 @@ CREATE TABLE agenda_editores ( -- referencia: modal asignar editor
     constraint fk_idusuario_ag_edit foreign key (idusuario) references usuarios (idusuario),
     constraint chk_tipotarea CHECK(tipotarea IN (1,2,3,4,5))
 ) engine = innodb;
-select  * from agenda_editores;
+-- select * from agenda_editores where idagendaedicion = 2
+-- SHOW CREATE TABLE agenda_editores;
 
 CREATE TABLE subidas_agenda_edicion (
 	idsubida	int  auto_increment primary key,
@@ -326,3 +327,5 @@ CREATE TABLE subidas_agenda_edicion (
 	observaciones	varchar(250) null,
     constraint fk_subidas_agenda_edi foreign key (idagendaeditor) references agenda_editores (idagendaeditor)
 ) engine=innodb;
+
+select * from subidas_agenda_edicion;

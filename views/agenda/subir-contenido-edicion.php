@@ -31,6 +31,7 @@
         <div class="text-end">
             <button type="button" class="btn btn-primary" id="btnGuardarContenido">Guardar</button>
             <button type="button" class="btn btn-primary" id="btnVerHistorial">Ver historial</button>
+            <button type="button" class="btn btn-primary" id="btnVerHistorial">Chat <i class="fa-solid fa-comments"></i></button>
         </div>
     </form>
 </div>
@@ -39,7 +40,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalhistorial">Asignar Filmmaker</h1>
+                <h1 class="modal-title fs-5" id="modalhistorial">Historial</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

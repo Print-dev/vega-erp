@@ -4,6 +4,7 @@ USE vega_producciones_erp;
 DROP PROCEDURE IF EXISTS `sp_registrar_notificacion`;
 DELIMITER $$
 
+-- CALL sp_registrar_notificacion(@idnotificacion,1,3,1,2,'yooo')
 CREATE PROCEDURE sp_registrar_notificacion(
     OUT _idnotificacion INT,
     IN _idusuariodest INT,
@@ -22,7 +23,7 @@ BEGIN
     
     -- Insertar la notificación
     INSERT INTO notificaciones (idusuariodest, idusuariorem, tipo, idreferencia, mensaje) 
-    VALUES (_idusuariodest, idusuariorem , _tipo, _idreferencia, _mensaje);
+    VALUES (_idusuariodest, _idusuariorem , _tipo, _idreferencia, _mensaje);
 
     IF existe_error = 1 THEN
         SET _idnotificacion = -1;
@@ -48,3 +49,4 @@ BEGIN
     FROM notificaciones NOTIF
     WHERE NOTIF.idusuario = _idusuario;
 END $$
+select * from usuarios

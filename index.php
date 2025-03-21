@@ -115,11 +115,16 @@ font-weight: bold;
         //console.log(data);
 
         if (data.login) {
-          if (data.rol === "Artista" || data.rol === "Filmmaker") {
+          if (data.rol === "Artista") {
             window.location.href = "http://localhost/vega-erp/views/agenda/listar-agenda-artista";
             return
-          } else if(data.rol === "Administrador"){
+          } else if (data.rol === "Filmmaker"){
+            window.location.href = "http://localhost/vega-erp/views/agenda/listar-agenda-filmmaker";
+            return
+          }
+          else if(data.rol === "Administrador"){
             window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente';
+            return
           }
         } else {
           showToast(data.mensaje, "ERROR");

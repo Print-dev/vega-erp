@@ -111,6 +111,45 @@ class Agenda extends ExecQuery
     }
   }
 
+  public function obtenerTareaPorUsuario($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_usuario_asignado_tarea (?) ");
+      $cmd->execute(array(
+        $params['idusuario']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function eliminarTareaUsuario($params = []): bool
+  {
+    try {
+      $cmd = parent::execQ("DELETE FROM agenda_editores WHERE idagendaeditor = ?");
+      $eliminado = $cmd->execute(array(
+        $params['idagendaeditor']
+      ));
+      return $eliminado;
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerTodasLasTareasEnLaAgenda($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("select * from agenda_editores where idagendaedicion = ? ");
+      $cmd->execute(array(
+        $params['idagendaedicion']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   // ************************* AGENDA EDITORES ************************************
 
   public function asignarAgendaEditor($params = []): int
@@ -176,6 +215,24 @@ class Agenda extends ExecQuery
         array(
           $params['idsubida'],
           $params['observaciones'],
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+
+  public function actualizarEstadoTareaEdicion($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_actualizar_estado_tarea_edicion (?,?)");
+      $rpt = $cmd->execute(
+        array(
+          $params['idagendaeditor'],
+          $params['estado'],
         )
       );
       return $rpt;

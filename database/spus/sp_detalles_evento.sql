@@ -198,6 +198,8 @@ END //
 DELIMITER ;
 
 -- SPU PARA LISTAR LA AGENDA DE LOS OTROS ROLES 
+select * from nivelaccesos;
+-- CALL sp_obtener_agenda (null, null, 10)
 DROP PROCEDURE IF EXISTS sp_obtener_agenda;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_agenda`(
@@ -232,6 +234,7 @@ BEGIN
         ASIG.idusuario as idusuarioAgenda,
         ASIG.iddetalle_presentacion as idpagenda,
         NIVEL.idnivelacceso, NIVEL.nivelacceso,
+        VIA.idviatico,
         (SELECT RE.vigencia 
          FROM reservas RE 
          WHERE RE.idpagocontrato = (SELECT PC.idpagocontrato 
@@ -253,6 +256,7 @@ BEGIN
         DEDP.departamento,
         DEDP.iddepartamento
     FROM detalles_presentacion DP
+    LEFT JOIN viaticos VIA ON VIA.iddetalle_presentacion = DP.iddetalle_presentacion
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN agenda_asignaciones ASIG ON ASIG.iddetalle_presentacion = DP.iddetalle_presentacion
@@ -269,7 +273,6 @@ BEGIN
         (_idnivelacceso IS NULL OR NIVEL.idnivelacceso = _idnivelacceso);
 END //
 DELIMITER ;
-
 -- AGENDA SOLO PARA EDITORES (MUESTRA TODAS LAS AGENDAS PARA EDICION DE LOS EVENTOS, NO LAS TAREAS DE LOS EDITORES)
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_edicion;
 DELIMITER //
@@ -338,7 +341,7 @@ BEGIN
 END //
 DELIMITER ;
 
-call sp_obtener_agenda_edicion_por_editor_y_general (null);
+-- call sp_obtener_agenda_edicion_por_editor_y_general (null);
 -- FILTRAR AGENDA POR EDITORES (TAREAS INDEPENDIENTES Y EN GENERAL PARA TODOS LOS EDITORES)
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_edicion_por_editor_y_general;
 DELIMITER //

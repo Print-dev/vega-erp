@@ -42,7 +42,8 @@ END $$
 
 
 -- EDITORES 
-
+-- SELECT * FROM agenda_editores;
+-- CALL sp_asignar_agenda_editor(@idagendaeditor, 1,10,2,'2025-03-28');
 DROP PROCEDURE IF EXISTS sp_asignar_agenda_editor; -- editado
 DELIMITER $$
 CREATE PROCEDURE sp_asignar_agenda_editor (
@@ -141,7 +142,7 @@ BEGIN
 END $$
 
 
-DROP PROCEDURE if exists sp_actualizar_observacion_subida; -- ELIMINAR ESTO
+DROP PROCEDURE if exists sp_actualizar_observacion_subida; -- ELIMINAR ESTO (que?)
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_observacion_subida (
 	IN _idsubida INT,
@@ -154,6 +155,46 @@ BEGIN
 
 END //
 
+DROP PROCEDURE if exists sp_actualizar_estado_tarea_edicion;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_estado_tarea_edicion (
+	IN _idagendaeditor INT,
+    IN _estado VARCHAR(250)
+)
+BEGIN
+	UPDATE agenda_editores SET
+    estado = _estado
+    WHERE idagendaeditor = _idagendaeditor; 
+
+END //
+
+
 
 -- CALL sp_subir_contenido_editor(@idsubida, 1, 'hola.kjpg','');
 select * from subidas_agenda_edicion
+
+DROP PROCEDURE IF EXISTS sp_obtener_usuario_asignado_tarea;
+DELIMITER $$
+CREATE PROCEDURE sp_obtener_usuario_asignado_tarea
+(
+    IN _idusuario INT
+)
+BEGIN
+	SELECT 
+	AGE.idagendaeditor, AGE.tipotarea, PER.nombres, USU.idusuario, AGE.fecha_entrega, AGE.estado
+    FROM agenda_editores AGE
+    LEFT JOIN usuarios USU ON USU.idusuario = AGE.idusuario
+    LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
+    WHERE AGE.idusuario = _idusuario;
+END $$
+
+DROP PROCEDURE IF EXISTS sp_quitar_tarea_usuario;
+DELIMITER $$
+CREATE PROCEDURE sp_quitar_tarea_usuario
+(
+    IN _idagendaeditor INT
+)
+BEGIN	
+	DELETE FROM agenda_editores WHERE idagendaeditor = _idagendaeditor;
+END $$
+

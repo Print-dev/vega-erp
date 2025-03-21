@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   function mostrarNotificaciones(notificaciones, idusuario) {
     const contenedor = document.getElementById("list-notificaciones");
     contenedor.innerHTML = ""; // Limpiar el contenedor antes de agregar nuevas notificaciones
-
+    console.log("notificaciinessss ->", notificaciones);
     if (notificaciones.length === 0) {
       contenedor.innerHTML = "<p>No hay notificaciones</p>";
       return;
@@ -74,7 +74,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         modalNotificacion = new bootstrap.Modal($q("#modal-notificacion"))
         modalNotificacion.show()
         const usuario = await obtenerUsuarioPorId(idusuario)
-        const infoViatico = await obtenerInfoViatico(notificacion.idviatico)
+        const infoViatico = await obtenerInfoViatico(notificacion.idreferencia)
+        console.log("infoviatico -< ", infoViatico);
         cargarNotificacionEnModal(notificacion, usuario[0], infoViatico[0]);
         console.log("usuario -> ", usuario)
       });
@@ -84,7 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function cargarNotificacionEnModal(notificacion, usuario, viatico) {
-    const fechahoraSeparada = notificacion.fecha.split(" ")
+    const fechahoraSeparada = notificacion?.fecha.split(" ")
     const contenedorModal = $q(".contenedor-notificacion");
     contenedorModal.innerHTML = `
       <p class="text-muted mb-2"><strong>${formatDate(fechahoraSeparada[0] + " " + formatHour(fechahoraSeparada[1]))}</strong></p>

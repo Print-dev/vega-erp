@@ -17,3 +17,5 @@ ALTER TABLE agenda_editores
 DROP COLUMN url_video;
 ALTER TABLE agenda_editores
 DROP COLUMN url_imagen;
+ALTER TABLE agenda_editores CHANGE COLUMN ideditores idagendaeditor INT;
+ALTER TABLE agenda_editores MODIFY idagendaeditor INT AUTO_INCREMENT;
