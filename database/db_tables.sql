@@ -148,7 +148,7 @@ create table detalles_presentacion (
     constraint uk_idp 					UNIQUE(iddetalle_presentacion)
 )engine=innodb;
 
-CREATE TABLE agenda_asignaciones (
+CREATE TABLE agenda_asignaciones ( -- tabla que asigna la agenda a un filmmaker
     idasignacion INT AUTO_INCREMENT PRIMARY KEY,
     iddetalle_presentacion INT NOT NULL,
     idusuario INT NOT NULL,
@@ -298,23 +298,31 @@ CREATE TABLE egresos_evento (
     constraint fk_idreparticion_egre foreign key (idreparticion) references reparticion_ingresos (idreparticion)
 ) engine = innodb;
 
-CREATE TABLE agenda_edicion (
+CREATE TABLE agenda_edicion ( -- tabla que envuelve la tabla agenda editores
     idagendaedicion INT AUTO_INCREMENT PRIMARY KEY,
     iddetalle_presentacion INT NOT NULL,  -- Relación con la agenda del evento
     constraint fk_iddp_ag_edicion foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 );
 
-CREATE TABLE agenda_editores (
+CREATE TABLE agenda_editores ( -- referencia: modal asignar editor
 	idagendaeditor	int auto_increment primary key,
     idagendaedicion int not null,
     idusuario		int not null,
     tipotarea 		int not null, -- 1: flayer, 2: saludos, 3: reels, 4: fotos, 5: contenido
-    url_imagen			varchar(40) null,
-    url_video		varchar(200) null,
     estado			int null default 1, -- 1: pendiente, 2- completado
 	fecha_asignacion datetime null default now(),
     fecha_entrega 	datetime not null,
-    observaciones	varchar(250) null,
     constraint fk_idagendaedicion foreign key (idagendaedicion) references agenda_edicion (idagendaedicion),
-    constraint fk_idusuario_ag_edit foreign key (idusuario) references usuarios (idusuario)
+    constraint fk_idusuario_ag_edit foreign key (idusuario) references usuarios (idusuario),
+    constraint chk_tipotarea CHECK(tipotarea IN (1,2,3,4,5))
 ) engine = innodb;
+select  * from agenda_editores;
+
+CREATE TABLE subidas_agenda_edicion (
+	idsubida	int  auto_increment primary key,
+    idagendaeditor int not null,
+    url_imagen			varchar(40) null,
+    url_video		varchar(200) null,
+	observaciones	varchar(250) null,
+    constraint fk_subidas_agenda_edi foreign key (idagendaeditor) references agenda_editores (idagendaeditor)
+) engine=innodb;

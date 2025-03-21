@@ -268,6 +268,101 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal-asignareditor" tabindex="-1" aria-labelledby="modalasignareditor" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalasignareditor">Asignar Editor</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="contenedor-asignacion p-3">
+                    <div class="row g-3 align-items-center justify-content-center">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <select name="asignacion" id="asignacion" class="form-select">
+                                </select>
+                                <label for="asignacion" class="form-label">Seleccionar Editor</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <select name="tipotarea" id="tipotarea" class="form-select">
+                                    <option value="-1">Seleccione</option>
+                                    <option value="1">Flayer</option>
+                                    <option value="2">Saludos</option>
+                                    <option value="3">Reels</option>
+                                    <option value="4">Fotos</option>
+                                    <option value="5">Contenido</option>
+                                </select>
+                                <label for="tipotarea" class="form-label">Tarea</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="date" id="fechaentrega" name="fechaentrega" class="form-control">
+                                <label for="fechaentrega" class="form-label">Fecha de Entrega</label>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="table-responsive d-flex justify-content-center">
+                        <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
+                            <thead class="table-dark">
+                                <tr>
+                                <th>Flayer</th>
+                                <th>Saludos</th>
+                                <th>Reels</th>
+                                <th>Fotos</th>  
+                                <th>Contenido</th>  
+                                </tr>
+                            </thead>
+                            <tbody class="contenedor-asignados">
+                                                     
+                            </tbody>
+                        </table>
+                    </div>                    
+                </div>
+            </div>
+            <div class="modal-footer text-end">
+                <button type="button" class="btn btn-secondary" id="btnGuardarAsignacion">Asignar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal-progresoedicion" tabindex="-1" aria-labelledby="modalprogresoedicion" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalprogresoedicion">Progreso edicion</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="contenedor-progreso p-3">                    
+                    <div class="table-responsive d-flex justify-content-center">
+                        <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
+                            <thead class="table-dark">
+                                <tr>
+                                <th>Fecha</th>
+                                <th>Usuario</th>
+                                <th>Tipo Tarea</th>
+                                <th>Estado</th>  
+                                <th>Subidas</th>  
+                                </tr>
+                            </thead>
+                            <tbody class="contenedor-tareas-edicion-pendientes">
+                                                           
+                            </tbody>
+                        </table>
+                    </div>                    
+                </div>
+            </div>           
+        </div>
+    </div>
+</div>
+
 <?php require_once '../footer.php' ?>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>

@@ -156,13 +156,13 @@
           <div class="row g-2 mt-3 contenedor-color" hidden>
             <label for="color" class="col-sm-1 form-label size-label mt-3">Color:</label>
             <div class="col-sm-5">
-              <input type="color" name="color" id="color" class="form-control" required>
+              <input type="color" name="color" id="color" class="form-control">
             </div>
           </div>
           <div class="row g-2 mt-3 contenedor-porcentaje" hidden>
             <label for="porcentaje" class="col-sm-1 form-label size-label mt-3">Porcentaje (%)</label>
             <div class="col-sm-5">
-              <input type="porcentaje" name="porcentaje" id="porcentaje" maxlength="2" minlength="2" class="form-control" required>
+              <input type="porcentaje" name="porcentaje" id="porcentaje" maxlength="2" minlength="2" class="form-control">
             </div>
           </div>
 

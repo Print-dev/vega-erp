@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let iddepartamento = -1;
   let idprovincia = -1;
   let iddistrito = -1;
+  let idagendaedicion = -1
 
   console.log("idusuario logeado", idusuarioLogeado)
 
@@ -30,6 +31,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   let modalAcuerdo
   let modalMonto;
   let modalFilmmaker
+  let modalAsignarEditor
+  let modalProgresoEdicion
 
   //CALENDARIO
   let calendarEl;
@@ -77,18 +80,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data;
   }
 
-  async function obtenerUsuarios() {
+  async function obtenerUsuarios(idnivelacceso) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerUsuarioPorNivel");
-    params.append("idnivelacceso", $q("#nivelacceso").value);
+    params.append("idnivelacceso", idnivelacceso);
     const data = await getDatos(`${host}usuario.controller.php`, params);
     console.log(data);
     $q("#usuario").innerHTML = "<option value=''>Todos</option>";
+    $q("#asignacion").innerHTML = "<option value='-1'>Seleccione</option>"
     data.forEach((artista) => {
       $q(
         "#usuario"
       ).innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
+      $q(
+        "#asignacion"
+      ).innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
     });
+    
   }
 
   async function obtenerDepartamentoPorId(iddepartamento) {
@@ -216,16 +224,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     params.append("idusuario", idusuario);
     const data = await getDatos(`${host}agenda.controller.php`, params);
     return data;
-  } ME QUEDE ACA , falta filtrarlos por idusuario para obtener tanto todas las tareas de todoso los usuarios y de tan solo un usuario
+  } //ME QUEDE ACA , falta filtrarlos por idusuario para obtener tanto todas las tareas de todoso los usuarios y de tan solo un usuario
+
+  async function obtenerEditoresAsignados(idagendaedicion) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerEditoresAsignados");
+    params.append("idagendaedicion", idagendaedicion);
+    const data = await getDatos(`${host}agenda.controller.php`, params);
+    return data;
+  } 
 
   // *************************************** REGISTRAR DATOS ***************************************************************
+  
+  async function asignarAgendaEditor(idagendaedicion) {
+
+    const body = new FormData();
+    body.append("operation", "asignarAgendaEditor");
+    body.append("idagendaedicion", idagendaedicion); // id artista
+    body.append("idusuario", $q("#asignacion").value);
+    body.append("tipotarea", $q("#tipotarea").value);
+    body.append("fechaentrega", $q("#fechaentrega").value);
+
+    const fbody = await fetch(`${host}agenda.controller.php`, {
+      method: "POST",
+      body: body,
+    });
+    const rbody = await fbody.json();
+    return rbody;
+  }
 
   async function registrarViatico(iddetallepresentacion) {
 
     const viatico = new FormData();
     viatico.append("operation", "registrarViatico");
     viatico.append("iddetallepresentacion", iddetallepresentacion); // id artista
-    viatico.append("pasaje", $q("#pasaje").value);
+    viatico.append("idusuario", $q("#pasaje").value);
     viatico.append("comida", $q("#comida").value);
     viatico.append("viaje", $q("#viaje").value ? $q("#viaje").value : '');
 
@@ -455,7 +488,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             idusuariofilmmaker: filmmakerObtenido[0]?.idusuario,
             idcontrato: evento.idcontrato,
             idconvenio: evento.idconvenio,
-            estado: evento.estado
+            estado: evento.estado,
+            idagendaedicion: evento.idagendaedicion
           },
         });
       }
@@ -513,8 +547,28 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <div><strong>Tiempo:</strong> ${calculateDuration(
                 arg.event.extendedProps.horainicio,
                 arg.event.extendedProps.horafinal
-              )}</div>` :
-
+              )}</div>` : arg.event.extendedProps.idagendaedicion !== null ? `
+              <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
+              <div>${horaInicio} - ${horaFinal}</div>
+              <div>${badgeHtml}</div>
+            </div>
+            <div style="padding: 8px; word-wrap: break-word; 
+            overflow-wrap: break-word;
+            white-space: normal;">
+              <div style="font-size: 20px; font-weight: bold;">${arg.event.title
+              }</div>
+                <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
+              }</div>
+                <div><strong>Tiempo:</strong> ${calculateDuration(
+                arg.event.extendedProps.horainicio,
+                arg.event.extendedProps.horafinal
+              )}</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+                <button class="btn btn-primary" id="btnAsignarEditor" style="flex: 1;" data-idagendaedicion="${arg.event.extendedProps?.idagendaedicion}">Asignar</button>
+                <button class="btn btn-primary" id="btnVerProgreso" style="flex: 1;" data-idagendaedicion="${arg.event.extendedProps?.idagendaedicion}">Ver progreso</button>
+              </div>
+              `
+                :
               `
               <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
               <div>${horaInicio} - ${horaFinal}</div>
@@ -574,10 +628,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ******************************************* EVENTOS *************************************************************
 
+  $q("#btnGuardarAsignacion").addEventListener("click", async () => {
+    const agendaEditorRegis = await asignarAgendaEditor(idagendaedicion) 
+    console.log("agendaEditorRegis -> ", agendaEditorRegis);
+  })
+
   $q("#nivelacceso")?.addEventListener("change", async () => {
+    $q(".contenedor-select-usuario").hidden = false
     $q(".contenedor-select-tipo-filtro-edicion").hidden = true
     console.log("nivel ccceso escogido: ", $q("#nivelacceso").value);
-    await obtenerUsuarios();
+    await obtenerUsuarios($q("#nivelacceso").value);
     const nivel = $q("#nivelacceso").value
     if ($q("#nivelacceso").value == 10) {
       $q(".contenedor-select-tipo-filtro-edicion").hidden = false
@@ -705,7 +765,79 @@ document.addEventListener("DOMContentLoaded", async () => {
     await manejadorAgendaPorNivel(nivel)
   });
 
+  
+
   document.addEventListener("click", async (e) => {
+    if (e.target && e.target.id === "btnVerProgreso") {
+      /* window.localStorage.clear()
+      window.localStorage.setItem("idagendaedicion", idagendaedicion)
+      window.location.href = `http://localhost/vega-erp/views/agenda/asignar-agenda-edicion` */
+      idagendaedicion = e.target.getAttribute("data-idagendaedicion");
+
+      modalProgresoEdicion = new bootstrap.Modal($q("#modal-progresoedicion"));
+      modalProgresoEdicion.show();
+
+      const editoresAsignados = await obtenerEditoresAsignados(idagendaedicion)
+      console.log("editoresAsignados ->",editoresAsignados);
+      $q(".contenedor-tareas-edicion-pendientes").innerHTML = ``
+      editoresAsignados.forEach(editor => {
+        
+        $q(".contenedor-tareas-edicion-pendientes").innerHTML += `
+        <tr>
+            <td>${editor.fecha_entrega}</td>
+            <td>${editor.nombres}</td>
+            <td>${editor.tipotarea == 1 ? 'Flayer' : editor.tipotarea == 2 ? 'Saludos' : editor.tipotarea == 3 ? 'Reels' : editor.tipotarea == 4 ? 'Fotos' : editor.tipotarea == 5 ? 'Contenido' : 'No especificado'}</td>
+            <td>
+              <select name="tipotarea" id="tipotarea" class="form-select">
+                  <option value="-1">Seleccione</option>
+                  <option value="1" ${editor.estado == 1 ? 'selected' : ''}>Pendiente</option>
+                  <option value="2" ${editor.estado == 2 ? 'selected' : ''}>Completado</option>
+              </select>
+            </td>
+            <td>
+                <button type="button" class="btn btn-primary" id="btnAbrirModalSubir" data-idagendaeditor="${editor.idagendaeditor}">Ver</button>
+            </td>        
+        </tr>       
+        `
+      });
+      $all("#btnAbrirModalSubir").forEach(btn => {
+        btn.addEventListener("click", (e)=>{
+        idagendaeditor = e.target.getAttribute("data-idagendaeditor")
+        console.log("id agenda edicion -> ", idagendaeditor);
+        window.localStorage.clear()
+        window.localStorage.setItem("idagendaeditor", idagendaeditor)
+        window.location.href = `http://localhost/vega-erp/views/agenda/subir-contenido-edicion` 
+        return
+        })
+      })
+    }
+    if (e.target && e.target.id === "btnAsignarEditor") {
+      /* window.localStorage.clear()
+      window.localStorage.setItem("idagendaedicion", idagendaedicion)
+      window.location.href = `http://localhost/vega-erp/views/agenda/asignar-agenda-edicion` */
+      idagendaedicion = e.target.getAttribute("data-idagendaedicion");
+
+      modalAsignarEditor = new bootstrap.Modal($q("#modal-asignareditor"));
+      modalAsignarEditor.show();
+
+      const editoresAsignados = await obtenerEditoresAsignados(idagendaedicion)
+      console.log("editoresAsignados ->",editoresAsignados);
+      $q(".contenedor-asignados").innerHTML = ``
+      editoresAsignados.forEach(editor => {
+        
+        $q(".contenedor-asignados").innerHTML = `
+        <tr>
+            <td>${editor.nombres && editor.tipotarea == 1 ? editor.nombres : 'No asignado'}</td>
+            <td>${editor.nombres && editor.tipotarea == 2 ? editor.nombres : 'No asignado'}</td>
+            <td>${editor.nombres && editor.tipotarea == 3 ? editor.nombres : 'No asignado'}</td>
+            <td>${editor.nombres && editor.tipotarea == 4 ? editor.nombres : 'No asignado'}</td>
+            <td>${editor.nombres && editor.tipotarea == 5 ? editor.nombres : 'No asignado'}</td>
+            
+        </tr>       
+        `
+      });
+    }
+    
     if (e.target && e.target.id === "btnViatico") {
       iddp = e.target.getAttribute("data-iddp");
       iddepartamento = e.target.getAttribute("data-iddepartamento");

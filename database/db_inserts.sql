@@ -34,7 +34,7 @@ INSERT INTO usuarios (idnivelacceso, idpersona, nom_usuario, claveacceso, color,
     (11,3, 'Johan Films', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC', null, null),
     (11,4, 'Ray Films', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC', null , null),
     (6,5, 'Oscar Manuel y Orquesta', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC', '#6ccc61', null),
-    (10,19, 'Andres Editor', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC', null, null);
+    (10,6, 'Andres Editor', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC', null, null);
 
 INSERT INTO clientes (tipodoc, iddistrito, ndocumento, razonsocial, telefono, correo, direccion) values
 	(2 ,74, '10727547521', 'AVALOS ROMERO ROYER ALEXIS', '973189350', 'alexisjkg@gmail.com', 'Asent. FALSA 123');
@@ -49,4 +49,5 @@ INSERT INTO cajachica (idmonto ,ccinicial, incremento, ccfinal) VALUES (1, 200.0
 INSERT INTO gastos_cajachica (idcajachica, concepto, monto) values (1, "compra de 2 audifonos", 5.00); 
 INSERT INTO gastos_cajachica (idcajachica, concepto, monto) values (1, "compra de 1 cable red", 3.00); 
 
-INSERT INTO agenda_editores (idagendaedicion, idusuario, tipotarea, fecha_entrega) VALUES (1, 9, 1, '2025-03-25');
+-- INSERT INTO agenda_edicion (iddetalle_presentacion) values (1);
+-- INSERT INTO agenda_editores (idagendaedicion, idusuario, tipotarea, fecha_entrega) VALUES (1, 9, 1, '2025-03-25');

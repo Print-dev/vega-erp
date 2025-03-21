@@ -85,9 +85,35 @@ class Agenda extends ExecQuery
     }
   }
 
+  public function obtenerContenidoHistorialEdicion($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_contenido_historial_edicion (?) ");
+      $cmd->execute(array(
+        $params['idagendaeditor']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerEditoresAsignados($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_agenda_editores (?) ");
+      $cmd->execute(array(
+        $params['idagendaedicion']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   // ************************* AGENDA EDITORES ************************************
 
-  public function asignarAgendaEditor($params = []): array
+  public function asignarAgendaEditor($params = []): int
   {
     try {
       $pdo = parent::getConexion();
@@ -104,6 +130,23 @@ class Agenda extends ExecQuery
       die($e->getMessage());
     }
   }
+  
+  public function subirContenidoEditor($params = []): int
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_subir_contenido_editor(@idsubida,?,?,?)");
+      $cmd->execute(array(
+        $params['idagendaeditor'],
+        $params['urlimagen'],
+        $params['urlvideo']
+      ));
+      $respuesta = $pdo->query("SELECT @idsubida AS idsubida")->fetch(PDO::FETCH_ASSOC);
+      return $respuesta['idsubida'];
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
 
   public function actualizarAgendaEditor($params = []): bool
   {
@@ -115,6 +158,24 @@ class Agenda extends ExecQuery
           $params['idagendaeditor'],
           $params['urlimagen'],
           $params['urlvideo'],
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+  
+  public function comentarContenido($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_actualizar_observacion_subida (?,?)");
+      $rpt = $cmd->execute(
+        array(
+          $params['idsubida'],
+          $params['observaciones'],
         )
       );
       return $rpt;

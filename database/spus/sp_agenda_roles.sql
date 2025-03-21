@@ -43,7 +43,7 @@ END $$
 
 -- EDITORES 
 
-DROP PROCEDURE IF EXISTS sp_asignar_agenda_editor;
+DROP PROCEDURE IF EXISTS sp_asignar_agenda_editor; -- editado
 DELIMITER $$
 CREATE PROCEDURE sp_asignar_agenda_editor (
     OUT _idagendaeditor INT,
@@ -70,7 +70,7 @@ BEGIN
     END IF;
 END $$
 
-DROP PROCEDURE if exists sp_actualizar_agenda_editor;
+DROP PROCEDURE if exists sp_actualizar_agenda_editor; -- ELIMINAR ESTO
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_agenda_editor (
 	IN _idagendaeditor INT,
@@ -83,3 +83,77 @@ BEGIN
     url_video = _urlvideo
     WHERE idagendaeditor = _idagendaeditor; 
 END //
+
+DROP PROCEDURE IF EXISTS sp_subir_contenido_editor; -- editado
+DELIMITER $$
+CREATE PROCEDURE sp_subir_contenido_editor (
+	OUT _idsubida INT,
+    IN _idagendaeditor INT,
+	IN _url_imagen varchar(40),
+    IN _url_video varchar(200)
+)
+BEGIN
+    DECLARE existe_error INT DEFAULT 0;
+    
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SET existe_error = 1;
+    END;
+    
+    INSERT INTO subidas_agenda_edicion (idagendaeditor, url_imagen , url_video)
+    VALUES (_idagendaeditor, nullif(_url_imagen,''), nullif(_url_video,''));
+    
+    IF existe_error = 1 THEN
+        SET _idsubida = -1;
+    ELSE
+        SET _idsubida = LAST_INSERT_ID();
+    END IF;
+END $$
+
+
+DROP PROCEDURE IF EXISTS sp_obtener_contenido_historial_edicion;
+DELIMITER $$
+CREATE PROCEDURE sp_obtener_contenido_historial_edicion
+(
+    IN _idagendaeditor INT
+)
+BEGIN
+	SELECT 
+	*
+    FROM subidas_agenda_edicion SUBI
+    LEFT JOIN agenda_editores AGE ON AGE.idagendaeditor = SUBI.idagendaeditor
+    WHERE SUBI.idagendaeditor = _idagendaeditor;
+END $$
+
+DROP PROCEDURE IF EXISTS sp_obtener_agenda_editores;
+DELIMITER $$
+CREATE PROCEDURE sp_obtener_agenda_editores
+(
+    IN _idagendaedicion INT
+)
+BEGIN
+	SELECT 
+	AGE.idagendaeditor, AGE.tipotarea, PER.nombres, USU.idusuario, AGE.fecha_entrega, AGE.estado
+    FROM agenda_editores AGE
+    LEFT JOIN usuarios USU ON USU.idusuario = AGE.idusuario
+    LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
+    WHERE AGE.idagendaedicion = _idagendaedicion;
+END $$
+
+
+DROP PROCEDURE if exists sp_actualizar_observacion_subida; -- ELIMINAR ESTO
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_observacion_subida (
+	IN _idsubida INT,
+    IN _observaciones VARCHAR(250)
+)
+BEGIN
+	UPDATE subidas_agenda_edicion SET
+    observaciones = _observaciones
+    WHERE idsubida = _idsubida; 
+
+END //
+
+
+-- CALL sp_subir_contenido_editor(@idsubida, 1, 'hola.kjpg','');
+select * from subidas_agenda_edicion

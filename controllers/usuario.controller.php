@@ -48,8 +48,10 @@ $accesos = [
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-ingreso', 'subruta' => 'ingresos', 'visible' => false], */
 
 
+    //['modulo' => 'agenda', 'ruta' => '', 'texto' => 'Agenda', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
 
     ['modulo' => 'agenda', 'ruta' => 'listar-agenda', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
+    ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '','visible' => true],
 
   ],
   "Artista" => [

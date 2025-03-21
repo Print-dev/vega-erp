@@ -41,6 +41,20 @@ if (isset($_GET['operation'])) {
       echo json_encode($agenda->obtenerAgendaEdicionPorEditorYGeneral($cleanData));
       break;
 
+    case 'obtenerContenidoHistorialEdicion':
+      $cleanData = [
+        'idagendaeditor' => $_GET['idagendaeditor'] === "" ? null : $agenda->limpiarCadena($_GET['idagendaeditor']),
+      ];
+      echo json_encode($agenda->obtenerContenidoHistorialEdicion($cleanData));
+      break;
+
+    case 'obtenerEditoresAsignados':
+      $cleanData = [
+        'idagendaedicion' => $_GET['idagendaedicion'] === "" ? null : $agenda->limpiarCadena($_GET['idagendaedicion']),
+      ];
+      echo json_encode($agenda->obtenerEditoresAsignados($cleanData));
+      break;
+
     case 'obtenerTodasLasAgendasEdicion':
       echo json_encode($agenda->obtenerTodasLasAgendasEdicion());
       break;
@@ -68,6 +82,24 @@ if (isset($_POST['operation'])) {
       echo json_encode($respuesta);
       break;
 
+    case 'subirContenidoEditor':
+      $cleanData = [
+        'idagendaeditor'   =>  $agenda->limpiarCadena($_POST['idagendaeditor']) ? $agenda->limpiarCadena($_POST['idagendaeditor']) : '',
+        'urlimagen'   => $agenda->limpiarCadena($_POST['urlimagen']) ?  $agenda->limpiarCadena($_POST['urlimagen']) :'',
+        'urlvideo'   => $agenda->limpiarCadena($_POST['urlvideo']) ? $agenda->limpiarCadena($_POST['urlvideo']) : ''
+      ];
+
+      $respuesta = ['idsubida' => -1];
+
+      $idsubida = $agenda->subirContenidoEditor($cleanData);
+
+      if ($idsubida > 0) {
+        $respuesta['idsubida'] = $idsubida;
+      }
+
+      echo json_encode($respuesta);
+      break;
+
     case 'registrarAgendaEdicion':
       $cleanData = [
         'iddetallepresentacion'   =>  $agenda->limpiarCadena($_POST['iddetallepresentacion'])
@@ -86,6 +118,17 @@ if (isset($_POST['operation'])) {
       ];
 
       $update = $agenda->actualizarAgendaEditor($cleanData);
+
+      echo json_encode($update);
+      break;
+
+    case 'comentarContenido':
+      $cleanData = [
+        'idsubida' => $agenda->limpiarCadena($_POST['idsubida']),
+        'observaciones' => $agenda->limpiarCadena($_POST['observaciones'])
+      ];
+
+      $update = $agenda->comentarContenido($cleanData);
 
       echo json_encode($update);
       break;

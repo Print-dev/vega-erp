@@ -132,7 +132,6 @@ BEGIN
 END //
 
 -- CALL sp_obtener_detalles_evento (null, null, "a", null)
-CALL sp_obtener_agenda_artista (null, null);
 
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_artista;
 DELIMITER //
@@ -198,7 +197,6 @@ BEGIN
 END //
 DELIMITER ;
 
-CALL sp_obtener_agenda (null, null, 11);
 -- SPU PARA LISTAR LA AGENDA DE LOS OTROS ROLES 
 DROP PROCEDURE IF EXISTS sp_obtener_agenda;
 DELIMITER //
@@ -304,6 +302,7 @@ BEGIN
         ASIG.idusuario as idusuarioAgenda,
         ASIG.iddetalle_presentacion as idpagenda,
         NIVEL.idnivelacceso, NIVEL.nivelacceso,
+        AGE.idagendaedicion,
         (SELECT RE.vigencia 
          FROM reservas RE 
          WHERE RE.idpagocontrato = (SELECT PC.idpagocontrato 
@@ -340,7 +339,6 @@ END //
 DELIMITER ;
 
 -- FILTRAR AGENDA POR EDITORES (TAREAS INDEPENDIENTES Y EN GENERAL PARA TODOS LOS EDITORES)
-CALL sp_obtener_agenda_edicion_por_editor_y_general(9);
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_edicion_por_editor_y_general;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_agenda_edicion_por_editor_y_general`(
