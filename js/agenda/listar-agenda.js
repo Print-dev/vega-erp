@@ -91,10 +91,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     data.forEach((artista) => {
       $q(
         "#usuario"
-      ).innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
+      ).innerHTML += `<option value="${artista.idusuario}">${artista.nombres}</option>`;
       $q(
         "#asignacion"
-      ).innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
+      ).innerHTML += `<option value="${artista.idusuario}">${artista.nombres}</option>`; // USUARIOS EDITRES PARA LA ASIGNACION DE TAREAS (FLAYER, SALUDO, ETC)
     });
     
   }
@@ -726,8 +726,13 @@ document.addEventListener("DOMContentLoaded", async () => {
           await configurarCalendario(agendasEdicion)
           return
         } 
-              
-        await configurarCalendario([])
+        if($q("#usuario").value != ""){
+          const agendaEdicion = await obtenerAgendaEdicionPorEditorYGeneral($q("#usuario").value)
+          await configurarCalendario(agendaEdicion)
+          return
+        }
+        const agendaEdicion = await obtenerAgendaEdicionPorEditorYGeneral($q("#usuario").value)
+        await configurarCalendario(agendaEdicion)
 
         break;
       case '11': // FILMMAKERS

@@ -338,6 +338,7 @@ BEGIN
 END //
 DELIMITER ;
 
+call sp_obtener_agenda_edicion_por_editor_y_general (null);
 -- FILTRAR AGENDA POR EDITORES (TAREAS INDEPENDIENTES Y EN GENERAL PARA TODOS LOS EDITORES)
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_edicion_por_editor_y_general;
 DELIMITER //
@@ -372,6 +373,7 @@ BEGIN
         ASIG.iddetalle_presentacion as idpagenda,
         NIVEL.idnivelacceso, NIVEL.nivelacceso,
         AGEDIT.tipotarea,
+        PERAGE.nombres,
         (SELECT RE.vigencia 
          FROM reservas RE 
          WHERE RE.idpagocontrato = (SELECT PC.idpagocontrato 
@@ -394,6 +396,8 @@ BEGIN
         DEDP.iddepartamento
 	FROM agenda_editores AGEDIT
 	LEFT JOIN agenda_edicion AGE on AGE.idagendaedicion = AGEDIT.idagendaedicion 
+    LEFT JOIN usuarios USUAGE ON USUAGE.idusuario = AGEDIT.idusuario
+    LEFT JOIN personas PERAGE ON PERAGE.idpersona = USUAGE.idpersona
     LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = AGE.iddetalle_presentacion
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente

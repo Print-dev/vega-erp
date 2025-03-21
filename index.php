@@ -116,7 +116,8 @@ font-weight: bold;
 
         if (data.login) {
           if (data.rol === "Artista" || data.rol === "Filmmaker") {
-            window.location.href = "http://localhost/vega-erp/views/agenda/listar-agenda";
+            window.location.href = "http://localhost/vega-erp/views/agenda/listar-agenda-artista";
+            return
           } else if(data.rol === "Administrador"){
             window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente';
           }

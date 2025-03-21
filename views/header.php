@@ -27,6 +27,8 @@ if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {
     $i++;
   }
 
+//  die(print_r($listaAcceso));
+
   if (!$encontrado) {
     header("Location:http://localhost/vega-erp/views/ventas/listar-atencion-cliente");
   }
@@ -123,7 +125,6 @@ $host = "http://localhost/vega-erp/";
     color: #000;
     display: flex;
     align-items: center;
-    width: 230px;
     /* Mantener tamaño fijo */
     padding: 10px;
     /* Ajuste uniforme */
@@ -248,7 +249,7 @@ $host = "http://localhost/vega-erp/";
         </li>
         <?php
         foreach ($listaAcceso as $access) {
-          if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario" && $access['modulo'] !== "pyp" && $access['modulo'] !== "contabilidad") {
+          if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario" && $access['modulo'] !== "pyp" && $access['modulo'] !== "contabilidad" && $access['modulo'] !== "agenda") {
             echo "
               <li class='nav-item' >
                 <a href='http://localhost/vega-erp/views/{$access['modulo']}/{$access['ruta']}' class='nav-link' id='links'>
@@ -360,6 +361,30 @@ $host = "http://localhost/vega-erp/";
                 echo "
                 <li class='sidebar-item nav-item list-contabilidad'>
                   <a href='{$rutaCompleta}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                    <i class='{$subAccess['icono']}'></i>
+                    <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
+                  </a>
+                </li>";
+              }
+            }
+            echo "</ul>";
+          } else if ($access['modulo'] === "agenda" && $access['visible']) {
+            echo "
+              <li class='sidebar-item nav-item'>
+                <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#agenda'
+                  aria-expanded='false' aria-controls='agenda'>
+                  <i class='{$access['icono']}'></i>
+                  <span class='sidebar-text mx-2'>{$access['texto']}</span>
+                  <i class='fa-solid fa-angle-down ms-auto mt-2 toggle-icon'></i>
+                </a>              
+              </li> 
+              <ul id='agenda' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#agenda'>";
+
+            foreach ($listaAcceso as $subAccess) {
+              if (!$subAccess['visible'] && $subAccess['modulo'] === "agenda" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
+                echo "
+                <li class='sidebar-item nav-item list-agenda'>
+                  <a href='http://localhost/vega-erp/views/{$subAccess['modulo']}/{$subAccess['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
                     <i class='{$subAccess['icono']}'></i>
                     <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
                   </a>

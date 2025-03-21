@@ -81,14 +81,16 @@ BEGIN
         US.nom_usuario,
         US.estado,
         NA.nivelacceso,
-        NA.idnivelacceso
+        NA.idnivelacceso,
+        PER.nombres
 		FROM usuarios US
         INNER JOIN nivelaccesos NA ON US.idnivelacceso = NA.idnivelacceso
+        LEFT JOIN personas PER ON PER.idpersona = US.idpersona
         WHERE NA.idnivelacceso = _idnivelacceso;
 END $$
 
-CALL sp_obtener_usuario_por_nivel(6)
-
+-- CALL sp_obtener_usuario_por_nivel(6)
+-- CALL sp_obtener_usuarios (NULL,NULL,NULL,NULL,NULL,NULL)
 DROP PROCEDURE IF EXISTS sp_obtener_usuarios;
 DELIMITER $$
 
@@ -107,12 +109,13 @@ BEGIN
 	FROM usuarios US
 	left JOIN personas PE ON PE.idpersona = US.idpersona
     left JOIN nivelaccesos NA ON NA.idnivelacceso = US.idnivelacceso
-	WHERE NA.nivelacceso LIKE CONCAT('%', COALESCE(_nivelacceso, ''), '%')
-	  AND PE.num_doc LIKE CONCAT('%', COALESCE(_num_doc, ''), '%') 
-	  AND PE.nombres LIKE CONCAT('%', COALESCE(_nombres, ''), '%') 
-	  AND PE.apellidos LIKE CONCAT('%', COALESCE(_apellidos, ''), '%') 
-	  AND PE.telefono LIKE CONCAT('%', COALESCE(_telefono, ''), '%') 
-	  AND US.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%');
+	WHERE (NA.nivelacceso LIKE CONCAT('%', COALESCE(_nivelacceso, ''), '%') OR NA.nivelacceso IS NULL)
+  AND (PE.num_doc LIKE CONCAT('%', COALESCE(_num_doc, ''), '%') OR PE.num_doc IS NULL)
+  AND (PE.nombres LIKE CONCAT('%', COALESCE(_nombres, ''), '%') OR PE.nombres IS NULL)
+  AND (PE.apellidos LIKE CONCAT('%', COALESCE(_apellidos, ''), '%') OR PE.apellidos IS NULL)
+  AND (PE.telefono LIKE CONCAT('%', COALESCE(_telefono, ''), '%') OR PE.telefono IS NULL)
+  AND (US.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%') OR US.nom_usuario IS NULL);
+
 END $$
 
 -- CALL sp_obtener_usuarios('Art','','','','','');
