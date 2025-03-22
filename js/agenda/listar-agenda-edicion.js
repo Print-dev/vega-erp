@@ -424,10 +424,70 @@ document.addEventListener("DOMContentLoaded", async () => {
         const idagendaeditor = btnSubirTarea.getAttribute("data-idagendaeditor");
         window.localStorage.clear()
         window.localStorage.setItem("idagendaeditor", idagendaeditor)
-        window.location.href = `http://localhost/vega-erp/views/agenda/subir-contenido-edicion` me quede acaaaa
+        window.location.href = `http://localhost/vega-erp/views/agenda/subir-contenido-edicion` //me quede acaaaa
         return
       }
-      if (evento.event.extendedProps.estadoBadge.text == "Incompleto") {
+      const btnVerProgresoIndividual = evento.jsEvent.target.closest("#btnVerProgresoIndividual")
+      if(btnVerProgresoIndividual){
+        //const idagendaeditor = btnSubirTarea.getAttribute("data-idagendaeditor");
+        const idagendaedicion = btnVerProgresoIndividual.getAttribute("data-idagendaedicion");
+        const idusuarioEdicion = btnVerProgresoIndividual.getAttribute("data-idusuario");
+        console.log("idusuario --> ", idusuarioEdicion);
+        modalProgresoEdicion = new bootstrap.Modal($q("#modal-progresoedicion"));
+        modalProgresoEdicion.show();
+
+        const editoresAsignados = await obtenerEditoresAsignados(idagendaedicion)
+        console.log("editoresAsignados ->", editoresAsignados);
+        $q(".contenedor-tareas-edicion-pendientes").innerHTML = ``
+        editoresAsignados.forEach(editor => {
+          if(editor.idusuario == idusuarioEdicion){
+            $q(".contenedor-tareas-edicion-pendientes").innerHTML += `
+            <tr>
+                <td>${editor.fecha_entrega}</td>
+                <td>${editor.nombres}</td>
+                <td>${editor.tipotarea == 1 ? 'Flayer' : editor.tipotarea == 2 ? 'Saludos' : editor.tipotarea == 3 ? 'Reels' : editor.tipotarea == 4 ? 'Fotos' : editor.tipotarea == 5 ? 'Contenido' : 'No especificado'}</td>
+                <td>
+                  <select name="estado" class="form-select select-estado" data-idagendaeditor="${editor.idagendaeditor}">
+                      <option value="1" ${editor.estado == 1 ? 'selected' : ''}>Pendiente</option>
+                      <option value="2" ${editor.estado == 2 ? 'selected' : ''}>Completado</option>
+                  </select>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary" id="btnAbrirModalSubir" data-idagendaeditor="${editor.idagendaeditor}">Ver</button>
+                </td>        
+            </tr>       
+            `
+          }
+          
+        });
+        $all("#btnAbrirModalSubir").forEach(btn => {
+          btn.addEventListener("click", (e) => {
+            idagendaeditor = e.target.getAttribute("data-idagendaeditor")
+            console.log("id agenda edicion -> ", idagendaeditor);
+            window.localStorage.clear()
+            window.localStorage.setItem("idagendaeditor", idagendaeditor)
+            window.location.href = `http://localhost/vega-erp/views/agenda/subir-contenido-edicion`
+            return
+          })
+        })
+        document.querySelectorAll(".select-estado").forEach(select => {
+          select.addEventListener("change", async (e) => {
+            let idagendaeditor = e.target.getAttribute("data-idagendaeditor");
+            let nuevoEstado = e.target.value;
+
+            console.log(`Tarea ${idagendaeditor} cambió a estado ${nuevoEstado}`);
+
+            // Aquí puedes hacer una petición para actualizar el estado en la base de datos
+            const tareaActualizada = await actualizarEstadoTareaEdicion(idagendaeditor, nuevoEstado);
+            console.log("tarea actualizada =_", tareaActualizada);
+            if(tareaActualizada){
+              showToast("Estado cambiado correctamente", "SUCCESS")
+              return
+            }
+          });
+        });
+      }
+      if (evento.event.extendedProps.estadoBadge?.text == "Incompleto") {
         window.localStorage.clear()
         window.localStorage.setItem("iddp", evento.event.extendedProps.iddetalle_presentacion)
         window.location.href = `http://localhost/vega-erp/views/ventas/actualizar-atencion-cliente`
@@ -695,7 +755,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         extendedProps: {
           horainicio: evento.horainicio,
           horafinal: evento.horafinal,
-          establecimiento: evento.establecimiento
+          establecimiento: evento.establecimiento,
+          idagendaedicion: evento.idagendaedicion,
+          idusuario: evento.idusuarioEdicion
         },
       });
     }
@@ -732,9 +794,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 arg.event.extendedProps.horainicio,
                 arg.event.extendedProps.horafinal
               )}</div>
-              <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
-               <button class="btn btn-primary" id="btnSubirTarea" style="flex: 1;" data-idagendaeditor="${arg.event.extendedProps.idagendaeditor}">Subir</button>
+              ${nivelacceso == "Administrador" ? `
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+               <button class="btn btn-primary" id="btnVerProgresoIndividual" style="flex: 1;" data-idusuario="${arg.event.extendedProps.idusuario}" data-idagendaedicion="${arg.event.extendedProps.idagendaedicion}">Ver Progreso</button>
               </div>
+                ` : `<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+               <button class="btn btn-primary" id="btnSubirTarea" style="flex: 1;" data-idagendaeditor="${arg.event.extendedProps.idagendaeditor}">Subir</button>
+              </div>`}
               ` 
              
           
@@ -940,7 +1006,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("editoresAsignados ->", editoresAsignados);
       $q(".contenedor-tareas-edicion-pendientes").innerHTML = ``
       editoresAsignados.forEach(editor => {
-
+        
         $q(".contenedor-tareas-edicion-pendientes").innerHTML += `
           <tr>
               <td>${editor.fecha_entrega}</td>

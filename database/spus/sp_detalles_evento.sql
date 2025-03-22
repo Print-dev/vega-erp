@@ -332,7 +332,7 @@ BEGIN
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN agenda_asignaciones ASIG ON ASIG.iddetalle_presentacion = DP.iddetalle_presentacion
     LEFT JOIN usuarios USUASIG ON USUASIG.idusuario = ASIG.idusuario
-	LEFT JOIN nivelaccesos NIVEL ON NIVEL.idnivelacceso IN (USU.idnivelacceso, USUASIG.idnivelacceso)
+	LEFT JOIN nivelaccesos NIVEL ON NIVEL.idnivelacceso = USUASIG.idnivelacceso
     LEFT JOIN contratos CO ON CO.iddetalle_presentacion = DP.iddetalle_presentacion
     LEFT JOIN convenios CON ON CON.iddetalle_presentacion = DP.iddetalle_presentacion
     LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito
