@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   //VARIABLES
   let agenda = [];
+  let agendaEdicion = []
   let iddp = -1
   let idviatico = -1
   let iddepartamento = -1;
@@ -100,6 +101,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     params.append("operation", "obtenerDepartamentoPorId");
     params.append("iddepartamento", iddepartamento);
     const data = await getDatos(`${host}recurso.controller.php`, params);
+    return data
+  }
+
+  async function obtenerTareasEditor(idusuario) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerTareasEditor");
+    params.append("idusuario", idusuario ? idusuario : '');
+    const data = await getDatos(`${host}agenda.controller.php`, params);
     return data
   }
 
@@ -409,6 +418,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     eventLimitClick: "popover", // Muestra un popover con los eventos restantes
     eventClick: async function (evento) {
       console.log("evento -> ", evento)
+      //
+      const btnSubirTarea = evento.jsEvent.target.closest("#btnSubirTarea");
+      if (btnSubirTarea){
+        const idagendaeditor = btnSubirTarea.getAttribute("data-idagendaeditor");
+        window.localStorage.clear()
+        window.localStorage.setItem("idagendaeditor", idagendaeditor)
+        window.location.href = `http://localhost/vega-erp/views/agenda/subir-contenido-edicion` me quede acaaaa
+        return
+      }
       if (evento.event.extendedProps.estadoBadge.text == "Incompleto") {
         window.localStorage.clear()
         window.localStorage.setItem("iddp", evento.event.extendedProps.iddetalle_presentacion)
@@ -551,12 +569,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? formatHour(arg.event.extendedProps.horafinal)
         : "Hora no definida";
 
-      let estado = arg.event.extendedProps.estadoBadge;
-      let badgeHtml = `<span class="${estado.class}">${estado.text}</span>`;
+      let estado = arg.event.extendedProps?.estadoBadge;
+      let badgeHtml = `<span class="${estado?.class}">${estado?.text}</span>`;
       console.log("ENTRANDO ANTES DE RENDERIZAR TODO");
       return {
         html: `
-              ${arg.event.extendedProps.estadoBadge.text == "Incompleto" ?
+              ${arg.event.extendedProps.estadoBadge?.text == "Incompleto" ?
             `
                 <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
                   <div>00:00 - 00:00</div>
@@ -663,6 +681,66 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  async function configurarCalendarioAgendaEditor(agendaEditor) {
+    console.log("agendaEditor _> ", agendaEditor);
+    agendaEdicion = []
+    for (const evento of agendaEditor) {
+      agendaEdicion.push({
+        title: evento.nom_usuario,
+        start: evento.fecha_presentacion,
+        idagendaeditor: evento.idagendaeditor,
+        backgroundColor: `${evento.color}`,
+        borderColor: `${evento.color}`,
+        textColor: "black",
+        extendedProps: {
+          horainicio: evento.horainicio,
+          horafinal: evento.horafinal,
+          establecimiento: evento.establecimiento
+        },
+      });
+    }
+
+    calendar.removeAllEvents();
+    calendar.addEventSource(agendaEdicion);
+
+    console.log("Eventos agregados al calendario:", calendar.getEvents());
+    console.log("Cantidad de eventos en el calendario:", calendar.getEvents().length);
+    // Personalizar la apariencia de los eventos para mostrar el badge
+    calendar.setOption("eventContent", function (arg) {
+      //      console.log("Evento extendido:", arg.event.extendedProps); // Verificar los datos
+
+      let horaInicio = arg.event.extendedProps.horainicio
+        ? formatHour(arg.event.extendedProps.horainicio)
+        : "Hora no definida";
+      let horaFinal = arg.event.extendedProps.horafinal
+        ? formatHour(arg.event.extendedProps.horafinal)
+        : "Hora no definida";
+
+      return {
+        html: `             
+                <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
+                  <div>${horaInicio} - ${horaFinal}</div>
+                </div>
+              <div style="padding: 8px; word-wrap: break-word; 
+              overflow-wrap: break-word;
+              white-space: normal;">
+                <div style="font-size: 20px; font-weight: bold;">${arg.event.title
+              }</div>
+                  <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
+              }</div>
+                  <div><strong>Tiempo:</strong> ${calculateDuration(
+                arg.event.extendedProps.horainicio,
+                arg.event.extendedProps.horafinal
+              )}</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+               <button class="btn btn-primary" id="btnSubirTarea" style="flex: 1;" data-idagendaeditor="${arg.event.extendedProps.idagendaeditor}">Subir</button>
+              </div>
+              ` 
+             
+          
+      };
+    });
+  }
 
   // ******************************************* EVENTOS *************************************************************
 
@@ -693,7 +771,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Asignar la nueva tarea
-    if($q("#asignacion").value.trim() == "" && $q("#tipotarea").value.trim() == "" && $q("#fechaentrega").value.trim() == ""){
+    if($q("#asignacion").value.trim() == "" || $q("#tipotarea").value.trim() == "" || $q("#fechaentrega").value.trim() == ""){
       showToast("Faltan llenar algunos campos", "ERROR")
       return
     }
@@ -702,7 +780,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("Agenda Editor Registrado -> ", agendaEditorRegis);
     modalAsignarEditor.hide()
     showToast("Tarea asignada correctamente", "SUCCESS");
-    return ME QUE DE ACAAAAA
+    return //ME QUE DE ACAAAAA
   });
 
 
@@ -726,7 +804,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if ($q("#tipofiltroedicion").value == 2) {
       $q(".contenedor-select-usuario").hidden = false
       console.log("entrando con solo usuarios");
-      await manejadorAgendaPorNivel("10")
+      const tareasEdicionUsuario = await obtenerTareasEditor(null)
+      console.log("tareasEdicionUsuario -> ", tareasEdicionUsuario);
+      await configurarCalendarioAgendaEditor(tareasEdicionUsuario)
     }
     else if ($q("#tipofiltroedicion").value == 1) {
       console.log("obteniendo todas las agendas");
@@ -836,8 +916,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   $q("#usuario")?.addEventListener("change", async (e) => {
-    idUsuario = e.target.value;
-    await manejadorAgendaPorNivel("10")
+    idUsuario = e.target.value ? e.target.value : e.target.value == "-1" ? null : '';
+    //await manejadorAgendaPorNivel("10")
+    const tareasEditor = await obtenerTareasEditor(idUsuario)
+    console.log("tareas editor filtafo por idusuario -> ", tareasEditor);
+    await configurarCalendarioAgendaEditor(tareasEditor)
+
   });
 
 

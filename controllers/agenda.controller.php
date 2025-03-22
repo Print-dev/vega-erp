@@ -69,6 +69,13 @@ if (isset($_GET['operation'])) {
       echo json_encode($agenda->obtenerTodasLasTareasEnLaAgenda($cleanData));
       break;
 
+    case 'obtenerTareasEditor':
+      $cleanData = [
+        'idusuario' => $_GET['idusuario'] === "" ? null : $agenda->limpiarCadena($_GET['idusuario']),
+      ];
+      echo json_encode($agenda->obtenerTareasEditor($cleanData));
+      break;
+
     case 'obtenerTodasLasAgendasEdicion':
       echo json_encode($agenda->obtenerTodasLasAgendasEdicion());
       break;

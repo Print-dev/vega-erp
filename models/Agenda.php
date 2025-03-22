@@ -150,6 +150,19 @@ class Agenda extends ExecQuery
     }
   }
 
+  public function obtenerTareasEditor($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_tareas_editor (?)");
+      $cmd->execute(array(
+        $params['idusuario']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   // ************************* AGENDA EDITORES ************************************
 
   public function asignarAgendaEditor($params = []): int

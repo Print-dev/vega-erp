@@ -198,3 +198,22 @@ BEGIN
 	DELETE FROM agenda_editores WHERE idagendaeditor = _idagendaeditor;
 END $$
 
+DROP PROCEDURE IF EXISTS sp_obtener_tareas_editor;
+DELIMITER $$
+CREATE PROCEDURE sp_obtener_tareas_editor
+(
+    IN _idusuario INT
+)
+BEGIN	
+	SELECT 
+		AGED.idagendaeditor, AGED.fecha_asignacion, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.establecimiento, DP.estado, USU.nom_usuario, USUDP.color
+		FROM agenda_editores AGED
+		LEFT JOIN agenda_edicion AGEN ON AGEN.idagendaedicion = AGED.idagendaedicion
+		LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = AGEN.iddetalle_presentacion
+		LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+        LEFT JOIN usuarios USUDP ON USUDP.idusuario = DP.idusuario
+        WHERE (_idusuario IS NULL OR AGED.idusuario = _idusuario OR AGED.idusuario IS NULL);
+END $$
+
+-- CALL sp_obtener_tareas_editor (6);
+-- select * from usuarios;
