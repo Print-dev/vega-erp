@@ -39,10 +39,10 @@ BEGIN
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
     WHERE AGE.iddetalle_presentacion = _iddetalle_presentacion;
 END $$
-
+-- SELECT * FROM agenda_asignaciones;
 
 -- EDITORES 
--- SELECT * FROM agenda_editores;
+-- SELECT * FROM usuarios;
 -- CALL sp_asignar_agenda_editor(@idagendaeditor, 1,10,2,'2025-03-28');
 DROP PROCEDURE IF EXISTS sp_asignar_agenda_editor; -- editado
 DELIMITER $$
@@ -90,8 +90,7 @@ DELIMITER $$
 CREATE PROCEDURE sp_subir_contenido_editor (
 	OUT _idsubida INT,
     IN _idagendaeditor INT,
-	IN _url_imagen varchar(40),
-    IN _url_video varchar(200)
+	IN _url TEXT
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
@@ -101,8 +100,8 @@ BEGIN
         SET existe_error = 1;
     END;
     
-    INSERT INTO subidas_agenda_edicion (idagendaeditor, url_imagen , url_video)
-    VALUES (_idagendaeditor, nullif(_url_imagen,''), nullif(_url_video,''));
+    INSERT INTO subidas_agenda_edicion (idagendaeditor, url)
+    VALUES (_idagendaeditor, _url);
     
     IF existe_error = 1 THEN
         SET _idsubida = -1;
@@ -215,5 +214,5 @@ BEGIN
         WHERE (_idusuario IS NULL OR AGED.idusuario = _idusuario OR AGED.idusuario IS NULL);
 END $$
 
--- CALL sp_obtener_tareas_editor (6);
--- select * from usuarios;
+-- CALL sp_obtener_tareas_editor (6); 
+select * from detalles_presentacion;

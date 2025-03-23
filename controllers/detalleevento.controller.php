@@ -35,6 +35,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($detalleevento->obtenerDpPorFecha(['idusuario' => $_GET['idusuario'], 'fechapresentacion'=> $_GET['fechapresentacion']]));
       break;
 
+    case 'obtenerFilmmakerAsociadoEvento':
+      echo json_encode($detalleevento->obtenerFilmmakerAsociadoEvento(['idusuario' => $_GET['idusuario']]));
+      break;
+
     case 'filtrarAtenciones':
       $cleanData = [
         'ncotizacion' => $_GET['ncotizacion'] === "" ? null : $detalleevento->limpiarCadena($_GET['ncotizacion']),

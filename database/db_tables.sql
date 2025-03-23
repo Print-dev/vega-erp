@@ -115,7 +115,7 @@ create table clientes (
     constraint 	uk_numdocumento_cli	unique(ndocumento),
     constraint chk_tipodoc		check(tipodoc IN (1,2))
 )engine=innodb;
-
+-- SELECT*FROM detalles_presentacion
 
 create table detalles_presentacion (
 	iddetalle_presentacion	int auto_increment primary key,
@@ -155,7 +155,7 @@ CREATE TABLE agenda_asignaciones ( -- tabla que asigna la agenda a un filmmaker
     FOREIGN KEY (iddetalle_presentacion) REFERENCES detalles_presentacion(iddetalle_presentacion) ON DELETE CASCADE,
     FOREIGN KEY (idusuario) REFERENCES usuarios(idusuario) ON DELETE CASCADE
 );
-
+-- select * from agenda_asignaciones;
 create table convenios (
 	idconvenio	int auto_increment primary key,
     iddetalle_presentacion int not null,
@@ -211,7 +211,7 @@ CREATE TABLE viaticos (
     viaje			decimal(10,2) null,
     constraint fk_iddp_viatico foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 ) engine = innodb;
-
+select * from viaticos;
 -- CONTABILIDAD 
 CREATE TABLE montoCajaChica (
     idmonto INT AUTO_INCREMENT PRIMARY KEY,
@@ -322,8 +322,7 @@ CREATE TABLE agenda_editores ( -- referencia: modal asignar editor
 CREATE TABLE subidas_agenda_edicion (
 	idsubida	int  auto_increment primary key,
     idagendaeditor int not null,
-    url_imagen			varchar(40) null,
-    url_video		varchar(200) null,
+    url 			text not null,
 	observaciones	varchar(250) null,
     constraint fk_subidas_agenda_edi foreign key (idagendaeditor) references agenda_editores (idagendaeditor)
 ) engine=innodb;

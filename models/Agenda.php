@@ -34,6 +34,21 @@ class Agenda extends ExecQuery
     }
   }
 
+  public function obtenerAgendaFilmmakers($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_agenda_filmmakers(?,?,?)");
+      $cmd->execute(array(
+        $params['idusuario'],
+        $params['iddetallepresentacion'],
+        $params['idnivelacceso'],
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
 
   public function obtenerFilmmakerAsignado($params = []): array
   {
@@ -187,11 +202,10 @@ class Agenda extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare("CALL sp_subir_contenido_editor(@idsubida,?,?,?)");
+      $cmd = $pdo->prepare("CALL sp_subir_contenido_editor(@idsubida,?,?)");
       $cmd->execute(array(
         $params['idagendaeditor'],
-        $params['urlimagen'],
-        $params['urlvideo']
+        $params['url']
       ));
       $respuesta = $pdo->query("SELECT @idsubida AS idsubida")->fetch(PDO::FETCH_ASSOC);
       return $respuesta['idsubida'];

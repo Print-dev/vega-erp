@@ -19,3 +19,7 @@ ALTER TABLE agenda_editores
 DROP COLUMN url_imagen;
 ALTER TABLE agenda_editores CHANGE COLUMN ideditores idagendaeditor INT;
 ALTER TABLE agenda_editores MODIFY idagendaeditor INT AUTO_INCREMENT;
+ALTER TABLE detalles_presentacion DROP COLUMN filmmaker;
+ALTER TABLE subidas_agenda_edicion DROP COLUMN url_imagen;
+ALTER TABLE subidas_agenda_edicion DROP COLUMN url_video;
+ALTER TABLE subidas_agenda_edicion ADD COLUMN url text not null;

@@ -27,6 +27,15 @@ if (isset($_GET['operation'])) {
       echo json_encode($agenda->obtenerAgenda($cleanData));
       break;
 
+    case 'obtenerAgendaFilmmakers':
+      $cleanData = [
+        'idusuario' => $_GET['idusuario'] === "" ? null : $agenda->limpiarCadena($_GET['idusuario']),
+        'iddetallepresentacion' => $_GET['iddetallepresentacion'] === "" ? null : $agenda->limpiarCadena($_GET['iddetallepresentacion']),
+        'idnivelacceso' => $_GET['idnivelacceso'] === "" ? null : $agenda->limpiarCadena($_GET['idnivelacceso']),
+      ];
+      echo json_encode($agenda->obtenerAgendaFilmmakers($cleanData));
+      break;
+
     case 'obtenerFilmmakerAsignado':
       $cleanData = [
         'iddetallepresentacion' => $_GET['iddetallepresentacion'] === "" ? null : $agenda->limpiarCadena($_GET['iddetallepresentacion']),
@@ -106,8 +115,7 @@ if (isset($_POST['operation'])) {
     case 'subirContenidoEditor':
       $cleanData = [
         'idagendaeditor'   =>  $agenda->limpiarCadena($_POST['idagendaeditor']) ? $agenda->limpiarCadena($_POST['idagendaeditor']) : '',
-        'urlimagen'   => $agenda->limpiarCadena($_POST['urlimagen']) ?  $agenda->limpiarCadena($_POST['urlimagen']) :'',
-        'urlvideo'   => $agenda->limpiarCadena($_POST['urlvideo']) ? $agenda->limpiarCadena($_POST['urlvideo']) : ''
+        'url'   => $agenda->limpiarCadena($_POST['url']) ?  $agenda->limpiarCadena($_POST['url']) :''
       ];
 
       $respuesta = ['idsubida' => -1];

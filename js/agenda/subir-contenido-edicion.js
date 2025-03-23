@@ -1,12 +1,11 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  $q("#btnGuardarContenido").disabled = true;
+  //$q("#btnGuardarContenido").disabled = true;
   // varaibles
   let idagendaeditor = window.localStorage.getItem("idagendaeditor")
     ? window.localStorage.getItem("idagendaeditor")
     : -1;
-  let imagen_public_id = "";
-  const BASE_CLOUDINARY_URL =
-    "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742531227/";
+  //let imagen_public_id = "";
+  //const BASE_CLOUDINARY_URL = "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742531227/";
 
   // MODALES
   let modalHistorial;
@@ -34,12 +33,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   // ******************************************************** REGISTRO DE DATOS ****************************************************************
 
-  async function subirContenidoEditor(idagendaeditor, urlimagen, urlvideo) {
+  async function subirContenidoEditor(idagendaeditor, url) {
     const body = new FormData();
     body.append("operation", "subirContenidoEditor");
     body.append("idagendaeditor", idagendaeditor); // id artista
-    body.append("urlimagen", urlimagen ? urlimagen : "");
-    body.append("urlvideo", urlvideo ? urlvideo : "");
+    body.append("url", url ? url : "");
 
     const fbody = await fetch(`${host}agenda.controller.php`, {
       method: "POST",
@@ -63,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rbody;
   }
 
-  let myWidget = cloudinary.createUploadWidget(
+  /* let myWidget = cloudinary.createUploadWidget(
     {
       cloudName: "dynpy0r4v",
       uploadPreset: "vegaimagenes",
@@ -72,9 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async (error, result) => {
       if (!error && result && result.event === "success") {
         console.log("result -> ", result);
-        /* $q("#preview-container").innerHTML = `
-                  <img src="${result.info?.public_id}" alt="" srcset="">
-              `; */
+        
         let previewImagen = document.getElementById("previewImagen");
         previewImagen.src = result.info.secure_url;
         previewImagen.classList.remove("d-none");
@@ -83,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
   );
-
+ */
   $q("#upload_widget")?.addEventListener(
     "click",
     function () {
@@ -93,14 +89,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   );
 
   $q("#btnGuardarContenido").addEventListener("click", async () => {
-    const subido = await subirContenidoEditor(
-        idagendaeditor,
-      imagen_public_id
-    );
+    if ($q("#txtUrl").value.trim() == "") {
+      showToast("El campo no puede estar vacio", "ERROR")
+      return
+    }
+    const subido = await subirContenidoEditor(idagendaeditor, $q("#txtUrl").value);
     console.log("subido ??", subido);
     if (subido?.idsubida) {
       showToast("Contenido Subido Exitosamente", "SUCCESS");
-      $q("#btnGuardarContenido").disabled = true;
+      //$q("#btnGuardarContenido").disabled = true;
       return;
     }
     showToast("Ocurrio un error al subir la imagen", "ERROR");
@@ -110,7 +107,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   $q("#btnVerHistorial").addEventListener("click", async () => {
     const modal = new bootstrap.Modal(document.getElementById("modal-historial"));
     modal.show();
-    
+
     const historialContenido = await obtenerContenidoHistorialEdicion(idagendaeditor);
     console.log("historial ->", historialContenido);
 
@@ -118,51 +115,80 @@ document.addEventListener("DOMContentLoaded", async () => {
     contenedorHistorial.innerHTML = ""; // Limpiar contenido previo
 
     if (historialContenido.length === 0) {
-        contenedorHistorial.innerHTML = "<p class='text-center text-muted'>No hay historial disponible.</p>";
-        return;
+      contenedorHistorial.innerHTML = "<p class='text-center text-muted'>No hay historial disponible.</p>";
+      return;
     }
 
     historialContenido.forEach((item) => {
-        const urlImagen = item.url_imagen ? `${BASE_CLOUDINARY_URL}${item.url_imagen}` : "https://via.placeholder.com/250";
-        const comentario = item.observaciones || "Sin observaciones";
+      //const urlImagen = item.url_imagen ? `${BASE_CLOUDINARY_URL}${item.url_imagen}` : "https://via.placeholder.com/250";
+      const comentario = item.observaciones || "Sin observaciones";
+      const url = item.url || 'url aun no mandada'
 
-        const historialItem = `
-            <div class="row align-items-center mb-3 p-2 border rounded shadow-sm">
-                <div class="col-md-6">
-                    <label class="form-label fw-bold">Observaciones</label>
-                    <textarea class="form-control observacion-caja" rows="3" data-idsubida="${item.idsubida}">${comentario}</textarea>
-                    <button type="button" class="btn btn-primary mt-2 btnGuardarObservacion" data-idsubida="${item.idsubida}">Guardar <i class="fa-solid fa-paper-plane"></i></button>
+      const historialItem = `
+            <div class="row align-items-center mb-3 p-3 border rounded shadow-sm">
+                <div class="col-12 text-center mb-3">
+                    <label class="fw-bold">URL:${url}</label> 
+                    <span class="text-primary"></span>
                 </div>
-                <div class="col-md-6 text-center">
-                    <img src="${urlImagen}" alt="Imagen Historial" class="img-fluid rounded shadow">
+                <div class="col-12">
+                    <label class="form-label fw-bold">Observaciones/Comentar</label>
+                    <textarea class="form-control observacion-caja" rows="3" data-idsubida="${item.idsubida}">${comentario}</textarea>
+                    <div class="row text-center">
+                      <button type="button" class="btn btn-primary mt-2 btnGuardarObservacion" data-idsubida="${item.idsubida}">
+                          Guardar <i class="fa-solid fa-paper-plane"></i>
+                      </button>
+                    </div
                 </div>
             </div>
+
         `;
 
-        contenedorHistorial.innerHTML += historialItem;
+      contenedorHistorial.innerHTML += historialItem;
     });
 
     // Mostrar el modal después de cargar los datos
-    
-});
 
-// Delegación de eventos
-document.addEventListener("click", async (e) => {
+  });
+
+  // Delegación de eventos
+  document.addEventListener("click", async (e) => {
     if (e.target.classList.contains("btnGuardarObservacion")) {
-        console.log("Click en Guardar Observación");
+      console.log("Click en Guardar Observación");
 
-        let idsubida = e.target.getAttribute("data-idsubida");
-        let textarea = e.target.parentElement.querySelector(".observacion-caja");
-        let observacion = textarea.value.trim();
+      const button = e.target;
+      const container = button.closest(".row"); // Encuentra el contenedor más cercano
+      const textarea = container?.querySelector(".observacion-caja");
+      const idsubida = button.getAttribute("data-idsubida");
+      const observacion = textarea?.value.trim();
 
-        if (observacion === "") {
-            alert("Por favor ingresa una observación.");
-            return;
-        }
+      if (!textarea || !idsubida) {
+        console.error("No se encontraron los elementos necesarios.");
+        return;
+      }
+
+      if (!observacion) {
+        alert("Por favor ingresa una observación.");
+        return;
+      }
+
+      try {
+        // Deshabilitar botón temporalmente para evitar múltiples clics
+        button.disabled = true;
+        button.innerHTML = 'Guardando... <i class="fa-solid fa-spinner fa-spin"></i>';
 
         const observacionRegistrada = await comentarContenido(idsubida, observacion);
         console.log("Observación registrada -> ", observacionRegistrada);
         showToast("Observación guardada con éxito", "SUCCESS");
+
+      } catch (error) {
+        console.error("Error al guardar la observación:", error);
+        showToast("Hubo un error al guardar la observación", "ERROR");
+      } finally {
+        // Restaurar botón
+        button.disabled = false;
+        button.innerHTML = 'Guardar <i class="fa-solid fa-paper-plane"></i>';
+      }
     }
-});
+  });
+
 });

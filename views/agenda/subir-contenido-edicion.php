@@ -6,19 +6,14 @@
     <form id="form-subircontenido" class="card p-3 shadow-sm">
         <!-- Input para subir imagen -->
         <div class="mb-3 text-center">
-    <!-- Botón personalizado para subir imágenes -->
-            <label for="upload_widget" class="btn btn-primary d-flex align-items-center justify-content-center gap-2 px-4 py-2 shadow">
-                <i class="bi bi-cloud-upload-fill fs-5"></i> Subir Evidencia
-            </label>
-            <input type="button" id="upload_widget" class="d-none" accept="image/*">
-
-            <!-- Vista previa de la imagen -->
-            <div class="mt-3">
-                <img id="previewImagen" src="" alt="Vista previa" class="img-fluid d-none rounded shadow" style="max-height: 500px;">
+            <!-- Botón personalizado para subir imágenes -->
+            <div class="d-flex flex-column align-items-center gap-2">
+                <label for="txtUrl" class="btn btn-primary d-flex align-items-center justify-content-center gap-2 px-4 py-2 shadow">
+                    <i class="bi bi-cloud-upload-fill fs-5"></i> Digite el URL Aquí
+                </label>
+                <input type="text" id="txtUrl" class="form-control text-center w-100" placeholder="Ingrese el URL aquí...">
             </div>
-
-            <!-- Mensaje de ayuda -->
-            <small class="form-text text-muted">Selecciona una imagen para cargarla.</small>
+        
         </div>
 
 
@@ -26,7 +21,7 @@
         <div class="mb-3 text-center">
             <img id="previewImagen" src="" alt="Vista previa" class="img-fluid d-none" style="max-height: 500px;">
         </div>
-        
+
 
         <div class="text-end">
             <button type="button" class="btn btn-primary" id="btnGuardarContenido">Guardar</button>
@@ -45,7 +40,7 @@
             </div>
             <div class="modal-body">
                 <div class="contenedor-historial p-3">
-                    
+
                 </div>
             </div>
         </div>
@@ -63,7 +58,7 @@
     const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
 </script> -->
 
-<script src="http://localhost/vega-erp/js/agenda/subir-contenido-edicion.js"></script> 
+<script src="http://localhost/vega-erp/js/agenda/subir-contenido-edicion.js"></script>
 <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
 
 </body>

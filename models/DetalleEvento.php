@@ -98,6 +98,17 @@ class DetalleEvento extends ExecQuery
     }
   }
 
+  public function obtenerFilmmakerAsociadoEvento($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_filmmaker_asociado_evento (?)");
+      $cmd->execute(array($params['idusuario']));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function editarAcuerdoEvento($params = []): bool
   {
     try {
