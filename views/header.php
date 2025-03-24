@@ -56,6 +56,8 @@ $host = "http://localhost/vega-erp/";
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title></title>
+  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png">
+
   <!-- Bootstrap -->
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -108,8 +110,6 @@ $host = "http://localhost/vega-erp/";
   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="http://localhost/vega-erp/css/global.css">
 
-  <!-- Notificaciones js -->
-  <script src="http://localhost/vega-erp/js/notificacionGlobal.js"></script>
 
 </head>
 <style>
@@ -239,7 +239,7 @@ $host = "http://localhost/vega-erp/";
           <a class="nav-link bg-white d-flex align-items-center" href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente">
             <span class="sidebar-icon me-2">
               <img
-                src="http://localhost/vega-erp/images/vega-p-logo.png"
+                src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png"
                 alt="Logo"
                 class="rounded"
                 style="width: 40px; object-fit: cover;">
@@ -432,29 +432,25 @@ $host = "http://localhost/vega-erp/";
                 </svg>
               </a>
               <div class="dropdown-menu dropdown-menu-lg dropdown-menu-center mt-2 py-0 ml-3">
-                <div class="list-group list-group-flush">
-                  <a href="#" class="text-center text-primary fw-bold border-bottom border-light py-3">
-                    Notificaciones
-                  </a>
-                  <div class="" id="list-notificaciones">
+    <div class="list-group list-group-flush">
+        <a href="#" class="text-center text-primary fw-bold border-bottom border-light py-3">
+            Notificaciones
+        </a>
+        <div id="list-notificaciones" class="px-3" style="max-height: 500px; min-height: 100px; overflow-y: auto;">
+            <!-- Aquí se cargarán las notificaciones -->
+        </div>
+        <a href="#" class="dropdown-item text-center fw-bold rounded-bottom py-3" id="show-all-notificaciones">
+            <svg class="icon icon-xxs text-gray-400 me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                <path fill-rule="evenodd"
+                    d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10z"
+                    clip-rule="evenodd"></path>
+            </svg>
+            Ver anteriores
+        </a>
+    </div>
+</div>
 
-                  </div>
-                  <a href="#" class="dropdown-item text-center fw-bold rounded-bottom py-3" id="show-all-notificaciones">
-                    <svg
-                      class="icon icon-xxs text-gray-400 me-1"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg">
-                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-                      <path
-                        fill-rule="evenodd"
-                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                        clip-rule="evenodd"></path>
-                    </svg>
-                    Ver anteriores
-                  </a>
-                </div>
-              </div>
             </li>
             <!-- FIN LOGO NOTIFICACION -->
 
@@ -546,4 +542,15 @@ $host = "http://localhost/vega-erp/";
           }
         });
       });
+
+      document.querySelector("#configurar-perfil").addEventListener("click", ()=>{
+        window.localStorage.clear()
+        window.localStorage.setItem("idusuario", idusuarioLogeado)
+        window.location.href = `http://localhost/vega-erp/views/utilitario/usuarios/actualizar-usuario`
+        return
+      })
+
+      /* document.querySelector("#show-all-notificaciones").addEventListener("click", ()=>{
+
+      }) */
     </script>

@@ -53,7 +53,7 @@ class Usuario extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_usuario(@idusuario,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_usuario(@idusuario,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idpersona'],
@@ -61,6 +61,7 @@ class Usuario extends ExecQuery
           $params['claveacceso'],
           $params['color'],
           $params['porcentaje'],
+          $params['marcaagua'],
           $params['idnivelacceso'],
         )
       );
@@ -79,6 +80,34 @@ class Usuario extends ExecQuery
       $cmd = parent::execQ("CALL sp_obtener_usuario_por_id(?)");
       $cmd->execute(
         array($params['idusuario'])
+      );
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return [];
+    }
+  }
+
+  public function obtenerUsuarioCompletoPorId($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("SELECT * FROM usuarios where idusuario = ?");
+      $cmd->execute(
+        array($params['idusuario'])
+      );
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return [];
+    }
+  }
+
+  public function obtenerPersonaCompletoPorId($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("SELECT * FROM personas where idpersona = ?");
+      $cmd->execute(
+        array($params['idpersona'])
       );
       return $cmd->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
@@ -107,6 +136,56 @@ class Usuario extends ExecQuery
       return false;
     }
   }
+  
+  public function actualizarUsuario($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_actualizar_usuario(?,?,?,?,?,?)");
+      $act = $cmd->execute(
+        array(
+          $params['idusuario'],
+          $params['nomusuario'],
+          $params['claveacceso'],
+          $params['color'],
+          $params['porcentaje'],
+          $params['marcaagua'],
+        )
+      );
+
+      return $act;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+
+  public function actualizarPersona($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_actualizar_persona(?,?,?,?,?,?,?,?,?,?)");
+      $act = $cmd->execute(
+        array(
+          $params['idpersona'],
+          $params['numdoc'],
+          $params['apellidos'],
+          $params['nombres'],
+          $params['genero'],
+          $params['direccion'],
+          $params['telefono'],
+          $params['telefono2'],
+          $params['correo'],
+          $params['iddistrito'],          
+        )
+      );
+
+      return $act;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
 
   public function obtenerPersonaPorDoc($params = []): array
   {
@@ -130,6 +209,17 @@ class Usuario extends ExecQuery
       die($e->getMessage());
     }
   }
+
+  /* public function obtenerMarcaAguaPorUsuario($params = []): array // mas que todo para obtener ARTISTAS, ULTIMA UPDATE: USARSE PARA FILTRAR SU AGENDA
+  {
+    try {
+      $cmd = parent::execQ("SELECT marcaagua from usuarios where idusuario = ?");
+      $cmd->execute(array($params['idusuario']));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  } */
 
 
 }

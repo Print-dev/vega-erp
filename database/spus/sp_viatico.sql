@@ -5,6 +5,7 @@ DELIMITER $$
 CREATE PROCEDURE sp_registrar_viatico(
     OUT _idviatico INT,
 	IN _iddetalle_presentacion INT,
+    IN _idusuario	INT ,
     IN _pasaje decimal(10,2),
     IN _comida	decimal(10,2),
     IN _viaje	decimal(10,2)
@@ -17,8 +18,8 @@ BEGIN
         SET existe_error = 1;
     END;
     
-    INSERT INTO viaticos (iddetalle_presentacion, pasaje, comida, viaje)
-    VALUES (_iddetalle_presentacion, _pasaje, _comida, _viaje);
+    INSERT INTO viaticos (iddetalle_presentacion, idusuario, pasaje, comida, viaje)
+    VALUES (_iddetalle_presentacion, _idusuario, _pasaje, _comida, _viaje);
     
     IF existe_error = 1 THEN
         SET _idviatico = -1;
@@ -50,7 +51,8 @@ DROP PROCEDURE IF EXISTS sp_obtener_info_viatico;
 DELIMITER $$
 CREATE PROCEDURE sp_obtener_info_viatico
 (
-	IN _idviatico INT
+	IN _idusuario INT,
+    IN _idviatico INT
 )
 BEGIN
 	SELECT 
@@ -66,5 +68,9 @@ BEGIN
     LEFT JOIN distritos DIS ON DIS.iddistrito = DP.iddistrito
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
     LEFT JOIN departamentos DE ON DE.iddepartamento = PRO.iddepartamento
-    WHERE VIA.idviatico = _idviatico;
+    WHERE
+    (_idusuario IS NULL OR VIA.idusuario = _idusuario) AND
+    (_idviatico IS NULL OR VIA.idviatico = _idviatico);
 END $$
+
+CALL sp_obtener_info_viatico (3, null)

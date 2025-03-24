@@ -66,6 +66,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   } */
 
+    /* const tareasEditor = await obtenerTareasEditor(idusuarioLogeado)
+    console.log("tareas editor ", tareasEditor); */
+
   async function obtenerNiveles() {
     const data = await getDatos(
       `${host}recurso.controller.php`,
@@ -524,9 +527,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
   //console.log("valor del select -> ", $q("#tipofiltroedicion").value);
-  const agendasEdicion = await obtenerTodasLasAgendasEdicion()
+  if(nivelacceso == "Administrador"){
+    const agendasEdicion = await obtenerTodasLasAgendasEdicion()
   console.log("todas las agendas edicion -> ", agendasEdicion);
   await configurarCalendario(agendasEdicion)
+  }else{
+    const agendasEdicion = await obtenerTareasEditor(idusuarioLogeado)
+  console.log(`todas las agendas edicion para un editor en especifico osea -> ${idusuarioLogeado}`, agendasEdicion);
+  await configurarCalendarioAgendaEditor(agendasEdicion)
+  }
   // **************************************** CONFIGURACION AGENDA **********************************************************
 
   async function configurarCalendario(agendaUsuario) {

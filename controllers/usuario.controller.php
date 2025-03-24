@@ -20,6 +20,7 @@ $accesos = [
 
     ['modulo' => 'utilitario', 'ruta' => 'listar-usuarios', 'subruta' => 'usuarios', 'texto' => 'Usuarios', 'visible' => false, 'icono' => 'fa-solid fa-list'],
     ['modulo' => 'utilitario', 'ruta' => 'registrar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
+    ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'utilitario', 'ruta' => 'listar-tarifas', 'subruta' => 'tarifas', 'texto' => 'Tarifario', 'visible' => false, 'icono' => 'fa-solid fa-list'],
     ['modulo' => 'utilitario', 'ruta' => 'registrar-tarifa', 'subruta' => 'tarifas', 'texto' => '','visible' => false, 'icono' => ''],
 
@@ -57,9 +58,19 @@ $accesos = [
   ],
   "Artista" => [
     ['modulo' => 'agenda', 'ruta' => 'listar-agenda-artista', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
+    ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
+
   ],
   "Filmmaker" => [
     ['modulo' => 'agenda', 'ruta' => 'listar-agenda-filmmaker', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
+    ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
+
+  ],
+  "Edicion y Produccion" => [
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
+    ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '','texto' => '','visible' => false, 'icono'=>''],
+    ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
+
   ],
 ];
 
@@ -93,6 +104,14 @@ if (isset($_GET['operation'])) {
       echo json_encode($usuario->obtenerUsuarioPorId(['idusuario' => $_GET['idusuario']]));
       break;
 
+    case 'obtenerUsuarioCompletoPorId':
+      echo json_encode($usuario->obtenerUsuarioCompletoPorId(['idusuario' => $_GET['idusuario']]));
+      break;
+      
+    case 'obtenerPersonaCompletoPorId':
+      echo json_encode($usuario->obtenerPersonaCompletoPorId(['idpersona' => $_GET['idpersona']]));
+      break;
+
     case 'obtenerPersonaPorDoc':
       echo json_encode($usuario->obtenerPersonaPorDoc(['num_doc' => $_GET['num_doc']]));
       break;
@@ -100,6 +119,10 @@ if (isset($_GET['operation'])) {
     case 'obtenerUsuarioPorNivel':
       echo json_encode($usuario->obtenerUsuarioPorNivel(['idnivelacceso' => $_GET['idnivelacceso']]));
       break;
+
+    /* case 'obtenerMarcaAguaPorUsuario':
+      echo json_encode($usuario->obtenerMarcaAguaPorUsuario(['idusuario' => $_GET['idusuario']]));
+      break; */
 
     case 'filtrarUsuarios':
       $cleanData = [
@@ -181,7 +204,8 @@ if (isset($_POST['operation'])) {
         'claveacceso' => password_hash($clave, PASSWORD_BCRYPT),
         'color' =>  $usuario->limpiarCadena($_POST['color']) ? $usuario->limpiarCadena($_POST['color']) : '',
         'porcentaje' =>  $usuario->limpiarCadena($_POST['porcentaje']) ? $usuario->limpiarCadena($_POST['porcentaje']) : '',
-        'idnivelacceso' => $usuario->limpiarCadena($_POST['idnivelacceso'])
+        'marcaagua' =>  $usuario->limpiarCadena($_POST['marcaagua']) ? $usuario->limpiarCadena($_POST['marcaagua']) : '',
+        'idnivelacceso' =>  $usuario->limpiarCadena($_POST['idnivelacceso']) ? $usuario->limpiarCadena($_POST['idnivelacceso']) : '',
       ];
 
       $respuesta = ['idusuario' => -1];
@@ -193,5 +217,40 @@ if (isset($_POST['operation'])) {
 
       echo json_encode($respuesta);
       break;
+
+      case 'actualizarUsuario':
+        $clave = $usuario->limpiarCadena($_POST['claveacceso']);
+        $cleanData = [
+          'idusuario' => $usuario->limpiarCadena($_POST['idusuario']) ?  $usuario->limpiarCadena($_POST['idusuario']) : '',
+          'nomusuario' => $usuario->limpiarCadena($_POST['nomusuario']) ? $usuario->limpiarCadena($_POST['nomusuario']) : '',
+          'claveacceso' => $clave ? password_hash($clave, PASSWORD_BCRYPT) : '',
+          'color' => $usuario->limpiarCadena($_POST['color']) ? $usuario->limpiarCadena($_POST['color']) : '',
+          'porcentaje' => $usuario->limpiarCadena($_POST['porcentaje']) ? $usuario->limpiarCadena($_POST['porcentaje']) : '',
+          'marcaagua' => $usuario->limpiarCadena($_POST['marcaagua']) ? $usuario->limpiarCadena($_POST['marcaagua']) : '',
+        ];
+  
+        $update = $usuario->actualizarUsuario($cleanData);
+  
+        echo json_encode($update);
+        break;
+
+      case 'actualizarPersona':
+        $cleanData = [
+          'idpersona' => $usuario->limpiarCadena($_POST['idpersona']) ? $usuario->limpiarCadena($_POST['idpersona']): '',
+          'numdoc' => $usuario->limpiarCadena($_POST['numdoc']) ? $usuario->limpiarCadena($_POST['numdoc']) : '',
+          'apellidos' => $usuario->limpiarCadena($_POST['apellidos']) ? $usuario->limpiarCadena($_POST['apellidos']) : '',
+          'nombres' => $usuario->limpiarCadena($_POST['nombres']) ? $usuario->limpiarCadena($_POST['nombres']) : '',
+          'genero' => $usuario->limpiarCadena($_POST['genero']) ? $usuario->limpiarCadena($_POST['genero']) : '',
+          'direccion' => $usuario->limpiarCadena($_POST['direccion']) ?  $usuario->limpiarCadena($_POST['direccion']) : '',
+          'telefono' => $usuario->limpiarCadena($_POST['telefono']) ? $usuario->limpiarCadena($_POST['telefono']) : '',
+          'telefono2' => $usuario->limpiarCadena($_POST['telefono2']) ? $usuario->limpiarCadena($_POST['telefono2']) : '',
+          'correo' => $usuario->limpiarCadena($_POST['correo']) ? $usuario->limpiarCadena($_POST['correo']) : '',
+          'iddistrito' => $usuario->limpiarCadena($_POST['iddistrito']) ? $usuario->limpiarCadena($_POST['iddistrito']) : '',
+        ];
+  
+        $update = $usuario->actualizarPersona($cleanData);
+  
+        echo json_encode($update);
+        break;
   }
 }

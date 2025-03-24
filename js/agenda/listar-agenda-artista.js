@@ -372,6 +372,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     dayMaxEvents: 1, // Muestra hasta 3 eventos antes de colapsar
     eventLimitClick: "popover", // Muestra un popover con los eventos restantes
     eventClick: async function (evento) {
+      $q(".contenedor-monto").innerHTML = "";
       const btnVerMontos = evento.jsEvent.target.closest("#btnVerMontos");
       console.log("btnVerMontos ->", btnVerMontos);
       if (btnVerMontos) {
@@ -381,7 +382,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const idconvenio = btnVerMontos.getAttribute("data-idconvenio");
         modalMonto = new bootstrap.Modal($q("#modal-monto"));
         modalMonto.show();
-
+        console.log("idcontrato -> ", idcontrato);
         if (idcontrato != "null") {  // Verifica si idcontrato tiene un valor válido
           const contrato = await obtenerContrato(idcontrato);
           console.log("contrato -> ", contrato);
@@ -408,8 +409,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             ? precioArtista + costoDificultad
             : precioArtista + costoDificultad + igv;
 
-
-
+            $q(".contenedor-monto").innerHTML = ''
+            
           $q(".contenedor-monto").innerHTML = `
               <div class="table-responsive d-flex justify-content-center">
                 <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
@@ -474,6 +475,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </table>
               </div>
             `;
+        }else{
+          $q(".contenedor-monto").innerHTML = '<label class="fw-light">Aun no hay montos disponibles.</label>'
         }
       }
 

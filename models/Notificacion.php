@@ -62,7 +62,22 @@ class Notificacion extends ExecQuery
     public function obtenerNotificaciones($params = []): array
   {
     try {
-      $sp = parent::execQ("SELECT * FROM notificaciones WHERE idusuariodest = ?");
+      $sp = parent::execQ("SELECT * FROM notificaciones WHERE idusuariodest = ? ORDER BY idnotificacion DESC LIMIT 4" );
+      $sp->execute(
+        array(
+          $params["idusuariodest"]
+        )
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerTodasLasNotificaciones($params = []): array
+  {
+    try {
+      $sp = parent::execQ("SELECT * FROM notificaciones WHERE idusuariodest = ? ORDER BY idnotificacion DESC" );
       $sp->execute(
         array(
           $params["idusuariodest"]

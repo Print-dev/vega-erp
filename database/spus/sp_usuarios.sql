@@ -10,6 +10,7 @@ CREATE PROCEDURE sp_registrar_usuario
     IN _claveacceso VARBINARY(255),
     IN _color CHAR(7),
     IN _porcentaje INT,
+    IN _marcaagua VARCHAR(40),
     IN _idnivelacceso INT
 )
 BEGIN
@@ -20,8 +21,8 @@ BEGIN
         SET existe_error = 1;
 	END;
     
-    INSERT INTO usuarios (idpersona, nom_usuario, claveacceso, color, porcentaje ,idnivelacceso)VALUES 
-		(_idpersona, _nom_usuario, _claveacceso, nullif(_color, ''), nullif(_porcentaje, '') ,_idnivelacceso);
+    INSERT INTO usuarios (idpersona, nom_usuario, claveacceso, color, porcentaje, marcaagua ,idnivelacceso)VALUES 
+		(_idpersona, _nom_usuario, _claveacceso, nullif(_color, ''), nullif(_porcentaje, ''), nullif(_marcaagua, ''), _idnivelacceso);
         
 	IF existe_error= 1 THEN
 		SET _idusuario = -1;
@@ -118,6 +119,53 @@ BEGIN
 
 END $$
 
--- CALL sp_obtener_usuarios('Art','','','','','');
-
 DELIMITER ;
+
+DROP PROCEDURE if exists sp_actualizar_usuario;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_usuario (
+	IN _idusuario INT,
+    IN _nom_usuario VARCHAR(30),
+    IN _claveacceso VARBINARY(255),
+    IN _color	CHAR(7),
+    IN _porcentaje INT,
+    IN _marcaagua varchar(40)
+)
+BEGIN
+		UPDATE usuarios SET
+        nom_usuario = nullif(_nom_usuario, ''),
+        claveacceso = nullif(_claveacceso ,''),
+        color = nullif(_color,''),
+        porcentaje = nullif(_porcentaje,''),
+        marcaagua = nullif(_marcaagua, ''),
+		update_at = now()
+    WHERE idusuario = _idusuario; 
+END //
+
+DROP PROCEDURE if exists sp_actualizar_persona;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_persona (
+	IN _idpersona INT,
+    IN _num_doc VARCHAR(20),
+    IN _apellidos varchar(100),
+    IN _nombres	varchar(100),
+    IN _genero char(1),
+    IN _direccion varchar(150),
+    IN _telefono char(15),
+    IN _telefono2 char(15),
+    IN _correo char(150),
+    IN _iddistrito INT
+)
+BEGIN
+		UPDATE personas SET
+        num_doc = nullif(_num_doc,''),
+        apellidos = nullif(_apellidos, ''),
+        nombres = nullif(_nombres, ''),
+        genero = nullif(_genero, ''),
+        telefono = nullif(_telefono, ''),
+        telefono2 = nullif(_telefono2, ''),
+        correo = nullif(_correo, ''),
+        iddistrito = nullif(_iddistrito, ''),
+		update_at = now()
+    WHERE idpersona = _idpersona; 
+END //

@@ -23,3 +23,6 @@ ALTER TABLE detalles_presentacion DROP COLUMN filmmaker;
 ALTER TABLE subidas_agenda_edicion DROP COLUMN url_imagen;
 ALTER TABLE subidas_agenda_edicion DROP COLUMN url_video;
 ALTER TABLE subidas_agenda_edicion ADD COLUMN url text not null;
+ALTER TABLE viaticos ADD COLUMN idusuario	INT NOT NULL;
+ALTER TABLE viaticos ADD CONSTRAINT fk_idusuario_vi foreign key (idusuario) references usuarios (idusuario);
+ALTER TABLE usuarios ADD COLUMN marcaagua 	varchar(40) null;

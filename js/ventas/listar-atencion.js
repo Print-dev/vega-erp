@@ -557,6 +557,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${x.tipo_evento == 1 ? "Público" : x.tipo_evento == 2 ? "Privado" : ``}</td>
                 <td>${x.modalidad == 1 ? "Convenio" : x.modalidad == 2 ? "Contrato" : ``}</td>
                 <td>${x.establecimiento ? x.establecimiento : ``}</td>
+                <td>${x.departamento}/${x.provincia}/${x.distrito}</td>
                 <td>${x.fecha_presentacion}</td>                        
                 <td>${x.estado == 1 ? 'Activo' : x.estado == 2 ? 'Caducado' : x.estado == 3 ? 'Cancelado' : ''}</td>                        
                 <td>
@@ -821,6 +822,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
           }
           else {
+            console.log("entre aca pe");
             $q("#container-representantelegal").hidden = false;
             modalDatosClienteIncompleto = new bootstrap.Modal(
               $q("#modal-datosclienteincompletos")
@@ -976,6 +978,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                   $q("#modal-datosclienteincompletos")
                 );
                 modalDatosClienteIncompleto.show();
+                console.log("supuestamente deberia renderizar");
                 await renderizarDatosClienteIncompleto(datosCliente);
                 return;
               }
@@ -988,7 +991,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                 await renderizarDatosClienteIncompleto(datosCliente);
                 return;
               }
-
+              else{  
+              $q("#container-representantelegal").hidden = false;
+                modalDatosClienteIncompleto = new bootstrap.Modal(
+                  $q("#modal-datosclienteincompletos")
+                );
+                modalDatosClienteIncompleto.show();
+                await renderizarDatosClienteIncompleto(datosCliente);
+                return;
+              }
             }
 
             window.open(
@@ -1015,6 +1026,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     let pagoAdelantadoO25 = false
     idcontrato = e.target.getAttribute("data-id");
     const contrato = await obtenerContratoPorDP(idcontrato) //esto en realidad es id detalle presentacion
+    const dp = await obtenerDPporId(idcontrato);
+    idcliente = dp[0]?.idcliente;
     console.log("contrato  existe ->", contrato)
     if (contrato.length > 0) {
       const pagosContrato = await obtenerPagosContratoPorIdContrato(contrato[0]?.idcontrato)
@@ -1032,11 +1045,65 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("reserva existe -> ", reservaExiste)
       if (pagoAdelantadoO25) {
         if (reservaExiste.length > 0) {
-          window.open(
-            `http://localhost/vega-erp/generators/generadores_pdf/constancia_reserva/constanciareserva.php?iddetallepresentacion=${idcontrato}&idpagocontrato=${pagosContrato[0]?.idpagocontrato}` // esto en realida es el iddetalle_presentacion
-          );
-          console.log("Si existe la reserva")
-          return
+          // verificar datos incompletos cliente 
+          console.log("id cliente _> ", idcliente);
+          const datosIncompletos = await verificarDatosIncompletosCliente(idcliente);
+            console.log("datosIncompletos -> ", datosIncompletos);
+
+            // Verificar si es un array y tiene al menos un elemento
+            if (!Array.isArray(datosIncompletos) || datosIncompletos.length === 0) { // me quede aca, falta implementar el de tipodoc = 2 ruc
+              console.error("Error: datosIncompletos no es un array válido o está vacío", datosIncompletos);
+              return;
+            }
+
+            let incompleto = false;
+            const datosCliente = datosIncompletos[0]; // Extraer el primer objeto del array
+
+            for (const clave in datosCliente) {
+              if (datosCliente[clave] === null || datosCliente[clave] === "") {
+                if (!(datosCliente.tipodoc == 1 && clave === "representantelegal")) {
+                  console.log("DATOS CLIENTE incompleto")
+                  incompleto = true;
+                  break;
+                }
+              }
+            }
+            console.log("incompleto? ??? : ", incompleto)
+            if (incompleto) {
+              if (datosCliente?.tipodoc == 1) {
+                $q("#container-representantelegal").hidden = true;
+                modalDatosClienteIncompleto = new bootstrap.Modal(
+                  $q("#modal-datosclienteincompletos")
+                );
+                modalDatosClienteIncompleto.show();
+                console.log("supuestamente deberia renderizar");
+                await renderizarDatosClienteIncompleto(datosCliente);
+                return;
+              }
+              else if (datosCliente?.tipodoc == 2) {
+                $q("#container-representantelegal").hidden = false;
+                modalDatosClienteIncompleto = new bootstrap.Modal(
+                  $q("#modal-datosclienteincompletos")
+                );
+                modalDatosClienteIncompleto.show();
+                await renderizarDatosClienteIncompleto(datosCliente);
+                return;
+              }
+              else{  
+              $q("#container-representantelegal").hidden = false;
+                modalDatosClienteIncompleto = new bootstrap.Modal(
+                  $q("#modal-datosclienteincompletos")
+                );
+                modalDatosClienteIncompleto.show();
+                await renderizarDatosClienteIncompleto(datosCliente);
+                return;
+              }
+            }
+            window.open(
+              `http://localhost/vega-erp/generators/generadores_pdf/constancia_reserva/constanciareserva.php?iddetallepresentacion=${idcontrato}&idpagocontrato=${pagosContrato[0]?.idpagocontrato}` // esto en realida es el iddetalle_presentacion
+            );
+            console.log("Si existe la reserva")
+            return
         } else {
           // abrir modal
           console.log("NO existe la reserva")

@@ -1,3 +1,9 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contrato presentacion <?= $contratoPresentacion[0]['nom_usuario'] ?></title>
+  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png">
+</head>
 <style>
     html,
     body {
@@ -21,7 +27,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: url('http://localhost/vega-erp/images/cotizacion/calvay/watermark.jpg') no-repeat center;
+        background: url('https://res.cloudinary.com/dynpy0r4v/image/upload/v1742792207/<?php echo $contratoPresentacion[0]['marcaagua']; ?>') no-repeat center;
         background-size: contain;
         /* Ocupa toda la hoja */
         /* Ajusta la transparencia */
@@ -389,7 +395,7 @@ $monto_texto = numeroATexto($monto_numerico); */
 
                     <tr>
                         <td colspan="5" style="position: relative; text-align: center;">
-                            <img src="http://localhost/vega-erp/images/firma/firma.png" style="
+                            <img src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818433/vegaimagenes/zfe8hbczrfj649fvbtoq.png" style="
         position: absolute;
         top: -70px; /* Ajusta según sea necesario */
         left: 50%;

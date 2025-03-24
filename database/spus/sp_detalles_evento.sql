@@ -128,7 +128,8 @@ BEGIN
 		DP.estado,
         CON.estado as estado_convenio,
         CO.estado as estado_contrato,
-        DP.tienecaja
+        DP.tienecaja,
+        DEDP.departamento, PRODP.provincia, DISDP.distrito
     FROM detalles_presentacion DP
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
@@ -136,6 +137,9 @@ BEGIN
     LEFT JOIN convenios CON ON CON.iddetalle_presentacion = DP.iddetalle_presentacion
     LEFT JOIN pagos_contrato PC ON PC.idcontrato = CO.idcontrato
     LEFT JOIN reservas RE ON RE.idpagocontrato = PC.idpagocontrato
+    LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito
+    LEFT JOIN provincias PRODP ON PRODP.idprovincia = DISDP.idprovincia
+    LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
     WHERE 
     (DP.ncotizacion IS NULL OR DP.ncotizacion LIKE CONCAT('%', COALESCE(_ncotizacion, ''), '%'))
     AND (CLI.ndocumento LIKE CONCAT('%', COALESCE(_ndocumento, ''), '%') OR _ndocumento IS NULL)
@@ -291,7 +295,7 @@ END //
 DELIMITER ;
 -- AGENDA SOLO PARA EDITORES (MUESTRA TODAS LAS AGENDAS PARA EDICION DE LOS EVENTOS, NO LAS TAREAS DE LOS EDITORES)
 
--- call sp_obtener_agenda_filmmakers(4 , null, 11);
+-- call sp_obtener_agenda_filmmakers(null , null, 11);
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_filmmakers;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_agenda_filmmakers`(
@@ -311,7 +315,8 @@ BEGIN
         DP.tipo_evento, 
         DP.modalidad, 
         DP.fecha_presentacion, 
-        DP.horainicio, DP.horafinal,
+        DP.horainicio, 
+        DP.horafinal,
         CO.idcontrato, 
         CON.idconvenio,
         DP.validez,
@@ -323,11 +328,11 @@ BEGIN
         DP.created_at,
         DP.acuerdo,
         DP.estado,
-        ASIG.idusuario as idusuarioAgenda,
-        PERASIG.nombres as nombreFilmmaker,
-        ASIG.iddetalle_presentacion as idpagenda,
-        NIVEL.idnivelacceso, NIVEL.nivelacceso,
-        VIA.idviatico,
+        -- 🔹 Filmmaker individual por fila
+        PERASIG.nombres AS filmmaker,
+        ASIG.idusuario AS idusuarioAgenda,
+        NIVEL.idnivelacceso, 
+        NIVEL.nivelacceso,
         (SELECT RE.vigencia 
          FROM reservas RE 
          WHERE RE.idpagocontrato = (SELECT PC.idpagocontrato 
@@ -342,20 +347,18 @@ BEGIN
                                     WHERE PC.idcontrato = CO.idcontrato 
                                     ORDER BY PC.fecha_pago DESC LIMIT 1) 
          ORDER BY RE.fechacreada DESC LIMIT 1) AS fechacreada_reserva,
-        DP.estado,
         CON.estado AS estado_convenio,
         DISDP.distrito, 
         PRODP.provincia, 
         DEDP.departamento,
         DEDP.iddepartamento
     FROM detalles_presentacion DP
-    LEFT JOIN viaticos VIA ON VIA.iddetalle_presentacion = DP.iddetalle_presentacion
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN agenda_asignaciones ASIG ON ASIG.iddetalle_presentacion = DP.iddetalle_presentacion
     LEFT JOIN usuarios USUASIG ON USUASIG.idusuario = ASIG.idusuario
-	LEFT JOIN personas PERASIG ON PERASIG.idpersona = USUASIG.idpersona
-	LEFT JOIN nivelaccesos NIVEL ON NIVEL.idnivelacceso IN (USU.idnivelacceso, USUASIG.idnivelacceso)
+    LEFT JOIN personas PERASIG ON PERASIG.idpersona = USUASIG.idpersona
+    LEFT JOIN nivelaccesos NIVEL ON NIVEL.idnivelacceso = USUASIG.idnivelacceso
     LEFT JOIN contratos CO ON CO.iddetalle_presentacion = DP.iddetalle_presentacion
     LEFT JOIN convenios CON ON CON.iddetalle_presentacion = DP.iddetalle_presentacion
     LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito
@@ -363,10 +366,14 @@ BEGIN
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
     WHERE 
         (_idusuario IS NULL OR ASIG.idusuario = _idusuario OR USU.idusuario = _idusuario) AND
-        (_iddetalle_presentacion IS NULL OR ASIG.iddetalle_presentacion = _iddetalle_presentacion) AND
+        (_iddetalle_presentacion IS NULL OR DP.iddetalle_presentacion = _iddetalle_presentacion) AND
         (_idnivelacceso IS NULL OR NIVEL.idnivelacceso = _idnivelacceso);
 END //
 DELIMITER ;
+
+
+
+
 
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_edicion;
 DELIMITER //

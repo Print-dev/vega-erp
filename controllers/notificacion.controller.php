@@ -18,6 +18,13 @@ if(isset($_GET['operation'])){
         ];
         echo json_encode($notificacion->obtenerNotificaciones($cleanData));
         break;
+
+    case 'obtenerTodasLasNotificaciones':
+        $cleanData = [
+          'idusuariodest'   => $notificacion->limpiarCadena($_GET['idusuariodest']),
+        ];
+        echo json_encode($notificacion->obtenerTodasLasNotificaciones($cleanData));
+        break;
   }
 }
 

@@ -4,6 +4,7 @@ require_once 'ExecQuery.php';
 
 class Viatico extends ExecQuery
 {
+  
   public function obtenerViatico($params = []): array
   {
     try {
@@ -23,10 +24,11 @@ class Viatico extends ExecQuery
   public function obtenerInfoViatico($params = []): array
   {
     try {
-      $sp = parent::execQ("call sp_obtener_info_viatico (?)");
+      $sp = parent::execQ("call sp_obtener_info_viatico (?,?)");
       $sp->execute(
         array(    
-          $params['idviatico']
+          $params['idusuario'],
+          $params['idviatico'],
         )
         
       );
@@ -42,10 +44,11 @@ class Viatico extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_viatico(@idviatico,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_viatico(@idviatico,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['iddetallepresentacion'],
+          $params['idusuario'],
           $params['pasaje'],
           $params['comida'],
           $params['viaje']          

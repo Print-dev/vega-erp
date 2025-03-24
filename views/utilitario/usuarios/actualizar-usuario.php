@@ -5,7 +5,7 @@
   <div class="col-md-12">
     <div class="card">
       <div class="card-header border-0 d-flex justify-content-between align-items-center">
-        <h2>Registrar usuario</h2>
+        <h2>Actualizar usuario</h2>
 
         <a href="<?= $host ?>views/utilitario/usuarios/listar-usuarios" class="btn btn-outline-primary btn-sm ms-auto m-0" type="button"><i class="fa-solid fa-circle-left"></i> Regresar</a>
       </div>
@@ -131,6 +131,13 @@
               </div>
             </div>
           </div>
+          <div class="row mt-3">
+            <div class="col-sm-3 p-3">
+              <button type="button" class="form-control btn btn-primary w-75" id="btnActualizarPersona">
+                Actualizar Datos Persona
+              </button>
+            </div>
+          </div>
           <hr>
           <div class="row g-2 mb-3 mt-3 form-group">
             <h5>Datos del usuario</h5>
@@ -140,19 +147,12 @@
             </div>
           </div>
           <div class="row g-2 mb-3 mt-3 form-group">
-            <label for="claveacceso" class="col-sm-1 form-label size-label mt-3">Contraseña:</label>
+            <label for="claveacceso" class="col-sm-1 form-label size-label mt-3">Nueva Contraseña:</label>
             <div class="col-sm-5">
               <input type="password" id="claveacceso" class="form-control" autocomplete="off" required>
             </div>
           </div>
-          <div class="row g-2 mt-3">
-            <label for="idnivelacceso" class="col-sm-1 form-label size-label mt-3">Nivel/Rol:</label>
-            <div class="col-sm-5">
-              <select name="idnivelacceso" id="idnivelacceso" class="form-select filters" required>
-                <option value="">Selecciona</option>
-              </select>
-            </div>
-          </div>
+          
           <div class="row g-2 mt-3 contenedor-color" hidden>
             <label for="color" class="col-sm-1 form-label size-label mt-3">Color:</label>
             <div class="col-sm-5">
@@ -176,7 +176,7 @@
 
               <!-- Vista previa de la imagen -->
               <div class="mt-3">
-                <img id="previewImagen" src="" alt="Vista previa" class="img-fluid rounded shadow d-none" style="max-height: 300px;">
+                <img id="previewImagen" src="" alt="Vista previa" class="img-fluid rounded shadow" style="max-height: 300px;">
               </div>
             </div>
 
@@ -185,8 +185,8 @@
 
           <div class="row mt-3">
             <div class="col-sm-3 p-3">
-              <button type="submit" class="form-control btn btn-primary w-75" id="btnEnviar" disabled>
-                Registrar
+              <button type="button" class="form-control btn btn-primary w-75" id="btnActualizarUsuario">
+                Actualizar Datos Usuario
               </button>
             </div>
           </div>
@@ -196,7 +196,7 @@
   </div>
 </div>
 <?php require_once '../../footer.php' ?>
-<script src="http://localhost/vega-erp/js/usuarios/registrar-usuario.js"></script>
+<script src="http://localhost/vega-erp/js/usuarios/actualizar-usuario.js"></script>
 <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
 </body>
 

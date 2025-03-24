@@ -68,6 +68,7 @@ CREATE TABLE usuarios
     claveacceso VARBINARY(255) not null, 
     color		CHAR(7) null,
     porcentaje 	INT NULL,
+    marcaagua 	varchar(40) null,
 	estado 		TINYINT NOT NULL DEFAULT 1, -- 1=activo, 2=baja/inactivo/suspendido/baneado/inhabilitado
 	create_at	  DATETIME			  NOT NULL DEFAULT NOW(),
     update_at	  DATETIME			  NULL,
@@ -155,7 +156,7 @@ CREATE TABLE agenda_asignaciones ( -- tabla que asigna la agenda a un filmmaker
     FOREIGN KEY (iddetalle_presentacion) REFERENCES detalles_presentacion(iddetalle_presentacion) ON DELETE CASCADE,
     FOREIGN KEY (idusuario) REFERENCES usuarios(idusuario) ON DELETE CASCADE
 );
--- select * from agenda_asignaciones;
+
 create table convenios (
 	idconvenio	int auto_increment primary key,
     iddetalle_presentacion int not null,
@@ -206,12 +207,14 @@ create table reservas (
 CREATE TABLE viaticos (
 	idviatico		int auto_increment primary key,
     iddetalle_presentacion int not null,
+    idusuario		int		not null,
     pasaje			decimal(7,2) not null,
     comida			decimal(7,2) not null,
     viaje			decimal(10,2) null,
-    constraint fk_iddp_viatico foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
+    constraint fk_iddp_viatico foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
+    constraint fk_idusuario_v foreign key (idusuario) references usuarios (idusuario)
 ) engine = innodb;
-select * from viaticos;
+
 -- CONTABILIDAD 
 CREATE TABLE montoCajaChica (
     idmonto INT AUTO_INCREMENT PRIMARY KEY,
@@ -268,7 +271,6 @@ CREATE TABLE notificaciones (
     constraint chk_estado_not check(estado IN (1,2))
 );
 
-
 CREATE TABLE reparticion_ingresos (
 	idreparticion	int auto_increment primary key,
     iddetalle_presentacion int not null,    
@@ -316,8 +318,7 @@ CREATE TABLE agenda_editores ( -- referencia: modal asignar editor
     constraint fk_idusuario_ag_edit foreign key (idusuario) references usuarios (idusuario),
     constraint chk_tipotarea CHECK(tipotarea IN (1,2,3,4,5))
 ) engine = innodb;
--- select * from agenda_editores where idagendaedicion = 2
--- SHOW CREATE TABLE agenda_editores;
+
 
 CREATE TABLE subidas_agenda_edicion (
 	idsubida	int  auto_increment primary key,

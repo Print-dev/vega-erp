@@ -20,7 +20,8 @@ BEGIN
         DISDP.distrito as distrito_evento, PRODP.provincia as provincia_evento, DEDP.departamento as departamento_evento,
         DP.igv,
 		C.abono_garantia, C.abono_publicidad,
-        C.porcentaje_vega, C.porcentaje_promotor
+        C.porcentaje_vega, C.porcentaje_promotor,
+        USU.marcaagua
 	FROM convenios C
 	LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = C.iddetalle_presentacion
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente

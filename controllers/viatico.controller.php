@@ -19,7 +19,8 @@ if (isset($_GET['operation'])) {
 
     case 'obtenerInfoViatico':
       $cleanData = [
-        'idviatico' => $_GET['idviatico'] === "" ? null : $viatico->limpiarCadena($_GET['idviatico'])
+        'idusuario' => $_GET['idusuario'] === "" ? null : $viatico->limpiarCadena($_GET['idusuario']),
+        'idviatico' => $_GET['idviatico'] === "" ? null : $viatico->limpiarCadena($_GET['idviatico']),
       ];
       echo json_encode($viatico->obtenerInfoViatico($cleanData));
       break;
@@ -31,6 +32,7 @@ if (isset($_POST['operation'])) {
     case 'registrarViatico':
       $cleanData = [
         'iddetallepresentacion'   => $viatico->limpiarCadena($_POST['iddetallepresentacion']),
+        'idusuario'   => $viatico->limpiarCadena($_POST['idusuario']),
         'pasaje' => $viatico->limpiarCadena($_POST['pasaje']),
         'comida'   => $viatico->limpiarCadena($_POST['comida']),
         'viaje'   => $viatico->limpiarCadena($_POST['viaje']) ? $viatico->limpiarCadena($_POST['viaje']) : '',

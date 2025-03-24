@@ -24,7 +24,8 @@ BEGIN
         PRODP.idprovincia AS idprovincia_evento,
         DEDP.departamento AS departamento_evento,
         DP.igv,
-        CO.estado
+        CO.estado,
+        USU.marcaagua
     FROM contratos CO
     LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = CO.iddetalle_presentacion
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
@@ -63,7 +64,8 @@ BEGIN
         PRODP.idprovincia AS idprovincia_evento,
         DEDP.departamento AS departamento_evento,
         DP.igv,
-        DP.validez
+        DP.validez,
+        USU.marcaagua
     FROM detalles_presentacion DP
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN distritos DISCLI ON DISCLI.iddistrito = CLI.iddistrito
@@ -79,7 +81,7 @@ END $$
 
 DELIMITER ;
 
-CALL sp_obtenerCotizacion (5);
+CALL sp_obtenerCotizacion (1);
 
 DROP PROCEDURE IF EXISTS `sp_registrar_contrato`;
 DELIMITER $$

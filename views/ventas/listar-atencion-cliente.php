@@ -18,6 +18,7 @@
                         <div class="row g-0 mb-3">
                             <div class="card border-0">
                                 <div class="card-body border-0">
+                                <label for="">Filtros</label>
                                     <div class="row">
                                         <div class="col-md-2">
                                             <div class="form-floating">
@@ -61,6 +62,7 @@
                                         <th>Tipo evento</th>
                                         <th>Modalidad</th>
                                         <th>Lugar</th>
+                                        <th>Ubigeo</th>
                                         <th>Fecha presentacion</th>
                                         <th>Estado</th>
                                         <th>Opciones</th>

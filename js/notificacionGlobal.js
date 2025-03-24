@@ -18,19 +18,35 @@ document.addEventListener("DOMContentLoaded", async () => {
     obtenerNotificaciones();
   }
 
+  $q("#show-all-notificaciones").addEventListener("click", async () => {
+    obtenerTodasLasNotificaciones()
+  })
+
   // ******************************************* OBTENER DATOS *****************************************
 
   async function obtenerNotificaciones() {
     const params = new URLSearchParams();
     params.append("operation", "obtenerNotificaciones");
-    params.append("idusuariodest", 1);
+    params.append("idusuariodest", idusuarioLogeado);
     const notificaciones = await getDatos(
       `${host}notificacion.controller.php`,
       params
     );
-    mostrarNotificaciones(notificaciones, 1); // cambiar esto luego
+    mostrarNotificaciones(notificaciones, idusuarioLogeado); // cambiar esto luego  (actualziacion hoy: ya se cambio)
     
-  }// ME QUEDE ACA
+  }
+
+  async function obtenerTodasLasNotificaciones() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerTodasLasNotificaciones");
+    params.append("idusuariodest", idusuarioLogeado);
+    const notificaciones = await getDatos(
+      `${host}notificacion.controller.php`,
+      params
+    );
+    mostrarNotificaciones(notificaciones, idusuarioLogeado); // cambiar esto luego
+    
+  }
 
   async function obtenerUsuarioPorId(idusuario) {
     const params = new URLSearchParams();
@@ -41,10 +57,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     return fpersona
   }
 
-  async function obtenerInfoViatico(idviatico) {
+  async function obtenerInfoViatico(idusuario, idviatico) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerInfoViatico");
-    params.append("idviatico", idviatico);
+    params.append("idusuario", idusuario ? idusuario : '');
+    params.append("idviatico", idviatico ? idviatico : '');
     const fpersona = await getDatos(`${host}viatico.controller.php`, params)
     console.log(fpersona);
     return fpersona
@@ -53,6 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   //* *********************************** RENDERIZACIONES *************************************************
 
   function mostrarNotificaciones(notificaciones, idusuario) {
+    console.log("TODAS LAS NOTIFICACIONES ->",notificaciones);
     const contenedor = document.getElementById("list-notificaciones");
     contenedor.innerHTML = ""; // Limpiar el contenedor antes de agregar nuevas notificaciones
     console.log("notificaciinessss ->", notificaciones);
@@ -70,14 +88,25 @@ document.addEventListener("DOMContentLoaded", async () => {
             <p>${notificacion.mensaje}</p> 
             <span>${tiempoTranscurrido}</span>
         `;
-      notificacionElemento.addEventListener("click", async () => {
-        modalNotificacion = new bootstrap.Modal($q("#modal-notificacion"))
-        modalNotificacion.show()
-        const usuario = await obtenerUsuarioPorId(idusuario)
-        const infoViatico = await obtenerInfoViatico(notificacion.idreferencia)
-        console.log("infoviatico -< ", infoViatico);
-        cargarNotificacionEnModal(notificacion, usuario[0], infoViatico[0]);
-        console.log("usuario -> ", usuario)
+        notificacionElemento.setAttribute("data-idreferencia", notificacion.idreferencia);
+
+      notificacionElemento.addEventListener("click", async (e) => {
+        const idNotificacion = parseInt(e.currentTarget.getAttribute("data-idreferencia"))
+        console.log("ID de la notificación:", idNotificacion);
+            modalNotificacion = new bootstrap.Modal($q("#modal-notificacion"))
+            modalNotificacion.show()
+            const usuario = await obtenerUsuarioPorId(notificacion.idusuariorem)
+            const infoViatico = await obtenerInfoViatico(null , idNotificacion)
+            console.log("infoviatico -< ", infoViatico);
+            const viaticoEncontrado = infoViatico.find(v => v.idviatico === idNotificacion);
+
+        if (viaticoEncontrado) {
+            cargarNotificacionEnModal(notificacion, usuario[0], viaticoEncontrado);
+            console.log("usuario -> ", usuario);
+        } else {
+            console.warn("No se encontró un viático para la notificación:", idNotificacion);
+        }
+            
       });
 
       contenedor.appendChild(notificacionElemento);
@@ -93,7 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       <hr>
       <div class="mt-3">
         <h4 class="fw-bold">Detalles evento:</h4><br>
-        <label class="fw-bold">Artista:</label> <span id="noti-pasaje">${viatico.nom_usuario.toUpperCase()}</span> <br>
+        <label class="fw-bold">Artista:</label> <span id="noti-pasaje">${viatico.nom_usuario?.toUpperCase()}</span> <br>
         <label class="fw-bold">Local:</label> <span id="noti-comida">${viatico.establecimiento.toUpperCase()}</span> <br>
         <label class="fw-bold">Fecha:</label> <span id="noti-viaje">${formatDate(viatico.fecha_presentacion)}</span> <br>
         <label class="fw-bold">Desde - hasta:</label> <span id="noti-viaje">${formatHour(viatico.horainicio)} - ${formatHour(viatico.horafinal)}</span> <br>

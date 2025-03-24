@@ -9,6 +9,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // MODALES
   let modalHistorial;
+  let btnGuardarContenido = $q("#btnGuardarContenido") ? $q("#btnGuardarContenido") : ''
+  let btnVerHistorial = $q("#btnVerHistorial") ? $q("#btnVerHistorial") : ''
+
   function $q(object = null) {
     return document.querySelector(object);
   }
@@ -20,6 +23,50 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function getDatos(link, params) {
     let data = await fetch(`${link}?${params}`);
     return data.json();
+  }
+
+  if(nivelacceso == "Administrador"){
+    $q(".contenedor-subir-contenido-editor").remove()
+    const historialContenido = await obtenerContenidoHistorialEdicion(idagendaeditor);
+    console.log("historial ->", historialContenido);
+
+    const contenedorHistorial = document.querySelector(".contenedor-historial");
+    contenedorHistorial.innerHTML = ""; // Limpiar contenido previo
+
+    if (historialContenido.length === 0) {
+      contenedorHistorial.innerHTML = "<p class='text-center text-muted'>No hay historial disponible.</p>";
+      return;
+    }
+
+    historialContenido.forEach((item) => {
+      //const urlImagen = item.url_imagen ? `${BASE_CLOUDINARY_URL}${item.url_imagen}` : "https://via.placeholder.com/250";
+      const comentario = item.observaciones || "Sin observaciones";
+      const url = item.url || 'url aun no mandada'
+
+      const historialItem = `
+            <div class="row align-items-center mb-3 p-3 border rounded shadow-sm">
+                <div class="col-12 text-center mb-3">
+                    <label class="fw-bold">${url}</label> 
+                    <span class="text-primary"></span>
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-bold">Observaciones/Comentar</label>
+                    <textarea class="form-control observacion-caja" rows="3" data-idsubida="${item.idsubida}">${comentario}</textarea>
+                    <div class="row text-center">
+                      <button type="button" class="btn btn-primary mt-2 btnGuardarObservacion" data-idsubida="${item.idsubida}">
+                          Guardar <i class="fa-solid fa-paper-plane"></i>
+                      </button>
+                    </div
+                </div>
+            </div>
+
+        `;
+
+      contenedorHistorial.innerHTML += historialItem;
+    });
+
+  }else if(nivelacceso == "Edicion y Produccion"){
+    $q(".contenedor-revisar-contenido").remove()
   }
 
   //subirContenidoEditor
@@ -88,7 +135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     false
   );
 
-  $q("#btnGuardarContenido").addEventListener("click", async () => {
+  btnGuardarContenido?.addEventListener("click", async () => {
     if ($q("#txtUrl").value.trim() == "") {
       showToast("El campo no puede estar vacio", "ERROR")
       return
@@ -104,7 +151,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   });
 
-  $q("#btnVerHistorial").addEventListener("click", async () => {
+  btnVerHistorial?.addEventListener("click", async () => {
     const modal = new bootstrap.Modal(document.getElementById("modal-historial"));
     modal.show();
 
@@ -127,16 +174,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       const historialItem = `
             <div class="row align-items-center mb-3 p-3 border rounded shadow-sm">
                 <div class="col-12 text-center mb-3">
-                    <label class="fw-bold">URL:${url}</label> 
+                    <label class="fw-bold">${url}</label> 
                     <span class="text-primary"></span>
                 </div>
                 <div class="col-12">
                     <label class="form-label fw-bold">Observaciones/Comentar</label>
-                    <textarea class="form-control observacion-caja" rows="3" data-idsubida="${item.idsubida}">${comentario}</textarea>
-                    <div class="row text-center">
-                      <button type="button" class="btn btn-primary mt-2 btnGuardarObservacion" data-idsubida="${item.idsubida}">
-                          Guardar <i class="fa-solid fa-paper-plane"></i>
-                      </button>
+                    <textarea class="form-control observacion-caja" rows="3" data-idsubida="${item.idsubida}" readonly>${comentario}</textarea>
+                    <div class="row text-center">                      
                     </div
                 </div>
             </div>
@@ -154,41 +198,43 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.addEventListener("click", async (e) => {
     if (e.target.classList.contains("btnGuardarObservacion")) {
       console.log("Click en Guardar Observación");
-
+  
       const button = e.target;
-      const container = button.closest(".row"); // Encuentra el contenedor más cercano
-      const textarea = container?.querySelector(".observacion-caja");
       const idsubida = button.getAttribute("data-idsubida");
-      const observacion = textarea?.value.trim();
-
-      if (!textarea || !idsubida) {
-        console.error("No se encontraron los elementos necesarios.");
+  
+      // Encuentra el contenedor general que agrupa el textarea y el botón
+      const container = button.closest(".border.rounded.shadow-sm");
+      console.log("Container encontrado:", container); // Verifica si encuentra el contenedor correcto
+  
+      // Busca el textarea dentro del contenedor correcto
+      const textarea = container?.querySelector(".observacion-caja");
+  
+      if (!textarea) {
+        console.error("No se encontró el textarea correspondiente.");
         return;
       }
-
+  
+      const observacion = textarea.value.trim();
       if (!observacion) {
         alert("Por favor ingresa una observación.");
         return;
       }
-
+  
       try {
-        // Deshabilitar botón temporalmente para evitar múltiples clics
         button.disabled = true;
         button.innerHTML = 'Guardando... <i class="fa-solid fa-spinner fa-spin"></i>';
-
+  
         const observacionRegistrada = await comentarContenido(idsubida, observacion);
         console.log("Observación registrada -> ", observacionRegistrada);
         showToast("Observación guardada con éxito", "SUCCESS");
-
+  
       } catch (error) {
         console.error("Error al guardar la observación:", error);
         showToast("Hubo un error al guardar la observación", "ERROR");
       } finally {
-        // Restaurar botón
         button.disabled = false;
         button.innerHTML = 'Guardar <i class="fa-solid fa-paper-plane"></i>';
       }
     }
   });
-
 });

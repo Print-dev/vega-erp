@@ -3,9 +3,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     let usuarioSelect = $q("#usuario")
     let agenda = []
     let calendar
+    let listaSeleccionados = [];
+
 
     //CALENDARIO
     let calendarEl;
+
+    // MODAL
+    let modalAdmin
 
     function $q(object = null) {
         return document.querySelector(object);
@@ -20,6 +25,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
+    const usuariosAdmin = await obtenerUsuariosPorNivel("3")
+    await renderizarAdmins(usuariosAdmin)
 
     // ************************************************ OBTENER DATOS *********************************************************************** */
     async function obtenerUsuarios(idnivelacceso) {
@@ -36,14 +43,60 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     }
 
-    async function obtenerInfoViatico(idviatico) {
+    async function obtenerUsuariosPorNivel(idnivelacceso) {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerUsuarioPorNivel");
+        params.append("idnivelacceso", idnivelacceso);
+    
+        try {
+            const data = await getDatos(`${host}usuario.controller.php`, params);
+    
+            console.log(data);
+            return data // Verifica la estructura de los datos en la consola
+        } catch (error) {
+            console.error("Error al obtener los usuarios:", error);
+        }
+    }
+    
+    function renderizarAdmins(usuarios) {
+        const contenedor = document.querySelector(".contenedor-admins");
+        contenedor.innerHTML = `<h5 class="mb-3">Enviar a: (Solo administradores)</h5>`; // Limpia el contenido previo
+    
+        usuarios.forEach(usuario => {
+            
+            contenedor.innerHTML +=  `
+            <div class="form-check">
+                <input class="form-check-input chkAdmin" type="checkbox" id="admin-${usuario.idusuario}" data-idusuario="${usuario.idusuario}">
+                <label class="form-check-label" for="admin-${usuario.idusuario}">${usuario.nom_usuario}</label>
+            </div>
+            `;
+        });
+
+        $all(".chkAdmin").forEach(checkbox => {
+            checkbox.addEventListener("change", function () {
+                const idUsuario = this.getAttribute("data-idusuario");
+    
+                if (this.checked) {
+                    if (!listaSeleccionados.includes(idUsuario)) {
+                        listaSeleccionados.push(idUsuario);
+                    }
+                } else {
+                    listaSeleccionados = listaSeleccionados.filter(id => id !== idUsuario);
+                }
+            });
+        });
+    }
+
+    async function obtenerInfoViatico(idusuario, idviatico) {
         const params = new URLSearchParams();
         params.append("operation", "obtenerInfoViatico");
-        params.append("idviatico", idviatico);
+        params.append("idusuario", idusuario ? idusuario : '');
+        params.append("idviatico", idviatico ? idviatico : '');
         const fpersona = await getDatos(`${host}viatico.controller.php`, params)
         console.log(fpersona);
         return fpersona
-    }
+      }
+    
 
     async function obtenerDepartamentoPorId(iddepartamento) {
         const params = new URLSearchParams();
@@ -53,10 +106,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data
     }
 
-    async function obtenerViatico(iddetallepresentacion) {
+    async function obtenerViatico(idusuario) {
         const params = new URLSearchParams();
         params.append("operation", "obtenerViatico");
-        params.append("iddetallepresentacion", iddetallepresentacion);
+        params.append("idusuario", idusuario);
         const data = await getDatos(`${host}viatico.controller.php`, params);
         return data
     }
@@ -101,11 +154,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data;
     }
 
-    async function registrarViatico(iddetallepresentacion) {
+    async function registrarViatico(iddetallepresentacion, idusuario) {
 
         const viatico = new FormData();
         viatico.append("operation", "registrarViatico");
         viatico.append("iddetallepresentacion", iddetallepresentacion); // id artista
+        viatico.append("idusuario", idusuario); // id artista
         viatico.append("pasaje", $q("#pasaje").value);
         viatico.append("comida", $q("#comida").value);
         viatico.append("viaje", $q("#viaje").value ? $q("#viaje").value : '');
@@ -118,10 +172,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         return rviatico;
     }
 
-    async function registrarNotificacion(filmmaker, tipo, idviatico, mensaje) {
+    async function registrarNotificacion(idusuariodest,filmmaker, tipo, idviatico, mensaje) {
         const viatico = new FormData();
         viatico.append("operation", "registrarNotificacion");
-        viatico.append("idusuariodest", 1); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
+        viatico.append("idusuariodest", idusuariodest); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
         viatico.append("idusuariorem", filmmaker); // id usuario envia la notificacion
         viatico.append("tipo", tipo);
         viatico.append("idreferencia", idviatico);
@@ -166,15 +220,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         return racuerdo;
     }
 
-    async function renderizarInfoAgenda(iddp, iddepartamento) {
+    async function renderizarInfoAgenda(idusuario, iddepartamento) {
         $q("#btnActualizarViatico").hidden = true
         $q("#btnGuardarViatico").hidden = false
         $q("#pasaje").value = ""
         $q("#comida").value = ""
         $q("#viaje").value = ""
         let isLima = false;
-        console.log("iddp existe  ee -> ", iddp)
-        const viaticoExiste = await obtenerViatico(iddp)
+        //console.log("iddp existe  ee -> ", iddp)
+        console.log("idusuario filmmaker ->>>>>>>>>>>>>>>", idusuario);
+        const viaticoExiste = await obtenerViatico(idusuario)
         console.log("viaticoExiste ._< ", viaticoExiste)
         if (viaticoExiste.length > 0) {
             $q("#pasaje").value = viaticoExiste[0]?.pasaje
@@ -198,6 +253,44 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
     }
+
+    async function guardarViatico() {           
+        if ($q("#pasaje").value == "" || $q("#comida").value == "") {
+            showToast("Por favor, complete los campos obligatorios", "ERROR");
+            return;
+        }
+    
+        const viaticoRegistrado = await registrarViatico(iddp, idusuarioLogeado);
+        console.log("viaticoRegistrado -> ", viaticoRegistrado);
+    
+        const usuarioFilmmaker = await obtenerUsuarioPorId(idusuarioLogeado);
+        console.log("usuarioFilmmaker -> ", usuarioFilmmaker);
+    
+        if (viaticoRegistrado.idviatico) {
+            console.log("Entrando a la validación...");
+    
+            const mensaje = `${usuarioFilmmaker[0]?.dato} ha reportado un viático, haz click para ver`;
+            console.log("admins seleccionados -> ", listaSeleccionados);
+            // Enviar notificación a cada administrador seleccionado
+            for (const idAdmin of listaSeleccionados) {
+                console.log("registrando viatic..");
+                const notificacionRegistrada = await registrarNotificacion(idAdmin, idusuarioLogeado, 1, viaticoRegistrado.idviatico, mensaje);
+                console.log(`Notificación enviada a ${idAdmin}:`, notificacionRegistrada);
+            }
+            
+            document.querySelectorAll(".chkAdmin").forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            showToast("Viático registrado correctamente", "SUCCESS");
+            listaSeleccionados = []
+            $q("#pasaje").value = ""
+            $q("#comida").value = ""
+            $q("#viaje").value = ""
+            modalViatico.hide();
+            
+        }
+    }
+    
 
     calendarEl = document.getElementById("calendar");
 
@@ -226,30 +319,34 @@ document.addEventListener("DOMContentLoaded", async () => {
             const btnViatico = evento.jsEvent.target.closest("#btnViatico");
             if (btnVerViatico) {
                 console.log("clbikc a btn");
-                const idviatico = btnVerViatico.getAttribute("data-idviatico");
-
+                
+                idusuarioFilmmaker = parseInt(btnVerViatico.getAttribute("data-idusuarioFilmmaker"))
+                //const viaticoExiste = await obtenerViatico(idusuarioFilmmaker)
+                //console.log("viaticoExiste ->",viaticoExiste);
                 modalNotificacion = new bootstrap.Modal($q("#modal-notificacion")); //
                 modalNotificacion.show();
-
-                const infoViatico = await obtenerInfoViatico(evento.event.extendedProps.idviatico)
+                console.log("idusuarioFilmmaker -> ", idusuarioFilmmaker);
+                const infoViatico = await obtenerInfoViatico(idusuarioFilmmaker, null )
                 console.log("infoviatico -< ", infoViatico);
-                const usuarioFilmmakerObtenido = await obtenerUsuarioPorId(evento.event.extendedProps.idusuariofilmmaker)
+                const usuarioFilmmakerObtenido = await obtenerUsuarioPorId(idusuarioFilmmaker)
                 console.log("usuarioFilmmakerObtenido -> ", usuarioFilmmakerObtenido);
-                cargarViaticoFilmmaker(null, usuarioFilmmakerObtenido[0], infoViatico[0])
+                cargarViaticoFilmmaker(null, usuarioFilmmakerObtenido[0], infoViatico.at(-1))
 
             }
             if (btnViatico) {
                 iddp = btnViatico.getAttribute("data-iddp");
                 iddepartamento = btnViatico.getAttribute("data-iddepartamento");
+                idusuarioFilmmaker = btnViatico.getAttribute("data-idusuarioFilmmaker");
                 console.log("ID DEPARTAMENTO ELEGIDO -> ", iddepartamento)
                 console.log("iddetalle_repsentacion elegida -> ", iddp)
 
+                
                 modalViatico = new bootstrap.Modal($q("#modal-viatico"));
                 modalViatico.show();
-                await renderizarInfoAgenda(iddp, iddepartamento)
+                //await renderizarInfoAgenda(idusuarioFilmmaker, iddepartamento)
 
             }
-            $q("#btnActualizarViatico").addEventListener("click", async () => {
+            /* $q("#btnActualizarViatico").addEventListener("click", async () => {
                 const viaticoActualizado = await actualizarViatico(idviatico)
                 console.log("viaticoActualizado -> ", viaticoActualizado)
                 if (viaticoActualizado.update) {
@@ -257,29 +354,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                     return
                 }
             })
+ */
+            $q("#btnGuardarViatico").removeEventListener("click", guardarViatico); // Elimina listeners previos
+            $q("#btnGuardarViatico").addEventListener("click", guardarViatico);
 
-            $q("#btnGuardarViatico").addEventListener("click", async () => {
 
-                if ($q("#pasaje").value == "" || $q("#comida").value == "") {
-                    showToast("Por favor, complete los campos obligatorios", "ERROR")
-                    return
-                }
-                const viaticoRegistrado = await registrarViatico(iddp)
-                console.log("viaticoRegistrado -> ", viaticoRegistrado)
-                const usuarioFilmmaker = await obtenerUsuarioPorId(idusuarioLogeado)
-                console.log("usuarioFilmmaker -> ", usuarioFilmmaker)
-                if (viaticoRegistrado.idviatico) {
-                    // PONER UNA SECCION ACA PARA NOTIFICAR QUE SE REGISTRO CORRECTAMENTE
-                    console.log("entrando a la validacaion...")
-                    const mensaje = `${usuarioFilmmaker[0]?.dato} ha reportado un viatico, haz click para ver`
-                    const notificacionRegistrada = await registrarNotificacion(idusuarioLogeado, 1, viaticoRegistrado.idviatico, mensaje)
-                    console.log("notificacion registrada ? -> ", notificacionRegistrada)
-                    console.log("mensaje -> ", mensaje)
-                    showToast("Viático registrado correctamente", "SUCCESS")
-                    //await 
-                    modalViatico.hide()
-                }
-            })
+            
+            
             console.log("evento -> ", evento)
             if (evento.event.extendedProps.estadoBadge.text == "Incompleto") {
                 window.localStorage.clear()
@@ -321,6 +402,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     async function configurarCalendario(agendaUsuario) {
+//        agenda = [];  // Resetear la lista para evitar duplicados
+
         for (const evento of agendaUsuario) {
             incompleto =
                 !evento.horainicio ||
@@ -380,13 +463,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                         horafinal: evento.horafinal,
                         establecimiento: evento.establecimiento,
                         iddepartamento: evento.iddepartamento,
-                        filmmaker: evento.nombreFilmmaker || "No asignado",
+                        filmmaker: evento.filmmaker || "No asignado",
                         idusuario: evento.idusuario,
                         acuerdo: evento.acuerdo,
                         idusuariofilmmaker: evento.idusuarioAgenda,
                         idcontrato: evento.idcontrato,
                         idconvenio: evento.idconvenio,
                         estado: evento.estado,
+                        idviatico: evento.idviatico
                         //idagendaedicion: evento.idagendaedicion
                     },
                 });
@@ -452,11 +536,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 
                       <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
                         ${nivelacceso == "Administrador" ? `
-                          <button class="btn btn-primary" id="btnVerViatico" style="flex: 1;" data-iddp="${arg.event.extendedProps?.iddetalle_presentacion}" data-idviatico="${arg.event.extendedProps?.idviatico}">Ver Viatico</button>
+                          <button class="btn btn-primary" id="btnVerViatico" style="flex: 1;" data-idusuarioFilmmaker="${arg.event.extendedProps.idusuariofilmmaker}" data-iddp="${arg.event.extendedProps?.iddetalle_presentacion}" data-idviatico="${arg.event.extendedProps?.idviatico}">Ver Viatico</button>
                         ` : ``}
                 
                         ${nivelacceso == "Filmmaker" ? `
-                          <button class="btn btn-primary" id="btnViatico" style="flex: 1;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}" data-iddepartamento="${arg.event.extendedProps.iddepartamento}">Reportar Viático</button>
+                          <button class="btn btn-primary" id="btnViatico" style="flex: 1;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}" data-idviatico="${arg.event.extendedProps.idviatico}" data-iddepartamento="${arg.event.extendedProps.iddepartamento}">Reportar Viático</button>
                         ` : ''}
                 
                         ${nivelacceso == "Artista" ? `

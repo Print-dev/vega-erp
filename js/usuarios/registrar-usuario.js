@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
+
+  // VARIABLES
+  let imagen_public_id = "";
+  const BASE_CLOUDINARY_URL = "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742792207/";
+
   const host = "http://localhost/vega-erp/controllers/";
   function $q(object = null) {
     return document.querySelector(object);
@@ -18,6 +23,34 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await cargarDatosPorDefecto()
 
+  // ******************************* CLODUINARY ********************************************************************
+
+  let myWidget = cloudinary.createUploadWidget(
+    {
+      cloudName: "dynpy0r4v",
+      uploadPreset: "vegaimagenes",
+      folder: "vegaimagenes",
+    },
+    async (error, result) => {
+      if (!error && result && result.event === "success") {
+        console.log("result -> ", result);
+        
+        let previewImagen = document.getElementById("previewImagen");
+        previewImagen.src = result.info.secure_url;
+        previewImagen.classList.remove("d-none");
+        imagen_public_id = result.info?.public_id;
+        //$q("#btnGuardarContenido").disabled = false;
+      }
+    }
+  );
+
+  $q("#upload_widget")?.addEventListener(
+    "click",
+    function () {
+      myWidget.open();
+    },
+    false
+  );
 
   /* ************************************* OBTENER RECURSOS ******************************************************* */
 
@@ -83,6 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     params.append("claveacceso", $q("#claveacceso").value);
     params.append("color", $q("#color")?.value ?  $q("#color")?.value : '');
     params.append("porcentaje", $q("#porcentaje")?.value ?  $q("#porcentaje")?.value : '');
+    params.append("marcaagua", imagen_public_id ?  imagen_public_id : '');
     params.append("idnivelacceso", $q("#idnivelacceso").value);
     const resp = await fetch(`${host}usuario.controller.php`, {
       method: 'POST',
@@ -272,9 +306,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     if(e.target.value == "6"){
       $q(".contenedor-color").hidden = false
       $q(".contenedor-porcentaje").hidden = false
+      $q(".contenedor-marcaagua").hidden = false
     }else{
       $q(".contenedor-color").hidden = true
       $q(".contenedor-porcentaje").hidden = true
+      $q(".contenedor-marcaagua").hidden = true
     }
   })
 

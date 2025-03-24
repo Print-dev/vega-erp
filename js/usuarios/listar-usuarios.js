@@ -231,9 +231,13 @@ document.addEventListener("DOMContentLoaded", async () => {
    * @param {*} e evento del boton
    */
   function buttonEditar(e) {
-    ideditar = e.target.getAttribute("data-id");
+    idusuario = e.target.getAttribute("data-id");
 
-    alert("editando")
+    console.log("id usuario", idusuario);
+    window.localStorage.clear()
+    window.localStorage.setItem("idusuario", idusuario)
+    window.location.href = `http://localhost/vega-erp/views/utilitario/usuarios/actualizar-usuario`
+    return
   }
 
   async function buttonDeshabilitar(e) {
