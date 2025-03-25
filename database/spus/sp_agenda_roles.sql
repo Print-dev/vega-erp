@@ -50,7 +50,7 @@ CREATE PROCEDURE sp_asignar_agenda_editor (
     OUT _idagendaeditor INT,
 	IN _idagendaedicion int,
 	IN _idusuario int,
-    IN _tipotarea INT,
+    IN _idtipotarea INT,
     IN _fecha_entrega DATETIME
 )
 BEGIN
@@ -61,8 +61,8 @@ BEGIN
         SET existe_error = 1;
     END;
     
-    INSERT INTO agenda_editores (idagendaedicion, idusuario , tipotarea, fecha_entrega)
-    VALUES (_idagendaedicion, _idusuario, _tipotarea, _fecha_entrega);
+    INSERT INTO agenda_editores (idagendaedicion, idusuario , idtipotarea, fecha_entrega)
+    VALUES (_idagendaedicion, _idusuario, _idtipotarea, _fecha_entrega);
     
     IF existe_error = 1 THEN
         SET _idagendaeditor = -1;
@@ -133,7 +133,7 @@ CREATE PROCEDURE sp_obtener_agenda_editores
 )
 BEGIN
 	SELECT 
-	AGE.idagendaeditor, AGE.tipotarea, PER.nombres, USU.idusuario, AGE.fecha_entrega, AGE.estado
+	AGE.idagendaeditor, AGE.idtipotarea, PER.nombres, USU.idusuario, AGE.fecha_entrega, AGE.estado
     FROM agenda_editores AGE
     LEFT JOIN usuarios USU ON USU.idusuario = AGE.idusuario
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
@@ -181,7 +181,7 @@ CREATE PROCEDURE sp_obtener_usuario_asignado_tarea
 )
 BEGIN
 	SELECT 
-	AGE.idagendaedicion, AGE.idagendaeditor, AGE.tipotarea, PER.nombres, USU.idusuario, AGE.fecha_entrega, AGE.estado
+	AGE.idagendaedicion, AGE.idagendaeditor, AGE.idtipotarea, PER.nombres, USU.idusuario, AGE.fecha_entrega, AGE.estado
     FROM agenda_editores AGE
     LEFT JOIN usuarios USU ON USU.idusuario = AGE.idusuario
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona

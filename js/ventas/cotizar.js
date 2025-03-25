@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   let idprovincia = -1
   let idartista = -1
   let provincia = ''
+  let mensaje = ''
 
   // MODAL
   let modalAgendaFechas
@@ -159,6 +160,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     return data;
   }
 
+  async function obtenerUsuarioPorId(idusuario) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerUsuarioPorId");
+    params.append("idusuario", idusuario ? idusuario : "");
+    const data = await getDatos(`${host}usuario.controller.php`, params);
+    return data;
+  }
+
+
+
   /* async function obtenerCotizacion(iddetallepresentacion) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerCotizacion");
@@ -267,15 +278,34 @@ document.addEventListener('DOMContentLoaded', async function () {
     reparticion.append("iddetallepresentacion", iddetallepresentacion);
 
     const freparticion = await fetch(`${host}reparticion.controller.php`, {
-        method: "POST",
-        body: reparticion,
+      method: "POST",
+      body: reparticion,
     });
     const rreparticion = await freparticion.json();
     return rreparticion;
-}
+  }
+
+  async function registrarNotificacion(artista, idusuariorem, tipo, idreferencia, mensaje) {
+    const viatico = new FormData();
+    viatico.append("operation", "registrarNotificacion");
+    viatico.append("idusuariodest", artista); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
+    viatico.append("idusuariorem", idusuariorem); // id usuario envia la notificacion
+    viatico.append("tipo", tipo);
+    viatico.append("idreferencia", idreferencia ? idreferencia : '');
+    viatico.append("mensaje", mensaje);
+
+    const fviatico = await fetch(`${host}notificacion.controller.php`, {
+      method: "POST",
+      body: viatico,
+    });
+    const rviatico = await fviatico.json();
+    //console.log("rivatico . ", rviatico)
+    return rviatico;
+  }
+
 
   async function registrarDetalleEvento(idcliente, ncotizacion) {
-    console.log("Hora final ->",  $q("#horafinal").value.trim());
+    console.log("Hora final ->", $q("#horafinal").value.trim());
 
     const horainicio = $q("#horainicio").value.trim();
     const horafinal = $q("#horafinal").value.trim();
@@ -288,7 +318,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const validez = parseInt($q("#validez").value, 10) || 0;
 
     // Si alguno de los campos clave tiene valor, se activan las validaciones
-    
+
 
     // Si pasa las validaciones, proceder con el registro
     const detalle = new FormData();
@@ -678,7 +708,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       if (await ask("Confirma la acción")) {
         const convenio = registrarConvenio(iddetalleevento, 2)
         if (convenio) {
-          window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
+          //window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
         }
       }
     })
@@ -774,18 +804,28 @@ document.addEventListener('DOMContentLoaded', async function () {
                 detalleevento = await registrarDetalleEvento(data.idcliente);
                 const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
                 console.log("repa registrado -> ", repaRegistrado);
+                // REGISTRAR NOTIFICACION
+                const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
+                const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+                console.log("notificacion registrada ? -> ", notificacionRegistrada)
                 console.log(detalleevento);
               } else if ($q("#modalidad").value == 2) {
                 detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
-                
+                const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
+                const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+                console.log("notificacion registrada ? -> ", notificacionRegistrada)
+
                 console.log(detalleevento);
-              }else{
+              } else {
                 detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
                 console.log(detalleevento);
+                // ACA NO SE REGISTRA POR QUE EL EVENTO ESTA INCOMPLETO
               }
 
               if (detalleevento.iddetalleevento > 0) {
-                window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
+                //window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
               } else {
                 showToast("Hubo un error al registrar la atencion", "ERROR");
               }
@@ -808,14 +848,26 @@ document.addEventListener('DOMContentLoaded', async function () {
               console.log("idcliente-> en valor 1 ", idcliente);
               detalleevento = await registrarDetalleEvento(idcliente);
               const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
-                console.log("repa registrado -> ", repaRegistrado);
+              console.log("repa registrado -> ", repaRegistrado);
               console.log(detalleevento);
+              const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+              console.log("usuario -> ", usuario);
+              mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
+              console.log("artista ->", $q("#artista").value);
+              console.log("idusuariolgeado ->", idusuarioLogeado);
+              console.log("mensaje ->", mensaje);
+              
+              const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+              console.log("notificacion registrada ? -> ", notificacionRegistrada)
             } else if ($q("#modalidad").value == 2) {
               console.log("idcliente-> en valor 2 ", idcliente);
               detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
-              
               console.log(detalleevento);
-            }else if ($q("#modalidad").value == -1){
+              const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+              mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
+              const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+              console.log("notificacion registrada ? -> ", notificacionRegistrada)
+            } else if ($q("#modalidad").value == -1) {
               console.log("idcliente-> en valor -1 ", idcliente);
               console.log("entrando a cuando no se selecciona ningun valor");
               detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
@@ -823,7 +875,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
             console.log("detalle evento ->>>>>>", detalleevento);
             if (detalleevento.iddetalleevento > 0) {
-              window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
+              ////window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
             } else {
               showToast("Hubo un error al registrar la atencion", "ERROR");
             }
@@ -849,5 +901,5 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
   })
 
-  
+
 });

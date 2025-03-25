@@ -53,7 +53,7 @@ if (isset($_POST['operation'])) {
         'idusuariodest'   => $notificacion->limpiarCadena($_POST['idusuariodest']),
         'idusuariorem'   => $notificacion->limpiarCadena($_POST['idusuariorem']),
         'tipo' => $notificacion->limpiarCadena($_POST['tipo']),
-        'idreferencia'   => $notificacion->limpiarCadena($_POST['idreferencia']),
+        'idreferencia'   => $notificacion->limpiarCadena($_POST['idreferencia']) ? $notificacion->limpiarCadena($_POST['idreferencia']) : '' ,
         'mensaje'   => $notificacion->limpiarCadena($_POST['mensaje']),
       ];
 

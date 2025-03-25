@@ -23,6 +23,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   let idcontrato = -1
   let idpagocontrato = -1
   let idconvenio
+  let idusuarioArtDest
+  let fechapresentacion
 
   //MODALES
   let modalDatosContrato
@@ -211,6 +213,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rconvenio;
   }
 
+  async function obtenerUsuarioPorId(idusuario) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerUsuarioPorId");
+    params.append("idusuario", idusuario);
+    const fpersona = await getDatos(`${host}usuario.controller.php`, params)
+    console.log(fpersona);
+    return fpersona
+  }
+
   async function actualizarCajaDP(iddetallepresentacion, estado) {
     const convenio = new FormData();
     convenio.append("operation", "actualizarCajaDP");
@@ -293,6 +304,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     const rreserva = await freserva.json();
     return rreserva;
   }
+
+  /* async function registrarNotificacion(artista, idusuariorem, tipo, idreferencia, mensaje) {
+    const viatico = new FormData();
+    viatico.append("operation", "registrarNotificacion");
+    viatico.append("idusuariodest", artista); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
+    viatico.append("idusuariorem", idusuariorem); // id usuario envia la notificacion
+    viatico.append("tipo", tipo);
+    viatico.append("idreferencia", idreferencia ? idreferencia : '');
+    viatico.append("mensaje", mensaje);
+
+    const fviatico = await fetch(`${host}notificacion.controller.php`, {
+      method: "POST",
+      body: viatico,
+    });
+    const rviatico = await fviatico.json();
+    //console.log("rivatico . ", rviatico)
+    return rviatico;
+  } */
 
   async function actualizarCliente(idcliente) {
 
@@ -563,14 +592,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>
                     ${x.estado == 3 ? '' : `
                         ${x.estado == 2 ? '' : parseInt(x.estado_convenio) == 2 ? `
-                        <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
+                        <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-idusuario="${x.idusuario}" data-fechapresentacion="${x.fecha_presentacion}" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
                             Detalles Propuesta
                         </button>
                         <button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generar Convenio">
                             Generar Convenio
                         </button>
                     ` : parseInt(x.modalidad) == 1 ? `
-                        <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
+                        <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-idusuario="${x.idusuario}" data-fechapresentacion="${x.fecha_presentacion}" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
                             Detalles Propuesta
                         </button>
                         <button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generar Convenio">
@@ -854,6 +883,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     idpropuesta = e.target.getAttribute("data-id");
     idconvenio = e.target.getAttribute("data-id");
     iddetallepresentacion = e.target.getAttribute("data-id");
+    idusuarioArtDest = e.target.getAttribute("data-idusuario")
+    fechapresentacion = e.target.getAttribute("data-fechapresentacion")
+    console.log("fechapresentacion desde button propuesta -> ", fechapresentacion);
     // limpiar campos
 
     $q("#abonogarantia").value = ''
@@ -1334,12 +1366,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("iddpppp ->", iddetallepresentacion)
         const convenioExiste = await obtenerConvenioPorIdDP(parseInt(iddetallepresentacion))
         console.log("convenio esxite? -> ", convenioExiste)
+        //let idusuarioArtista = convenioExiste[0].idusuario
         const convenio = await obtenerConvenioPorId(convenioExiste[0]?.idconvenio)
         console.log("CONVEIO OBTENIDO: ", convenio)
         if (convenio.length > 0) {
           const convenioaprobado = await actualizarConvenio(idconvenio, 2)
           console.log("convenio aprobad? -> ", convenioaprobado)
           if (convenioaprobado?.update) {
+            /* const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+            console.log("usuario obtenido para el usuario remitente -> ", usuario);
+            //const artista = idusuarioArtista
+            mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechapresentacion)}!, revisa tu agenda.`
+            const notificacionRegistrada = await registrarNotificacion(idusuarioArtDest, idusuarioLogeado , 2, null, mensaje)
+            console.log("notificacion registrada ? -> ", notificacionRegistrada) */
             await dataFilters()
             const agendaEdicionRegistrada = await registrarAgendaEdicion(iddetallepresentacion)
             console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
@@ -1358,6 +1397,13 @@ document.addEventListener("DOMContentLoaded", async () => {
           console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
           console.log("convenio registrado a aprobado:-> ", convenioRegistrado)
           if (convenioRegistrado?.idconvenio) {
+            /* const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+            //const artista = idusuarioArtista
+            console.log("usuario -> ", usuario);
+            console.log("fechapresentacion -> ", fechapresentacion);
+            mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechapresentacion)}!, revisa tu agenda.`
+            const notificacionRegistrada = await registrarNotificacion(idusuarioArtDest, idusuarioLogeado, 2, null, mensaje)
+            console.log("notificacion registrada ? -> ", notificacionRegistrada) */
             modalPropuestaCliente.hide()
             await dataFilters()
             showToast("Se ha aprobado la propuesta", "SUCCESS")
@@ -1531,6 +1577,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                   if (pagado50DP) {
                     const agendaEdicionRegistrada = await registrarAgendaEdicion(iddetallepresentacion)
                     console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
+                    /* const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                    mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechapresentacion)}!, revisa tu agenda.`
+                    const notificacionRegistrada = await registrarNotificacion(idusuarioArtDest, idusuarioLogeado, 2, null, mensaje)
+                    console.log("notificacion registrada ? -> ", notificacionRegistrada) */
                     modalDatosContrato?.hide()
                     await dataFilters()
                     showToast("Pago guardado, ya puede generar el contrato.", "SUCCESS", 3000);
@@ -1540,6 +1590,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (pagoContrato.idpagocontrato) {
                   const agendaEdicionRegistrada = await registrarAgendaEdicion(iddetallepresentacion)
                   console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
+                  /* const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                  mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechapresentacion)}!, revisa tu agenda.`
+                  const notificacionRegistrada = await registrarNotificacion(idusuarioArtDest, idusuarioLogeado, 2, null, mensaje)
+                  console.log("notificacion registrada ? -> ", notificacionRegistrada) */
                   modalDatosContrato?.hide()
                   showToast("Pago guardado, ya puede generar el contrato.", "SUCCESS", 3000);
                 }
@@ -1560,10 +1614,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const pagado50DP = await actualizarPagado50DP(iddetallepresentacion)
                 const estadoContratoActualizado = await actualizarEstadoContrato(idcontrato, 2)
                 console.log("estadoContratoActualizado a pagado completamente -> ", estadoContratoActualizado)
-                
+
                 if (pagado50DP) {
                   const agendaEdicionRegistrada = await registrarAgendaEdicion(iddetallepresentacion)
                   console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
+                  /* const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                  mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechapresentacion)}!, revisa tu agenda.`
+                  const notificacionRegistrada = await registrarNotificacion(idusuarioArtDest, idusuarioLogeado, 2, null, mensaje)
+                  console.log("notificacion registrada ? -> ", notificacionRegistrada) */
                   await dataFilters()
                   modalDatosContrato?.hide()
                   showToast("Pago guardado, ya puede generar el contrato.", "SUCCESS", 3000);

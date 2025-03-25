@@ -114,9 +114,10 @@ CREATE PROCEDURE `obtenerConvenioPorIdDP`(
 )
 BEGIN
 	SELECT 		
-		C.idconvenio
+		C.idconvenio, USU.idusuario
 	FROM convenios C
 	LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = C.iddetalle_presentacion
+    LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     WHERE C.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
 END //
 

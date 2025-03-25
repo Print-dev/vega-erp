@@ -260,14 +260,14 @@ CREATE TABLE notificaciones (
     idnotificacion INT AUTO_INCREMENT PRIMARY KEY,
     idusuariodest INT NOT NULL,-- Usuario que recibe la notificación
     idusuariorem INT NOT NULL, -- usuario que envia la notificacion
-    tipo INT NOT NULL, -- 1- viatico
-    idreferencia INT NOT NULL, -- ID del registro relacionado
+    tipo INT NOT NULL, -- 1- viatico, 2- notificacion cualquiera
+    idreferencia INT NULL, -- ID del registro relacionado
     mensaje VARCHAR(200) NOT NULL,
     estado INT NULL DEFAULT 1, 
     fecha DATETIME DEFAULT NOW(),
     constraint fk_usuario_notif foreign key (idusuariodest) references usuarios(idusuario),
     constraint fk_usuario_rem foreign key (idusuariorem) references usuarios(idusuario),
-    constraint chk_tipo check(tipo IN (1)),
+    constraint chk_tipo check(tipo IN (1,2)), -- ir agregando mas tipos segun lo requiera
     constraint chk_estado_not check(estado IN (1,2))
 );
 
@@ -305,18 +305,25 @@ CREATE TABLE agenda_edicion ( -- tabla que envuelve la tabla agenda editores
     iddetalle_presentacion INT NOT NULL,  -- Relación con la agenda del evento
     constraint fk_iddp_ag_edicion foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 );
+
+CREATE TABLE tipotarea (
+	idtipotarea	int auto_increment primary key,
+    tipotarea varchar(30) not null
+) engine = innodb;
+
 -- select * from agenda_editores;
 CREATE TABLE agenda_editores ( -- referencia: modal asignar editor
 	idagendaeditor	int auto_increment primary key,
     idagendaedicion int not null,
     idusuario		int not null,
-    tipotarea 		int not null, -- 1: flayer, 2: saludos, 3: reels, 4: fotos, 5: contenido
+    idtipotarea 		int not null, -- 1: flayer, 2: saludos, 3: reels, 4: fotos, 5: contenido
     estado			int null default 1, -- 1: pendiente, 2- completado
 	fecha_asignacion datetime null default now(),
     fecha_entrega 	datetime not null,
     constraint fk_idagendaedicion foreign key (idagendaedicion) references agenda_edicion (idagendaedicion),
     constraint fk_idusuario_ag_edit foreign key (idusuario) references usuarios (idusuario),
-    constraint chk_tipotarea CHECK(tipotarea IN (1,2,3,4,5))
+    constraint chk_tipotarea CHECK(tipotarea IN (1,2,3,4,5)),
+    constraint fk_idtipotarea_agen foreign key (idtipotarea) references tipotarea (idtipotarea)
 ) engine = innodb;
 
 
@@ -327,5 +334,6 @@ CREATE TABLE subidas_agenda_edicion (
 	observaciones	varchar(250) null,
     constraint fk_subidas_agenda_edi foreign key (idagendaeditor) references agenda_editores (idagendaeditor)
 ) engine=innodb;
+
 
 select * from subidas_agenda_edicion;

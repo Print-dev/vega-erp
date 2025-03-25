@@ -41,3 +41,9 @@ INSERT INTO montoCajaChica (monto) values (0.00);
 
 -- INSERT INTO agenda_edicion (iddetalle_presentacion) values (1);
 -- INSERT INTO agenda_editores (idagendaedicion, idusuario, tipotarea, fecha_entrega) VALUES (1, 9, 1, '2025-03-25');
+INSERT INTO tipotarea (tipotarea) VALUES 
+	('Flayer'),
+    ('Saludos'),
+    ('Reels'),
+    ('Fotos'),
+    ('Contenido');

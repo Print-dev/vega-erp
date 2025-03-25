@@ -123,6 +123,7 @@ BEGIN
         DP.iddetalle_presentacion, 
         CLI.ndocumento,
         DP.ncotizacion,
+        USU.idusuario,
         USU.nom_usuario, 
         CLI.razonsocial, 
         DP.tipo_evento, 

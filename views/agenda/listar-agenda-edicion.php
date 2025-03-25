@@ -92,7 +92,7 @@
     <div class="card border-0">
         <div class="card-body border-0">
             <label for="">Filtros</label>
-            <div class="row ">                
+            <div class="row ">
                 <div class="col-md-2 contenedor-select-tipo-filtro-edicion">
                     <div class="form-floating">
                         <select name="tipofiltroedicion" id="tipofiltroedicion" class="form-select" required>
@@ -269,7 +269,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="contenedor-asignacion p-3">
+                <!-- <div class="contenedor-asignacion p-3">
                     <div class="row g-3 align-items-center justify-content-center">
                         <div class="col-md-4">
                             <div class="form-floating">
@@ -315,6 +315,42 @@
                             </tbody>
                         </table>
                     </div>                    
+                </div> -->
+                <div class="p-3">
+                    <div class="row g-3">
+                        <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Tareas</th>
+                                    <th>Editor</th>
+                                    <th>Fecha de entrega</th>
+                                    <th>Hora de entrega</th>
+                                    <th>Responsable de Posteo</th>
+                                </tr>
+                            </thead>
+                            <tbody class="contenedor-asignados">
+                                <tr>
+                                    <td>Flayer</td>
+                                    <td>
+                                        <select name="asignacioneditor" class="form-select" id="asignacioneditor">
+                                            <option value="1">Andres</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" name="fechaentrega" id="fechaentrega">
+                                    </td>
+                                    <td>
+                                        <input type="time" class="form-control" name="horaentrega" id="horaentrega">
+                                    </td>
+                                    <td>
+                                        <select name="responsablepost" class="form-select" id="responsablepost">
+                                            <option value="1">Jasmin</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer text-end">
@@ -333,25 +369,25 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="contenedor-progreso p-3">                    
+                <div class="contenedor-progreso p-3">
                     <div class="table-responsive d-flex justify-content-center">
                         <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
                             <thead class="table-dark">
                                 <tr>
-                                <th>Fecha</th>
-                                <th>Usuario</th>
-                                <th>Tipo Tarea</th>
-                                <th>Estado</th>  
-                                <th>Subidas</th>  
+                                    <th>Fecha</th>
+                                    <th>Usuario</th>
+                                    <th>Tipo Tarea</th>
+                                    <th>Estado</th>
+                                    <th>Subidas</th>
                                 </tr>
                             </thead>
                             <tbody class="contenedor-tareas-edicion-pendientes">
-                                                           
+
                             </tbody>
                         </table>
-                    </div>                    
+                    </div>
                 </div>
-            </div>           
+            </div>
         </div>
     </div>
 </div>
@@ -369,8 +405,8 @@
     const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
 </script> -->
 
-<script src="http://localhost/vega-erp/js/agenda/obtencion-agenda-nivel.js"></script> 
-<script src="http://localhost/vega-erp/js/agenda/listar-agenda-edicion.js"></script> 
+<script src="http://localhost/vega-erp/js/agenda/obtencion-agenda-nivel.js"></script>
+<script src="http://localhost/vega-erp/js/agenda/listar-agenda-edicion.js"></script>
 
 </body>
 

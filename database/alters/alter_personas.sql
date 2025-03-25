@@ -26,3 +26,15 @@ ALTER TABLE subidas_agenda_edicion ADD COLUMN url text not null;
 ALTER TABLE viaticos ADD COLUMN idusuario	INT NOT NULL;
 ALTER TABLE viaticos ADD CONSTRAINT fk_idusuario_vi foreign key (idusuario) references usuarios (idusuario);
 ALTER TABLE usuarios ADD COLUMN marcaagua 	varchar(40) null;
+
+ALTER TABLE notificaciones DROP COLUMN idreferencia;
+ALTER TABLE notificaciones ADD COLUMN idrefefencia INT NULL;
+
+ALTER TABLE notificaciones DROP CONSTRAINT chk_tipo;
+ALTER TABLE notificaciones ADD CONSTRAINT  chk_tipo check(tipo IN (1,2)) ; -- ir cambiando constantemente
+ALTER TABLE notificaciones DROP COLUMN idrefefencia;
+ALTER TABLE notificaciones ADD COLUMN idreferencia INT NULL;
+
+ALTER TABLE agenda_editores DROP COLUMN tipotarea;
+ALTER TABLE agenda_editores ADD COLUMN idtipotarea INT NOT NULL;
+ALTER TABLE agenda_editores ADD CONSTRAINT fk_idtipotarea_agen foreign key (idtipotarea) REFERENCES tipotarea (idtipotarea);

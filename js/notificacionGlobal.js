@@ -14,13 +14,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   console.log("NIVEL ACCESO USER LOGEADO --> ", nivelacceso);
-  if (nivelacceso == "Administrador") {
+  if (nivelacceso == "Administrador" || nivelacceso == "Artista") {
     obtenerNotificaciones();
   }
 
   $q("#show-all-notificaciones").addEventListener("click", async () => {
     obtenerTodasLasNotificaciones()
   })
+
+  console.log("idusuarioLogeado desde el notify globsal -> ", idusuarioLogeado);
 
   // ******************************************* OBTENER DATOS *****************************************
 
@@ -32,6 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       `${host}notificacion.controller.php`,
       params
     );
+    console.log("notificaciones -A> ", notificaciones);
     mostrarNotificaciones(notificaciones, idusuarioLogeado); // cambiar esto luego  (actualziacion hoy: ya se cambio)
     
   }
