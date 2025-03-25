@@ -157,6 +157,7 @@ if (isset($_POST['operation'])) {
           $resultados['login'] = true;
           $resultados['mensaje'] = "Bienvenido";
           $resultados['rol'] = $registro[0]['nivelacceso'];
+          $resultados['estado'] = $registro[0]['estado'];
 
           //Ya esta validado
           $session['estado'] = true;
@@ -230,6 +231,17 @@ if (isset($_POST['operation'])) {
         ];
   
         $update = $usuario->actualizarUsuario($cleanData);
+  
+        echo json_encode($update);
+        break;
+
+      case 'deshabilitarUsuario':
+        $cleanData = [
+          'idusuario' => $usuario->limpiarCadena($_POST['idusuario']) ?  $usuario->limpiarCadena($_POST['idusuario']) : '',
+          'estado' => $usuario->limpiarCadena($_POST['estado']) ? $usuario->limpiarCadena($_POST['estado']) : ''
+        ];
+  
+        $update = $usuario->deshabilitarUsuario($cleanData);
   
         echo json_encode($update);
         break;

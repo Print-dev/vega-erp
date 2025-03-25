@@ -50,23 +50,35 @@ CREATE PROCEDURE sp_registrar_detalle_presentacion (
     IN _igv tinyint
 )
 BEGIN
-    DECLARE existe_error INT DEFAULT 0;
-    
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
     BEGIN
-        SET existe_error = 1;
-    END;
-    
-    INSERT INTO detalles_presentacion (idusuario, idcliente, iddistrito, ncotizacion, fecha_presentacion, horainicio, horafinal, establecimiento, referencia, acuerdo ,tipo_evento, modalidad, validez, igv)
-    VALUES (_idusuario, _idcliente, nullif(_iddistrito, ''), NULLIF(_ncotizacion, ''), _fechapresentacion, nullif(_horainicio, ''), nullif(_horafinal, ''), nullif(_establecimiento,''), nullif(_referencia,''), nullif(_acuerdo, ''), nullif(_tipoevento,''), nullif(_modalidad,''), NULLIF(_validez, ''), _igv);
-    
-    IF existe_error = 1 THEN
         SET _iddetalle_presentacion = -1;
-    ELSE
-        SET _iddetalle_presentacion = LAST_INSERT_ID();
-    END IF;
-END $$
+    END;
 
+    -- Si _horainicio es NULL, asignamos '00:00:01'
+    IF _horainicio IS NULL THEN 
+        SET _horainicio = '00:00:01'; 
+    END IF;
+
+    -- Si _horafinal es NULL, asignamos '00:00:01'
+    IF _horafinal IS NULL THEN 
+        SET _horafinal = '00:00:01'; 
+    END IF;
+
+    INSERT INTO detalles_presentacion (
+        idusuario, idcliente, iddistrito, ncotizacion, 
+        fecha_presentacion, horainicio, horafinal, establecimiento, 
+        referencia, acuerdo, tipo_evento, modalidad, validez, igv
+    ) VALUES (
+        _idusuario, _idcliente, _iddistrito, NULLIF(_ncotizacion, ''), 
+        _fechapresentacion, _horainicio, _horafinal, NULLIF(_establecimiento, ''), 
+        NULLIF(_referencia, ''), NULLIF(_acuerdo, ''), _tipoevento, _modalidad, _validez, _igv
+    );
+
+    SET _iddetalle_presentacion = LAST_INSERT_ID();
+END $$
+-- CALL sp_registrar_detalle_presentacion (@iddp, 7,3,74, null, '2025-03-29', '21:35', '00:00', 'lomas', null, null, 1, 1, 3, false);
+-- select * from detalles_presentacion;
 drop procedure if exists sp_obtener_dp_porid;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_dp_porid`(
@@ -403,10 +415,8 @@ BEGIN
         DP.created_at,
         DP.acuerdo,
         DP.estado,
-        ASIG.idusuario as idusuarioAgenda,
-        ASIG.iddetalle_presentacion as idpagenda,
-        NIVEL.idnivelacceso, NIVEL.nivelacceso,
         AGE.idagendaedicion,
+        AGENED.idagendaeditor,
         (SELECT RE.vigencia 
          FROM reservas RE 
          WHERE RE.idpagocontrato = (SELECT PC.idpagocontrato 
@@ -428,12 +438,10 @@ BEGIN
         DEDP.departamento,
         DEDP.iddepartamento
 	FROM agenda_edicion AGE 
+    LEFT JOIN agenda_editores AGENED ON AGENED.idagendaedicion = AGE.idagendaedicion
     LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = AGE.iddetalle_presentacion
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
-    LEFT JOIN agenda_asignaciones ASIG ON ASIG.iddetalle_presentacion = DP.iddetalle_presentacion
-    LEFT JOIN usuarios USUASIG ON USUASIG.idusuario = ASIG.idusuario
-	LEFT JOIN nivelaccesos NIVEL ON NIVEL.idnivelacceso = USUASIG.idnivelacceso
     LEFT JOIN contratos CO ON CO.iddetalle_presentacion = DP.iddetalle_presentacion
     LEFT JOIN convenios CON ON CON.iddetalle_presentacion = DP.iddetalle_presentacion
     LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito

@@ -32,6 +32,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($recurso->obtenerDistritoPorId(["iddistrito" => $recurso->limpiarCadena($_GET['iddistrito'])]));
       break;
 
+    case 'obtenerDistritoPorNombre':
+      echo json_encode($recurso->obtenerDistritoPorNombre(["distrito" => $recurso->limpiarCadena($_GET['distrito'])]));
+      break;
+
     case 'buscarCorreo':
       echo json_encode($recurso->buscarCorreo(["correo" => $recurso->limpiarCadena($_GET['correo'])]));
       break;

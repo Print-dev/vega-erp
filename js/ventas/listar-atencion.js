@@ -991,8 +991,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 await renderizarDatosClienteIncompleto(datosCliente);
                 return;
               }
-              else{  
-              $q("#container-representantelegal").hidden = false;
+              else {
+                $q("#container-representantelegal").hidden = false;
                 modalDatosClienteIncompleto = new bootstrap.Modal(
                   $q("#modal-datosclienteincompletos")
                 );
@@ -1048,62 +1048,62 @@ document.addEventListener("DOMContentLoaded", async () => {
           // verificar datos incompletos cliente 
           console.log("id cliente _> ", idcliente);
           const datosIncompletos = await verificarDatosIncompletosCliente(idcliente);
-            console.log("datosIncompletos -> ", datosIncompletos);
+          console.log("datosIncompletos -> ", datosIncompletos);
 
-            // Verificar si es un array y tiene al menos un elemento
-            if (!Array.isArray(datosIncompletos) || datosIncompletos.length === 0) { // me quede aca, falta implementar el de tipodoc = 2 ruc
-              console.error("Error: datosIncompletos no es un array válido o está vacío", datosIncompletos);
+          // Verificar si es un array y tiene al menos un elemento
+          if (!Array.isArray(datosIncompletos) || datosIncompletos.length === 0) { // me quede aca, falta implementar el de tipodoc = 2 ruc
+            console.error("Error: datosIncompletos no es un array válido o está vacío", datosIncompletos);
+            return;
+          }
+
+          let incompleto = false;
+          const datosCliente = datosIncompletos[0]; // Extraer el primer objeto del array
+
+          for (const clave in datosCliente) {
+            if (datosCliente[clave] === null || datosCliente[clave] === "") {
+              if (!(datosCliente.tipodoc == 1 && clave === "representantelegal")) {
+                console.log("DATOS CLIENTE incompleto")
+                incompleto = true;
+                break;
+              }
+            }
+          }
+          console.log("incompleto? ??? : ", incompleto)
+          if (incompleto) {
+            if (datosCliente?.tipodoc == 1) {
+              $q("#container-representantelegal").hidden = true;
+              modalDatosClienteIncompleto = new bootstrap.Modal(
+                $q("#modal-datosclienteincompletos")
+              );
+              modalDatosClienteIncompleto.show();
+              console.log("supuestamente deberia renderizar");
+              await renderizarDatosClienteIncompleto(datosCliente);
               return;
             }
-
-            let incompleto = false;
-            const datosCliente = datosIncompletos[0]; // Extraer el primer objeto del array
-
-            for (const clave in datosCliente) {
-              if (datosCliente[clave] === null || datosCliente[clave] === "") {
-                if (!(datosCliente.tipodoc == 1 && clave === "representantelegal")) {
-                  console.log("DATOS CLIENTE incompleto")
-                  incompleto = true;
-                  break;
-                }
-              }
-            }
-            console.log("incompleto? ??? : ", incompleto)
-            if (incompleto) {
-              if (datosCliente?.tipodoc == 1) {
-                $q("#container-representantelegal").hidden = true;
-                modalDatosClienteIncompleto = new bootstrap.Modal(
-                  $q("#modal-datosclienteincompletos")
-                );
-                modalDatosClienteIncompleto.show();
-                console.log("supuestamente deberia renderizar");
-                await renderizarDatosClienteIncompleto(datosCliente);
-                return;
-              }
-              else if (datosCliente?.tipodoc == 2) {
-                $q("#container-representantelegal").hidden = false;
-                modalDatosClienteIncompleto = new bootstrap.Modal(
-                  $q("#modal-datosclienteincompletos")
-                );
-                modalDatosClienteIncompleto.show();
-                await renderizarDatosClienteIncompleto(datosCliente);
-                return;
-              }
-              else{  
+            else if (datosCliente?.tipodoc == 2) {
               $q("#container-representantelegal").hidden = false;
-                modalDatosClienteIncompleto = new bootstrap.Modal(
-                  $q("#modal-datosclienteincompletos")
-                );
-                modalDatosClienteIncompleto.show();
-                await renderizarDatosClienteIncompleto(datosCliente);
-                return;
-              }
+              modalDatosClienteIncompleto = new bootstrap.Modal(
+                $q("#modal-datosclienteincompletos")
+              );
+              modalDatosClienteIncompleto.show();
+              await renderizarDatosClienteIncompleto(datosCliente);
+              return;
             }
-            window.open(
-              `http://localhost/vega-erp/generators/generadores_pdf/constancia_reserva/constanciareserva.php?iddetallepresentacion=${idcontrato}&idpagocontrato=${pagosContrato[0]?.idpagocontrato}` // esto en realida es el iddetalle_presentacion
-            );
-            console.log("Si existe la reserva")
-            return
+            else {
+              $q("#container-representantelegal").hidden = false;
+              modalDatosClienteIncompleto = new bootstrap.Modal(
+                $q("#modal-datosclienteincompletos")
+              );
+              modalDatosClienteIncompleto.show();
+              await renderizarDatosClienteIncompleto(datosCliente);
+              return;
+            }
+          }
+          window.open(
+            `http://localhost/vega-erp/generators/generadores_pdf/constancia_reserva/constanciareserva.php?iddetallepresentacion=${idcontrato}&idpagocontrato=${pagosContrato[0]?.idpagocontrato}` // esto en realida es el iddetalle_presentacion
+          );
+          console.log("Si existe la reserva")
+          return
         } else {
           // abrir modal
           console.log("NO existe la reserva")
@@ -1291,13 +1291,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   $q("#btnActualizarPropuesta").addEventListener("click", async () => {
     let abonoGarantia = parseFloat($q("#abonogarantia").value.trim());
     let abonoPublicidad = parseFloat($q("#abonopublicidad").value.trim());
-    let propuestaCliente = $q("#propuestacliente").value.trim();
+    //let propuestaCliente = $q("#propuestacliente").value.trim();
 
     // Validaciones correctas
     if (
       isNaN(abonoGarantia) || abonoGarantia < 0 ||  // Verificar que sea un número y no sea negativo
-      isNaN(abonoPublicidad) || abonoPublicidad < 0 ||
-      propuestaCliente === ""  // Verificar que el campo no esté vacío
+      isNaN(abonoPublicidad) || abonoPublicidad < 0
+      //propuestaCliente === ""  // Verificar que el campo no esté vacío
     ) {
       showToast("Ingrese valores válidos", "ERROR");
     } else {
@@ -1319,15 +1319,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       let abonoPublicidad = parseFloat($q("#abonopublicidad").value.trim());
       let porcentajevega = parseFloat($q("#porcentajevega").value.trim());
       let porcentajepromotor = parseFloat($q("#porcentajepromotor").value.trim());
-      let propuestaCliente = $q("#propuestacliente").value.trim();
+      //let propuestaCliente = $q("#propuestacliente").value.trim();
 
       // Validaciones correctas
       if (
         isNaN(abonoGarantia) || abonoGarantia < 0 ||  // Verificar que sea un número y no sea negativo
         isNaN(abonoPublicidad) || abonoPublicidad < 0 ||
         isNaN(porcentajevega) || porcentajevega < 0 ||
-        isNaN(porcentajepromotor) || porcentajepromotor < 0 ||
-        propuestaCliente === ""  // Verificar que el campo no esté vacío
+        isNaN(porcentajepromotor) || porcentajepromotor < 0
+        //propuestaCliente === ""  // Verificar que el campo no esté vacío
       ) {
         showToast("Ingrese valores válidos", "ERROR");
       } else {
@@ -1377,15 +1377,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     let abonoPublicidad = parseFloat($q("#abonopublicidad").value.trim());
     let porcentajevega = parseFloat($q("#porcentajevega").value.trim());
     let porcentajepromotor = parseFloat($q("#porcentajepromotor").value.trim());
-    let propuestaCliente = $q("#propuestacliente").value.trim();
 
     // Validaciones correctas
     if (
       isNaN(abonoGarantia) || abonoGarantia < 0 ||  // Verificar que sea un número y no sea negativo
       isNaN(abonoPublicidad) || abonoPublicidad < 0 ||
       isNaN(porcentajevega) || porcentajevega < 0 ||
-      isNaN(porcentajepromotor) || porcentajepromotor < 0 ||
-      propuestaCliente === ""  // Verificar que el campo no esté vacío
+      isNaN(porcentajepromotor) || porcentajepromotor < 0
+      //propuestaCliente === ""  // Verificar que el campo no esté vacío
     ) {
       showToast("Ingrese valores válidos", "ERROR");
     } else {
@@ -1530,6 +1529,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (pagoContrato.idpagocontrato) {
                   const pagado50DP = await actualizarPagado50DP(iddetallepresentacion)
                   if (pagado50DP) {
+                    const agendaEdicionRegistrada = await registrarAgendaEdicion(iddetallepresentacion)
+                    console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
                     modalDatosContrato?.hide()
                     await dataFilters()
                     showToast("Pago guardado, ya puede generar el contrato.", "SUCCESS", 3000);
@@ -1537,6 +1538,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
               } else if (dp[0]?.pagado50 == 1) {
                 if (pagoContrato.idpagocontrato) {
+                  const agendaEdicionRegistrada = await registrarAgendaEdicion(iddetallepresentacion)
+                  console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
                   modalDatosContrato?.hide()
                   showToast("Pago guardado, ya puede generar el contrato.", "SUCCESS", 3000);
                 }
@@ -1557,7 +1560,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const pagado50DP = await actualizarPagado50DP(iddetallepresentacion)
                 const estadoContratoActualizado = await actualizarEstadoContrato(idcontrato, 2)
                 console.log("estadoContratoActualizado a pagado completamente -> ", estadoContratoActualizado)
+                
                 if (pagado50DP) {
+                  const agendaEdicionRegistrada = await registrarAgendaEdicion(iddetallepresentacion)
+                  console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
                   await dataFilters()
                   modalDatosContrato?.hide()
                   showToast("Pago guardado, ya puede generar el contrato.", "SUCCESS", 3000);

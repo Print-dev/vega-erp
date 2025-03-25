@@ -64,11 +64,19 @@ if (isset($_GET['operation'])) {
       echo json_encode($agenda->obtenerEditoresAsignados($cleanData));
       break;
 
-    case 'obtenerTareaPorUsuario':
+    /* case 'obtenerTareaPorUsuario':
       $cleanData = [
         'idusuario' => $_GET['idusuario'] === "" ? null : $agenda->limpiarCadena($_GET['idusuario']),
       ];
       echo json_encode($agenda->obtenerTareaPorUsuario($cleanData));
+      break; */
+
+    case 'obtenerTareaPorUsuarioYagenda':
+      $cleanData = [
+        'idusuario' => $_GET['idusuario'] === "" ? null : $agenda->limpiarCadena($_GET['idusuario']),
+        'idagendaedicion' => $_GET['idagendaedicion'] === "" ? null : $agenda->limpiarCadena($_GET['idagendaedicion']),
+      ];
+      echo json_encode($agenda->obtenerTareaPorUsuarioYagenda($cleanData));
       break;
 
     case 'obtenerTodasLasTareasEnLaAgenda':

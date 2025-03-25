@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async (error, result) => {
       if (!error && result && result.event === "success") {
         console.log("result -> ", result);
-        
+
         let previewImagen = document.getElementById("previewImagen");
         previewImagen.src = result.info.secure_url;
         previewImagen.classList.remove("d-none");
@@ -90,12 +90,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     persona.append("operation", "registrarPersona");
     persona.append("num_doc", $q("#num_doc").value ? $q("#num_doc").value : '');
     persona.append("apellidos", $q("#apellidos").value ? $q("#apellidos").value : '');
-    persona.append("nombres", $q("#nombres").value ?  $q("#nombres").value : '');
-    persona.append("genero", $q("#genero").value ?  $q("#genero").value : '');
-    persona.append("direccion", $q("#direccion").value ?  $q("#direccion").value : '');
+    persona.append("nombres", $q("#nombres").value ? $q("#nombres").value : '');
+    persona.append("genero", $q("#genero").value ? $q("#genero").value : '');
+    persona.append("direccion", $q("#direccion").value ? $q("#direccion").value : '');
     persona.append("telefono", $q("#telefono1").value ? $q("#telefono1").value : '');
-    persona.append("telefono2", $q("#telefono2").value ? $q("#telefono2").value :'');
-    persona.append("correo", $q("#correo").value ? $q("#correo").value :'');
+    persona.append("telefono2", $q("#telefono2").value ? $q("#telefono2").value : '');
+    persona.append("correo", $q("#correo").value ? $q("#correo").value : '');
     persona.append("iddistrito", $q("#distrito").value ? $q("#distrito").value : '');
 
     const fpersonas = await fetch(`${host}persona.controller.php`, {
@@ -114,9 +114,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     params.append("idpersona", idpersona);
     params.append("nom_usuario", $q("#nom_usuario").value.trim());
     params.append("claveacceso", $q("#claveacceso").value);
-    params.append("color", $q("#color")?.value ?  $q("#color")?.value : '');
-    params.append("porcentaje", $q("#porcentaje")?.value ?  $q("#porcentaje")?.value : '');
-    params.append("marcaagua", imagen_public_id ?  imagen_public_id : '');
+    params.append("color", $q("#color")?.value ? $q("#color")?.value : '');
+    params.append("porcentaje", $q("#porcentaje")?.value ? $q("#porcentaje")?.value : '');
+    params.append("marcaagua", imagen_public_id ? imagen_public_id : '');
     params.append("idnivelacceso", $q("#idnivelacceso").value);
     const resp = await fetch(`${host}usuario.controller.php`, {
       method: 'POST',
@@ -258,7 +258,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log(isblock);
       console.log(data);
 
-
+      $q("#btnEnviar").disabled = false;
       if (isblock) {
         showToast("La persona ya existe", "WARNING");
         $q("#btnEnviar").disabled = true;
@@ -267,10 +267,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!isReset) {
           resetUI();
           const dataPersonaNR = await obtenerDataPersonaNoRegistrada()
-          showDataPersonaNR(dataPersonaNR)
+          await showDataPersonaNR(dataPersonaNR)
         }
         $q("#btnEnviar").disabled = false;
+      
       }
+      
     }
     else {
       //console.log(isNumeric);
@@ -283,17 +285,68 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   //Funcion que muestra datos de la persona aun no registrada pero trae datos desde la api reniec
-  function showDataPersonaNR(data) {
+  async function showDataPersonaNR(data) {
     console.log("data persona reniec: ", data);
     const ubig = data.ubigeo.split("/")
-    console.log("departamento-> ", ubig[0]);
+    console.log("departamento-> ", ubig[2]);
     $q("#apellidos").value = data.apellidoMaterno + " " + data.apellidoPaterno;
     $q("#nombres").value = data.nombre;
     $q("#direccion").value = data.direccion;
     $q("#departamento").value = ubig[0];
     $q("#provincia").value = ubig[1];
     $q("#distrito").value = ubig[2];
+    ubig[2] = ubig[2].charAt(0).toUpperCase() + ubig[2].slice(1).toLowerCase();
+    console.log("ubigeo distrito -> ", ubig[2]);
+    if (ubig[2]) {
+      await cargarUbigeoDesdeDistrito(ubig[2]);
+    }
     //selector("externo").disabled = isblock
+  }
+
+  async function cargarUbigeoDesdeDistrito(idDistrito) {
+    try {
+      // 1️⃣ Obtener datos del distrito
+      let distrito = await fetch(`${host}recurso.controller.php?operation=obtenerDistritoPorNombre&distrito=${idDistrito}`).then(res => res.json());
+      console.log("TODAS LAS DISTRTITOS OBTENIDOAS  -> ", distrito)
+      let iddistritoObtenido = distrito[0]?.idprovincia
+
+      // 2️⃣ Obtener todas las provincias y marcar la seleccionada
+      let provincias = await fetch(`${host}recurso.controller.php?operation=obtenerTodosProvincias`).then(res => res.json());
+      console.log("TODAS LAS PROVINCIAS OBTENIDOAS  -> ", provincias)
+      let provinciaSeleccionada = provincias.find(p => p.idprovincia == distrito[0].idprovincia);
+      console.log("LA PROVINCIA SELCCIONADA - ", provinciaSeleccionada)
+
+      $q("#provincia").innerHTML = provincias.map(p =>
+        `<option value="${p.idprovincia}" ${p.idprovincia === distrito[0].idprovincia ? "selected" : ""}>${p.provincia}</option>`
+      ).join("");
+
+      // 3️⃣ Obtener todas los departamentos y marcar el correcto
+      let departamentos = await fetch(`${host}recurso.controller.php?operation=obtenerTodosDepartamentos`).then(res => res.json());
+      console.log("TODOS LOS DEPARTAMENTOS OBTENIDOS -> ", departamentos)
+      console.log("LA PROVINCIA SELCCIONADA - ", provinciaSeleccionada)
+      let departamentoSeleccionado = departamentos.find(d => d.iddepartamento === provinciaSeleccionada.iddepartamento);
+      console.log("DEPARTAMENTO SELCCIONADO -> ", departamentoSeleccionado)
+      $q("#departamento").innerHTML = departamentos.map(d =>
+        `<option value="${d.iddepartamento}" ${d.iddepartamento === provinciaSeleccionada.iddepartamento ? "selected" : ""}>${d.departamento}</option>`
+      ).join("");
+
+      // 4️⃣ Obtener todas las nacionalidades y marcar la correcta
+      let nacionalidades = await fetch(`${host}recurso.controller.php?operation=obtenerTodosNacionalidades`).then(res => res.json());
+      console.log("NACIONALIDADES TODAS OBTENIDAS : ", nacionalidades)
+      let nacionalidadSeleccionada = nacionalidades.find(n => n.idnacionalidad === departamentoSeleccionado.idnacionalidad);
+      $q("#nacionalidad").innerHTML = nacionalidades.map(n =>
+        `<option value="${n.idnacionalidad}" ${n.idnacionalidad === departamentoSeleccionado.idnacionalidad ? "selected" : ""}>${n.nacionalidad}</option>`
+      ).join("");
+
+      // 5️⃣ Obtener todos los distritos y seleccionar el correcto
+      let distritos = await fetch(`${host}recurso.controller.php?operation=obtenerTodosDistritos`).then(res => res.json());
+      $q("#distrito").innerHTML = distritos.map(d =>
+        `<option value="${d.iddistrito}" ${d.iddistrito === iddistritoObtenido ? "selected" : ""}>${d.distrito}</option>`
+      ).join("");
+
+    } catch (error) {
+      console.error("Error cargando ubigeo:", error);
+    }
   }
 
   await obtenerNiveles()
@@ -303,11 +356,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   $q("#idnivelacceso").addEventListener("change", async (e) => {
     console.log("valor -> ", e.target.value);
-    if(e.target.value == "6"){
+    if (e.target.value == "6") {
       $q(".contenedor-color").hidden = false
       $q(".contenedor-porcentaje").hidden = false
       $q(".contenedor-marcaagua").hidden = false
-    }else{
+    } else {
       $q(".contenedor-color").hidden = true
       $q(".contenedor-porcentaje").hidden = true
       $q(".contenedor-marcaagua").hidden = true

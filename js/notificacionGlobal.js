@@ -57,9 +57,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     return fpersona
   }
 
-  async function obtenerInfoViatico(idusuario, idviatico) {
+  async function obtenerInfoViaticoNotificacion(idusuario, idviatico) {
     const params = new URLSearchParams();
-    params.append("operation", "obtenerInfoViatico");
+    params.append("operation", "obtenerInfoViaticoNotificacion");
     params.append("idusuario", idusuario ? idusuario : '');
     params.append("idviatico", idviatico ? idviatico : '');
     const fpersona = await getDatos(`${host}viatico.controller.php`, params)
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             modalNotificacion = new bootstrap.Modal($q("#modal-notificacion"))
             modalNotificacion.show()
             const usuario = await obtenerUsuarioPorId(notificacion.idusuariorem)
-            const infoViatico = await obtenerInfoViatico(null , idNotificacion)
+            const infoViatico = await obtenerInfoViaticoNotificacion(null , idNotificacion)
             console.log("infoviatico -< ", infoViatico);
             const viaticoEncontrado = infoViatico.find(v => v.idviatico === idNotificacion);
 

@@ -19,12 +19,12 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
 </head>
 
 <style>
-
-  #access { 
+  #access {
     background: #F2CC0F;
-transition: 0.3s;
-font-weight: bold;
+    transition: 0.3s;
+    font-weight: bold;
   }
+
   /* Hover para el botón */
   #access:hover {
     /* Invertir los colores del degradado */
@@ -114,32 +114,35 @@ font-weight: bold;
           'body': params
         });
         const data = await resp.json();
-        //console.log(data);
-
-        if (data.login) {
-          if (data.rol === "Artista") {
-            window.location.href = "http://localhost/vega-erp/views/agenda/listar-agenda-artista";
-            return
-          } else if (data.rol === "Filmmaker"){
-            window.location.href = "http://localhost/vega-erp/views/agenda/listar-agenda-filmmaker";
-            return
+        console.log(data);
+        if (data.estado == 1) {
+          if (data.login) {
+            if (data.rol === "Artista") {
+              window.location.href = "http://localhost/vega-erp/views/agenda/listar-agenda-artista";
+              return
+            } else if (data.rol === "Filmmaker") {
+              window.location.href = "http://localhost/vega-erp/views/agenda/listar-agenda-filmmaker";
+              return
+            } else if (data.rol === "Administrador") {
+              window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente';
+              return
+            } else if (data.rol === "Edicion y Produccion") {
+              window.location.href = 'http://localhost/vega-erp/views/agenda/listar-agenda-edicion';
+              return
+            }
+          } else {
+            showToast(data.mensaje, "ERROR");
           }
-          else if(data.rol === "Administrador"){
-            window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente';
-            return
-          }
-          else if(data.rol === "Edicion y Produccion"){
-            window.location.href = 'http://localhost/vega-erp/views/agenda/listar-agenda-edicion';
-            return
-          }
-        } else {
-          showToast(data.mensaje, "ERROR");
+        }else{
+          showToast("Este usuario esta deshabilitado, reportalo a los administradores.", "INFO")
+          return
         }
+
       })
     })
   </script>
   <script src="index.js"></script>
-  
+
 </body>
 
 </html>

@@ -27,7 +27,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {
     $i++;
   }
 
-//  die(print_r($listaAcceso));
+  //  die(print_r($listaAcceso));
 
   if (!$encontrado) {
     header("Location:http://localhost/vega-erp/views/ventas/listar-atencion-cliente");
@@ -180,7 +180,7 @@ $host = "http://localhost/vega-erp/";
     background: #e9ecef;
   }
 </style>
-<div class="beta-banner">Versión Beta</div>
+<div class="beta-banner">Vega Producciones V.1.0</div>
 
 <body style="background-color: #FFFFFA; ">
 
@@ -432,24 +432,24 @@ $host = "http://localhost/vega-erp/";
                 </svg>
               </a>
               <div class="dropdown-menu dropdown-menu-lg dropdown-menu-center mt-2 py-0 ml-3">
-    <div class="list-group list-group-flush">
-        <a href="#" class="text-center text-primary fw-bold border-bottom border-light py-3">
-            Notificaciones
-        </a>
-        <div id="list-notificaciones" class="px-3" style="max-height: 500px; min-height: 100px; overflow-y: auto;">
-            <!-- Aquí se cargarán las notificaciones -->
-        </div>
-        <a href="#" class="dropdown-item text-center fw-bold rounded-bottom py-3" id="show-all-notificaciones">
-            <svg class="icon icon-xxs text-gray-400 me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-                <path fill-rule="evenodd"
-                    d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10z"
-                    clip-rule="evenodd"></path>
-            </svg>
-            Ver anteriores
-        </a>
-    </div>
-</div>
+                <div class="list-group list-group-flush">
+                  <a href="#" class="text-center text-primary fw-bold border-bottom border-light py-3">
+                    Notificaciones
+                  </a>
+                  <div id="list-notificaciones" class="px-3" style="max-height: 500px; min-height: 100px; overflow-y: auto;">
+                    <!-- Aquí se cargarán las notificaciones -->
+                  </div>
+                  <a href="#" class="dropdown-item text-center fw-bold rounded-bottom py-3" id="show-all-notificaciones">
+                    <svg class="icon icon-xxs text-gray-400 me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                      <path fill-rule="evenodd"
+                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10z"
+                        clip-rule="evenodd"></path>
+                    </svg>
+                    Ver anteriores
+                  </a>
+                </div>
+              </div>
 
             </li>
             <!-- FIN LOGO NOTIFICACION -->
@@ -543,13 +543,35 @@ $host = "http://localhost/vega-erp/";
         });
       });
 
-      document.querySelector("#configurar-perfil").addEventListener("click", ()=>{
+      document.querySelector("#configurar-perfil").addEventListener("click", () => {
         window.localStorage.clear()
         window.localStorage.setItem("idusuario", idusuarioLogeado)
         window.location.href = `http://localhost/vega-erp/views/utilitario/usuarios/actualizar-usuario`
         return
       })
 
+      if (Notification.permission === "granted") {
+        console.log("Permiso ya concedido.");
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+          if (permission === "granted") {
+            console.log("Permiso concedido.");
+          }
+        });
+      }
+
+      /* function mostrarNotificacionViatico() {
+        if (Notification.permission === "granted") {
+          new Notification("¡Nueva Notificación!", {
+            body: "Permiso Concedido (Mnesaje de prueba).",
+            icon: "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png", // Puedes cambiar el icono
+          });
+        } else {
+          console.log("El usuario no concedió permisos.");
+        }
+      } */
+
+      /* mostrarNotificacion() */
       /* document.querySelector("#show-all-notificaciones").addEventListener("click", ()=>{
 
       }) */

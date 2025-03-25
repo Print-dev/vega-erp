@@ -32,6 +32,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data
   }
 
+  async function actualizarEstadoUsuario(idusuario, estado) {
+
+    const body = new FormData();
+    body.append("operation", "deshabilitarUsuario");
+    body.append("idusuario", idusuario); // id artista
+    body.append("estado", estado);
+
+    const fbody = await fetch(`${host}usuario.controller.php`, {
+      method: "POST",
+      body: body,
+    });
+    const rbody = await fbody.json();
+    return rbody;
+  }
+
+  
   function createTable(data) {
     let rows = $("#tb-body-usuario").find("tr");
     ////console.log(rows.length);
@@ -153,9 +169,11 @@ document.addEventListener("DOMContentLoaded", async () => {
               <button type="button" class="btn btn-sm btn-success btn-editar" data-id=${x.idusuario} title="Editar usuario">
                   Editar
                 </button>
-                <button type="button" class="btn btn-sm btn-danger btn-deshabilitar" data-id=${x.idusuario} title="Deshabilitar usuario">
+               ${x.estado == 1 ? ` <button type="button" class="btn btn-sm btn-danger btn-deshabilitar" data-id=${x.idusuario} title="Deshabilitar usuario">
                   Deshabilitar
-                </button>           
+                </button>` : x.estado == 2 ? `<button type="button" class="btn btn-sm btn-success btn-habilitar" data-id=${x.idusuario} title="Habilitar usuario">
+                  Habilitar
+                </button>` : ''}        
             </td>
           </tr>
           `;
@@ -213,6 +231,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (e.target.classList.contains("btn-deshabilitar")) {
           buttonDeshabilitar(e);
         }
+        
+        if (e.target.classList.contains("btn-habilitar")) {
+          buttonHabilitar(e);
+        }
         /* if(e.target.classList.contains("btn-info-baja")){
           await showReporte(e);
         }
@@ -244,7 +266,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     iddeshabilitar = e.target.getAttribute("data-id");
 
     if (await ask("¿Desea deshabilitar este usuario?")) {
-      alert("deshabilitando....")
+      const deshabilitado = await actualizarEstadoUsuario(iddeshabilitar, 2)
+      console.log("deshabilitado ? -< ", deshabilitado);
+      await dataFilters()
+      showToast("Usuario deshabilitado.", "INFO")
+      return
+    }
+  }
+
+  async function buttonHabilitar(e) {
+    idhabilitar = e.target.getAttribute("data-id");
+
+    if (await ask("¿Desea Habilitar este usuario?")) {
+      const habilitar = await actualizarEstadoUsuario(idhabilitar, 1)
+      console.log("habiilitado ? -< ", habilitar);
+      await dataFilters()
+      showToast("Usuario habilitado.", "INFO")
+      return
     }
   }
 

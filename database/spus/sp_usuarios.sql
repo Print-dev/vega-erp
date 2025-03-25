@@ -61,7 +61,8 @@ BEGIN
         US.nom_usuario,
         US.claveacceso, US.estado,
         NA.nivelacceso,
-        NA.idnivelacceso
+        NA.idnivelacceso,
+        US.estado
 		FROM usuarios US
         INNER JOIN nivelaccesos NA ON US.idnivelacceso = NA.idnivelacceso
         INNER JOIN personas PE ON PE.idpersona = US.idpersona
@@ -168,4 +169,17 @@ BEGIN
         iddistrito = nullif(_iddistrito, ''),
 		update_at = now()
     WHERE idpersona = _idpersona; 
+END //
+
+DROP PROCEDURE if exists sp_deshabilitar_usuario;
+DELIMITER //
+CREATE PROCEDURE sp_deshabilitar_usuario (
+	IN _idusuario INT,
+    IN _estado TINYINT
+)
+BEGIN
+		UPDATE usuarios SET
+        estado = _estado,
+        update_at = now()
+    WHERE idusuario = _idusuario; 
 END //

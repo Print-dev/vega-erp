@@ -21,6 +21,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   let idprovincia = -1;
   let iddistrito = -1;
   let idagendaedicion = -1
+  let idagendaeditorConsultar = -1
+  let idagendaEdicionConsultar = -1
 
   console.log("idusuario logeado", idusuarioLogeado)
 
@@ -226,10 +228,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data;
   }
 
-  async function obtenerTareaPorUsuario(idusuario) {
+  async function obtenerTareaPorUsuarioYagenda(idusuario, idagendaedicion) {
     const params = new URLSearchParams();
-    params.append("operation", "obtenerTareaPorUsuario");
+    params.append("operation", "obtenerTareaPorUsuarioYagenda");
     params.append("idusuario", idusuario);
+    params.append("idagendaedicion", idagendaedicion);
     const data = await getDatos(`${host}agenda.controller.php`, params);
     return data;
   }
@@ -614,7 +617,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             idcontrato: evento.idcontrato,
             idconvenio: evento.idconvenio,
             estado: evento.estado,
-            idagendaedicion: evento.idagendaedicion
+            idagendaedicion: evento.idagendaedicion,
+            idagendaeditor: evento.idagendaeditor
           },
         });
       }
@@ -689,7 +693,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                   arg.event.extendedProps.horafinal
                 )}</div>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
-                  <button class="btn btn-primary" id="btnAsignarEditor" style="flex: 1;" data-idagendaedicion="${arg.event.extendedProps?.idagendaedicion}">Asignar</button>
+                  <button class="btn btn-primary" id="btnAsignarEditor" style="flex: 1;" data-idagendaeditor="${arg.event.extendedProps?.idagendaeditor}" data-idagendaedicion="${arg.event.extendedProps?.idagendaedicion}">Asignar</button>
                   <button class="btn btn-primary" id="btnVerProgreso" style="flex: 1;" data-idagendaedicion="${arg.event.extendedProps?.idagendaedicion}">Ver progreso</button>
                 </div>
                 `
@@ -837,7 +841,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Verificar si el usuario ya tiene una tarea asignada
-    const tareaUsuario = await obtenerTareaPorUsuario(idUsuarioSeleccionado);
+    console.log("idagendaeditorConsultar -> ",idagendaeditorConsultar);
+    const tareaUsuario = await obtenerTareaPorUsuarioYagenda(idUsuarioSeleccionado, idagendaEdicionConsultar);
     console.log("¿Este usuario ya tiene una tarea? ->", tareaUsuario);
 
     if (tareaUsuario.length > 0) {
@@ -1063,6 +1068,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     if (e.target && e.target.id === "btnAsignarEditor") {
       idagendaedicion = e.target.getAttribute("data-idagendaedicion");
+      idagendaeditorConsultar = e.target.getAttribute("data-idagendaeditor");
+      idagendaEdicionConsultar = e.target.getAttribute("data-idagendaedicion")
 
       modalAsignarEditor = new bootstrap.Modal($q("#modal-asignareditor"));
       modalAsignarEditor.show();

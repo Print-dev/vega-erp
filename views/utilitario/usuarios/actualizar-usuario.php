@@ -27,9 +27,7 @@
                   
                   autofocus
                   title="Ingresa solo números.">
-                <span class="input-group-text btn-primary" style="cursor: pointer;" id="search">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                </span>
+                
               </div>
               <div class="d-flex" style="display: flex;">
                 <span id="showTipoDoc" style="font-size: small; margin-left: auto; margin-right:12%"></span>

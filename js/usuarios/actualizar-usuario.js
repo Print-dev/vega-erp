@@ -89,6 +89,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("usuario -> ", usuario);
     if(usuario[0]?.idnivelacceso == 6){
         $q(".contenedor-marcaagua").hidden = false
+        $q(".contenedor-porcentaje").hidden = false
+        $q(".contenedor-color").hidden = false
     }
     renderizarDatosUsuario(usuario[0])
     

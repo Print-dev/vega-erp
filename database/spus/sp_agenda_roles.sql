@@ -176,16 +176,21 @@ DROP PROCEDURE IF EXISTS sp_obtener_usuario_asignado_tarea;
 DELIMITER $$
 CREATE PROCEDURE sp_obtener_usuario_asignado_tarea
 (
-    IN _idusuario INT
+    IN _idusuario INT,
+    IN _idagendaedicion INT
 )
 BEGIN
 	SELECT 
-	AGE.idagendaeditor, AGE.tipotarea, PER.nombres, USU.idusuario, AGE.fecha_entrega, AGE.estado
+	AGE.idagendaedicion, AGE.idagendaeditor, AGE.tipotarea, PER.nombres, USU.idusuario, AGE.fecha_entrega, AGE.estado
     FROM agenda_editores AGE
     LEFT JOIN usuarios USU ON USU.idusuario = AGE.idusuario
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
-    WHERE AGE.idusuario = _idusuario;
+    WHERE AGE.idusuario = _idusuario AND AGE.idagendaedicion = _idagendaedicion;
 END $$
+select*from agenda_editores;
+select*from agenda_edicion; 
+CALL  sp_obtener_usuario_asignado_tarea(10, 6);
+select * from usuarios
 
 DROP PROCEDURE IF EXISTS sp_quitar_tarea_usuario;
 DELIMITER $$

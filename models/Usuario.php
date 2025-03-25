@@ -187,6 +187,25 @@ class Usuario extends ExecQuery
     }
   }
 
+  public function deshabilitarUsuario($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_deshabilitar_usuario(?,?)");
+      $act = $cmd->execute(
+        array(
+          $params['idusuario'], 
+          $params['estado'], 
+        )
+      );
+
+      return $act;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+
   public function obtenerPersonaPorDoc($params = []): array
   {
     try {

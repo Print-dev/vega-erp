@@ -126,12 +126,13 @@ class Agenda extends ExecQuery
     }
   }
 
-  public function obtenerTareaPorUsuario($params = []): array
+  public function obtenerTareaPorUsuarioYagenda($params = []): array
   {
     try {
-      $cmd = parent::execQ("CALL sp_obtener_usuario_asignado_tarea (?) ");
+      $cmd = parent::execQ("CALL sp_obtener_usuario_asignado_tarea (?,?) ");
       $cmd->execute(array(
-        $params['idusuario']
+        $params['idusuario'],
+        $params['idagendaedicion'],
       ));
       return $cmd->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {

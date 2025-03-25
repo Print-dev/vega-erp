@@ -157,7 +157,7 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-3 contenedor-viatico-viaje">
                                 <label for="viaje" class="form-label">Viático de viaje:</label>
                                 <div class="input-group">
                                     <span class="input-group-text">S/.</span>

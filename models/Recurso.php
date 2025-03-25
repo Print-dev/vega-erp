@@ -70,6 +70,17 @@ class Recurso extends ExecQuery
         die($e->getMessage());
       }
     }
+    
+    public function obtenerDistritoPorNombre($params = []): array
+    {
+      try {
+        $cmd = parent::execQ("SELECT * FROM distritos WHERE distrito = ?");
+        $cmd->execute(array($params['distrito']));
+        return $cmd->fetchAll(PDO::FETCH_ASSOC);
+      } catch (Exception $e) {
+        die($e->getMessage());
+      }
+    }
 
     // OBTENER UBIGEOS POR ID ****************************************************************************************
     public function obtenerTodosDepartamentos(): array

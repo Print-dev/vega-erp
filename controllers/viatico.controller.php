@@ -19,10 +19,18 @@ if (isset($_GET['operation'])) {
 
     case 'obtenerInfoViatico':
       $cleanData = [
+        'iddetallepresentacion' => $_GET['iddetallepresentacion'] === "" ? null : $viatico->limpiarCadena($_GET['iddetallepresentacion']),
+        'idusuario' => $_GET['idusuario'] === "" ? null : $viatico->limpiarCadena($_GET['idusuario']),
+      ];
+      echo json_encode($viatico->obtenerInfoViatico($cleanData));
+      break;
+
+    case 'obtenerInfoViaticoNotificacion':
+      $cleanData = [
         'idusuario' => $_GET['idusuario'] === "" ? null : $viatico->limpiarCadena($_GET['idusuario']),
         'idviatico' => $_GET['idviatico'] === "" ? null : $viatico->limpiarCadena($_GET['idviatico']),
       ];
-      echo json_encode($viatico->obtenerInfoViatico($cleanData));
+      echo json_encode($viatico->obtenerInfoViaticoNotificacion($cleanData));
       break;
   }
 }

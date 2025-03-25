@@ -275,6 +275,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 }
 
   async function registrarDetalleEvento(idcliente, ncotizacion) {
+    console.log("Hora final ->",  $q("#horafinal").value.trim());
+
     const horainicio = $q("#horainicio").value.trim();
     const horafinal = $q("#horafinal").value.trim();
     const fechapresentacion = $q("#fechapresentacion").value.trim();
@@ -286,39 +288,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const validez = parseInt($q("#validez").value, 10) || 0;
 
     // Si alguno de los campos clave tiene valor, se activan las validaciones
-    if (horainicio || horafinal || iddistrito2 || establecimiento || referencia || tipoevento || modalidad || validez) {
-      /* if (!horainicio || !horafinal) {
-        showToast("Debe ingresar la hora de inicio y la hora final.", "ERROR");
-        return null;
-      }
-
-      // Convertir la fecha de presentación a un objeto Date
-      const fechaEvento = new Date(fechapresentacion);
-      const [horaInicioHoras, horaInicioMinutos] = horainicio.split(":").map(Number);
-      const [horaFinalHoras, horaFinalMinutos] = horafinal.split(":").map(Number);
-
-      const fechaInicio = new Date(fechaEvento);
-      fechaInicio.setHours(horaInicioHoras, horaInicioMinutos, 0);
-
-      const fechaFinal = new Date(fechaEvento);
-      fechaFinal.setHours(horaFinalHoras, horaFinalMinutos, 0);
-
-      if (fechaFinal <= fechaInicio) {
-        fechaFinal.setDate(fechaFinal.getDate() + 1);
-      }
-
-      if (fechaFinal <= fechaInicio) {
-        showToast("La hora final no puede ser menor o igual a la hora de inicio.", "ERROR");
-        return null;
-      }
-
-      const fechaHoy = new Date();
-      const diferenciaDias = Math.floor((fechaEvento - fechaHoy) / (1000 * 60 * 60 * 24));
-      if (validez > diferenciaDias) {
-        showToast("La validez no puede ser mayor a la cantidad de días restantes hasta la fecha de presentación.", "ERROR");
-        return null;
-      } */
-    }
+    
 
     // Si pasa las validaciones, proceder con el registro
     const detalle = new FormData();
