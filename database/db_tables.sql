@@ -327,6 +327,7 @@ CREATE TABLE agenda_editores (
     constraint fk_idtipotarea_agen foreign key (idtipotarea) references tipotarea (idtipotarea)
 ) engine = innodb;
 select * from agenda_editores;
+select * from usuarios;
 
 CREATE TABLE subidas_agenda_edicion (
 	idsubida	int  auto_increment primary key,
