@@ -51,7 +51,8 @@ CREATE PROCEDURE sp_asignar_agenda_editor (
 	IN _idagendaedicion int,
 	IN _idusuario int,
     IN _idtipotarea INT,
-    IN _fecha_entrega DATETIME
+    IN _fecha_entrega date,
+    IN _hora_entrega TIME
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
@@ -61,8 +62,8 @@ BEGIN
         SET existe_error = 1;
     END;
     
-    INSERT INTO agenda_editores (idagendaedicion, idusuario , idtipotarea, fecha_entrega)
-    VALUES (_idagendaedicion, _idusuario, _idtipotarea, _fecha_entrega);
+    INSERT INTO agenda_editores (idagendaedicion, idusuario , idtipotarea, fecha_entrega, hora_entrega)
+    VALUES (_idagendaedicion, _idusuario, _idtipotarea, _fecha_entrega, _hora_entrega);
     
     IF existe_error = 1 THEN
         SET _idagendaeditor = -1;

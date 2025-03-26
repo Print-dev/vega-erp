@@ -105,8 +105,9 @@ if (isset($_POST['operation'])) {
       $cleanData = [
         'idagendaedicion'   =>  $agenda->limpiarCadena($_POST['idagendaedicion']),
         'idusuario'   => $agenda->limpiarCadena($_POST['idusuario']),
-        'tipotarea'   => $agenda->limpiarCadena($_POST['tipotarea']),
-        'fechaentrega' => $agenda->limpiarCadena($_POST['fechaentrega'])
+        'idtipotarea'   => $agenda->limpiarCadena($_POST['idtipotarea']),
+        'fechaentrega' => $agenda->limpiarCadena($_POST['fechaentrega']),
+        'horaentrega' => $agenda->limpiarCadena($_POST['horaentrega']),
       ];
 
       $respuesta = ['idagendaeditor' => -1];

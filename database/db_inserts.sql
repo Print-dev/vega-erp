@@ -48,4 +48,4 @@ INSERT INTO tipotarea (tipotarea) VALUES
     ('Fotos'),
     ('Contenido');
     
-    select * from tipotarea;
+    select * from nivelaccesos;

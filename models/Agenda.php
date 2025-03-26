@@ -185,12 +185,13 @@ class Agenda extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare("CALL sp_asignar_agenda_editor(@idagendaeditor,?,?,?,?)");
+      $cmd = $pdo->prepare("CALL sp_asignar_agenda_editor(@idagendaeditor,?,?,?,?,?)");
       $cmd->execute(array(
         $params['idagendaedicion'],
         $params['idusuario'],
-        $params['tipotarea'],
-        $params['fechaentrega']
+        $params['idtipotarea'],
+        $params['fechaentrega'],
+        $params['horaentrega'],
       ));
       $respuesta = $pdo->query("SELECT @idagendaeditor AS idagendaeditor")->fetch(PDO::FETCH_ASSOC);
       return $respuesta['idagendaeditor'];

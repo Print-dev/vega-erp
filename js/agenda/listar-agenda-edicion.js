@@ -120,13 +120,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         return rbody;
     }
 
-    async function asignarAgendaEditor(idagendaedicion) { // CAMBIAR EL PARAMETRO TIPO TAREA
+    async function asignarAgendaEditor(idagendaedicion, idusuario, idtipotarea, fechaentrega, horaentrega) { // CAMBIAR EL PARAMETRO TIPO TAREA
         const body = new FormData();
         body.append("operation", "asignarAgendaEditor");
         body.append("idagendaedicion", idagendaedicion); // id artista
-        body.append("idusuario", $q("#asignacioneditor").value);
-        body.append("tipotarea", $q("#tipotarea").value);
-        body.append("fechaentrega", $q("#fechaentrega").value);
+        body.append("idusuario", idusuario);
+        body.append("idtipotarea", idtipotarea);
+        body.append("fechaentrega", fechaentrega);
+        body.append("horaentrega", horaentrega);
 
         const fbody = await fetch(`${host}agenda.controller.php`, {
             method: "POST",
@@ -697,14 +698,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (e.target && e.target.id === "btnAsignarEditor") {
             idagendaedicion = e.target.getAttribute("data-idagendaedicion");
             idagendaeditorConsultar = e.target.getAttribute("data-idagendaeditor");
-            idagendaEdicionConsultar = e.target.getAttribute("data-idagendaedicion")
+            //idagendaEdicionConsultar = e.target.getAttribute("data-idagendaedicion")
 
             modalAsignarEditor = new bootstrap.Modal($q("#modal-asignareditor"));
             modalAsignarEditor.show();
 
             const tipotarea = await obtenerTodosTipoTarea()
-            const usuariosEditores = await obtenerUsuarios(10)
-            console.log("usuariosEditores ->",usuariosEditores);
+            const usuariosEditores = await obtenerUsuarios(10) // edicion 
+            const usuariosCManager = await obtenerUsuarios(8) // edicion 
+            console.log("usuariosCManager ->",usuariosCManager);
             console.log("tipotarea -> ", tipotarea);
             $q(".contenedor-asignados").innerHTML = ''
             tipotarea.forEach(tipo => {
@@ -712,7 +714,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <tr>
                     <td>${tipo.tipotarea}</td>
                     <td>
-                        <select name="asignacioneditor" class="form-select" id="asignacioneditor" data-id="${tipo.idtipotarea}">
+                        <select name="asignacioneditor" class="form-select" id="asignacioneditor" data-idtipotarea="${tipo.idtipotarea}">
                             <option value="1">Andres</option>
                         </select>
                     </td>
@@ -731,14 +733,54 @@ document.addEventListener("DOMContentLoaded", async () => {
                 `
             });
             
-            document.querySelectorAll("select[name='asignacioneditor']").forEach(select => {
+            document.querySelectorAll("select[name='asignacioneditor']").forEach(async select => {
                 select.innerHTML = "<option value='-1'>Seleccione</option>"; // Opción predeterminada
                 usuariosEditores.forEach(editor => {
                     select.innerHTML += `<option value="${editor.idusuario}">${editor.nombres}</option>`;
                 });
+                let idtipotarea = select.getAttribute("data-idtipotarea");
+                console.log("ID Tipo de Tarea: ", idtipotarea);
+
+                // Llamar la función asignarAgendaEditor cuando se seleccione un editor
+                select.addEventListener("change", async (e) => {
+                    let idusuario = e.target.value;
+                    const tareaUsuario = await obtenerTareaPorUsuarioYagenda(idusuario, idagendaedicion);
+                    //console.log("este usuario ya esta asignado a esta taraea");
+                    
+                    if(tareaUsuario.length > 0){
+                        //console.log("¿Este usuario ya tiene una tarea? ->", tareaUsuario);
+                        showToast("Este usuaruio ya fue asignado a una tarea", "ERROR")
+                        return
+                    }
+                    if (idusuario !== "-1") {
+                        let fechaentrega = $q("#fechaentrega").value;
+                        let horaentrega = $q("#horaentrega").value;
+                        if (!fechaentrega) {
+                            showToast("Debe seleccionar una fecha de entrega.", "INFO");
+                            return;
+                        }
+                        if (!horaentrega) {
+                            showToast("Debe seleccionar una hora de entrega.", "INFO");
+                            return;
+                        }
+
+                        let response = await asignarAgendaEditor(idagendaedicion, idusuario, idtipotarea, fechaentrega, horaentrega);
+                        console.log("Respuesta de asignación:", response);
+                        if(response.idagendaeditor){
+                            showToast("Editor asignado correctamente", "SUCCESS")
+                            return
+                        }
+                    }
+                });
             });
             
-
+            document.querySelectorAll("select[name='responsablepost']").forEach(select => {
+                select.innerHTML = "<option value='-1'>Seleccione</option>"; // Opción predeterminada
+                usuariosCManager.forEach(editor => {
+                    select.innerHTML += `<option value="${editor.idusuario}">${editor.nombres}</option>`;
+                });
+            });
+            
             /* const editoresAsignados = await obtenerEditoresAsignados(idagendaedicion);
             console.log("editoresAsignados ->", editoresAsignados);
       
@@ -771,6 +813,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </td>
             </tr>
             `; */
+
+
         }
 
         /* document.addEventListener("click", async function (e) {

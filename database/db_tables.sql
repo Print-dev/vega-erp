@@ -305,7 +305,7 @@ CREATE TABLE agenda_edicion ( -- tabla que envuelve la tabla agenda editores
     iddetalle_presentacion INT NOT NULL,  -- Relación con la agenda del evento
     constraint fk_iddp_ag_edicion foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 );
-
+select * from agenda_edicion ;
 CREATE TABLE tipotarea (
 	idtipotarea	int auto_increment primary key,
     tipotarea varchar(30) not null
@@ -320,12 +320,13 @@ CREATE TABLE agenda_editores (
     idtipotarea 		int not null, -- 1: flayer, 2: saludos, 3: reels, 4: fotos, 5: contenido
     estado			int null default 1, -- 1: pendiente, 2- completado
 	fecha_asignacion datetime null default now(),
-    fecha_entrega 	datetime not null,
+    fecha_entrega 	date not null,
+    hora_entrega	time not null,
     constraint fk_idagendaedicion foreign key (idagendaedicion) references agenda_edicion (idagendaedicion),
     constraint fk_idusuario_ag_edit foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idtipotarea_agen foreign key (idtipotarea) references tipotarea (idtipotarea)
 ) engine = innodb;
-
+select * from agenda_editores;
 
 CREATE TABLE subidas_agenda_edicion (
 	idsubida	int  auto_increment primary key,
