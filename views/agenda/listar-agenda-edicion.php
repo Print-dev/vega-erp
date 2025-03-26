@@ -329,32 +329,14 @@
                                 </tr>
                             </thead>
                             <tbody class="contenedor-asignados">
-                                <tr>
-                                    <td>Flayer</td>
-                                    <td>
-                                        <select name="asignacioneditor" class="form-select" id="asignacioneditor">
-                                            <option value="1">Andres</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="date" class="form-control" name="fechaentrega" id="fechaentrega">
-                                    </td>
-                                    <td>
-                                        <input type="time" class="form-control" name="horaentrega" id="horaentrega">
-                                    </td>
-                                    <td>
-                                        <select name="responsablepost" class="form-select" id="responsablepost">
-                                            <option value="1">Jasmin</option>
-                                        </select>
-                                    </td>
-                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
             <div class="modal-footer text-end">
-                <button type="button" class="btn btn-secondary" id="btnGuardarAsignacion">Asignar</button>
+                <button type="button" class="btn btn-secondary" id="btnGuardarAsignacion">Agregar Nueva Tarea</button>
             </div>
         </div>
     </div>

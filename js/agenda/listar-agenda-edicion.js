@@ -21,9 +21,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // ************************************** RENDERIZACION ************************************************************
-
-    const tipotarea = await obtenerTodosTipoTarea()
-    console.log("tipotarea -> ", tipotarea);
+    const usuarios = await obtenerUsuarios()
+    $q("#usuario").innerHTML = "<option value=''>Todos</option>";
+    usuarios.forEach((editor) => {
+        $q(
+            "#usuario"
+        ).innerHTML += `<option value="${editor.idusuario}">${editor.nombres}</option>`;
+        
+    });
+    
 
     // ******************************************** OBTENER DATOS **********************************************************
 
@@ -33,16 +39,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         params.append("idnivelacceso", idnivelacceso);
         const data = await getDatos(`${host}usuario.controller.php`, params);
         console.log(data);
-        $q("#usuario").innerHTML = "<option value=''>Todos</option>";
-        $q("#asignacioneditor").innerHTML = "<option value='-1'>Seleccione</option>"
-        data.forEach((artista) => {
-            $q(
-                "#usuario"
-            ).innerHTML += `<option value="${artista.idusuario}">${artista.nombres}</option>`;
-            $q(
-                "#asignacioneditor"
-            ).innerHTML += `<option value="${artista.idusuario}">${artista.nombres}</option>`; // USUARIOS EDITRES PARA LA ASIGNACION DE TAREAS (FLAYER, SALUDO, ETC)
-        });
+        return data
 
     }
 
@@ -704,6 +701,43 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             modalAsignarEditor = new bootstrap.Modal($q("#modal-asignareditor"));
             modalAsignarEditor.show();
+
+            const tipotarea = await obtenerTodosTipoTarea()
+            const usuariosEditores = await obtenerUsuarios(10)
+            console.log("usuariosEditores ->",usuariosEditores);
+            console.log("tipotarea -> ", tipotarea);
+            $q(".contenedor-asignados").innerHTML = ''
+            tipotarea.forEach(tipo => {
+                $q(".contenedor-asignados").innerHTML += `
+                <tr>
+                    <td>${tipo.tipotarea}</td>
+                    <td>
+                        <select name="asignacioneditor" class="form-select" id="asignacioneditor" data-id="${tipo.idtipotarea}">
+                            <option value="1">Andres</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="date" class="form-control" name="fechaentrega" id="fechaentrega">
+                    </td>
+                    <td>
+                        <input type="time" class="form-control" name="horaentrega" id="horaentrega">
+                    </td>
+                    <td>
+                        <select name="responsablepost" class="form-select" id="responsablepost">
+                            <option value="1">Jasmin</option>
+                        </select>
+                    </td>
+                </tr>
+                `
+            });
+            
+            document.querySelectorAll("select[name='asignacioneditor']").forEach(select => {
+                select.innerHTML = "<option value='-1'>Seleccione</option>"; // Opción predeterminada
+                usuariosEditores.forEach(editor => {
+                    select.innerHTML += `<option value="${editor.idusuario}">${editor.nombres}</option>`;
+                });
+            });
+            
 
             /* const editoresAsignados = await obtenerEditoresAsignados(idagendaedicion);
             console.log("editoresAsignados ->", editoresAsignados);

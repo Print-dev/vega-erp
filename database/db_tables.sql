@@ -312,7 +312,8 @@ CREATE TABLE tipotarea (
 ) engine = innodb;
 
 -- select * from agenda_editores;
-CREATE TABLE agenda_editores ( -- referencia: modal asignar editor
+ -- referencia: modal asignar editor
+CREATE TABLE agenda_editores (
 	idagendaeditor	int auto_increment primary key,
     idagendaedicion int not null,
     idusuario		int not null,
@@ -322,7 +323,6 @@ CREATE TABLE agenda_editores ( -- referencia: modal asignar editor
     fecha_entrega 	datetime not null,
     constraint fk_idagendaedicion foreign key (idagendaedicion) references agenda_edicion (idagendaedicion),
     constraint fk_idusuario_ag_edit foreign key (idusuario) references usuarios (idusuario),
-    constraint chk_tipotarea CHECK(tipotarea IN (1,2,3,4,5)),
     constraint fk_idtipotarea_agen foreign key (idtipotarea) references tipotarea (idtipotarea)
 ) engine = innodb;
 

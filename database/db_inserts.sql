@@ -47,3 +47,5 @@ INSERT INTO tipotarea (tipotarea) VALUES
     ('Reels'),
     ('Fotos'),
     ('Contenido');
+    
+    select * from tipotarea;
