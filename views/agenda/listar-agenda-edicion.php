@@ -111,7 +111,7 @@
                 </div>
             </div>
             <div class="text-end">
-            <button type="button" class="btn btn-primary" id="btnNuevaTareaDiaria">Nueva Tarea Diaria</button>
+            <a href="http://localhost/vega-erp/views/utilitario/tareasdiarias/listar-tareasdiarias" class="btn btn-primary" id="btnAsignarTareaDiaria">Asignar Tarea Diaria</a>
         </div>
         </div>
         

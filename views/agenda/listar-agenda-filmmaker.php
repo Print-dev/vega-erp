@@ -118,9 +118,11 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
+<a href="http://localhost/vega-erp/views/utilitario/tareasdiarias/listar-tareasdiarias" class="btn btn-primary" id="btnAsignarTareaDiaria">Asignar Tarea Diaria</a>
 
 <div class="contenedor-calendario">
     <div id='calendar'></div>
@@ -140,7 +142,7 @@
                         <!-- Sección de gastos -->
                         <div class="col-md-6">
                             <h5 class="mb-3">Detalles del Viático</h5>
-                            
+
                             <div class="mb-3">
                                 <label for="pasaje" class="form-label">Pasaje:</label>
                                 <div class="input-group">
@@ -312,18 +314,18 @@
                         <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
                             <thead class="table-dark">
                                 <tr>
-                                <th>Flayer</th>
-                                <th>Saludos</th>
-                                <th>Reels</th>
-                                <th>Fotos</th>  
-                                <th>Contenido</th>  
+                                    <th>Flayer</th>
+                                    <th>Saludos</th>
+                                    <th>Reels</th>
+                                    <th>Fotos</th>
+                                    <th>Contenido</th>
                                 </tr>
                             </thead>
                             <tbody class="contenedor-asignados">
-                                                     
+
                             </tbody>
                         </table>
-                    </div>                    
+                    </div>
                 </div>
             </div>
             <div class="modal-footer text-end">
@@ -342,25 +344,25 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="contenedor-progreso p-3">                    
+                <div class="contenedor-progreso p-3">
                     <div class="table-responsive d-flex justify-content-center">
                         <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
                             <thead class="table-dark">
                                 <tr>
-                                <th>Fecha</th>
-                                <th>Usuario</th>
-                                <th>Tipo Tarea</th>
-                                <th>Estado</th>  
-                                <th>Subidas</th>  
+                                    <th>Fecha</th>
+                                    <th>Usuario</th>
+                                    <th>Tipo Tarea</th>
+                                    <th>Estado</th>
+                                    <th>Subidas</th>
                                 </tr>
                             </thead>
                             <tbody class="contenedor-tareas-edicion-pendientes">
-                                                           
+
                             </tbody>
                         </table>
-                    </div>                    
+                    </div>
                 </div>
-            </div>           
+            </div>
         </div>
     </div>
 </div>
@@ -398,8 +400,8 @@
     const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
 </script> -->
 
-<script src="http://localhost/vega-erp/js/agenda/listar-agenda-filmmaker.js"></script> 
-<script src="http://localhost/vega-erp/js/agenda/obtencion-agenda-nivel.js"></script> 
+<script src="http://localhost/vega-erp/js/agenda/listar-agenda-filmmaker.js"></script>
+<script src="http://localhost/vega-erp/js/agenda/obtencion-agenda-nivel.js"></script>
 
 </body>
 

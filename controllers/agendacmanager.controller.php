@@ -49,5 +49,27 @@ if (isset($_POST['operation'])) {
   
         echo json_encode($eliminado);
         break; 
+
+      case 'asignarPortalWebContenido':
+        $cleanData = [
+          'idagendacommanager' => $agendacmanager->limpiarCadena($_POST['idagendacommanager']),
+          'portalpublicar' => $agendacmanager->limpiarCadena($_POST['portalpublicar']),
+        ];
+  
+        $update = $agendacmanager->asignarPortalWebContenido($cleanData);
+  
+        echo json_encode($update);
+        break; 
+
+      case 'actualizarEstadoPublicarContenido':
+        $cleanData = [
+          'idagendacommanager' => $agendacmanager->limpiarCadena($_POST['idagendacommanager']),
+          'estado' => $agendacmanager->limpiarCadena($_POST['estado']),
+        ];
+  
+        $update = $agendacmanager->actualizarEstadoPublicarContenido($cleanData);
+  
+        echo json_encode($update);
+        break; 
   }
 }

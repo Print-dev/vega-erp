@@ -130,6 +130,10 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
               window.location.href = 'http://localhost/vega-erp/views/agenda/listar-agenda-edicion';
               return
             }
+             else if (data.rol === "Community Manager") {
+              window.location.href = 'http://localhost/vega-erp/views/commanager/listar-contenido-publicar';
+              return
+            }
           } else {
             showToast(data.mensaje, "ERROR");
           }

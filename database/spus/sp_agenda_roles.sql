@@ -39,11 +39,7 @@ BEGIN
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
     WHERE AGE.iddetalle_presentacion = _iddetalle_presentacion;
 END $$
--- SELECT * FROM agenda_asignaciones;
 
--- EDITORES 
--- SELECT * FROM usuarios;
--- CALL sp_asignar_agenda_editor(@idagendaeditor, 1,10,2,'2025-03-28');
 DROP PROCEDURE IF EXISTS sp_asignar_agenda_editor; -- editado
 DELIMITER $$
 CREATE PROCEDURE sp_asignar_agenda_editor (
@@ -243,3 +239,42 @@ BEGIN
         LEFT JOIN usuarios USUDP ON USUDP.idusuario = DP.idusuario
         WHERE (_idusuario IS NULL OR AGED.idusuario = _idusuario OR AGED.idusuario IS NULL);
 END $$
+
+-- ESTE SPU SERVIRA PARA LISTAR LAS AGENDAS DE EDICION EN GLOBAL, LUEGO DE ESO SE ACCEDERA A LAS TAREAS QUE ESTAN ADENTRO DE ELLO PERO SOLO LOS COMPLETADOS
+DROP PROCEDURE IF EXISTS sp_mostrar_contenido_revisado_edicion;
+DELIMITER $$
+CREATE PROCEDURE sp_mostrar_contenido_revisado_edicion
+(
+    IN _iddetalle_presentacion INT
+)
+BEGIN	
+	SELECT 
+	*
+		FROM agenda_edicion AGED		
+		LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = AGED.iddetalle_presentacion
+		LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+        LEFT JOIN usuarios USUDP ON USUDP.idusuario = DP.idusuario
+        WHERE (_iddetalle_presentacion IS NULL OR AGED.iddetalle_presentacion = _iddetalle_presentacion OR AGED.iddetalle_presentacion IS NULL);
+END $$
+select * from agenda_edicion;
+CALL sp_mostrar_contenido_revisado_edicion (1)
+select * from 
+
+-- ESTE SPU HARA LO MISMO QUE LA EDICION
+call sp_mostrar_contenido_revisado_filmmakers (1);
+DROP PROCEDURE IF EXISTS sp_mostrar_contenido_revisado_filmmakers;
+DELIMITER $$
+CREATE PROCEDURE sp_mostrar_contenido_revisado_filmmakers
+(
+    IN _iddetalle_presentacion INT
+)
+BEGIN	
+	SELECT 
+	*
+		FROM agenda_asignaciones AGENA		
+		LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = AGENA.iddetalle_presentacion
+		LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+        LEFT JOIN usuarios USUDP ON USUDP.idusuario = DP.idusuario
+        WHERE (_iddetalle_presentacion IS NULL OR AGENA.iddetalle_presentacion = _iddetalle_presentacion OR AGENA.iddetalle_presentacion IS NULL);
+END $$
+select * from agenda_asignaciones; 

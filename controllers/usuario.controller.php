@@ -22,12 +22,12 @@ $accesos = [
     ['modulo' => 'utilitario', 'ruta' => 'registrar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'utilitario', 'ruta' => 'listar-tarifas', 'subruta' => 'tarifas', 'texto' => 'Tarifario', 'visible' => false, 'icono' => 'fa-solid fa-list'],
-    ['modulo' => 'utilitario', 'ruta' => 'registrar-tarifa', 'subruta' => 'tarifas', 'texto' => '','visible' => false, 'icono' => ''],
+    ['modulo' => 'utilitario', 'ruta' => 'registrar-tarifa', 'subruta' => 'tarifas', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'utilitario', 'ruta' => 'listar-tareasdiarias', 'subruta' => 'tareasdiarias', 'texto' => 'Tareas Diarias', 'visible' => false, 'icono' => 'fa-solid fa-note-sticky'],
-    ['modulo' => 'utilitario', 'ruta' => 'registrar-tareadiaria', 'subruta' => 'tareasdiarias', 'texto' => '','visible' => false, 'icono' => ''],
+    ['modulo' => 'utilitario', 'ruta' => 'registrar-tareadiaria', 'subruta' => 'tareasdiarias', 'texto' => '', 'visible' => false, 'icono' => ''],
+    ['modulo' => 'commanager', 'ruta' => 'listar-contenido-publicar', 'subruta' => '', 'texto' => 'Publicar', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
+    ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
 
-
-    
     /* ['modulo' => 'pyp', 'ruta' => '', 'texto' => 'Planeamiento', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-lightbulb'],
 
     ['modulo' => 'pyp', 'ruta' => 'listar-planeamientos', 'subruta' => 'planeamientos', 'texto' => 'Planeamientos', 'visible' => false, 'icono' => 'fa-solid fa-list'],
@@ -35,15 +35,15 @@ $accesos = [
     ['modulo' => 'pyp', 'ruta' => 'listar-presupuestos', 'subruta' => 'presupuestos', 'texto' => 'Presupuestos', 'visible' => false, 'icono' => 'fa-solid fa-list'],
     ['modulo' => 'pyp', 'ruta' => 'registrar-presupuesto', 'subruta' => 'presupuestos', 'visible' => false], */
 
-    
+
     ['modulo' => 'contabilidad', 'ruta' => '', 'texto' => 'Contabilidad', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-calculator'],
 
     ['modulo' => 'contabilidad', 'ruta' => 'caja-chica', 'subruta' => 'caja-chica', 'texto' => 'Caja Chica', 'visible' => false, 'icono' => 'fa-solid fa-list'],
-    ['modulo' => 'contabilidad', 'ruta' => 'registrar-caja', 'subruta' => 'caja-chica', 'texto' => '','visible' => false, 'icono' => ''],
+    ['modulo' => 'contabilidad', 'ruta' => 'registrar-caja', 'subruta' => 'caja-chica', 'texto' => '', 'visible' => false, 'icono' => ''],
 
     ['modulo' => 'contabilidad', 'ruta' => 'listar-reparticion', 'subruta' => 'reparticion', 'texto' => 'Reparticion', 'visible' => false, 'icono' => 'fa-solid fa-list'],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-ingresos', 'subruta' => 'reparticion', 'texto' => '',  'visible' => false, 'icono' => ''],
-    ['modulo' => 'contabilidad', 'ruta' => 'registrar-egresos', 'subruta' => 'reparticion', 'texto' => '','visible' => false, 'icono' => ''],
+    ['modulo' => 'contabilidad', 'ruta' => 'registrar-egresos', 'subruta' => 'reparticion', 'texto' => '', 'visible' => false, 'icono' => ''],
 
     /* ['modulo' => 'contabilidad', 'ruta' => 'listar-ingresos', 'subruta' => 'ingresos', 'texto' => 'Ingresos', 'visible' => false, 'icono' => 'fa-solid fa-list'],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-ingreso', 'subruta' => 'ingresos', 'visible' => false], */
@@ -52,10 +52,10 @@ $accesos = [
     ['modulo' => 'agenda', 'ruta' => '', 'texto' => 'Agenda', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
 
     //['modulo' => 'agenda', 'ruta' => 'listar-agenda', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
-    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-artista', 'subruta' => '', 'texto'=> 'Agenda Artista', 'visible' => false, 'icono' => 'fa-solid fa-list'],
-    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto'=> 'Agenda Edicion', 'visible' => false, 'icono' => 'fa-solid fa-list'],
-    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-filmmaker', 'subruta' => '', 'texto'=> 'Agenda Filmmaker', 'visible' => false, 'icono' => 'fa-solid fa-list'],
-    ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '','texto' => '','visible' => false, 'icono'=>''],
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-artista', 'subruta' => '', 'texto' => 'Agenda Artista', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto' => 'Agenda Edicion', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-filmmaker', 'subruta' => '', 'texto' => 'Agenda Filmmaker', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''],
 
   ],
   "Artista" => [
@@ -66,19 +66,21 @@ $accesos = [
   "Filmmaker" => [
     ['modulo' => 'agenda', 'ruta' => 'listar-agenda-filmmaker', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
-
+    ['modulo' => 'utilitario', 'ruta' => 'listar-tareasdiarias', 'subruta' => 'tareasdiarias', 'texto' => 'Tareas Diarias', 'visible' => true, 'icono' => 'fa-solid fa-note-sticky', 'only' => true],
+    ['modulo' => 'utilitario', 'ruta' => 'registrar-tareadiaria', 'subruta' => 'tareasdiarias', 'texto' => '', 'visible' => false, 'icono' => ''],
   ],
   "Edicion y Produccion" => [
     ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
-    ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '','texto' => '','visible' => false, 'icono'=>''],
+    ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
-
+    ['modulo' => 'utilitario', 'ruta' => 'listar-tareasdiarias', 'subruta' => 'tareasdiarias', 'texto' => 'Tareas Diarias', 'visible' => true, 'icono' => 'fa-solid fa-note-sticky', 'only' => true],
+    ['modulo' => 'utilitario', 'ruta' => 'registrar-tareadiaria', 'subruta' => 'tareasdiarias', 'texto' => '', 'visible' => false, 'icono' => ''],
   ],
-  "Com. Manager" => [
-    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
-    ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '','texto' => '','visible' => false, 'icono'=>''],
+  "Community Manager" => [
+    /* ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
+    ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''], */
+    ['modulo' => 'commanager', 'ruta' => 'listar-contenido-publicar', 'subruta' => '', 'texto' => 'Publicar', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
-
   ],
 ];
 
@@ -115,7 +117,7 @@ if (isset($_GET['operation'])) {
     case 'obtenerUsuarioCompletoPorId':
       echo json_encode($usuario->obtenerUsuarioCompletoPorId(['idusuario' => $_GET['idusuario']]));
       break;
-      
+
     case 'obtenerPersonaCompletoPorId':
       echo json_encode($usuario->obtenerPersonaCompletoPorId(['idpersona' => $_GET['idpersona']]));
       break;
@@ -227,50 +229,50 @@ if (isset($_POST['operation'])) {
       echo json_encode($respuesta);
       break;
 
-      case 'actualizarUsuario':
-        $clave = $usuario->limpiarCadena($_POST['claveacceso']);
-        $cleanData = [
-          'idusuario' => $usuario->limpiarCadena($_POST['idusuario']) ?  $usuario->limpiarCadena($_POST['idusuario']) : '',
-          'nomusuario' => $usuario->limpiarCadena($_POST['nomusuario']) ? $usuario->limpiarCadena($_POST['nomusuario']) : '',
-          'claveacceso' => $clave ? password_hash($clave, PASSWORD_BCRYPT) : '',
-          'color' => $usuario->limpiarCadena($_POST['color']) ? $usuario->limpiarCadena($_POST['color']) : '',
-          'porcentaje' => $usuario->limpiarCadena($_POST['porcentaje']) ? $usuario->limpiarCadena($_POST['porcentaje']) : '',
-          'marcaagua' => $usuario->limpiarCadena($_POST['marcaagua']) ? $usuario->limpiarCadena($_POST['marcaagua']) : '',
-        ];
-  
-        $update = $usuario->actualizarUsuario($cleanData);
-  
-        echo json_encode($update);
-        break;
+    case 'actualizarUsuario':
+      $clave = $usuario->limpiarCadena($_POST['claveacceso']);
+      $cleanData = [
+        'idusuario' => $usuario->limpiarCadena($_POST['idusuario']) ?  $usuario->limpiarCadena($_POST['idusuario']) : '',
+        'nomusuario' => $usuario->limpiarCadena($_POST['nomusuario']) ? $usuario->limpiarCadena($_POST['nomusuario']) : '',
+        'claveacceso' => $clave ? password_hash($clave, PASSWORD_BCRYPT) : '',
+        'color' => $usuario->limpiarCadena($_POST['color']) ? $usuario->limpiarCadena($_POST['color']) : '',
+        'porcentaje' => $usuario->limpiarCadena($_POST['porcentaje']) ? $usuario->limpiarCadena($_POST['porcentaje']) : '',
+        'marcaagua' => $usuario->limpiarCadena($_POST['marcaagua']) ? $usuario->limpiarCadena($_POST['marcaagua']) : '',
+      ];
 
-      case 'deshabilitarUsuario':
-        $cleanData = [
-          'idusuario' => $usuario->limpiarCadena($_POST['idusuario']) ?  $usuario->limpiarCadena($_POST['idusuario']) : '',
-          'estado' => $usuario->limpiarCadena($_POST['estado']) ? $usuario->limpiarCadena($_POST['estado']) : ''
-        ];
-  
-        $update = $usuario->deshabilitarUsuario($cleanData);
-  
-        echo json_encode($update);
-        break;
+      $update = $usuario->actualizarUsuario($cleanData);
 
-      case 'actualizarPersona':
-        $cleanData = [
-          'idpersona' => $usuario->limpiarCadena($_POST['idpersona']) ? $usuario->limpiarCadena($_POST['idpersona']): '',
-          'numdoc' => $usuario->limpiarCadena($_POST['numdoc']) ? $usuario->limpiarCadena($_POST['numdoc']) : '',
-          'apellidos' => $usuario->limpiarCadena($_POST['apellidos']) ? $usuario->limpiarCadena($_POST['apellidos']) : '',
-          'nombres' => $usuario->limpiarCadena($_POST['nombres']) ? $usuario->limpiarCadena($_POST['nombres']) : '',
-          'genero' => $usuario->limpiarCadena($_POST['genero']) ? $usuario->limpiarCadena($_POST['genero']) : '',
-          'direccion' => $usuario->limpiarCadena($_POST['direccion']) ?  $usuario->limpiarCadena($_POST['direccion']) : '',
-          'telefono' => $usuario->limpiarCadena($_POST['telefono']) ? $usuario->limpiarCadena($_POST['telefono']) : '',
-          'telefono2' => $usuario->limpiarCadena($_POST['telefono2']) ? $usuario->limpiarCadena($_POST['telefono2']) : '',
-          'correo' => $usuario->limpiarCadena($_POST['correo']) ? $usuario->limpiarCadena($_POST['correo']) : '',
-          'iddistrito' => $usuario->limpiarCadena($_POST['iddistrito']) ? $usuario->limpiarCadena($_POST['iddistrito']) : '',
-        ];
-  
-        $update = $usuario->actualizarPersona($cleanData);
-  
-        echo json_encode($update);
-        break;
+      echo json_encode($update);
+      break;
+
+    case 'deshabilitarUsuario':
+      $cleanData = [
+        'idusuario' => $usuario->limpiarCadena($_POST['idusuario']) ?  $usuario->limpiarCadena($_POST['idusuario']) : '',
+        'estado' => $usuario->limpiarCadena($_POST['estado']) ? $usuario->limpiarCadena($_POST['estado']) : ''
+      ];
+
+      $update = $usuario->deshabilitarUsuario($cleanData);
+
+      echo json_encode($update);
+      break;
+
+    case 'actualizarPersona':
+      $cleanData = [
+        'idpersona' => $usuario->limpiarCadena($_POST['idpersona']) ? $usuario->limpiarCadena($_POST['idpersona']) : '',
+        'numdoc' => $usuario->limpiarCadena($_POST['numdoc']) ? $usuario->limpiarCadena($_POST['numdoc']) : '',
+        'apellidos' => $usuario->limpiarCadena($_POST['apellidos']) ? $usuario->limpiarCadena($_POST['apellidos']) : '',
+        'nombres' => $usuario->limpiarCadena($_POST['nombres']) ? $usuario->limpiarCadena($_POST['nombres']) : '',
+        'genero' => $usuario->limpiarCadena($_POST['genero']) ? $usuario->limpiarCadena($_POST['genero']) : '',
+        'direccion' => $usuario->limpiarCadena($_POST['direccion']) ?  $usuario->limpiarCadena($_POST['direccion']) : '',
+        'telefono' => $usuario->limpiarCadena($_POST['telefono']) ? $usuario->limpiarCadena($_POST['telefono']) : '',
+        'telefono2' => $usuario->limpiarCadena($_POST['telefono2']) ? $usuario->limpiarCadena($_POST['telefono2']) : '',
+        'correo' => $usuario->limpiarCadena($_POST['correo']) ? $usuario->limpiarCadena($_POST['correo']) : '',
+        'iddistrito' => $usuario->limpiarCadena($_POST['iddistrito']) ? $usuario->limpiarCadena($_POST['iddistrito']) : '',
+      ];
+
+      $update = $usuario->actualizarPersona($cleanData);
+
+      echo json_encode($update);
+      break;
   }
 }

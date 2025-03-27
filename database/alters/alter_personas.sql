@@ -42,3 +42,5 @@ ALTER TABLE agenda_editores ADD CONSTRAINT fk_idtipotarea_agen foreign key (idti
 ALTER TABLE agenda_editores ADD COLUMN hora_entrega TIME NOT NULL;
 ALTER TABLE agenda_editores ADD COLUMN    idcommunitymanager 	int null;
 ALTER TABLE agenda_editores DROP COLUMN idcommunitymanager;
+ALTER TABLE agenda_commanager ADD COLUMN  portalpublicar 		varchar(120) not null;
+ALTER TABLE agenda_commanager ADD COLUMN estado				SMALLINT null default 1

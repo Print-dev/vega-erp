@@ -193,6 +193,32 @@ class Agenda extends ExecQuery
     }
   }
 
+  public function mostrarContenidoRevisadoEdicion($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_mostrar_contenido_revisado_edicion (?)");
+      $cmd->execute(array(
+        $params['iddetallepresentacion']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function mostrarContenidoRevisadoFilmmakers($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_mostrar_contenido_revisado_filmmakers (?)");
+      $cmd->execute(array(
+        $params['iddetallepresentacion']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   // ************************* AGENDA EDITORES ************************************
 
   public function asignarAgendaEditor($params = []): int

@@ -310,17 +310,14 @@ CREATE TABLE tipotarea (
 	idtipotarea	int auto_increment primary key,
     tipotarea varchar(30) not null
 ) engine = innodb;
-select * from tipotarea;
--- select * from agenda_editores;
-select  * from usuarios;
-select * from nivelaccesos;
+
  -- referencia: modal asignar editor
 CREATE TABLE agenda_editores (
 	idagendaeditor	int auto_increment primary key,
     idagendaedicion int not null,
     idusuario		int not null,
     idtipotarea 		int not null, -- 1: flayer, 2: saludos, 3: reels, 4: fotos, 5: contenido
-    estado			int null default 1, -- 1: pendiente, 2- completado
+    estado			int null default 1, -- 1: pendiente, 2- completado, 3: atrasado, 4: completado con atraso
 	fecha_asignacion datetime null default now(),
     fecha_entrega 	date not null,
     hora_entrega	time not null,
@@ -342,17 +339,20 @@ CREATE TABLE agenda_commanager (
 	idagendacommanager	int auto_increment primary key,
     idagendaeditor 		int not null,
     idusuarioCmanager 	int not null,
+    portalpublicar 		varchar(120) null,
+    estado				SMALLINT null default 1, -- 1: no publicado, 2: publicado
     constraint fk_idagendaeditor_cm foreign key (idagendaeditor) references agenda_editores (idagendaeditor),
     constraint fk_idusuarioCmanaget foreign key (idusuarioCmanager) references usuarios (idusuario)
 ) engine = innodb;
-
+select* from agenda_commanager;
 --  -------------------------------------------- NUEVAS TABLAS AGREGASDAS -----------------------------------------
 -- AGREGADO EL 26-06-2025 - 16:33
 CREATE TABLE tareas_diarias (
 	idtareadiaria	int auto_increment primary key,
 	tarea			varchar(120) not null
 ) ENGINE = INNODB;
-
+select * from tareas_diarias;
+select * from nivelaccesos;
 -- AGREGADO EL 26-06-2025 - 16:33
 CREATE TABLE tareas_diaria_asignacion (
 	idtaradiariaasig int auto_increment primary key,
@@ -360,8 +360,9 @@ CREATE TABLE tareas_diaria_asignacion (
 	idtareadiaria	int not null,
     fecha_entrega	date not null,
     hora_entrega 	time not null,
-    estado			SMALLINT null, -- 1: pendiente, 2: atrasado, 3: completado, 4: completado con atraso
+    estado			SMALLINT default 1, -- 1: pendiente, 2: atrasado, 3: completado, 4: completado con atraso
     constraint fk_idusuario	foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idtareadiaria_asig foreign key (idtareadiaria) references tareas_diarias (idtareadiaria)
 ) engine = innodb;
-
+select * from tareas_diaria_asignacion ;
+select * from usuarios

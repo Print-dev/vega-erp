@@ -96,6 +96,22 @@ BEGIN
     WHERE DP.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
 END //
 
+drop procedure if exists sp_obtener_dps;
+DELIMITER //
+CREATE PROCEDURE `sp_obtener_dps`(
+)
+BEGIN
+	SELECT 		
+		DP.iddetalle_presentacion, DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, USU.idusuario, USU.nom_usuario
+	FROM detalles_presentacion DP
+    LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+	LEFT JOIN distritos DIS ON DIS.iddistrito = DP.iddistrito
+    LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
+    LEFT JOIN departamentos DE ON DE.iddepartamento = PRO.iddepartamento
+    WHERE DP.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
+END //
+
+
 -- CALL sp_obtener_filmmaker_asociado_evento (4)
 drop procedure if exists sp_obtener_filmmaker_asociado_evento;
 DELIMITER //

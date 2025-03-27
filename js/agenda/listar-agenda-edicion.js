@@ -749,8 +749,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         if (e.target && e.target.id === "btnAsignarEditor") {
             idagendaedicion = e.target.getAttribute("data-idagendaedicion");
-            //idagendaeditor = e.target.getAttribute("data-idagendaeditor");
-            idagendaeditorConsultar = e.target.getAttribute("data-idagendaeditor");
+            idagendaeditor = e.target.getAttribute("data-idagendaeditor");
+            //idagendaeditorConsultar = e.target.getAttribute("data-idagendaeditor");
             //idagendaEdicionConsultar = e.target.getAttribute("data-idagendaedicion")
             let opcionesEditores
             let opcionesResponsables
@@ -761,36 +761,40 @@ document.addEventListener("DOMContentLoaded", async () => {
             const usuariosEditores = await obtenerUsuarios(10) // edicion 
             const usuariosCManager = await obtenerUsuarios(8) // edicion 
             const tareasRestantes = await obtenerTodasLasTareasEnLaAgenda(idagendaedicion);
-            console.log("Tareas restantes -> ", tareasRestantes);
             console.log("usuariosCManager ->", usuariosCManager);
             console.log(" usuariosEditores >>", usuariosEditores);
             console.log("tipotarea -> ", tipotarea);
             $q(".contenedor-asignados").innerHTML = ""; // Limpia el contenedor antes de agregar nuevas filas
 
             for (const tipo of tipotarea) {
+                console.log("tipo -> ", tipo);
+                console.log("Tareas restantes -> ", tareasRestantes);
                 const tareaAsignada = tareasRestantes.find(tarea => tarea.idtipotarea == tipo.idtipotarea);
+                console.log("tareaAsignada -> ", tareaAsignada);
+                console.log("idagendaeditor -> ", idagendaeditor);
+                
                 const cmanagersPosteadores = await obtenerCmanagerPorIdAgendaEditor(tareaAsignada?.idagendaeditor);
                 console.log("cmanagersPosteadores ->>>> ", cmanagersPosteadores);
-            
+
                 let idUsuarioAsignado = tareaAsignada ? tareaAsignada.idusuario : "-1";
                 let fechaEntrega = tareaAsignada ? tareaAsignada.fecha_entrega : "";
                 let horaEntrega = tareaAsignada ? tareaAsignada.hora_entrega : "";
-            
+
                 console.log("tareaAsignada ->>>> ", tareaAsignada);
                 console.log("tareaAsignada.idagendaeditor > ", tareaAsignada?.idagendaeditor);
-            
+
                 opcionesEditores = `<option value="-1">Seleccione</option>`;
                 usuariosEditores.forEach(editor => {
                     opcionesEditores += `<option value="${editor.idusuario}" data-idagendaeditor="${tareaAsignada?.idagendaeditor}" 
                     ${editor.idusuario == idUsuarioAsignado ? "selected" : ""}>${editor.nombres}</option>`;
                 });
-            
+
                 opcionesResponsables = `<option value="-1">Seleccione</option>`;
                 usuariosCManager.forEach(editor => {
                     opcionesResponsables += `<option value="${editor.idusuario}" data-idagendaeditor="${tareaAsignada?.idagendaeditor}" 
                     ${editor.idusuario == cmanagersPosteadores[0]?.idusuarioCmanager ? "selected" : ""}>${editor.nombres}</option>`;
                 });
-            
+
                 $q(".contenedor-asignados").innerHTML += `
                     <tr>
                         <td>
@@ -822,7 +826,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </tr>
                 `;
             }
-             
+
 
             $all(".btnQuitarUsuarioTarea").forEach(btn => {
                 btn.addEventListener("click", async (e) => {
@@ -859,7 +863,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         let fila = e.target.closest("tr"); // Encuentra la fila actual
                         console.log("fila para remover conteindo-> ", fila);
                         let selectAsignacionEditor = fila.querySelector("select[name='responsablepost']");
-                       
+
                         console.log("selectAsignacionEEDITOR -> ", selectAsignacionEditor);
 
 
@@ -873,6 +877,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             return
                         }
                     } catch (error) {
+                        console.log("erro -< ",error);
                         showToast("No puedes removerle la responsabilidad por que se encuentra en desarollo", "ERROR")
                         return
                     }
@@ -961,7 +966,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                         const cmanagerRespExistente = await obtenerCmanagerPorIdAgendaEditor(idagendaeditor)
                         console.log("cmanagerRespExistente -> ", cmanagerRespExistente);
-                        if(cmanagerRespExistente.length > 0){
+                        if (cmanagerRespExistente.length > 0) {
                             showToast("Ya existe un responsable para esta tarea", "ERROR")
                             return
                         }
@@ -1008,8 +1013,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     })
 
-    
-    $q("#btnNuevaTipoTarea").addEventListener("click", async () => {    
+
+    $q("#btnNuevaTipoTarea").addEventListener("click", async () => {
         $q(".contenedor-asignados").innerHTML += `
         <tr>
             <td>
@@ -1045,22 +1050,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         $all(".btnGuardarTipoTarea").forEach(btn => {
             btn.addEventListener("click", async (e) => {
-                
+
                 let fila = e.target.closest("tr"); // Encuentra la fila actual
                 let inputNuevoTipoTarea = fila.querySelector("input[name='tipotarea']").value;
                 console.log("nuevo tipo tarea ", inputNuevoTipoTarea);
-                if(inputNuevoTipoTarea == ""){
+                if (inputNuevoTipoTarea == "") {
                     showToast("Rellena el campo de la nueva tarea", "ERROR")
                     return
                 }
-                const tipoTareaRegis = await registrarNuevoTipoTarea(inputNuevoTipoTarea)    
+                const tipoTareaRegis = await registrarNuevoTipoTarea(inputNuevoTipoTarea)
                 console.log("tipoTareaRegis -> ", tipoTareaRegis);
-                if(tipoTareaRegis.idtipotarea){
+                if (tipoTareaRegis.idtipotarea) {
                     showToast("Nueva Tarea Registrada", "SUCCESS")
                     modalAsignarEditor.hide()
                     return
                 }
             })
         })
+    })
+
+    $q("#btnAsignarTareaDiaria").addEventListener("click", async () => {
+        window.location.href = `http://localhost/vega-erp/views/utilitario/tareasdiarias/registrar-tareadiaria`
     })
 })

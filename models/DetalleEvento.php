@@ -244,6 +244,17 @@ class DetalleEvento extends ExecQuery
     }
   }
 
+  public function obtenerDPs($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("SELECT * FROM detalles_presentacion WHERE = ");
+      $cmd->execute(array($params['iddetallepresentacion']));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function obtenerInfoDPporId($params = []): array
   {
     try {

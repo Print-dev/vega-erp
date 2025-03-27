@@ -48,4 +48,49 @@ class AgendaCManager extends ExecQuery
         die($e->getMessage());
       }
     }
+
+    
+    public function asignarPortalWebContenido($params = []): bool
+    {
+      try {
+        $pdo = parent::getConexion();
+        $cmd = $pdo->prepare('CALL sp_asignar_portal_web_contenido(?,?)');
+        $act = $cmd->execute(
+          array(
+            $params['idagendacommanager'],
+            $params['portalpublicar']
+          )
+        );
+        
+        return $act;
+      } catch (PDOException $e) {
+        // Registrar detalles del error en el log
+        error_log("Error en registrarDetallePresentacion: " . $e->getMessage());
+  
+        // Retornar detalles del error
+        die($e->getMessage());
+      }
+    }
+
+    public function actualizarEstadoPublicarContenido($params = []): bool
+    {
+      try {
+        $pdo = parent::getConexion();
+        $cmd = $pdo->prepare('CALL sp_actualizar_estado_publicar_contenido(?,?)');
+        $act = $cmd->execute(
+          array(
+            $params['idagendacommanager'],
+            $params['estado']
+          )
+        );
+        
+        return $act;
+      } catch (PDOException $e) {
+        // Registrar detalles del error en el log
+        error_log("Error en registrarDetallePresentacion: " . $e->getMessage());
+  
+        // Retornar detalles del error
+        die($e->getMessage());
+      }
+    }
 }
