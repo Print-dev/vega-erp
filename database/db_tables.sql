@@ -33,7 +33,7 @@ CREATE TABLE distritos
 CREATE TABLE personas
 (
 	idpersona     int auto_increment  primary key,
-	num_doc       varchar(20)         not null,
+	num_doc       varchar(20)         null,
 	apellidos     varchar(100)        null,
 	nombres	      varchar(100)        null,
 	genero        char(1)             null,
@@ -310,7 +310,7 @@ CREATE TABLE tipotarea (
 	idtipotarea	int auto_increment primary key,
     tipotarea varchar(30) not null
 ) engine = innodb;
-
+select * from tipotarea;
 -- select * from agenda_editores;
 select  * from usuarios;
 select * from nivelaccesos;
@@ -345,8 +345,6 @@ CREATE TABLE agenda_commanager (
     constraint fk_idagendaeditor_cm foreign key (idagendaeditor) references agenda_editores (idagendaeditor),
     constraint fk_idusuarioCmanaget foreign key (idusuarioCmanager) references usuarios (idusuario)
 ) engine = innodb;
-select * from agenda_commanager;
-select * from usuarios;
 
 --  -------------------------------------------- NUEVAS TABLAS AGREGASDAS -----------------------------------------
 -- AGREGADO EL 26-06-2025 - 16:33

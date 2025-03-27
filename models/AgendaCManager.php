@@ -35,4 +35,17 @@ class AgendaCManager extends ExecQuery
             die($e->getMessage());
         }
     }
+
+    public function quitarResponsablePosteo($params = []): bool
+    {
+      try {
+        $cmd = parent::execQ("CALL sp_quitar_responsable_posteo (?)");
+        $eliminado = $cmd->execute(array(
+          $params['idagendaeditor']
+        ));
+        return $eliminado;
+      } catch (Exception $e) {
+        die($e->getMessage());
+      }
+    }
 }

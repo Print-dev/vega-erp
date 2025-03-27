@@ -145,6 +145,22 @@ if (isset($_POST['operation'])) {
 
       echo json_encode($respuesta);
       break;
+      
+    case 'registrarNuevoTipoTarea':
+      $cleanData = [
+        'tipotarea'   =>  $agenda->limpiarCadena($_POST['tipotarea']) ? $agenda->limpiarCadena($_POST['tipotarea']) : ''
+      ];
+
+      $respuesta = ['idtipotarea' => -1];
+
+      $idtipotarea = $agenda->registrarNuevoTipoTarea($cleanData);
+
+      if ($idtipotarea > 0) {
+        $respuesta['idtipotarea'] = $idtipotarea;
+      }
+
+      echo json_encode($respuesta);
+      break;
 
     case 'registrarAgendaEdicion':
       $cleanData = [

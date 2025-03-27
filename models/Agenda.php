@@ -305,4 +305,22 @@ class Agenda extends ExecQuery
       return false;
     }
   }
+
+  public function registrarNuevoTipoTarea($params = []): int
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_registrar_nuevo_tipotarea (@idtipotarea,?)");
+      $cmd->execute(
+        array(
+          $params['tipotarea']
+        )
+      );
+      $respuesta = $pdo->query("SELECT @idtipotarea AS idtipotarea")->fetch(PDO::FETCH_ASSOC);
+      return $respuesta['idtipotarea'];
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
 }

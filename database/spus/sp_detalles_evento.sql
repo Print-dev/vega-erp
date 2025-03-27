@@ -417,7 +417,6 @@ BEGIN
         DP.acuerdo,
         DP.estado,
         AGE.idagendaedicion,
-        AGENED.idagendaeditor,
         (SELECT RE.vigencia 
          FROM reservas RE 
          WHERE RE.idpagocontrato = (SELECT PC.idpagocontrato 
@@ -439,7 +438,6 @@ BEGIN
         DEDP.departamento,
         DEDP.iddepartamento
 	FROM agenda_edicion AGE 
-    LEFT JOIN agenda_editores AGENED ON AGENED.idagendaedicion = AGE.idagendaedicion
     LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = AGE.iddetalle_presentacion
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente

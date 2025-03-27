@@ -110,7 +110,11 @@
                     </div>
                 </div>
             </div>
+            <div class="text-end">
+            <button type="button" class="btn btn-primary" id="btnNuevaTareaDiaria">Nueva Tarea Diaria</button>
         </div>
+        </div>
+        
     </div>
 </div>
 
@@ -238,29 +242,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal-filmmaker" tabindex="-1" aria-labelledby="modalfilmmaker" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalfilmmaker">Asignar Filmmaker</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="contenedor-filmmaker p-3">
-                    <div class="form-floating">
-                        <select name="filmmaker" id="filmmaker" class="form-select">
-                        </select>
-                        <label for="filmmaker" class="form-label">Filmmaker</label>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer text-end">
-                <button type="button" class="btn btn-secondary" id="btnGuardarFilmmaker">Asignar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="modal fade" id="modal-asignareditor" tabindex="-1" aria-labelledby="modalasignareditor" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -328,7 +309,7 @@
                                     <th>Responsable de Posteo</th>
                                 </tr>
                             </thead>
-                            <tbody class="contenedor-asignados">
+                            <tbody class="contenedor-asignados" >
                                 
                             </tbody>
                         </table>
@@ -336,7 +317,7 @@
                 </div>
             </div>
             <div class="modal-footer text-end">
-                <button type="button" class="btn btn-secondary" id="btnGuardarAsignacion">Agregar Nueva Tarea</button>
+                <button type="button" class="btn btn-secondary" id="btnNuevaTipoTarea">Agregar Nueva Tarea</button>
             </div>
         </div>
     </div>

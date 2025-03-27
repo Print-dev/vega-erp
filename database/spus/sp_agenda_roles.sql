@@ -72,19 +72,6 @@ BEGIN
     END IF;
 END $$
 
-DROP PROCEDURE if exists sp_actualizar_agenda_editor; -- ELIMINAR ESTO
-DELIMITER //
-CREATE PROCEDURE sp_actualizar_agenda_editor (
-	IN _idagendaeditor INT,
-    IN _urlimagen VARCHAR(40),
-    IN _urlvideo VARCHAR(200)
-)
-BEGIN
-		UPDATE agenda_editores SET
-    url_imagen = _urlimagen,
-    url_video = _urlvideo
-    WHERE idagendaeditor = _idagendaeditor; 
-END //
 
 DROP PROCEDURE if exists sp_actualizar_agenda_editor;
 DELIMITER //
@@ -128,7 +115,6 @@ BEGIN
     AND ae.idtipotarea = p_idtipotarea;
 END $$
 DELIMITER ;
-CALL obtenerUsuarioAsignado (1, 3);
 
 
 DROP PROCEDURE IF EXISTS sp_subir_contenido_editor; -- editado
@@ -214,10 +200,6 @@ BEGIN
 END //
 
 
-
--- CALL sp_subir_contenido_editor(@idsubida, 1, 'hola.kjpg','');
-select * from subidas_agenda_edicion
-
 DROP PROCEDURE IF EXISTS sp_obtener_usuario_asignado_tarea;
 DELIMITER $$
 CREATE PROCEDURE sp_obtener_usuario_asignado_tarea
@@ -233,10 +215,7 @@ BEGIN
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
     WHERE AGE.idusuario = _idusuario AND AGE.idagendaedicion = _idagendaedicion;
 END $$
-select*from agenda_editores;
-select*from agenda_edicion; 
-CALL  sp_obtener_usuario_asignado_tarea(10, 6);
-select * from usuarios
+
 
 DROP PROCEDURE IF EXISTS sp_quitar_tarea_usuario;
 DELIMITER $$
@@ -264,6 +243,3 @@ BEGIN
         LEFT JOIN usuarios USUDP ON USUDP.idusuario = DP.idusuario
         WHERE (_idusuario IS NULL OR AGED.idusuario = _idusuario OR AGED.idusuario IS NULL);
 END $$
-
--- CALL sp_obtener_tareas_editor (6); 
-select * from detalles_presentacion;

@@ -39,5 +39,15 @@ if (isset($_POST['operation'])) {
 
       echo json_encode($respuesta);
       break;
+
+      case 'quitarResponsablePosteo':
+        $cleanData = [
+          'idagendaeditor' => $agendacmanager->limpiarCadena($_POST['idagendaeditor'])
+        ];
+  
+        $eliminado = $agendacmanager->quitarResponsablePosteo($cleanData);
+  
+        echo json_encode($eliminado);
+        break; 
   }
 }

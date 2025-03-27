@@ -37,3 +37,13 @@ CREATE PROCEDURE sp_obtener_agenda_cmmanager
 BEGIN
 	SELECT * FROM agenda_commanager WHERE idagendaeditor = _idagendaeditor;
 END $$
+
+DROP PROCEDURE IF EXISTS sp_quitar_responsable_posteo;
+DELIMITER $$
+CREATE PROCEDURE sp_quitar_responsable_posteo
+(
+    IN _idagendaeditor INT
+)
+BEGIN	
+	DELETE FROM agenda_commanager WHERE idagendaeditor = _idagendaeditor;
+END $$
