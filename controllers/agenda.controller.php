@@ -64,6 +64,14 @@ if (isset($_GET['operation'])) {
       echo json_encode($agenda->obtenerEditoresAsignados($cleanData));
       break;
 
+    case 'obtenerUsuarioAsignado':
+      $cleanData = [
+        'idagendaedicion' => $_GET['idagendaedicion'] === "" ? null : $agenda->limpiarCadena($_GET['idagendaedicion']),
+        'idtipotarea' => $_GET['idtipotarea'] === "" ? null : $agenda->limpiarCadena($_GET['idtipotarea']),
+      ];
+      echo json_encode($agenda->obtenerUsuarioAsignado($cleanData));
+      break;
+
     /* case 'obtenerTareaPorUsuario':
       $cleanData = [
         'idusuario' => $_GET['idusuario'] === "" ? null : $agenda->limpiarCadena($_GET['idusuario']),
@@ -148,7 +156,7 @@ if (isset($_POST['operation'])) {
       break;
 
 
-    case 'actualizarAgendaEditor':
+/*     case 'actualizarAgendaEditor':
       $cleanData = [
         'idagendaeditor' => $agenda->limpiarCadena($_POST['idagendaeditor']),
         'urlimagen' => $agenda->limpiarCadena($_POST['urlimagen']),
@@ -159,7 +167,7 @@ if (isset($_POST['operation'])) {
 
       echo json_encode($update);
       break;
-
+ */
     case 'comentarContenido':
       $cleanData = [
         'idsubida' => $agenda->limpiarCadena($_POST['idsubida']),
@@ -178,6 +186,20 @@ if (isset($_POST['operation'])) {
       ];
 
       $update = $agenda->actualizarEstadoTareaEdicion($cleanData);
+
+      echo json_encode($update);
+      break;
+
+    case 'actualizarAgendaEditor':
+      $cleanData = [
+        'idagendaeditor' => $agenda->limpiarCadena($_POST['idagendaeditor']),
+        'idusuario' => $agenda->limpiarCadena($_POST['idusuario']),
+        'idtipoentrega' => $agenda->limpiarCadena($_POST['idtipoentrega']),
+        'fechaentrega' => $agenda->limpiarCadena($_POST['fechaentrega']),
+        'horaentrega' => $agenda->limpiarCadena($_POST['horaentrega'])
+      ];
+
+      $update = $agenda->actualizarAgendaEditor($cleanData);
 
       echo json_encode($update);
       break;

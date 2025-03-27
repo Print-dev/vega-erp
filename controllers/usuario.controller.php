@@ -72,6 +72,12 @@ $accesos = [
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
 
   ],
+  "Com. Manager" => [
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
+    ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '','texto' => '','visible' => false, 'icono'=>''],
+    ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
+
+  ],
 ];
 
 if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {

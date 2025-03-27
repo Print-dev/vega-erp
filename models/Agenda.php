@@ -126,6 +126,20 @@ class Agenda extends ExecQuery
     }
   }
 
+  public function obtenerUsuarioAsignado($params = []): array // este spu lo q hace es que verifica si una tarea ya tiene a un editor asignado
+  {
+    try {
+      $cmd = parent::execQ("CALL obtenerUsuarioAsignado (?,?)");
+      $cmd->execute(array(
+        $params['idagendaedicion'],
+        $params['idtipotarea'],
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function obtenerTareaPorUsuarioYagenda($params = []): array
   {
     try {
@@ -199,7 +213,7 @@ class Agenda extends ExecQuery
       die($e->getMessage());
     }
   }
-  
+
   public function subirContenidoEditor($params = []): int
   {
     try {
@@ -216,7 +230,7 @@ class Agenda extends ExecQuery
     }
   }
 
-  public function actualizarAgendaEditor($params = []): bool
+  /*   public function actualizarAgendaEditor($params = []): bool
   {
     try {
       $pdo = parent::getConexion();
@@ -233,8 +247,29 @@ class Agenda extends ExecQuery
       error_log("Error: " . $e->getMessage());
       return false;
     }
+  } */
+
+  public function actualizarAgendaEditor($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_actualizar_agenda_editor(?,?,?,?,?)");
+      $rpt = $cmd->execute(
+        array(
+          $params['idagendaeditor'],
+          $params['idusuario'],
+          $params['idtipoentrega'],
+          $params['fechaentrega'],
+          $params['horaentrega'],
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
   }
-  
+
   public function comentarContenido($params = []): bool
   {
     try {

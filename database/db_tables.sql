@@ -305,13 +305,15 @@ CREATE TABLE agenda_edicion ( -- tabla que envuelve la tabla agenda editores
     iddetalle_presentacion INT NOT NULL,  -- Relación con la agenda del evento
     constraint fk_iddp_ag_edicion foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 );
-select * from agenda_edicion ;
+-- select * from agenda_edicion ;
 CREATE TABLE tipotarea (
 	idtipotarea	int auto_increment primary key,
     tipotarea varchar(30) not null
 ) engine = innodb;
 
 -- select * from agenda_editores;
+select  * from usuarios;
+select * from nivelaccesos;
  -- referencia: modal asignar editor
 CREATE TABLE agenda_editores (
 	idagendaeditor	int auto_increment primary key,
@@ -326,8 +328,6 @@ CREATE TABLE agenda_editores (
     constraint fk_idusuario_ag_edit foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idtipotarea_agen foreign key (idtipotarea) references tipotarea (idtipotarea)
 ) engine = innodb;
-select * from agenda_editores;
-select * from usuarios;
 
 CREATE TABLE subidas_agenda_edicion (
 	idsubida	int  auto_increment primary key,
@@ -337,5 +337,33 @@ CREATE TABLE subidas_agenda_edicion (
     constraint fk_subidas_agenda_edi foreign key (idagendaeditor) references agenda_editores (idagendaeditor)
 ) engine=innodb;
 
+-- AGREGADO EL 26-06-2025 - 16:33
+CREATE TABLE agenda_commanager (
+	idagendacommanager	int auto_increment primary key,
+    idagendaeditor 		int not null,
+    idusuarioCmanager 	int not null,
+    constraint fk_idagendaeditor_cm foreign key (idagendaeditor) references agenda_editores (idagendaeditor),
+    constraint fk_idusuarioCmanaget foreign key (idusuarioCmanager) references usuarios (idusuario)
+) engine = innodb;
+select * from agenda_commanager;
+select * from usuarios;
 
-select * from subidas_agenda_edicion;
+--  -------------------------------------------- NUEVAS TABLAS AGREGASDAS -----------------------------------------
+-- AGREGADO EL 26-06-2025 - 16:33
+CREATE TABLE tareas_diarias (
+	idtareadiaria	int auto_increment primary key,
+	tarea			varchar(120) not null
+) ENGINE = INNODB;
+
+-- AGREGADO EL 26-06-2025 - 16:33
+CREATE TABLE tareas_diaria_asignacion (
+	idtaradiariaasig int auto_increment primary key,
+    idusuario 		int not null,
+	idtareadiaria	int not null,
+    fecha_entrega	date not null,
+    hora_entrega 	time not null,
+    estado			SMALLINT null, -- 1: pendiente, 2: atrasado, 3: completado, 4: completado con atraso
+    constraint fk_idusuario	foreign key (idusuario) references usuarios (idusuario),
+    constraint fk_idtareadiaria_asig foreign key (idtareadiaria) references tareas_diarias (idtareadiaria)
+) engine = innodb;
+

@@ -39,4 +39,6 @@ ALTER TABLE agenda_editores DROP COLUMN tipotarea;
 ALTER TABLE agenda_editores ADD COLUMN idtipotarea INT NOT NULL;
 ALTER TABLE agenda_editores ADD CONSTRAINT fk_idtipotarea_agen foreign key (idtipotarea) REFERENCES tipotarea (idtipotarea);
 
-ALTER TABLE agenda_editores ADD COLUMN hora_entrega TIME NOT NULL
+ALTER TABLE agenda_editores ADD COLUMN hora_entrega TIME NOT NULL;
+ALTER TABLE agenda_editores ADD COLUMN    idcommunitymanager 	int null;
+ALTER TABLE agenda_editores DROP COLUMN idcommunitymanager;

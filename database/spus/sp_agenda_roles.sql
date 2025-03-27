@@ -86,6 +86,51 @@ BEGIN
     WHERE idagendaeditor = _idagendaeditor; 
 END //
 
+DROP PROCEDURE if exists sp_actualizar_agenda_editor;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_agenda_editor (
+	IN _idagendaeditor INT,
+    IN _idusuario INT,
+    IN _idtipotarea INT,
+    IN _fecha_entrega DATE,
+	IN _hora_entrega TIME
+)
+BEGIN
+		UPDATE agenda_editores SET
+    idusuario = _idusuario,
+    idtipotarea = _idtipotarea,
+    fecha_entrega = _fecha_entrega,
+    hora_entrega = _hora_entrega
+    WHERE idagendaeditor = _idagendaeditor; 
+END //
+
+DROP PROCEDURE if exists obtenerUsuarioAsignado;
+DELIMITER $$
+CREATE PROCEDURE obtenerUsuarioAsignado(
+    IN p_idagendaedicion INT,
+    IN p_idtipotarea INT
+)
+BEGIN
+    SELECT 
+        ae.idagendaeditor,
+        ae.idusuario,
+        u.nom_usuario,
+        tt.tipotarea,
+        tt.idtipotarea,
+        ae.estado,
+        ae.fecha_asignacion,
+        ae.fecha_entrega,
+        ae.hora_entrega
+    FROM agenda_editores ae
+    JOIN usuarios u ON ae.idusuario = u.idusuario
+    JOIN tipotarea tt ON ae.idtipotarea = tt.idtipotarea
+    WHERE ae.idagendaedicion = p_idagendaedicion
+    AND ae.idtipotarea = p_idtipotarea;
+END $$
+DELIMITER ;
+CALL obtenerUsuarioAsignado (1, 3);
+
+
 DROP PROCEDURE IF EXISTS sp_subir_contenido_editor; -- editado
 DELIMITER $$
 CREATE PROCEDURE sp_subir_contenido_editor (
