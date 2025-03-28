@@ -45,3 +45,14 @@ ALTER TABLE agenda_editores DROP COLUMN idcommunitymanager;
 ALTER TABLE agenda_commanager ADD COLUMN  portalpublicar 		varchar(120) not null;
 ALTER TABLE agenda_commanager ADD COLUMN estado				SMALLINT null default 1;
 ALTER TABLE agenda_commanager ADD COLUMN copy				text null;
+ALTER TABLE agenda_commanager ADD COLUMN fechapublicacion datetime null;
+
+ALTER TABLE viaticos DROP COLUMN pasaje;
+ALTER TABLE viaticos ADD COLUMN pasaje decimal(7,2) null;
+ALTER TABLE viaticos DROP COLUMN comida;
+ALTER TABLE viaticos ADD COLUMN hospedaje decimal(7,2) null;
+ALTER TABLE viaticos ADD COLUMN desayuno tinyint null;
+ALTER TABLE viaticos ADD COLUMN almuerzo tinyint null;
+ALTER TABLE viaticos ADD COLUMN cena tinyint null;
+ALTER TABLE detalles_presentacion ADD COLUMN lugardestino	varchar(100) null;
+ALTER TABLE detalles_presentacion DROP COLUMN lugardestino;

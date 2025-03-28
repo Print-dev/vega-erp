@@ -57,7 +57,7 @@ CREATE PROCEDURE sp_obtener_tareas_para_publicar
     )
 BEGIN
 	SELECT 
-		AGENC.idagendacommanager, AGENE.estado as estadoProgreso, DEP.establecimiento, DEP.fecha_presentacion, USU.idusuario, USU.nom_usuario, AGENC.idusuarioCmanager, PERAGEN.nombres, TIPO.tipotarea, AGENC.copy, AGENC.portalpublicar, AGENC.estado, AGENC.idusuarioCmanager 
+		AGENC.idagendacommanager, AGENC.fechapublicacion ,AGENE.estado as estadoProgreso, DEP.establecimiento, DEP.fecha_presentacion, USU.idusuario, USU.nom_usuario, AGENC.idusuarioCmanager, PERAGEN.nombres, TIPO.tipotarea, AGENC.copy, AGENC.portalpublicar, AGENC.estado, AGENC.idusuarioCmanager 
     FROM agenda_commanager  AGENC
     LEFT JOIN agenda_editores AGENE ON AGENE.idagendaeditor = AGENC.idagendaeditor
     LEFT JOIN agenda_edicion AGENED ON AGENED.idagendaedicion = AGENE.idagendaedicion
@@ -73,6 +73,21 @@ BEGIN
     AND (AGENC.idusuarioCmanager LIKE CONCAT('%', COALESCE(_idusuarioEditor, ''), '%') OR _idusuarioEditor IS NULL) AND
     AGENE.estado = 2 OR AGENE.estado = 4;
 END $$
+
+DROP PROCEDURE IF EXISTS sp_obtener_tarea_vinculada_cmanager;
+DELIMITER $$
+CREATE PROCEDURE sp_obtener_tarea_vinculada_cmanager
+(
+    IN _idagendaeditor int
+    )
+BEGIN
+	SELECT 
+	AGENC.estado, AGENC.idagendacommanager, AGENC.idagendaeditor
+	FROM agenda_commanager  AGENC
+    LEFT JOIN agenda_editores AGENE ON AGENE.idagendaeditor = AGENC.idagendaeditor
+    WHERE AGENC.idagendaeditor = _idagendaeditor;
+END $$
+
 
 -- call sp_obtener_tareas_para_publicar("mega", null , 10, 9)
 
@@ -108,7 +123,8 @@ CREATE PROCEDURE sp_actualizar_estado_publicar_contenido (
 )
 BEGIN
 		UPDATE agenda_commanager SET
-    estado = _estado    
+    estado = _estado    ,
+    fechapublicacion = now()
     WHERE idagendacommanager = _idagendacommanager; 
 END //
 

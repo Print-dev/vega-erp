@@ -7,7 +7,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h1>Contenido revisado para publicar</h1>
+                    <h1>Contenidos listos para publicar</h1>
                 </div>
 
             </div>
@@ -61,8 +61,9 @@
                                                 <th>Fecha de evento</th>
                                                 <th>Artista</th>
                                                 <th>Usuario Editor</th>
-                                                <th>Tarea</th>
+                                                <th>Contenido</th>
                                                 <th>Portal Publicar</th>
+                                                <th>Fecha Publicado</th>
                                                 <th>Copy</th>
                                                 <th>Opciones</th>
                                             </tr>

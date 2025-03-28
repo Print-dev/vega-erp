@@ -41,8 +41,11 @@ if (isset($_POST['operation'])) {
       $cleanData = [
         'iddetallepresentacion'   => $viatico->limpiarCadena($_POST['iddetallepresentacion']),
         'idusuario'   => $viatico->limpiarCadena($_POST['idusuario']),
-        'pasaje' => $viatico->limpiarCadena($_POST['pasaje']),
-        'comida'   => $viatico->limpiarCadena($_POST['comida']),
+        'pasaje' => $viatico->limpiarCadena($_POST['pasaje']) ? $viatico->limpiarCadena($_POST['pasaje']) : '',
+        'hospedaje'   => $viatico->limpiarCadena($_POST['hospedaje']),
+        'desayuno'   => $viatico->limpiarCadena($_POST['desayuno']) ? $viatico->limpiarCadena($_POST['desayuno']) : '',
+        'almuerzo'   => $viatico->limpiarCadena($_POST['almuerzo']) ?  $viatico->limpiarCadena($_POST['almuerzo']) : '',
+        'cena'   => $viatico->limpiarCadena($_POST['cena']) ?  $viatico->limpiarCadena($_POST['cena']) : '',
         'viaje'   => $viatico->limpiarCadena($_POST['viaje']) ? $viatico->limpiarCadena($_POST['viaje']) : '',
       ];
 

@@ -629,3 +629,32 @@ BEGIN
     idusuario = nullif(_idusuario, '')
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
+
+DROP PROCEDURE IF EXISTS sp_reportar_artista_evento; -- esto servira para reportar salidas y retornos
+DELIMITER $$
+CREATE PROCEDURE sp_reportar_artista_evento (
+    OUT _idreporte INT,
+	IN _iddetalle_presentacion int,
+	IN _tipo int,
+    IN _fecha date,
+    IN _hora time
+)
+BEGIN
+    DECLARE existe_error INT DEFAULT 0;
+    
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SET existe_error = 1;
+    END;
+    
+    INSERT INTO reportes_artista_evento (iddetalle_presentacion, tipo, fecha, hora)
+    VALUES (_iddetalle_presentacion, _tipo, _fecha, _hora);
+    
+    IF existe_error = 1 THEN
+        SET _idreporte = -1;
+    ELSE
+        SET _idreporte = LAST_INSERT_ID();
+    END IF;
+END $$
+
+select * from notificaciones;

@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
   //VARIABLES LONGITUDES Y LATITUDES
+  let iddetallepresentacion = -1
   let latOrigen
   let lonOrigen
   let calcularDificultadPrecio = []
@@ -34,6 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let modalFilmmaker
   let modalAsignarEditor
   let modalProgresoEdicion
+  let modalSalida
 
   //CALENDARIO
   let calendarEl;
@@ -91,6 +93,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     data.forEach((artista) => {
       usuarioSelect.innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
     });
+    return data
 
   }
 
@@ -256,6 +259,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rbody;
   }
 
+  async function reportarSalidaRetornoArtista(iddetallepresentacion, tipo, fecha, hora) {
+
+    const body = new FormData();
+    body.append("operation", "reportarSalidaRetornoArtista");
+    body.append("iddetallepresentacion", iddetallepresentacion); // id artista
+    body.append("tipo", tipo);
+    body.append("fecha", fecha);
+    body.append("hora", hora);
+
+    const fbody = await fetch(`${host}agenda.controller.php`, {
+      method: "POST",
+      body: body,
+    });
+    const rbody = await fbody.json();
+    return rbody;
+  }
+
   async function registrarViatico(iddetallepresentacion) {
     console.log("valor pasaje -> ", $q("#pasaje").value);
     const viatico = new FormData();
@@ -273,11 +293,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rviatico;
   }
 
-  async function registrarNotificacion(filmmaker, tipo, idviatico, mensaje) {
+  async function registrarNotificacion(idusuariodest, idusuariorem, tipo, idviatico, mensaje) {
     const viatico = new FormData();
     viatico.append("operation", "registrarNotificacion");
-    viatico.append("idusuariodest", 1); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
-    viatico.append("idusuariorem", filmmaker); // id usuario envia la notificacion
+    viatico.append("idusuariodest", idusuariodest); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
+    viatico.append("idusuariorem", idusuariorem); // id usuario envia la notificacion
     viatico.append("tipo", tipo);
     viatico.append("idreferencia", idviatico ? idviatico : '');
     viatico.append("mensaje", mensaje);
@@ -320,6 +340,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     const racuerdo = await facuerdo.json();
     return racuerdo;
   }
+
+  /* async function asignarLugarDestinoBus(iddetallepresentacion) {
+    const acuerdo = new FormData();
+    acuerdo.append("operation", "asignarLugarDestinoBus");
+    acuerdo.append("iddetallepresentacion", iddetallepresentacion);
+    acuerdo.append("lugardestino", $q("#destino").value);
+
+    const facuerdo = await fetch(`${host}detalleevento.controller.php`, {
+      method: "POST",
+      body: acuerdo,
+    });
+    const racuerdo = await facuerdo.json();
+    return racuerdo;
+  } */
 
   /* async function asignarFilmmakerDP(iddetallepresentacion) {
     const filmmaker = new FormData();
@@ -374,6 +408,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     eventClick: async function (evento) {
       $q(".contenedor-monto").innerHTML = "";
       const btnVerMontos = evento.jsEvent.target.closest("#btnVerMontos");
+      const btnReportarSalida = evento.jsEvent.target.closest("#btnReportarSalida");
+      const btnReportarRetorno = evento.jsEvent.target.closest("#btnReportarRetorno");
       console.log("btnVerMontos ->", btnVerMontos);
       if (btnVerMontos) {
         console.log("CLICK EN VER MONTOS");
@@ -409,8 +445,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             ? precioArtista + costoDificultad
             : precioArtista + costoDificultad + igv;
 
-            $q(".contenedor-monto").innerHTML = ''
-            
+          $q(".contenedor-monto").innerHTML = ''
+
           $q(".contenedor-monto").innerHTML = `
               <div class="table-responsive d-flex justify-content-center">
                 <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
@@ -475,8 +511,109 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </table>
               </div>
             `;
-        }else{
+        } else {
           $q(".contenedor-monto").innerHTML = '<label class="fw-light">Aun no hay montos disponibles.</label>'
+        }
+      }
+      if (btnReportarSalida) {
+        /* iddetallepresentacion = btnReportarSalida.getAttribute("data-iddp")
+        //modalSalida = new bootstrap.Modal($q("#modal-lugardestino"))
+        //modalSalida.show() // YA NO IRA MODAL , SOLO UN CLICK Y SE REGISTRA LA SALIDA / RETORNO
+
+        $q("#btnSalida").addEventListener("click", async () => {
+          const { fecha, hora } = obtenerSoloFechaHoraPeruSeparadaFormatoMysql();
+          console.log("Fecha Perú (MySQL):", fecha);
+          console.log("Hora Perú:", hora);
+
+          btnReportarSalida.disabled = true;
+          btnReportarSalida.innerHTML = '<i class="fas fa-save"></i> Reportando...'; // Cambia al icono de disquete o uno similar
+          const usuariosAdmin = await obtenerUsuarios("3")
+          const usuarioLogeado = await obtenerUsuarioPorId(idusuarioLogeado)
+          console.log("usuarioLogeado -> ", usuarioLogeado);
+          const mensaje = `${usuarioLogeado[0]?.nom_usuario} ha acaba de salir el ${formatDate(fecha)} a las ${formatHour(hora)}, click para mas detalles`
+          console.log("usuariosAdmin -> ", usuariosAdmin);
+
+          const reporteRegistradoEventoArt = await reportarSalidaRetornoArtista(iddetallepresentacion, 1, fecha, hora)
+          //const destinoBusAsignado = await asignarLugarDestinoBus(iddetallepresentacion)
+          //console.log("destino bus asignado ? ", destinoBusAsignado);
+          console.log("reporte de registro de salida del arrtista-> ", reporteRegistradoEventoArt);
+          if (reporteRegistradoEventoArt.idreporte) {
+            showToast("Salida Reportada!", "SUCCESS")
+            for (const admins of usuariosAdmin) {
+              console.log("admins -> ", admins);
+              const notificacionSalida = await registrarNotificacion(admins.idusuario, idusuarioLogeado, 2, reporteRegistradoEventoArt.idreporte, mensaje)
+              console.log("notificacion salida -> ", notificacionSalida);
+            }
+            modalSalida.hide()
+            setTimeout(() => {
+              btnReportarSalida.disabled = false;
+              btnReportarSalida.innerHTML = 'Reportar Salida'; // Reemplaza con el texto original
+            }, 2500);
+            return
+          }
+        }) */
+        iddetallepresentacion = btnReportarSalida.getAttribute("data-iddp")
+        const { fecha, hora } = obtenerSoloFechaHoraPeruSeparadaFormatoMysql();
+        console.log("Fecha Perú (MySQL):", fecha);
+        console.log("Hora Perú:", hora);
+
+        btnReportarSalida.disabled = true;
+        btnReportarSalida.innerHTML = '<i class="fas fa-save"></i> Reportando...'; // Cambia al icono de disquete o uno similar
+        const usuariosAdmin = await obtenerUsuarios("3")
+        const usuarioLogeado = await obtenerUsuarioPorId(idusuarioLogeado)
+        console.log("usuarioLogeado -> ", usuarioLogeado);
+        const mensaje = `${usuarioLogeado[0]?.nom_usuario} ha acaba de salir el ${formatDate(fecha)} a las ${formatHour(hora)}, click para mas detalles`
+        console.log("usuariosAdmin -> ", usuariosAdmin);
+
+        const reporteRegistradoEventoArt = await reportarSalidaRetornoArtista(iddetallepresentacion, 1, fecha, hora)
+        //const destinoBusAsignado = await asignarLugarDestinoBus(iddetallepresentacion)
+        //console.log("destino bus asignado ? ", destinoBusAsignado);
+        console.log("reporte de registro de salida del arrtista-> ", reporteRegistradoEventoArt);
+        if (reporteRegistradoEventoArt.idreporte) {
+          showToast("Salida Reportada!", "SUCCESS")
+          for (const admins of usuariosAdmin) {
+            console.log("admins -> ", admins);
+            const notificacionSalida = await registrarNotificacion(admins.idusuario, idusuarioLogeado, 2, reporteRegistradoEventoArt.idreporte, mensaje)
+            console.log("notificacion salida -> ", notificacionSalida);
+          }
+          //modalSalida.hide()
+          setTimeout(() => {
+            btnReportarSalida.disabled = false;
+            btnReportarSalida.innerHTML = 'Reportar Salida'; // Reemplaza con el texto original
+          }, 2500);
+          return
+        }
+      }
+      if (btnReportarRetorno) {
+        /* modalSalida = new bootstrap.Modal($q("#modal-salida"))
+        modalSalida.show() */ // YA NO IRA MODAL , SOLO UN CLICK Y SE REGISTRA LA SALIDA / RETORNO
+        const iddetallepresentacion = btnReportarRetorno.getAttribute("data-iddp")
+        const { fecha, hora } = obtenerSoloFechaHoraPeruSeparadaFormatoMysql();
+        console.log("Fecha Perú (MySQL):", fecha);
+        console.log("Hora Perú:", hora);
+
+        btnReportarRetorno.disabled = true;
+        btnReportarRetorno.innerHTML = '<i class="fas fa-save"></i> Reportando...'; // Cambia al icono de disquete o uno similar
+        const usuariosAdmin = await obtenerUsuarios("3")
+        const usuarioLogeado = await obtenerUsuarioPorId(idusuarioLogeado)
+        console.log("usuarioLogeado -> ", usuarioLogeado);
+        const mensaje = `${usuarioLogeado[0]?.nom_usuario} ha acaba de retornar el ${formatDate(fecha)} a las ${formatHour(hora)}, click para mas detalles`
+        console.log("usuariosAdmin -> ", usuariosAdmin);
+        const reporteRegistradoEventoArt = await reportarSalidaRetornoArtista(iddetallepresentacion, 2, fecha, hora)
+
+        console.log("reporte de registro de retorno del arrtista-> ", reporteRegistradoEventoArt);
+        if (reporteRegistradoEventoArt.idreporte) {
+          showToast("Retorno Reportada!", "SUCCESS")
+          for (const admins of usuariosAdmin) {
+            console.log("admins -> ", admins);
+            const notificacionRetorno = await registrarNotificacion(admins.idusuario, idusuarioLogeado, 2, reporteRegistradoEventoArt.idreporte, mensaje)
+            console.log("notificacion retorno -> ", notificacionRetorno);
+          }
+          setTimeout(() => {
+            btnReportarRetorno.disabled = false;
+            btnReportarRetorno.innerHTML = 'Reportar Retorno'; // Reemplaza con el texto original
+          }, 2500);
+          return
         }
       }
 
@@ -620,7 +757,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             idcontrato: evento.idcontrato,
             idconvenio: evento.idconvenio,
             estado: evento.estado,
-            idagendaedicion: evento.idagendaedicion
+            idagendaedicion: evento.idagendaedicion,
+            iddetalle_presentacion: evento.iddetalle_presentacion,
           },
         });
       }
@@ -682,7 +820,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <div style="font-size: 20px; font-weight: bold;">Este evento esta siendo editado por el encargado.</div>
           
           ` :
-            arg.event.extendedProps.estado == 3 || arg.event.extendedProps.estado == 2 ? `
+              arg.event.extendedProps.estado == 3 || arg.event.extendedProps.estado == 2 ? `
           <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
           <div>${horaInicio} - ${horaFinal}</div>
           <div>${badgeHtml}</div>
@@ -691,14 +829,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         overflow-wrap: break-word;
         white-space: normal;">
           <div style="font-size: 20px; font-weight: bold;">${arg.event.title
-              }</div>
+                }</div>
             <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
-              }</div>
+                }</div>
             <div><strong>Tiempo:</strong> ${calculateDuration(
-                arg.event.extendedProps.horainicio,
-                arg.event.extendedProps.horafinal
-              )}</div>` :
-              `
+                  arg.event.extendedProps.horainicio,
+                  arg.event.extendedProps.horafinal
+                )}</div>` :
+                `
           <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
           <div>${horaInicio} - ${horaFinal}</div>
           <div>${badgeHtml}</div>
@@ -707,13 +845,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         overflow-wrap: break-word;
         white-space: normal;">
           <div style="font-size: 20px; font-weight: bold;">${arg.event.title
-              }</div>
+                }</div>
             <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
-              }</div>
+                }</div>
             <div><strong>Tiempo:</strong> ${calculateDuration(
-                arg.event.extendedProps.horainicio,
-                arg.event.extendedProps.horafinal
-              )}</div>
+                  arg.event.extendedProps.horainicio,
+                  arg.event.extendedProps.horafinal
+                )}</div>
     
         ${nivelacceso == "Administrador" ? `
           <label ><strong>Acuerdos:</strong></label>
@@ -726,8 +864,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         white-space: normal;
       ">
         ${arg.event.extendedProps.acuerdo ||
-                "Sin acuerdos registrados"
-                }
+                  "Sin acuerdos registrados"
+                  }
       </div>
           ` : ''}
           ${nivelacceso == "Administrador" ? `
@@ -742,6 +880,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     
             ${nivelacceso == "Artista" ? `
               <button type="button" class="btn btn-primary" id="btnVerMontos" style="flex: 1;" data-idcontrato="${arg.event.extendedProps?.idcontrato}" data-idconvenio="${arg.event.extendedProps?.idconvenio}">Ver Monto</button>
+              <button type="button" class="btn btn-primary" id="btnReportarSalida" style="flex: 1;" data-iddp="${arg.event.extendedProps?.iddetalle_presentacion}">Reportar Salida</button>
+              <button type="button" class="btn btn-primary" id="btnReportarRetorno" style="flex: 1;" data-iddp="${arg.event.extendedProps?.iddetalle_presentacion}">Reportar Retorno</button>
             ` : ''}
           </div>
           `}
@@ -1043,6 +1183,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       //      showToast(`El monto a pagar es de S/. ${monto}`, "INFO")
     }
+    /* if (e.target && e.target.id === "btnReportarSalida") {
+      modalSalida = new bootstrap.Modal($q("#modal-salida"))
+      modalSalida.show()
+    } */
   }); // ME QUEDE ACA -> REVISAR EL MODAL DE VIATICO
 
   async function renderizarInfoAgenda(iddp, iddepartamento) {
@@ -1130,7 +1274,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("valor filmamker elegido -> ", $q("#filmmaker").value);
     const dpObtenido = await obtenerFilmmakerAsociadoEvento($q("#filmmaker").value)
     console.log("este filmmaker esta asociado a un evento -> ", dpObtenido);
-    if($q("#filmmaker").value == dpObtenido[0]?.idusuario && iddp == dpObtenido[0].iddetalle_presentacion){
+    if ($q("#filmmaker").value == dpObtenido[0]?.idusuario && iddp == dpObtenido[0].iddetalle_presentacion) {
       showToast("Este filmmaker ya esta asignado a este evento", "ERROR")
       return
     } // este id usuario es del filmmaker

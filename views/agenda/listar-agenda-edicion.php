@@ -110,9 +110,9 @@
                     </div>
                 </div>
             </div>
-            <div class="text-end">
+           <!--  <div class="text-end">
             <a href="http://localhost/vega-erp/views/utilitario/tareasdiarias/listar-tareasdiarias" class="btn btn-primary" id="btnAsignarTareaDiaria">Asignar Tarea Diaria</a>
-        </div>
+        </div> -->
         </div>
         
     </div>
@@ -136,7 +136,7 @@
                         <div class="row g-3 align-items-center">
                             <div class="row g-3 align-items-center">
                                 <div class="col-md-4 text-end">
-                                    <label for="pasaje" class="form-label">Pasaje:</label>
+                                    <label for="pasaje" class="form-label">Pasaje: </label>
                                 </div>
                                 <div class="col-md-8">
                                     <div class="input-group">
@@ -306,7 +306,7 @@
                                     <th>Editor</th>
                                     <th>Fecha de entrega</th>
                                     <th>Hora de entrega</th>
-                                    <th>Responsable de Posteo</th>
+                                    <th>Responsable de Publicacion</th>
                                 </tr>
                             </thead>
                             <tbody class="contenedor-asignados" >
@@ -337,7 +337,7 @@
                         <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
                             <thead class="table-dark">
                                 <tr>
-                                    <th>Fecha</th>
+                                    <th>Fecha entrega</th>
                                     <th>Usuario</th>
                                     <th>Tipo Tarea</th>
                                     <th>Estado</th>

@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data.json();
   }
 
-  if(nivelacceso == "Administrador"){
+  if(nivelacceso == "Administrador" || nivelacceso == "Community Manager"){
     $q(".contenedor-subir-contenido-editor").remove()
     const historialContenido = await obtenerContenidoHistorialEdicion(idagendaeditor);
     console.log("historial ->", historialContenido);
@@ -51,11 +51,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </div>
                 <div class="col-12">
                     <label class="form-label fw-bold">Observaciones/Comentar</label>
-                    <textarea class="form-control observacion-caja" rows="3" data-idsubida="${item.idsubida}">${comentario}</textarea>
+                    <textarea class="form-control observacion-caja" rows="3" data-idsubida="${item.idsubida}" ${nivelacceso == 'Community Manager' ? 'readonly' : ''}>${comentario}</textarea>
                     <div class="row text-center">
-                      <button type="button" class="btn btn-primary mt-2 btnGuardarObservacion" data-idsubida="${item.idsubida}">
+                      ${nivelacceso == "Administrador" ? `<button type="button" class="btn btn-primary mt-2 btnGuardarObservacion" data-idsubida="${item.idsubida}">
                           Guardar <i class="fa-solid fa-paper-plane"></i>
-                      </button>
+                      </button>` : ``}
                     </div
                 </div>
             </div>
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       contenedorHistorial.innerHTML += historialItem;
     });
 
-  }else if(nivelacceso == "Edicion y Produccion"){
+  }else if(nivelacceso == "Edicion y Produccion" || nivelacceso == "Filmmaker"){
     $q(".contenedor-revisar-contenido").remove()
   }
 

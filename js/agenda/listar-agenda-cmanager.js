@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await obtenerUsuariosArtistas(6)
     await obtenerUsuariosEditores(8)
 
-    
+
 
     async function obtenerUsuariosArtistas(idnivelacceso) {
         const params = new URLSearchParams();
@@ -31,10 +31,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log(data);
         artistaSelect.innerHTML = "<option value=''>Todos</option>";
         data.forEach((artista) => {
-          artistaSelect.innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
+            artistaSelect.innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
         });
-    
-      }
+
+    }
 
     async function obtenerUsuariosEditores(idnivelacceso) {
         const params = new URLSearchParams();
@@ -44,10 +44,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log(data);
         editorSelect.innerHTML = "<option value=''>Todos</option>";
         data.forEach((artista) => {
-          editorSelect.innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
+            editorSelect.innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
         });
-    
-      }
+
+    }
 
     // ******************************************** DATATABLE ************************************************
 
@@ -87,12 +87,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     (async () => {
-        if(nivelacceso == "Community Manager"){
+        if (nivelacceso == "Community Manager") {
             $q(".contenedor-select-editor").hidden = true
             console.log("usuario de cmmnaager- Z> ", idusuarioLogeado);
             await dataFilters(idusuarioLogeado)
         }
-        else{
+        else {
             await dataFilters()
         }
     })();
@@ -108,38 +108,38 @@ document.addEventListener("DOMContentLoaded", async () => {
             }); */
             if (x.id === "establecimiento") {
                 x.addEventListener("input", async () => {
-                    if(nivelacceso == "Community Manager"){
-            $q(".contenedor-select-editor").hidden = true
-            console.log("usuario de cmmnaager- Z> ", idusuarioLogeado);
-            await dataFilters(idusuarioLogeado)
-        }
-        else{
-            await dataFilters()
-        }
+                    if (nivelacceso == "Community Manager") {
+                        $q(".contenedor-select-editor").hidden = true
+                        console.log("usuario de cmmnaager- Z> ", idusuarioLogeado);
+                        await dataFilters(idusuarioLogeado)
+                    }
+                    else {
+                        await dataFilters()
+                    }
                 });
             }
             if (x.id === "fechapresentacion") {
                 x.addEventListener("change", async () => {
-                    if(nivelacceso == "Community Manager"){
-            $q(".contenedor-select-editor").hidden = true
-            console.log("usuario de cmmnaager- Z> ", idusuarioLogeado);
-            await dataFilters(idusuarioLogeado)
-        }
-        else{
-            await dataFilters()
-        }
+                    if (nivelacceso == "Community Manager") {
+                        $q(".contenedor-select-editor").hidden = true
+                        console.log("usuario de cmmnaager- Z> ", idusuarioLogeado);
+                        await dataFilters(idusuarioLogeado)
+                    }
+                    else {
+                        await dataFilters()
+                    }
                 });
             }
             if (x.id === "artista") {
                 x.addEventListener("change", async () => {
-                    if(nivelacceso == "Community Manager"){
-            $q(".contenedor-select-editor").hidden = true
-            console.log("usuario de cmmnaager- Z> ", idusuarioLogeado);
-            await dataFilters(idusuarioLogeado)
-        }
-        else{
-            await dataFilters()
-        }
+                    if (nivelacceso == "Community Manager") {
+                        $q(".contenedor-select-editor").hidden = true
+                        console.log("usuario de cmmnaager- Z> ", idusuarioLogeado);
+                        await dataFilters(idusuarioLogeado)
+                    }
+                    else {
+                        await dataFilters()
+                    }
                 });
             }
             if (x.id === "usuarioeditor") {
@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         params.append("idusuario", $q("#artista").value ? $q("#artista").value : "");
         params.append("idusuarioeditor", idusuarioEditor ? idusuarioEditor : $q("#usuarioeditor").value ? $q("#usuarioeditor").value : "");
         const data = await getDatos(`${host}agendacmanager.controller.php`, params);
-        
+
         console.log("data -> ", data);
 
         const tbody = $q("#table-contenidos tbody");
@@ -185,15 +185,16 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${x.nom_usuario ? x.nom_usuario : ''}</td>                   
                 <td>${x.nombres ? x.nombres : ''}</td>                   
                 <td>${x.tipotarea ? x.tipotarea : ''}</td>           
-                <td>
+                <td class="col-md-2">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <input type="text" class="form-control" name="txtportalweb" id="txtportalweb" value="${x.portalpublicar ? x.portalpublicar : ''}">
                         <i class="fa-solid fa-floppy-disk btnGuardarPortalWeb" data-idagendacommanager="${x.idagendacommanager}" style="cursor: pointer; color: blue;"></i>
                     </div>
-                </td>                        
-                <td>
+                </td>    
+                <td>${x.fechapublicacion ? x.fechapublicacion : ''}</td>           
+                <td class="w-100">
                     <div style="display: flex; align-items: center; gap: 8px;" >
-                        <textarea type="text" class="form-control col-md-6" name="txtcopy" id="txtcopy">${x.copy ? x.copy : ''}</textarea>
+                        <textarea type="text" class="form-control " name="txtcopy" id="txtcopy" >${x.copy ? x.copy : ''}</textarea>
                         <i class="fa-solid fa-floppy-disk btnGuardarCopy" data-idagendacommanager="${x.idagendacommanager}" style="cursor: pointer; color: blue;"></i>
                     </div>
                 </td>                        
@@ -201,22 +202,22 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <input type="checkbox" class="btn-estado" name="estado" id="estado" data-idagendacommanager="${x.idagendacommanager}" ${x.estado == 2 ? 'checked' : ''}>
                 </td>
             </tr>
-        `;            
+        `;
         }
         createTable(data);
 
         $all(".btnGuardarPortalWeb").forEach(btn => {
             btn.addEventListener("click", async (e) => {
-                try {                    
+                try {
                     const idagendacommanager = e.target.getAttribute("data-idagendacommanager")
                     let fila = e.target.closest("tr"); // Encuentra la fila actual
                     let inputportalweb = fila.querySelector("input[name='txtportalweb']").value;
                     console.log("portal web a publicar", inputportalweb);
-                    
+
                     const portalwebasignado = await asignarPortalWebContenido(idagendacommanager, inputportalweb)
                     console.log("portalweb asignado ? -> ", portalwebasignado);
                     if (portalwebasignado) {
-                        showToast("Hecho!", "SUCCESS")                        
+                        showToast("Hecho!", "SUCCESS")
                         return
                     }
                 } catch (error) {
@@ -227,16 +228,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         })
         $all(".btnGuardarCopy").forEach(btn => {
             btn.addEventListener("click", async (e) => {
-                try {                    
+                try {
                     const idagendacommanager = e.target.getAttribute("data-idagendacommanager")
                     let fila = e.target.closest("tr"); // Encuentra la fila actual
                     let inputcopy = fila.querySelector("textarea[name='txtcopy']").value;
                     console.log("texto copy", inputcopy);
-                    
+
                     const copyContenido = await actualizarCopyContenido(idagendacommanager, inputcopy)
                     console.log("copy contenido actualizado? ? -> ", copyContenido);
                     if (copyContenido) {
-                        showToast("Hecho!", "SUCCESS")                        
+                        showToast("Hecho!", "SUCCESS")
+                        if (nivelacceso == "Community Manager") {
+                            $q(".contenedor-select-editor").hidden = true
+                            console.log("usuario de cmmnaager- Z> ", idusuarioLogeado);
+                            await dataFilters(idusuarioLogeado)
+                        }
+                        else {
+                            await dataFilters()
+                        }
                         return
                     }
                 } catch (error) {
@@ -304,27 +313,35 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
     }
 
-        // ********************************************* RENDERIZACION DE DATA ****************************************************************
-async function buttonCambiarEstado(e) {
-    /* idagendacommanager = e.target.getAttribute("data-idagendacommanager");
-    modalPendientes = new bootstrap.Modal($q("#modal-pendientes"))
-    modalPendientes.show() */
-    try {
-        const idagendacommanager = e.target.getAttribute("data-idagendacommanager")
-        console.log("valor -> ", e.target.checked);    
-        let estadoNuevo = e.target.checked ? 2 : 1
-        console.log("estado neuevo -> ", estadoNuevo);
-        const contenidoPublicado = await actualizarEstadoPublicarContenido(idagendacommanager, estadoNuevo)
-        console.log("contniod publicado- > ", contenidoPublicado);
-        if(contenidoPublicado){
-            showToast("Contenido Publicado!", "SUCCESS")                        
+    // ********************************************* RENDERIZACION DE DATA ****************************************************************
+    async function buttonCambiarEstado(e) {
+        /* idagendacommanager = e.target.getAttribute("data-idagendacommanager");
+        modalPendientes = new bootstrap.Modal($q("#modal-pendientes"))
+        modalPendientes.show() */
+        try {
+            const idagendacommanager = e.target.getAttribute("data-idagendacommanager")
+            console.log("valor -> ", e.target.checked);
+            let estadoNuevo = e.target.checked ? 2 : 1
+            console.log("estado neuevo -> ", estadoNuevo);
+            const contenidoPublicado = await actualizarEstadoPublicarContenido(idagendacommanager, estadoNuevo)
+            console.log("contniod publicado- > ", contenidoPublicado);
+            if (contenidoPublicado) {
+                showToast("Contenido Publicado!", "SUCCESS")
+                if (nivelacceso == "Community Manager") {
+                    $q(".contenedor-select-editor").hidden = true
+                    console.log("usuario de cmmnaager- Z> ", idusuarioLogeado);
+                    await dataFilters(idusuarioLogeado)
+                }
+                else {
+                    await dataFilters()
+                }
+                return
+            }
+        } catch (error) {
+            showToast("Un error ha ocurrido!", "ERROR")
             return
         }
-    } catch (error) {
-        showToast("Un error ha ocurrido!", "ERROR")
-        return
     }
-}
 
 
     // ********************************************* OBTENCION DE DATASA ****************************************************************
@@ -359,7 +376,7 @@ async function buttonCambiarEstado(e) {
         const rbody = await fbody.json();
         return rbody;
     }
-    
+
     async function actualizarCopyContenido(idagendacommanager, copy) {
         const body = new FormData();
         body.append("operation", "actualizarCopyContenido");
@@ -374,6 +391,6 @@ async function buttonCambiarEstado(e) {
         return rbody;
     }
 
-    
+
     // ********************************************* EVENTOS  ****************************************************************
 })

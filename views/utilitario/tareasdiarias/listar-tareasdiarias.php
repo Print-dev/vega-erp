@@ -98,7 +98,6 @@
 <div class="row g-0 mb-3 contenedor-filtros-agenda">
     <div class="card border-0">
         <div class="card-body border-0">
-            <label for="">Filtros</label>
             <div class="row ">
                 <div class="col-md-2 contenedor-select-tipo-filtro-edicion">
                     <div class="form-floating">
@@ -144,7 +143,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p><span class="label" style="background-color: #007bff;"></span> Azul - Pendiente</p>
+                <p><span class="label" style="background-color: #eae6e6;"></span> Azul - Pendiente</p>
                 <p><span class="label" style="background-color: #ff4d4d;"></span> Rojo - Atrasado</p>
                 <p><span class="label" style="background-color: #28a745;"></span> Verde - Completado</p>
                 <p><span class="label" style="background-color: #FFA500;"></span> Naranja - Completado con atraso</p>

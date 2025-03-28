@@ -10,7 +10,7 @@ $accesos = [
   'Administrador' => [
     ['modulo' => 'ventas', 'ruta' => '', 'texto' => 'Ventas', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-chart-simple'],
 
-    ['modulo' => 'ventas', 'ruta' => 'listar-atencion-cliente', 'subruta' => '', 'texto' => 'Atención cliente', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'ventas', 'ruta' => 'listar-atencion-cliente', 'subruta' => '', 'texto' => 'Atención cliente', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'ventas', 'ruta' => 'actualizar-atencion-cliente', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'ventas', 'ruta' => 'registrar-atencion-cliente', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''],
 
@@ -18,44 +18,44 @@ $accesos = [
 
     ['modulo' => 'utilitario', 'ruta' => '', 'texto' => 'Utilitario', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-folder'],
 
-    ['modulo' => 'utilitario', 'ruta' => 'listar-usuarios', 'subruta' => 'usuarios', 'texto' => 'Usuarios', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'utilitario', 'ruta' => 'listar-usuarios', 'subruta' => 'usuarios', 'texto' => 'Usuarios', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'utilitario', 'ruta' => 'registrar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
-    ['modulo' => 'utilitario', 'ruta' => 'listar-tarifas', 'subruta' => 'tarifas', 'texto' => 'Tarifario', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'utilitario', 'ruta' => 'listar-tarifas', 'subruta' => 'tarifas', 'texto' => 'Tarifario', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'utilitario', 'ruta' => 'registrar-tarifa', 'subruta' => 'tarifas', 'texto' => '', 'visible' => false, 'icono' => ''],
-    ['modulo' => 'utilitario', 'ruta' => 'listar-tareasdiarias', 'subruta' => 'tareasdiarias', 'texto' => 'Tareas Diarias', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'utilitario', 'ruta' => 'listar-tareasdiarias', 'subruta' => 'tareasdiarias', 'texto' => 'Tareas Diarias', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'utilitario', 'ruta' => 'registrar-tareadiaria', 'subruta' => 'tareasdiarias', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
 
     /* ['modulo' => 'pyp', 'ruta' => '', 'texto' => 'Planeamiento', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-lightbulb'],
 
-    ['modulo' => 'pyp', 'ruta' => 'listar-planeamientos', 'subruta' => 'planeamientos', 'texto' => 'Planeamientos', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'pyp', 'ruta' => 'listar-planeamientos', 'subruta' => 'planeamientos', 'texto' => 'Planeamientos', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'pyp', 'ruta' => 'registrar-planeamiento', 'subruta' => 'planeamientos', 'visible' => false],
-    ['modulo' => 'pyp', 'ruta' => 'listar-presupuestos', 'subruta' => 'presupuestos', 'texto' => 'Presupuestos', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'pyp', 'ruta' => 'listar-presupuestos', 'subruta' => 'presupuestos', 'texto' => 'Presupuestos', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'pyp', 'ruta' => 'registrar-presupuesto', 'subruta' => 'presupuestos', 'visible' => false], */
 
 
     ['modulo' => 'contabilidad', 'ruta' => '', 'texto' => 'Contabilidad', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-calculator'],
 
-    ['modulo' => 'contabilidad', 'ruta' => 'caja-chica', 'subruta' => 'caja-chica', 'texto' => 'Caja Chica', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'contabilidad', 'ruta' => 'caja-chica', 'subruta' => 'caja-chica', 'texto' => 'Caja Chica', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-caja', 'subruta' => 'caja-chica', 'texto' => '', 'visible' => false, 'icono' => ''],
 
-    ['modulo' => 'contabilidad', 'ruta' => 'listar-reparticion', 'subruta' => 'reparticion', 'texto' => 'Reparticion', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'contabilidad', 'ruta' => 'listar-reparticion', 'subruta' => 'reparticion', 'texto' => 'Reparticion', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-ingresos', 'subruta' => 'reparticion', 'texto' => '',  'visible' => false, 'icono' => ''],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-egresos', 'subruta' => 'reparticion', 'texto' => '', 'visible' => false, 'icono' => ''],
 
-    /* ['modulo' => 'contabilidad', 'ruta' => 'listar-ingresos', 'subruta' => 'ingresos', 'texto' => 'Ingresos', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    /* ['modulo' => 'contabilidad', 'ruta' => 'listar-ingresos', 'subruta' => 'ingresos', 'texto' => 'Ingresos', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-ingreso', 'subruta' => 'ingresos', 'visible' => false], */
 
 
     ['modulo' => 'agenda', 'ruta' => '', 'texto' => 'Agenda', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
 
     //['modulo' => 'agenda', 'ruta' => 'listar-agenda', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
-    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-artista', 'subruta' => '', 'texto' => 'Agenda Artista', 'visible' => false, 'icono' => 'fa-solid fa-list'],
-    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto' => 'Agenda Edicion', 'visible' => false, 'icono' => 'fa-solid fa-list'],
-    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-filmmaker', 'subruta' => '', 'texto' => 'Agenda Filmmaker', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-artista', 'subruta' => '', 'texto' => 'Agenda Artista', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto' => 'Agenda Edicion', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-filmmaker', 'subruta' => '', 'texto' => 'Agenda Filmmaker', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''],
-    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-cmanager', 'subruta' => '', 'texto' => 'Agenda C. Manager', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-cmanager', 'subruta' => '', 'texto' => 'Agenda C. Manager', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
 
 
   ],
@@ -65,22 +65,33 @@ $accesos = [
 
   ],
   "Filmmaker" => [
-    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-filmmaker', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
+    ['modulo' => 'agenda', 'ruta' => '', 'texto' => 'Agenda', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-filmmaker', 'subruta' => '', 'texto' => 'Agenda Filmmaker', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto' => 'Agenda Edicion', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''],
+
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'utilitario', 'ruta' => 'listar-tareasdiarias', 'subruta' => 'tareasdiarias', 'texto' => 'Tareas Diarias', 'visible' => true, 'icono' => 'fa-solid fa-note-sticky', 'only' => true],
-    ['modulo' => 'utilitario', 'ruta' => 'registrar-tareadiaria', 'subruta' => 'tareasdiarias', 'texto' => '', 'visible' => false, 'icono' => ''],
+    /*     ['modulo' => 'utilitario', 'ruta' => 'registrar-tareadiaria', 'subruta' => 'tareasdiarias', 'texto' => '', 'visible' => false, 'icono' => ''],
+ */
   ],
   "Edicion y Produccion" => [
-    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
+    ['modulo' => 'agenda', 'ruta' => '', 'texto' => 'Agenda', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
+
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto' => 'Agenda Edicion', 'visible' => false, 'icono' => 'fa-solid fa-clipboard'],
     ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'utilitario', 'ruta' => 'listar-tareasdiarias', 'subruta' => 'tareasdiarias', 'texto' => 'Tareas Diarias', 'visible' => true, 'icono' => 'fa-solid fa-note-sticky', 'only' => true],
-    ['modulo' => 'utilitario', 'ruta' => 'registrar-tareadiaria', 'subruta' => 'tareasdiarias', 'texto' => '', 'visible' => false, 'icono' => ''],
+    /* ['modulo' => 'utilitario', 'ruta' => 'registrar-tareadiaria', 'subruta' => 'tareasdiarias', 'texto' => '', 'visible' => false, 'icono' => ''], */
   ],
   "Community Manager" => [
     /* ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
     ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''], */
-    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-cmanager', 'subruta' => '', 'texto' => 'Agenda C. Manager', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+    ['modulo' => 'agenda', 'ruta' => '', 'texto' => 'Agenda', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto' => 'Agenda Edicion', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''],
+
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-cmanager', 'subruta' => '', 'texto' => 'Agenda C. Manager', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
   ],
 ];

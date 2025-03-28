@@ -162,6 +162,25 @@ if (isset($_POST['operation'])) {
       echo json_encode($respuesta);
       break;
 
+    case 'reportarSalidaRetornoArtista':
+      $cleanData = [
+        'iddetallepresentacion'   =>  $agenda->limpiarCadena($_POST['iddetallepresentacion']) ? $agenda->limpiarCadena($_POST['iddetallepresentacion']) : '',
+        'tipo'   =>  $agenda->limpiarCadena($_POST['tipo']) ? $agenda->limpiarCadena($_POST['tipo']) : '',
+        'fecha'   =>  $agenda->limpiarCadena($_POST['fecha']) ? $agenda->limpiarCadena($_POST['fecha']) : '',
+        'hora'   =>  $agenda->limpiarCadena($_POST['hora']) ? $agenda->limpiarCadena($_POST['hora']) : '',
+      ];
+
+      $respuesta = ['idreporte' => -1];
+
+      $idreporte = $agenda->reportarSalidaRetornoArtista($cleanData);
+
+      if ($idreporte > 0) {
+        $respuesta['idreporte'] = $idreporte;
+      }
+
+      echo json_encode($respuesta);
+      break;
+
     case 'registrarAgendaEdicion':
       $cleanData = [
         'iddetallepresentacion'   =>  $agenda->limpiarCadena($_POST['iddetallepresentacion'])

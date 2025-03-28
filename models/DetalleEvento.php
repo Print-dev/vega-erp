@@ -23,7 +23,7 @@ class DetalleEvento extends ExecQuery
           $params['igv'],
         )
       );
-      
+
       return $act;
     } catch (PDOException $e) {
       // Registrar detalles del error en el log
@@ -33,7 +33,7 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
-  
+
   public function registrarDetallePresentacion($params = []): int
   {
     try {
@@ -152,12 +152,12 @@ class DetalleEvento extends ExecQuery
         )
       );
       $respuesta = $pdo->query("SELECT @idasignacion AS idasignacion")->fetch(PDO::FETCH_ASSOC);
-      return $respuesta['idasignacion'];    
+      return $respuesta['idasignacion'];
     } catch (Exception $e) {
       die($e->getMessage());
     }
   }
-  
+
   public function actualizarEstadoReservaDp($params = []): bool
   {
     try {
@@ -189,7 +189,7 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
-  
+
   public function actualizarCajaDP($params = []): bool
   {
     try {
@@ -205,7 +205,7 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
-  
+
   public function actualizarEstadoDp($params = []): bool
   {
     try {
@@ -222,6 +222,24 @@ class DetalleEvento extends ExecQuery
     }
   }
 
+  /* public function asignarLugarDestinoBus($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_asignar_lugar_destino_bus (?,?)");
+      $rpt = $cmd->execute(
+        array(
+          $params['iddetallepresentacion'],
+          $params['lugardestino'],
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+ */
   public function obtenerCotizacionesPorModalidad($params = []): array
   {
     try {
@@ -287,8 +305,8 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
-  
-  
+
+
   public function obtenerDpPorFecha($params = []): array
   {
     try {

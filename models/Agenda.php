@@ -332,11 +332,13 @@ class Agenda extends ExecQuery
     }
   }
 
+
+
   public function registrarNuevoTipoTarea($params = []): int
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare("CALL sp_registrar_nuevo_tipotarea (@idtipotarea,?)");
+      $cmd = $pdo->prepare("CALL sp_registrar_tipotarea (@idtipotarea,?)");
       $cmd->execute(
         array(
           $params['tipotarea']
@@ -344,6 +346,27 @@ class Agenda extends ExecQuery
       );
       $respuesta = $pdo->query("SELECT @idtipotarea AS idtipotarea")->fetch(PDO::FETCH_ASSOC);
       return $respuesta['idtipotarea'];
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+
+  public function reportarSalidaRetornoArtista($params = []): int
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_reportar_artista_evento (@idreporte,?,?,?,?)");
+      $cmd->execute(
+        array(
+          $params['iddetallepresentacion'],
+          $params['tipo'],
+          $params['fecha'],
+          $params['hora']
+        )
+      );
+      $respuesta = $pdo->query("SELECT @idreporte AS idreporte")->fetch(PDO::FETCH_ASSOC);
+      return $respuesta['idreporte'];
     } catch (Exception $e) {
       error_log("Error: " . $e->getMessage());
       return false;

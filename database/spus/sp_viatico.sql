@@ -7,8 +7,11 @@ CREATE PROCEDURE sp_registrar_viatico(
 	IN _iddetalle_presentacion INT,
     IN _idusuario	INT ,
     IN _pasaje decimal(10,2),
-    IN _comida	decimal(10,2),
-    IN _viaje	decimal(10,2)
+    IN _hospedaje decimal(10,2),
+    IN _desayuno tinyint,
+    IN _almuerzo tinyint,
+    IN _cena tinyint,
+    IN _viaje	decimal(10,2) -- ME QUEDE ACA RECIEN AGREGE LOS CAMPOS ESTOS PERO AUN NO HICE DROP Y CREATE DE NUEVOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
@@ -18,8 +21,8 @@ BEGIN
         SET existe_error = 1;
     END;
     
-    INSERT INTO viaticos (iddetalle_presentacion, idusuario, pasaje, comida, viaje)
-    VALUES (_iddetalle_presentacion, _idusuario, _pasaje, _comida, _viaje);
+    INSERT INTO viaticos (iddetalle_presentacion, idusuario, pasaje, hospedaje, desayuno, almuerzo, cena, viaje)
+    VALUES (_iddetalle_presentacion, _idusuario, nullif(_pasaje,''), _hospedaje,nullif(_desayuno, ''), nullif(_almuerzo,''), nullif(_cena,'') ,nullif(_viaje, ''));
     
     IF existe_error = 1 THEN
         SET _idviatico = -1;
@@ -27,8 +30,8 @@ BEGIN
         SET _idviatico = LAST_INSERT_ID();
     END IF;
 END $$
-
-CALL sp_registrar_viatico (@idviatico, 2, 5.00, 45.00, null)
+-- call sp_registrar_viatico (2,5,null,777,1,1,1,888);
+-- CALL sp_registrar_viatico (@idviatico, 2, 5.00, 45.00, null)
 
 DROP PROCEDURE IF EXISTS sp_actualizar_viatico;
 DELIMITER $$
@@ -57,7 +60,7 @@ CREATE PROCEDURE sp_obtener_info_viatico_notificacion
 BEGIN
 	SELECT 
 		VIA.idviatico,
-        VIA.pasaje, VIA.comida, VIA.viaje,
+        VIA.pasaje, VIA.hospedaje, VIA.desayuno, VIA.almuerzo, VIA.cena ,VIA.viaje,
         USU.nom_usuario,
         DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.establecimiento,
         DE.departamento, PRO.provincia, DIS.distrito,

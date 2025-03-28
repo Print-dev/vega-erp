@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log(data);
         usuarioSelect.innerHTML = "<option value=''>Todos</option>";
         data.forEach((artista) => {
-            usuarioSelect.innerHTML += `<option value="${artista.idusuario}">${artista.nombres}</option>`;
+            usuarioSelect.innerHTML += `<option value="${artista.idusuario}">${artista.nombres} (${artista.nom_usuario})</option>`;
 
         });
 
@@ -60,14 +60,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function renderizarAdmins(usuarios) {
         const contenedor = document.querySelector(".contenedor-admins");
-        contenedor.innerHTML = `<h5 class="mb-3">Enviar a: (Solo administradores)</h5>`; // Limpia el contenido previo
+        contenedor.innerHTML = `<h5 class="mb-3">Enviar a</h5>`; // Limpia el contenido previo
 
         usuarios.forEach(usuario => {
 
             contenedor.innerHTML += `
             <div class="form-check">
                 <input class="form-check-input chkAdmin" type="checkbox" id="admin-${usuario.idusuario}" data-idusuario="${usuario.idusuario}">
-                <label class="form-check-label" for="admin-${usuario.idusuario}">${usuario.nom_usuario}</label>
+                <label class="form-check-label" for="admin-${usuario.idusuario}">${usuario.nombres}</label>
             </div>
             `;
         });
@@ -154,14 +154,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data;
     }
 
-    async function registrarViatico(iddetallepresentacion, idusuario) {
+    async function registrarViatico(iddetallepresentacion, idusuario, desayuno, almuerzo, cena) {
 
         const viatico = new FormData();
         viatico.append("operation", "registrarViatico");
         viatico.append("iddetallepresentacion", iddetallepresentacion); // id artista
         viatico.append("idusuario", idusuario); // id artista
         viatico.append("pasaje", $q("#pasaje").value);
-        viatico.append("comida", $q("#comida").value);
+        viatico.append("hospedaje", $q("#hospedaje").value);
+        viatico.append("desayuno", desayuno ? 1 : 0);
+        viatico.append("almuerzo", almuerzo ? 1 : 0);
+        viatico.append("cena", cena ? 1 : 0);
         viatico.append("viaje", $q("#viaje").value ? $q("#viaje").value : '');
 
         const fviatico = await fetch(`${host}viatico.controller.php`, {
@@ -266,12 +269,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     } */
 
     async function guardarViatico() {
-        if ($q("#pasaje").value == "" || $q("#comida").value == "") {
+        if ($q("#hospedaje").value == "") {
             showToast("Por favor, complete los campos obligatorios", "ERROR");
             return;
         }
 
-        const viaticoRegistrado = await registrarViatico(iddp, idusuarioLogeado);
+        const chkdesayuno = $q("#chkdesayuno").checked ? 1 : 0
+        const chkalmuerzo = $q("#chkalmuerzo").checked ? 1 : 0
+        const chkcena = $q("#chkcena").checked ? 1 : 0
+
+        console.log("check desauno? .> ", chkdesayuno);
+        console.log("check chkalmuerzo? .> ", chkalmuerzo);
+        console.log("check chkcena? .> ", chkcena);
+
+        if(listaSeleccionados.length == 0){
+            showToast("Eliga a quienes notificar su viatico" , "INFO")
+            return
+        }
+        const viaticoRegistrado = await registrarViatico(iddp, idusuarioLogeado, chkdesayuno, chkalmuerzo, chkcena);
         console.log("viaticoRegistrado -> ", viaticoRegistrado);
 
         const usuarioFilmmaker = await obtenerUsuarioPorId(idusuarioLogeado);
@@ -295,8 +310,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             showToast("Viático registrado correctamente", "SUCCESS");
             listaSeleccionados = []
             $q("#pasaje").value = ""
-            $q("#comida").value = ""
+            $q("#hospedaje").value = ""
             $q("#viaje").value = ""
+            $q("#chkdesayuno").checked = false
+            $q("#chkalmuerzo").checked= false
+            $q("#chkcena").checked= false
             modalViatico.hide();
 
         }
@@ -353,9 +371,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 console.log("ID DEPARTAMENTO ELEGIDO -> ", iddepartamento)
                 console.log("iddetalle_repsentacion elegida -> ", iddp)
 
-                let isLima = false
-                modalViatico = new bootstrap.Modal($q("#modal-viatico"));
-                modalViatico.show();
+                let isLima = false;
                 const departamento = await obtenerDepartamentoPorId(iddepartamento)
                 console.log("departamento -> ", departamento)
                 if (departamento[0].iddepartamento == 15) { // LIMA
@@ -365,8 +381,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 console.log("isLima ??", isLima)
                 if (isLima) {
                     $q(".contenedor-viatico-viaje").hidden = true
+                    showToast("No se puede reportar viatico para eventos en lima", "ERROR")
+                    return
                 } else {
                     $q(".contenedor-viatico-viaje").hidden = false
+                    modalViatico = new bootstrap.Modal($q("#modal-viatico"));
+                    modalViatico.show()
                 }
                 //await renderizarInfoAgenda(idusuarioFilmmaker, iddepartamento)
 

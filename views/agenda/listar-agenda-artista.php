@@ -237,9 +237,7 @@
 
                 </div>
             </div>
-            <div class="modal-footer text-end">
-                <button type="button" class="btn btn-secondary" id="btnGuardarAcuerdo">Guardar</button>
-            </div>
+
         </div>
     </div>
 </div>
@@ -267,6 +265,28 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal-lugardestino" tabindex="-1" aria-labelledby="modallugardestino" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="form-floating">
+                        <input type="text" name="destino" id="destino" class="form-control">
+                        <label for="destino" class="form-label">Lugar de destino</label>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer text-end">
+                <button type="button" class="btn btn-secondary" id="btnSalida">Reportar Salida</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <?php require_once '../footer.php' ?>
 
@@ -280,8 +300,8 @@
     const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
 </script> -->
 
-<script src="http://localhost/vega-erp/js/agenda/obtencion-agenda-nivel.js"></script> 
-<script src="http://localhost/vega-erp/js/agenda/listar-agenda-artista.js"></script> 
+<script src="http://localhost/vega-erp/js/agenda/obtencion-agenda-nivel.js"></script>
+<script src="http://localhost/vega-erp/js/agenda/listar-agenda-artista.js"></script>
 
 </body>
 

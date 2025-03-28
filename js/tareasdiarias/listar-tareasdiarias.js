@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let selectnivelacceso = $q("#nivelacceso")
     let selectusuario = $q("#usuario")
     let tareasDiariasRender = []
+    //let contenedorBtnAsignarTareaDiaria = $q(".contenedor-btnasignar-tareadiaria")
 
     // MODALES
     let modalVerProgreso
@@ -22,14 +23,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
-    let nivelaccesoObtenido = nivelacceso == "Edicion y Produccion" ? 10 : nivelacceso == "Filmmaker" ? 11 : 0
 
-    if (nivelaccesoObtenido) {
-        $q(".contenedor-select-tipo-filtro-edicion").hidden = true
-        await obtenerUsuarios(nivelaccesoObtenido)
+    // HACER UNA ACTUALIZACION DE ESTADO AUTOMATICAMENTE APENAS ENTRE SI ES QUE ESTA VENCIDO
+    const tareasObtenidas = await obtenerTareasDiariasPorUsuario(idusuarioLogeado)
+    console.log("tarea sobtenidos diarai > ", tareasObtenidas);
+    for (const tarea of tareasObtenidas) {
+        if (tarea.estado == 1) {
+            const fechaEntregaObt = new Date(`${tarea.fecha_entrega}T${tarea.hora_entrega}`);
+            const ahoraObt = new Date();
+            if (ahoraObt > fechaEntregaObt) {
+                console.log("se vencio...");
+                const estadoActVenc = await actualizarEstadoTareaDiariaAsignacion(tarea.idtaradiariaasig, 2)
+                console.log("la tarea cambio de estado a vencido? > ", estadoActVenc);
+            }
+        }
 
-        //console.log("usuarioso obtenidos > ",);
     }
+
 
     // ***************************************** OBTENCION DE DATAS ******************************************************************
 
@@ -147,6 +157,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Detectar cambios de tamaño de pantalla y ajustar eventos
     window.addEventListener("resize", ajustarEventos);
 
+    // **************************************************************** INICIALICZACION EN CASO DE USUARIOS INDEPENDIENTES (NO ADMIN) ***************************************************
+
+    let nivelaccesoObtenido = nivelacceso == "Edicion y Produccion" ? 10 : nivelacceso == "Filmmaker" ? 11 : 0
+
+
+    if (nivelaccesoObtenido) {
+        $q("#btnAsignarTareaDiaria").remove()
+        $q(".contenedor-select-tipo-filtro-edicion").remove()
+        $q(".contenedor-select-usuario").remove()
+        //await obtenerUsuarios(nivelaccesoObtenido)
+        const tareasdiarias = await obtenerTareasDiariasPorUsuario(idusuarioLogeado)
+        console.log("tareas diarias -> ", tareasdiarias);
+        await configurarAgendaTareasDiarias(tareasdiarias)
+        //console.log("usuarioso obtenidos > ",);
+    }
+
+
     // *************************************************** CONFIGURACION DE CALENDARIO PARA EDITORES *****************************************************************************
 
     async function configurarAgendaTareasDiarias(tareasDiarias) {
@@ -203,7 +230,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const isChecked = estado === 3 || estado === 4 ? "checked" : "";
             let colorCirculo = "#eae6e6";
             if (estado === 2) colorCirculo = "#c64b4b"; // Rojo
-            if (estado === 3) colorCirculo = "#007bff";
+            if (estado === 3) colorCirculo = "#28a745";
             if (estado === 4) colorCirculo = "#ff9800"; // Naranja
 
             return {

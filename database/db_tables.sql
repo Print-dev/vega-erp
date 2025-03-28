@@ -131,7 +131,7 @@ create table detalles_presentacion (
     referencia 		varchar(200) null,
     acuerdo			TEXT null,
     tipo_evento		int null, -- 1= publico, 2= privado
-    modalidad		int null, -- 1= convenio, 2= contrato
+    modalidad		int null, -- 1= convenio, 2= contrato	
 	validez			int		null,
     igv				tinyint	not null,
     reserva			tinyint null default 0,
@@ -148,6 +148,18 @@ create table detalles_presentacion (
     constraint	uk_ncotizacion 			UNIQUE(ncotizacion),
     constraint uk_idp 					UNIQUE(iddetalle_presentacion)
 )engine=innodb;
+
+CREATE TABLE reportes_artista_evento (
+	idreporte	int auto_increment primary key,
+    iddetalle_presentacion int not null,
+    tipo		int	not null, -- 1: salida, 2: retorno 
+    fecha		date null default now(),
+    hora		time null default now(),
+	constraint fk_iddp_report_art_evento foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
+) ENGINE = innodb;
+select * from reportes_artista_evento;
+select * from nivelaccesos;
+INSERT INTO reportes_artista_evento (iddetalle_presentacion, tipo, fecha, hora) values (?,?,?,?);
 
 CREATE TABLE agenda_asignaciones ( -- tabla que asigna la agenda a un filmmaker
     idasignacion INT AUTO_INCREMENT PRIMARY KEY,
@@ -208,13 +220,17 @@ CREATE TABLE viaticos (
 	idviatico		int auto_increment primary key,
     iddetalle_presentacion int not null,
     idusuario		int		not null,
-    pasaje			decimal(7,2) not null,
-    comida			decimal(7,2) not null,
+    pasaje			decimal(7,2) null, -- modificado 
+    hospedaje 		decimal(7,2) null, -- recien agregado
+    desayuno		tinyint null, -- recien agregado
+    almuerzo		tinyint null,
+    cena			tinyint	null,
     viaje			decimal(10,2) null,
     constraint fk_iddp_viatico foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
     constraint fk_idusuario_v foreign key (idusuario) references usuarios (idusuario)
 ) engine = innodb;
 
+select * from viaticos;
 -- CONTABILIDAD 
 CREATE TABLE montoCajaChica (
     idmonto INT AUTO_INCREMENT PRIMARY KEY,
@@ -342,11 +358,13 @@ CREATE TABLE agenda_commanager (
     idagendaeditor 		int not null,
     idusuarioCmanager 	int not null,
     portalpublicar 		varchar(120) null,
+    fechapublicacion	datetime null,
     copy				text null,
     estado				SMALLINT null default 1, -- 1: no publicado, 2: publicado
     constraint fk_idagendaeditor_cm foreign key (idagendaeditor) references agenda_editores (idagendaeditor),
     constraint fk_idusuarioCmanaget foreign key (idusuarioCmanager) references usuarios (idusuario)
 ) engine = innodb;
+
 select * from agenda_commanager;
 --  -------------------------------------------- NUEVAS TABLAS AGREGASDAS -----------------------------------------
 -- AGREGADO EL 26-06-2025 - 16:33

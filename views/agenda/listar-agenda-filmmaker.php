@@ -122,8 +122,8 @@
         </div>
     </div>
 </div>
-<a href="http://localhost/vega-erp/views/utilitario/tareasdiarias/listar-tareasdiarias" class="btn btn-primary" id="btnAsignarTareaDiaria">Asignar Tarea Diaria</a>
-
+<!-- <a href="http://localhost/vega-erp/views/utilitario/tareasdiarias/listar-tareasdiarias" class="btn btn-primary" id="btnAsignarTareaDiaria">Asignar Tarea Diaria</a>
+ -->
 <div class="contenedor-calendario">
     <div id='calendar'></div>
 
@@ -144,19 +144,31 @@
                             <h5 class="mb-3">Detalles del Viático</h5>
 
                             <div class="mb-3">
-                                <label for="pasaje" class="form-label">Pasaje:</label>
+                                <label for="pasaje" class="form-label">Pasaje (Opcional):</label>
                                 <div class="input-group">
                                     <span class="input-group-text">S/.</span>
                                     <input type="number" id="pasaje" name="pasaje" class="form-control">
                                 </div>
                             </div>
-
                             <div class="mb-3">
-                                <label for="comida" class="form-label">Comida:</label>
+                                <label for="hospedaje" class="form-label">Hospedaje:</label>
                                 <div class="input-group">
                                     <span class="input-group-text">S/.</span>
-                                    <input type="number" id="comida" name="comida" class="form-control">
+                                    <input type="number" id="hospedaje" name="hospedaje" class="form-control">
                                 </div>
+                            </div>
+
+                            <div class="mb-3 contenedor-comida">
+                                <input type="checkbox" id="chkdesayuno">
+                                <label for="chkdesayuno">Desayuno</label>
+                                <input type="checkbox" id="chkalmuerzo">
+                                <label for="chkalmuerzo">Almuerzo</label>
+                                <input type="checkbox" id="chkcena">
+                                <label for="chkcena">Cena</label>
+                                <!-- <div class="input-group">
+                                    <span class="input-group-text">S/.</span>
+                                    <input type="number" id="comida" name="comida" class="form-control">
+                                </div> -->
                             </div>
 
                             <div class="mb-3 contenedor-viatico-viaje">
@@ -170,15 +182,7 @@
 
                         <!-- Sección de destinatarios -->
                         <div class="col-md-6 contenedor-admins">
-                            <h5 class="mb-3">Enviar a:</h5>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="admin1">
-                                <label class="form-check-label" for="admin1">Admin 1</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="admin2">
-                                <label class="form-check-label" for="admin2">Admin 2</label>
-                            </div>
+                           
                         </div>
                     </div>
                 </div>

@@ -35,6 +35,17 @@ class AgendaCManager extends ExecQuery
             die($e->getMessage());
         }
     }
+
+    public function obtenerTareaVinculadaCManager($params = []): array
+    {
+        try {
+            $cmd = parent::execQ("CALL sp_obtener_tarea_vinculada_cmanager (?)");
+            $cmd->execute(array($params['idagendaeditor']));
+            return $cmd->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+    }
     
     public function obtenerTareasParaPublicar($params = []): array
     {

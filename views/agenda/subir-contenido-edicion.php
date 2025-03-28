@@ -27,8 +27,8 @@
             <div class="text-end">
                 <button type="button" class="btn btn-primary" id="btnGuardarContenido">Guardar</button>
                 <button type="button" class="btn btn-primary" id="btnVerHistorial">Ver historial</button>
-                <button type="button" class="btn btn-primary" id="btnVerHistorial">Chat <i class="fa-solid fa-comments"></i></button>
-            </div>
+<!--                 <button type="button" class="btn btn-primary" id="btnVerHistorial">Chat <i class="fa-solid fa-comments"></i></button>
+ -->            </div>
         </form>
     </div>
     <div class="contenedor-revisar-contenido">

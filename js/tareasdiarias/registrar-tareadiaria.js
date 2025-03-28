@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let selectNivelAcceso = $q("#nivelacceso")
 
     let modalNuevaTarea
-    
+
     function $q(object = null) {
         return document.querySelector(object);
     }
@@ -95,8 +95,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log("vaor txt nueva tarea -> ", $q("#txtNuevaTarea").value);
             const tareaDIariaRegis = await registrarTareaDiaria()
             console.log("tareaDIariaRegis -> ", tareaDIariaRegis);
+            if ($q("#txtNuevaTarea").value.trim() == "") {
+                showToast("El campo tarea no puede ir vacio", "ERROR")
+                return
+            }
             if (tareaDIariaRegis.idtareadiaria) {
                 showToast("Nueva Tarea Añadida!", "SUCCESS")
+                $q("#txtNuevaTarea").value = ''
                 //                selectTareas.innerHTML += `<option value="${tarea.idtareadiaria}">${tarea.tarea}</option>`;
                 await obtenerTareas()
                 modalNuevaTarea.hide()

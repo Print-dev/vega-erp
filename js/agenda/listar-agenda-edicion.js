@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // VARIABLES 
     let agenda = []
+    //let idagendaeditorFinal = -1
 
     //CALENDARIO
     let calendar
@@ -20,19 +21,33 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
+
     // ************************************** RENDERIZACION ************************************************************
     const usuarios = await obtenerUsuarios(10)
+    console.log("usuarios editores- > ", usuarios);
+    const usuariosFilmmaker = await obtenerUsuarios(11) // RAZON: LOS FILMMAKERS TMB SON EDITORES EN LA VIDA REAL POR LO QUE ASUMEN ESE ROL 
+    console.log("usuariso filmmaker. >", usuariosFilmmaker);
     $q("#usuario").innerHTML = "<option value=''>Todos</option>";
     console.log("usuarios ->>>", usuarios);
     usuarios.forEach((editor) => {
-        $q(
-            "#usuario"
-        ).innerHTML += `<option value="${editor.idusuario}">${editor.nombres}</option>`;
-
+        $q("#usuario").innerHTML += `<option value="${editor.idusuario}">${editor.nombres} (${editor.nom_usuario})</option>`;
+    });
+    usuariosFilmmaker.forEach((filmaker) => {
+        $q("#usuario").innerHTML += `<option value="${filmaker.idusuario}">${filmaker.nombres} (${filmaker.nom_usuario})</option>`;
     });
 
 
     // ******************************************** OBTENER DATOS **********************************************************
+
+    async function obtenerTareaVinculadaCManager(idagendaeditor) {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerTareaVinculadaCManager");
+        params.append("idagendaeditor", idagendaeditor);
+        const data = await getDatos(`${host}agendacmanager.controller.php`, params);
+        console.log(data);
+        return data
+
+    }
 
     async function obtenerUsuarios(idnivelacceso) {
         const params = new URLSearchParams();
@@ -329,21 +344,23 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${editor.fecha_entrega}</td>
                 <td>${editor.nombres}</td>
                 <td>${editor.tipotarea ? editor.tipotarea : 'No especificado'}</td>
+                ${nivelacceso == "Administrador" ? `
+                    <td>
+                        <select name="estado" class="form-select select-estado" data-idagendaeditor="${editor.idagendaeditor}">
+                            <option value="1" ${editor.estado == 1 ? 'selected' : ''}>Pendiente</option>
+                            <option value="2" ${editor.estado == 2 ? 'selected' : ''}>Completado</option>
+                        </select>
+                    </td>
+                        ` : `<td>${editor.estado == 1 ? 'Pendiente' : editor.estado == 2 ? 'Completado' : ''}</td>`}
                 <td>
-                  <select name="estado" class="form-select select-estado" data-idagendaeditor="${editor.idagendaeditor}">
-                      <option value="1" ${editor.estado == 1 ? 'selected' : ''}>Pendiente</option>
-                      <option value="2" ${editor.estado == 2 ? 'selected' : ''}>Completado</option>
-                  </select>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-primary" id="btnAbrirModalSubir" data-idagendaeditor="${editor.idagendaeditor}">Ver</button>
+                    <button type="button" class="btn btn-primary" id="btnVerContenido" data-idagendaeditor="${editor.idagendaeditor}">Ver</button>
                 </td>        
             </tr>       
             `
                     }
 
                 });
-                $all("#btnAbrirModalSubir").forEach(btn => {
+                $all("#btnVerContenido").forEach(btn => {
                     btn.addEventListener("click", (e) => {
                         idagendaeditor = e.target.getAttribute("data-idagendaeditor")
                         console.log("id agenda edicion -> ", idagendaeditor);
@@ -647,7 +664,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         arg.event.extendedProps.horainicio,
                         arg.event.extendedProps.horafinal
                     )}</div>
-                  ${nivelacceso == "Administrador" ? `
+                  ${nivelacceso == "Administrador" || nivelacceso == "Community Manager" ? `
                     <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
                    <button class="btn btn-primary" id="btnVerProgresoIndividual" style="flex: 1;" data-idusuario="${arg.event.extendedProps.idusuario}" data-idagendaedicion="${arg.event.extendedProps.idagendaedicion}">Ver Progreso</button>
                   </div>
@@ -708,19 +725,21 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <td>${editor.fecha_entrega}</td>
                     <td>${editor.nombres}</td>
                     <td>${editor.tipotarea ? editor.tipotarea : 'No especificado'}</td>
+                    ${nivelacceso == "Administrador" ? `
+                        <td>
+                            <select name="estado" class="form-select select-estado" data-idagendaeditor="${editor.idagendaeditor}">
+                                <option value="1" ${editor.estado == 1 ? 'selected' : ''}>Pendiente</option>
+                                <option value="2" ${editor.estado == 2 ? 'selected' : ''}>Completado</option>
+                            </select>
+                        </td>
+                        ` : `<td>${editor.estado == 1 ? 'Pendiente' : editor.estado == 2 ? 'Completado' : ''}</td>`}
                     <td>
-                      <select name="estado" class="form-select select-estado" data-idagendaeditor="${editor.idagendaeditor}">
-                          <option value="1" ${editor.estado == 1 ? 'selected' : ''}>Pendiente</option>
-                          <option value="2" ${editor.estado == 2 ? 'selected' : ''}>Completado</option>
-                      </select>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-primary" id="btnAbrirModalSubir" data-idagendaeditor="${editor.idagendaeditor}">Ver</button>
+                        <button type="button" class="btn btn-primary" id="btnVerContenido" data-idagendaeditor="${editor.idagendaeditor}">Ver</button>
                     </td>        
                 </tr>       
                 `
             });
-            $all("#btnAbrirModalSubir").forEach(btn => {
+            $all("#btnVerContenido").forEach(btn => {
                 btn.addEventListener("click", (e) => {
                     idagendaeditor = e.target.getAttribute("data-idagendaeditor")
                     console.log("id agenda edicion -> ", idagendaeditor);
@@ -760,6 +779,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const tipotarea = await obtenerTodosTipoTarea()
             const usuariosEditores = await obtenerUsuarios(10) // edicion 
+            const usuariosFilmmakers = await obtenerUsuarios(11) // edicion  // RAZON : LOS FILMAKERS TMB SON EDITORES EN LA VIDA REAL PQ LO Q ASUMEN ESE ROL TMB
             const usuariosCManager = await obtenerUsuarios(8) // edicion 
             const tareasRestantes = await obtenerTodasLasTareasEnLaAgenda(idagendaedicion);
             console.log("usuariosCManager ->", usuariosCManager);
@@ -773,7 +793,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const tareaAsignada = tareasRestantes.find(tarea => tarea.idtipotarea == tipo.idtipotarea);
                 console.log("tareaAsignada -> ", tareaAsignada);
                 console.log("idagendaeditor -> ", idagendaeditor);
-                
+
                 const cmanagersPosteadores = await obtenerCmanagerPorIdAgendaEditor(tareaAsignada?.idagendaeditor);
                 console.log("cmanagersPosteadores ->>>> ", cmanagersPosteadores);
 
@@ -786,6 +806,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 opcionesEditores = `<option value="-1">Seleccione</option>`;
                 usuariosEditores.forEach(editor => {
+                    opcionesEditores += `<option value="${editor.idusuario}" data-idagendaeditor="${tareaAsignada?.idagendaeditor}" 
+                    ${editor.idusuario == idUsuarioAsignado ? "selected" : ""}>${editor.nombres}</option>`;
+                });
+                usuariosFilmmakers.forEach(editor => {
                     opcionesEditores += `<option value="${editor.idusuario}" data-idagendaeditor="${tareaAsignada?.idagendaeditor}" 
                     ${editor.idusuario == idUsuarioAsignado ? "selected" : ""}>${editor.nombres}</option>`;
                 });
@@ -870,6 +894,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                         const idagendaeditor = e.target.getAttribute("data-idagendaeditor")
                         console.log("idagenda editor ->", idagendaeditor);
+                        const tareaVinculadaCmanager = await obtenerTareaVinculadaCManager(idagendaeditor)
+                        console.log("tarea vincuada cmanager -> ", tareaVinculadaCmanager);
+                        if (tareaVinculadaCmanager.length > 0) {
+                            if (tareaVinculadaCmanager[0]?.estado == 2) {
+                                showToast("No puedes removerlo por que ya lo ha publicado", "ERROR")
+                                return
+                            }
+                        }
                         const responsablePosteoQuitado = await quitarResponsablePosteo(idagendaeditor)
                         console.log("tarea quitada usuario ? -> ", responsablePosteoQuitado);
                         if (responsablePosteoQuitado) {
@@ -878,7 +910,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             return
                         }
                     } catch (error) {
-                        console.log("erro -< ",error);
+                        console.log("erro -< ", error);
                         showToast("No puedes removerle la responsabilidad por que se encuentra en desarollo", "ERROR")
                         return
                     }
@@ -929,11 +961,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                         }
 
                         console.log("¿Este usuario ya tiene una tarea? ->", tareaUsuario);
-                        const agendaActualizada = await actualizarAgendaEditor(tareaUsuario[0]?.idagendaeditor, tareaUsuario[0]?.idusuario, idtipotarea, fechaentrega, horaentrega)
+                        /* const agendaActualizada = await actualizarAgendaEditor(tareaUsuario[0]?.idagendaeditor, tareaUsuario[0]?.idusuario, idtipotarea, fechaentrega, horaentrega)
                         console.log("agenda actualizad=?", agendaActualizada);
                         //showToast("Este usuaruio ya fue asignado a una tarea", "ERROR")
                         showToast("Editor asignado correctamente", "SUCCESS")
-                        return
+                        return */
+                        let response = await asignarAgendaEditor(idagendaedicion, idusuario, idtipotarea, fechaentrega, horaentrega);
+                        console.log("Respuesta de asignación:", response);
+                        if (response.idagendaeditor) {
+                            //idagendaeditorFinal = response.idagendaeditor
+                            showToast("Editor asignado correctamente", "SUCCESS")
+                            return
+                        }
                     }
                     if (idusuario !== "-1") {
 
@@ -949,6 +988,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         let response = await asignarAgendaEditor(idagendaedicion, idusuario, idtipotarea, fechaentrega, horaentrega);
                         console.log("Respuesta de asignación:", response);
                         if (response.idagendaeditor) {
+                            //idagendaeditorFinal = response.idagendaeditor
                             showToast("Editor asignado correctamente", "SUCCESS")
                             return
                         }
@@ -1070,7 +1110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         })
     })
 
-    $q("#btnAsignarTareaDiaria").addEventListener("click", async () => {
-        window.location.href = `http://localhost/vega-erp/views/utilitario/tareasdiarias/registrar-tareadiaria`
-    })
+    /*  $q("#btnAsignarTareaDiaria").addEventListener("click", async () => {
+         window.location.href = `http://localhost/vega-erp/views/utilitario/tareasdiarias/registrar-tareadiaria`
+     }) */
 })

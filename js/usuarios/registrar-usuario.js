@@ -250,7 +250,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const minLength = ($q("#num_doc").value.length >= 8);
     const validaNumDoc = $q("#num_doc").value.length === 8 || $q("#num_doc").value.length === 20 ? true : false;
 
-    if ($q("#num_doc").value !== "" && isNumeric && minLength && validaNumDoc) {
+    //if ($q("#num_doc").value !== "" && isNumeric && minLength && validaNumDoc) {
       const data = await obtenerPersonaPorDoc();
       const isblock = (data.length > 0); // confirma si la persona ya existe y bloquea los campos 
       bloquearCampos(isblock);
@@ -273,14 +273,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       
       }
       
-    }
-    else {
+    //}
+    /* else {
       //console.log(isNumeric);
       if ($q("num_doc").value === "") { showToast("Escribe un Num de Doc.", "WARNING"); }
       else if (!isNumeric) { showToast("Ingresa solo Numeros", "WARNING"); }
       else if (!minLength) { showToast("El minimo es de 8 caracteres", "WARNING"); }
       else if (!validaNumDoc) { showToast("La cantidad de digitos debe ser de 8 o 20", "WARNING"); }
-    }
+    } */
     //return isValid;
   }
 

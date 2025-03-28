@@ -16,6 +16,13 @@ if (isset($_GET['operation'])) {
       ];
       echo json_encode($agendacmanager->obtenerCmanagerPorIdAgendaEditor($cleanData));
       break;
+
+    case 'obtenerTareaVinculadaCManager':
+      $cleanData = [
+        'idagendaeditor' => $_GET['idagendaeditor'] === "" ? null : $agendacmanager->limpiarCadena($_GET['idagendaeditor'])
+      ];
+      echo json_encode($agendacmanager->obtenerTareaVinculadaCManager($cleanData));
+      break;
       
     case 'obtenerTareasParaPublicar':
       $cleanData = [
@@ -92,5 +99,7 @@ if (isset($_POST['operation'])) {
   
         echo json_encode($update);
         break; 
+
+      
   }
 }

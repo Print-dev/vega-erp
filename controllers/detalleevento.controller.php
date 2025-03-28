@@ -26,13 +26,13 @@ if (isset($_GET['operation'])) {
     case 'obtenerCotizacion':
       echo json_encode($detalleevento->obtenerCotizacion(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
       break;
-      
+
     case 'obtenerCotizacionesPorModalidad':
       echo json_encode($detalleevento->obtenerCotizacionesPorModalidad(['modalidad' => $_GET['modalidad']]));
       break;
 
     case 'obtenerDpPorFecha':
-      echo json_encode($detalleevento->obtenerDpPorFecha(['idusuario' => $_GET['idusuario'], 'fechapresentacion'=> $_GET['fechapresentacion']]));
+      echo json_encode($detalleevento->obtenerDpPorFecha(['idusuario' => $_GET['idusuario'], 'fechapresentacion' => $_GET['fechapresentacion']]));
       break;
 
     case 'obtenerFilmmakerAsociadoEvento':
@@ -80,7 +80,7 @@ if (isset($_POST['operation'])) {
 
       echo json_encode($respuesta);
       break;
-      
+
     case 'actualizarDetallePresentacion':
       $cleanData = [
         'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']) ? $detalleevento->limpiarCadena($_POST['iddetallepresentacion']) : '',
@@ -181,6 +181,16 @@ if (isset($_POST['operation'])) {
 
       echo json_encode($rpt);
       break;
-    
+
+    /* case 'asignarLugarDestinoBus':
+      $cleanData = [
+        'iddetallepresentacion' => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']),
+        'lugardestino' => $detalleevento->limpiarCadena($_POST['lugardestino']),
+      ];
+
+      $update = $detalleevento->asignarLugarDestinoBus($cleanData);
+
+      echo json_encode($update);
+      break; */
   }
 }

@@ -189,3 +189,21 @@ const convertirAHorasTotales = (hora) => {
   const [hh, mm, ss] = hora.split(":").map(Number);
   return hh * 60 + mm; // Convertimos a minutos totales
 };
+
+function obtenerSoloFechaHoraPeruSeparadaFormatoMysql() {
+  // Obtener la fecha y hora en la zona horaria de Perú
+  const fechaHoraPeru = new Date().toLocaleString("en-US", { timeZone: "America/Lima" });
+
+  // Convertir a objeto Date
+  const fechaObj = new Date(fechaHoraPeru);
+
+  // Formatear la fecha a 'YYYY-MM-DD' (compatible con MySQL)
+  const fechaPeru = fechaObj.toISOString().split("T")[0];
+
+  // Formatear la hora a 'HH:MM:SS'
+  const horaPeru = fechaObj.toTimeString().split(" ")[0];
+
+  return { fecha: fechaPeru, hora: horaPeru };
+}
+
+

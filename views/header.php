@@ -179,6 +179,44 @@ $host = "http://localhost/vega-erp/";
   .notificacion-item:hover {
     background: #e9ecef;
   }
+
+  #options-sidebar {
+    max-height: 400px;
+    /* Ajusta la altura máxima */
+    overflow-y: auto;
+    /* Agrega scroll vertical */
+    overflow-x: hidden;
+    /* Oculta el scroll horizontal */
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+  }
+
+  /* Evitar que los elementos internos causen desbordamiento */
+  #options-sidebar li {
+    white-space: nowrap;
+    /* Evita que los elementos se expandan horizontalmente */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* Opcional: agrega "..." si el texto es muy largo */
+  }
+
+  /* Para navegadores basados en WebKit (Chrome, Safari, Edge) */
+  #options-sidebar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  #options-sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  #options-sidebar::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  #options-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 </style>
 <div class="beta-banner">Vega Producciones V.1.0</div>
 
@@ -234,7 +272,7 @@ $host = "http://localhost/vega-erp/";
         </div>
       </div>
       <!-- OPCIONES SIDEBAR -->
-      <ul class="nav flex-column pt-3 pt-md-0" id="options-sidebar" style="height: 800px;">
+      <ul class="nav flex-column pt-3 pt-md-0" id="options-sidebar" style="height: auto; max-height: 1500px; overflow-y: auto;">
         <li class="nav-item mb-3">
           <a class="nav-link bg-white d-flex align-items-center" href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente">
             <span class="sidebar-icon me-2">
@@ -250,9 +288,10 @@ $host = "http://localhost/vega-erp/";
         <?php
         foreach ($listaAcceso as $access) {
           if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario" && $access['modulo'] !== "pyp" && $access['modulo'] !== "contabilidad" && $access['modulo'] !== "agenda") {
+
             echo "
               <li class='nav-item' >
-                <a href='http://localhost/vega-erp/views/{$access['modulo']}/{$access['ruta']}' class='nav-link' id='links'>
+                <a href='http://localhost/vega-erp/views/{$access['modulo']}/{$access['subruta']}/{$access['ruta']}' class='nav-link' id='links'>
                   <i class='{$access['icono']}'></i>
                   <span class='sidebar-text mx-2'>{$access['texto']}</span>
                 </a>
@@ -282,6 +321,18 @@ $host = "http://localhost/vega-erp/";
             }
             echo "</ul>";
           } else if ($access['modulo'] === "utilitario" && $access['visible']) {
+
+            if ((isset($access['only']) && $access['only'])) {
+              /* die(print_r("hola")); */
+              echo "
+              <li class='nav-item' >
+                <a href='http://localhost/vega-erp/views/{$access['modulo']}/{$access['subruta']}/{$access['ruta']}' class='nav-link' id='links'>
+                  <i class='{$access['icono']}'></i>
+                  <span class='sidebar-text mx-2'>{$access['texto']}</span>
+                </a>
+              </li>";
+              break;
+            }
             echo "
               <li class='sidebar-item nav-item'>
                 <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#utilitario'
@@ -515,7 +566,7 @@ $host = "http://localhost/vega-erp/";
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="modalnotificacion">Informacion detalle</h1>
+            <h1 class="modal-title fs-5" id="modalnotificacion">Detalles</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">

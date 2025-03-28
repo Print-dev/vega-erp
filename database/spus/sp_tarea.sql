@@ -24,3 +24,5 @@ BEGIN
         SET _idtipotarea = last_insert_id();
 	END IF;
 END $$
+
+-- CALL sp_registrar_nuevo_tipotarea (@idtipotarea, 'Grabaciones');
