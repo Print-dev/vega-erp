@@ -16,6 +16,16 @@ if (isset($_GET['operation'])) {
       ];
       echo json_encode($agendacmanager->obtenerCmanagerPorIdAgendaEditor($cleanData));
       break;
+      
+    case 'obtenerTareasParaPublicar':
+      $cleanData = [
+        'establecimiento' => $_GET['establecimiento'] === "" ? null : $agendacmanager->limpiarCadena($_GET['establecimiento']),
+        'fechapresentacion' => $_GET['fechapresentacion'] === "" ? null : $agendacmanager->limpiarCadena($_GET['fechapresentacion']),
+        'idusuario' => $_GET['idusuario'] === "" ? null : $agendacmanager->limpiarCadena($_GET['idusuario']),
+        'idusuarioeditor' => $_GET['idusuarioeditor'] === "" ? null : $agendacmanager->limpiarCadena($_GET['idusuarioeditor']),
+      ];
+      echo json_encode($agendacmanager->obtenerTareasParaPublicar($cleanData));
+      break;
 
     
   }
@@ -57,6 +67,17 @@ if (isset($_POST['operation'])) {
         ];
   
         $update = $agendacmanager->asignarPortalWebContenido($cleanData);
+  
+        echo json_encode($update);
+        break; 
+
+      case 'actualizarCopyContenido':
+        $cleanData = [
+          'idagendacommanager' => $agendacmanager->limpiarCadena($_POST['idagendacommanager']),
+          'copy' => $agendacmanager->limpiarCadena($_POST['copy']),
+        ];
+  
+        $update = $agendacmanager->actualizarCopyContenido($cleanData);
   
         echo json_encode($update);
         break; 

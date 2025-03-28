@@ -35,6 +35,34 @@ class AgendaCManager extends ExecQuery
             die($e->getMessage());
         }
     }
+    
+    public function obtenerTareasParaPublicar($params = []): array
+    {
+        try {
+            $cmd = parent::execQ("CALL sp_obtener_tareas_para_publicar (?,?,?,?)");
+            $cmd->execute(array(
+              $params['establecimiento'],
+              $params['fechapresentacion'],
+              $params['idusuario'],
+              $params['idusuarioeditor'],
+            ));
+            return $cmd->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+    }
+
+    public function obtenerPendientesParaPublicar($params = []): array
+    {
+        try {
+            $cmd = parent::execQ("SELECT * FROM agenda_commanager");
+            $cmd->execute(array(
+            ));
+            return $cmd->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+    }
 
     public function quitarResponsablePosteo($params = []): bool
     {
@@ -59,6 +87,28 @@ class AgendaCManager extends ExecQuery
           array(
             $params['idagendacommanager'],
             $params['portalpublicar']
+          )
+        );
+        
+        return $act;
+      } catch (PDOException $e) {
+        // Registrar detalles del error en el log
+        error_log("Error en registrarDetallePresentacion: " . $e->getMessage());
+  
+        // Retornar detalles del error
+        die($e->getMessage());
+      }
+    }
+
+    public function actualizarCopyContenido($params = []): bool
+    {
+      try {
+        $pdo = parent::getConexion();
+        $cmd = $pdo->prepare('CALL sp_actualizar_copy_contenido(?,?)');
+        $act = $cmd->execute(
+          array(
+            $params['idagendacommanager'],
+            $params['copy']
           )
         );
         

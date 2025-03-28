@@ -156,7 +156,7 @@ CREATE TABLE agenda_asignaciones ( -- tabla que asigna la agenda a un filmmaker
     FOREIGN KEY (iddetalle_presentacion) REFERENCES detalles_presentacion(iddetalle_presentacion) ON DELETE CASCADE,
     FOREIGN KEY (idusuario) REFERENCES usuarios(idusuario) ON DELETE CASCADE
 );
-
+select * from nivelaccesos;
 create table convenios (
 	idconvenio	int auto_increment primary key,
     iddetalle_presentacion int not null,
@@ -270,7 +270,7 @@ CREATE TABLE notificaciones (
     constraint chk_tipo check(tipo IN (1,2)), -- ir agregando mas tipos segun lo requiera
     constraint chk_estado_not check(estado IN (1,2))
 );
-
+select * from notificaciones;
 CREATE TABLE reparticion_ingresos (
 	idreparticion	int auto_increment primary key,
     iddetalle_presentacion int not null,    
@@ -310,7 +310,7 @@ CREATE TABLE tipotarea (
 	idtipotarea	int auto_increment primary key,
     tipotarea varchar(30) not null
 ) engine = innodb;
-
+select * from tipotarea;
  -- referencia: modal asignar editor
 CREATE TABLE agenda_editores (
 	idagendaeditor	int auto_increment primary key,
@@ -325,7 +325,9 @@ CREATE TABLE agenda_editores (
     constraint fk_idusuario_ag_edit foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idtipotarea_agen foreign key (idtipotarea) references tipotarea (idtipotarea)
 ) engine = innodb;
-
+select * from agenda_editores;
+select * from nivelaccesos;
+select*from usuarios;
 CREATE TABLE subidas_agenda_edicion (
 	idsubida	int  auto_increment primary key,
     idagendaeditor int not null,
@@ -340,19 +342,19 @@ CREATE TABLE agenda_commanager (
     idagendaeditor 		int not null,
     idusuarioCmanager 	int not null,
     portalpublicar 		varchar(120) null,
+    copy				text null,
     estado				SMALLINT null default 1, -- 1: no publicado, 2: publicado
     constraint fk_idagendaeditor_cm foreign key (idagendaeditor) references agenda_editores (idagendaeditor),
     constraint fk_idusuarioCmanaget foreign key (idusuarioCmanager) references usuarios (idusuario)
 ) engine = innodb;
-select* from agenda_commanager;
+select * from agenda_commanager;
 --  -------------------------------------------- NUEVAS TABLAS AGREGASDAS -----------------------------------------
 -- AGREGADO EL 26-06-2025 - 16:33
 CREATE TABLE tareas_diarias (
 	idtareadiaria	int auto_increment primary key,
 	tarea			varchar(120) not null
 ) ENGINE = INNODB;
-select * from tareas_diarias;
-select * from nivelaccesos;
+
 -- AGREGADO EL 26-06-2025 - 16:33
 CREATE TABLE tareas_diaria_asignacion (
 	idtaradiariaasig int auto_increment primary key,

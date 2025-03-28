@@ -23,9 +23,8 @@ $accesos = [
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'utilitario', 'ruta' => 'listar-tarifas', 'subruta' => 'tarifas', 'texto' => 'Tarifario', 'visible' => false, 'icono' => 'fa-solid fa-list'],
     ['modulo' => 'utilitario', 'ruta' => 'registrar-tarifa', 'subruta' => 'tarifas', 'texto' => '', 'visible' => false, 'icono' => ''],
-    ['modulo' => 'utilitario', 'ruta' => 'listar-tareasdiarias', 'subruta' => 'tareasdiarias', 'texto' => 'Tareas Diarias', 'visible' => false, 'icono' => 'fa-solid fa-note-sticky'],
+    ['modulo' => 'utilitario', 'ruta' => 'listar-tareasdiarias', 'subruta' => 'tareasdiarias', 'texto' => 'Tareas Diarias', 'visible' => false, 'icono' => 'fa-solid fa-list'],
     ['modulo' => 'utilitario', 'ruta' => 'registrar-tareadiaria', 'subruta' => 'tareasdiarias', 'texto' => '', 'visible' => false, 'icono' => ''],
-    ['modulo' => 'commanager', 'ruta' => 'listar-contenido-publicar', 'subruta' => '', 'texto' => 'Publicar', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
 
     /* ['modulo' => 'pyp', 'ruta' => '', 'texto' => 'Planeamiento', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-lightbulb'],
@@ -56,6 +55,8 @@ $accesos = [
     ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto' => 'Agenda Edicion', 'visible' => false, 'icono' => 'fa-solid fa-list'],
     ['modulo' => 'agenda', 'ruta' => 'listar-agenda-filmmaker', 'subruta' => '', 'texto' => 'Agenda Filmmaker', 'visible' => false, 'icono' => 'fa-solid fa-list'],
     ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''],
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-cmanager', 'subruta' => '', 'texto' => 'Agenda C. Manager', 'visible' => false, 'icono' => 'fa-solid fa-list'],
+
 
   ],
   "Artista" => [
@@ -79,7 +80,7 @@ $accesos = [
   "Community Manager" => [
     /* ['modulo' => 'agenda', 'ruta' => 'listar-agenda-edicion', 'subruta' => '', 'texto' => 'Agenda', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
     ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''], */
-    ['modulo' => 'commanager', 'ruta' => 'listar-contenido-publicar', 'subruta' => '', 'texto' => 'Publicar', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
+    ['modulo' => 'agenda', 'ruta' => 'listar-agenda-cmanager', 'subruta' => '', 'texto' => 'Agenda C. Manager', 'visible' => false, 'icono' => 'fa-solid fa-list'],
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
   ],
 ];

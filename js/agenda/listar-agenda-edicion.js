@@ -323,11 +323,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q(".contenedor-tareas-edicion-pendientes").innerHTML = ``
                 editoresAsignados.forEach(editor => {
                     if (editor.idusuario == idusuarioEdicion) {
+                        console.log("tipo de tareas para los editores asignados-> ", editor.tipotarea);
                         $q(".contenedor-tareas-edicion-pendientes").innerHTML += `
             <tr>
                 <td>${editor.fecha_entrega}</td>
                 <td>${editor.nombres}</td>
-                <td>${editor.tipotarea == 1 ? 'Flayer' : editor.tipotarea == 2 ? 'Saludos' : editor.tipotarea == 3 ? 'Reels' : editor.tipotarea == 4 ? 'Fotos' : editor.tipotarea == 5 ? 'Contenido' : 'No especificado'}</td>
+                <td>${editor.tipotarea ? editor.tipotarea : 'No especificado'}</td>
                 <td>
                   <select name="estado" class="form-select select-estado" data-idagendaeditor="${editor.idagendaeditor}">
                       <option value="1" ${editor.estado == 1 ? 'selected' : ''}>Pendiente</option>
@@ -706,7 +707,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <tr>
                     <td>${editor.fecha_entrega}</td>
                     <td>${editor.nombres}</td>
-                    <td>${editor.tipotarea == 1 ? 'Flayer' : editor.tipotarea == 2 ? 'Saludos' : editor.tipotarea == 3 ? 'Reels' : editor.tipotarea == 4 ? 'Fotos' : editor.tipotarea == 5 ? 'Contenido' : 'No especificado'}</td>
+                    <td>${editor.tipotarea ? editor.tipotarea : 'No especificado'}</td>
                     <td>
                       <select name="estado" class="form-select select-estado" data-idagendaeditor="${editor.idagendaeditor}">
                           <option value="1" ${editor.estado == 1 ? 'selected' : ''}>Pendiente</option>

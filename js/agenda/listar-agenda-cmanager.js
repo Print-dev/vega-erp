@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
     // modales
-    let modalContenidos
+    let modalPendientes
+    let myTable
+    let artistaSelect = $q("#artista")
+    let editorSelect = $q("#usuarioeditor")
 
     function $q(object = null) {
         return document.querySelector(object);
@@ -15,19 +18,41 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
+    await obtenerUsuariosArtistas(6)
+    await obtenerUsuariosEditores(8)
 
-    async function obtenerDps(idusuario) {
+    
+
+    async function obtenerUsuariosArtistas(idnivelacceso) {
         const params = new URLSearchParams();
-        params.append("operation", "obtenerDps");
-        params.append("idusuario", idusuario);
-        const data = await getDatos(`${host}tareadiaria.controller.php`, params);
-        return data
-    }
+        params.append("operation", "obtenerUsuarioPorNivel");
+        params.append("idnivelacceso", idnivelacceso);
+        const data = await getDatos(`${host}usuario.controller.php`, params);
+        console.log(data);
+        artistaSelect.innerHTML = "<option value=''>Todos</option>";
+        data.forEach((artista) => {
+          artistaSelect.innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
+        });
+    
+      }
+
+    async function obtenerUsuariosEditores(idnivelacceso) {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerUsuarioPorNivel");
+        params.append("idnivelacceso", idnivelacceso);
+        const data = await getDatos(`${host}usuario.controller.php`, params);
+        console.log(data);
+        editorSelect.innerHTML = "<option value=''>Todos</option>";
+        data.forEach((artista) => {
+          editorSelect.innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
+        });
+    
+      }
 
     // ******************************************** DATATABLE ************************************************
 
     function createTable(data) {
-        let rows = $("#tb-body-atencion").find("tr");
+        let rows = $("#tb-body-contenido").find("tr");
         ////console.log(rows.length);
         if (data.length > 0) {
             if (myTable) {
@@ -38,45 +63,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             } else {
                 // Inicializa DataTable si no ha sido inicializado antes
-                myTable = $("#table-atenciones").DataTable({
+                myTable = $("#table-contenidos").DataTable({
                     processing: true, // Muestra un indicador de carga
-                    serverSide: true, // Activa la paginación en el servidor
-                    ajax: {
-                        url: `${host}detalleevento.controller.php`,
-                        type: "POST",
-                        data: function (d) {
-                            d.operation = "filtrarAtenciones";
-                            d.ncotizacion = $("#ncotizacion").val() || "";
-                            d.ndocumento = $("#ndocumento").val() || "";
-                        }
-                    },
-                    columns: [
-                        { data: "iddetalle_presentacion" },
-                        { data: "ncotizacion", defaultContent: "No aplica" },
-                        { data: "nom_usuario", defaultContent: "" },
-                        { data: "ndocumento", defaultContent: "" },
-                        { data: "razonsocial", defaultContent: "" },
-                        {
-                            data: "tipo_evento",
-                            render: function (data) {
-                                return data == 1 ? "Público" : data == 2 ? "Privado" : "";
-                            }
-                        },
-                        {
-                            data: "modalidad",
-                            render: function (data) {
-                                return data == 1 ? "Convenio" : data == 2 ? "Contrato" : "";
-                            }
-                        },
-                        { data: "fecha_presentacion" },
-                        {
-                            data: "estado",
-                            render: function (data) {
-                                return data == 1 ? "Activo" : data == 2 ? "Caducado" : "";
-                            }
-                        },
-                        { data: "opciones", orderable: false, searchable: false }
-                    ],
+                    serverSide: true, // Activa la paginación en el servidor                           
                     lengthMenu: [5, 10, 15, 20],
                     pageLength: 5,
                     language: {
@@ -98,35 +87,63 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     (async () => {
-        await dataFilters();
+        if(nivelacceso == "Community Manager"){
+            $q(".contenedor-select-editor").hidden = true
+            console.log("usuario de cmmnaager- Z> ", idusuarioLogeado);
+            await dataFilters(idusuarioLogeado)
+        }
+        else{
+            await dataFilters()
+        }
     })();
 
     changeByFilters();
 
     function changeByFilters() {
         const filters = $all(".filter");
-        $q("#table-atenciones tbody").innerHTML = "";
+        $q("#table-contenidos tbody").innerHTML = "";
         filters.forEach((x) => {
             /* x.addEventListener("change", async () => {
               await dataFilters();
             }); */
-            if (x.id === "ncotizacion") {
-                x.addEventListener("input", async () => {
-                    await dataFilters();
-                });
-            }
-            if (x.id === "ndocumento") {
-                x.addEventListener("input", async () => {
-                    await dataFilters();
-                });
-            }
-            if (x.id === "nomusuario") {
-                x.addEventListener("input", async () => {
-                    await dataFilters();
-                });
-            }
             if (x.id === "establecimiento") {
                 x.addEventListener("input", async () => {
+                    if(nivelacceso == "Community Manager"){
+            $q(".contenedor-select-editor").hidden = true
+            console.log("usuario de cmmnaager- Z> ", idusuarioLogeado);
+            await dataFilters(idusuarioLogeado)
+        }
+        else{
+            await dataFilters()
+        }
+                });
+            }
+            if (x.id === "fechapresentacion") {
+                x.addEventListener("change", async () => {
+                    if(nivelacceso == "Community Manager"){
+            $q(".contenedor-select-editor").hidden = true
+            console.log("usuario de cmmnaager- Z> ", idusuarioLogeado);
+            await dataFilters(idusuarioLogeado)
+        }
+        else{
+            await dataFilters()
+        }
+                });
+            }
+            if (x.id === "artista") {
+                x.addEventListener("change", async () => {
+                    if(nivelacceso == "Community Manager"){
+            $q(".contenedor-select-editor").hidden = true
+            console.log("usuario de cmmnaager- Z> ", idusuarioLogeado);
+            await dataFilters(idusuarioLogeado)
+        }
+        else{
+            await dataFilters()
+        }
+                });
+            }
+            if (x.id === "usuarioeditor") {
+                x.addEventListener("change", async () => {
                     await dataFilters();
                 });
             }
@@ -136,21 +153,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     chargerEventsButton();
 
-    async function dataFilters() {
+    async function dataFilters(idusuarioEditor) {
         const params = new URLSearchParams();
-        params.append("operation", "filtrarAtenciones");
-        params.append(
-            "ncotizacion",
-            $q("#ncotizacion").value ? $q("#ncotizacion").value : ""
-        );
-        params.append(
-            "ndocumento",
-            $q("#ndocumento").value ? $q("#ndocumento").value : ""
-        );
-        params.append("nomusuario", $q("#nomusuario").value ? $q("#nomusuario").value : "")
-        params.append("establecimiento", $q("#establecimiento").value ? $q("#establecimiento").value : "")
-
-        const data = await getDatos(`${host}detalleevento.controller.php`, params);
+        params.append("operation", "obtenerTareasParaPublicar");
+        params.append("establecimiento", $q("#establecimiento").value ? $q("#establecimiento").value : "");
+        params.append("fechapresentacion", $q("#fechapresentacion").value ? $q("#fechapresentacion").value : "");
+        params.append("idusuario", $q("#artista").value ? $q("#artista").value : "");
+        params.append("idusuarioeditor", idusuarioEditor ? idusuarioEditor : $q("#usuarioeditor").value ? $q("#usuarioeditor").value : "");
+        const data = await getDatos(`${host}agendacmanager.controller.php`, params);
+        
         console.log("data -> ", data);
 
         const tbody = $q("#table-contenidos tbody");
@@ -169,73 +180,75 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             tbody.innerHTML += `
             <tr>
-                <td>${x.ncotizacion ? x.ncotizacion : 'no aplica'}</td>
-                <td>${x.nom_usuario ? x.nom_usuario : ''}</td>
-                <td>${x.ndocumento ? x.ndocumento : ''}</td>
-                <td>${x.razonsocial ? x.razonsocial : ''}</td>
-                <td>${x.tipo_evento == 1 ? "Público" : x.tipo_evento == 2 ? "Privado" : ``}</td>
-                <td>${x.modalidad == 1 ? "Convenio" : x.modalidad == 2 ? "Contrato" : ``}</td>
-                <td>${x.establecimiento ? x.establecimiento : ``}</td>
-                <td>${x.departamento}/${x.provincia}/${x.distrito}</td>
-                <td>${x.fecha_presentacion}</td>                        
-                <td>${x.estado == 1 ? 'Activo' : x.estado == 2 ? 'Caducado' : x.estado == 3 ? 'Cancelado' : ''}</td>                        
+                <td>${x.establecimiento ? x.establecimiento : 'no aplica'}</td>
+                <td>${x.fecha_presentacion ? x.fecha_presentacion : ''}</td>
+                <td>${x.nom_usuario ? x.nom_usuario : ''}</td>                   
+                <td>${x.nombres ? x.nombres : ''}</td>                   
+                <td>${x.tipotarea ? x.tipotarea : ''}</td>           
                 <td>
-                    ${x.estado == 3 ? '' : `
-                        ${x.estado == 2 ? '' : parseInt(x.estado_convenio) == 2 ? `
-                        <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-idusuario="${x.idusuario}" data-fechapresentacion="${x.fecha_presentacion}" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
-                            Detalles Propuesta
-                        </button>
-                        <button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generar Convenio">
-                            Generar Convenio
-                        </button>
-                    ` : parseInt(x.modalidad) == 1 ? `
-                        <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-idusuario="${x.idusuario}" data-fechapresentacion="${x.fecha_presentacion}" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
-                            Detalles Propuesta
-                        </button>
-                        <button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generar Convenio">
-                            Generar Convenio
-                        </button>
-                    ` : parseInt(x.modalidad) == 2 ? `
-                        <button type="button" class="btn btn-sm btn-success btn-cotizar" data-id=${x.iddetalle_presentacion} data-estado=${x.condicion} title="Cotizar">Cotizar</button>
-                    ` : ``}
-
-                    ${x.estado == 2 ? '' : parseInt(x.modalidad) === 2 ? `
-                        <button type="button" class="btn btn-sm btn-secondary btn-pagar" data-id=${x.iddetalle_presentacion} title="Pagar">
-                            Pagar
-                        </button>
-                        <button type="button" class="btn btn-sm btn-secondary btn-contrato" data-id=${x.iddetalle_presentacion} title="Generar contrato">
-                            Generar Contrato
-                        </button>
-                    ` : ``}
-
-                    ${x.estado == 2 ? '' : parseInt(x.pagado50) == 1 ? `` : parseInt(x.reserva) == 1 ? `
-                        <button type="button" class="btn btn-sm btn-primary btn-reserva" data-id=${x.iddetalle_presentacion} title="Generar Reserva">
-                            Generar Reserva
-                        </button>
-                    ` : ``}
-
-                      ${x.tienecaja == 1 ? '' : x.modalidad == 2 ? '' : `<button type="button" class="btn btn-sm btn-warning btn-caja" data-id=${x.iddetalle_presentacion} title="Generar Caja Chica">
-                          Generar Caja Chica  
-                      </button> `
-                    }
-                    <button type="button" class="btn btn-sm btn-primary btn-actualizar" data-id=${x.iddetalle_presentacion} title="Actualizar Evento">
-                        Actualizar
-                      </button>
-                    <button type="button" class="btn btn-sm btn-danger btn-cancelar" data-id=${x.iddetalle_presentacion} title="Cancelar Evento">
-                        Cancelar
-                      </button>
-                      `}
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <input type="text" class="form-control" name="txtportalweb" id="txtportalweb" value="${x.portalpublicar ? x.portalpublicar : ''}">
+                        <i class="fa-solid fa-floppy-disk btnGuardarPortalWeb" data-idagendacommanager="${x.idagendacommanager}" style="cursor: pointer; color: blue;"></i>
+                    </div>
+                </td>                        
+                <td>
+                    <div style="display: flex; align-items: center; gap: 8px;" >
+                        <textarea type="text" class="form-control col-md-6" name="txtcopy" id="txtcopy">${x.copy ? x.copy : ''}</textarea>
+                        <i class="fa-solid fa-floppy-disk btnGuardarCopy" data-idagendacommanager="${x.idagendacommanager}" style="cursor: pointer; color: blue;"></i>
+                    </div>
+                </td>                        
+                <td>
+                    <input type="checkbox" class="btn-estado" name="estado" id="estado" data-idagendacommanager="${x.idagendacommanager}" ${x.estado == 2 ? 'checked' : ''}>
                 </td>
             </tr>
-        `;
-
-            
+        `;            
         }
         createTable(data);
+
+        $all(".btnGuardarPortalWeb").forEach(btn => {
+            btn.addEventListener("click", async (e) => {
+                try {                    
+                    const idagendacommanager = e.target.getAttribute("data-idagendacommanager")
+                    let fila = e.target.closest("tr"); // Encuentra la fila actual
+                    let inputportalweb = fila.querySelector("input[name='txtportalweb']").value;
+                    console.log("portal web a publicar", inputportalweb);
+                    
+                    const portalwebasignado = await asignarPortalWebContenido(idagendacommanager, inputportalweb)
+                    console.log("portalweb asignado ? -> ", portalwebasignado);
+                    if (portalwebasignado) {
+                        showToast("Hecho!", "SUCCESS")                        
+                        return
+                    }
+                } catch (error) {
+                    showToast("Un error ha ocurrido!", "ERROR")
+                    return
+                }
+            })
+        })
+        $all(".btnGuardarCopy").forEach(btn => {
+            btn.addEventListener("click", async (e) => {
+                try {                    
+                    const idagendacommanager = e.target.getAttribute("data-idagendacommanager")
+                    let fila = e.target.closest("tr"); // Encuentra la fila actual
+                    let inputcopy = fila.querySelector("textarea[name='txtcopy']").value;
+                    console.log("texto copy", inputcopy);
+                    
+                    const copyContenido = await actualizarCopyContenido(idagendacommanager, inputcopy)
+                    console.log("copy contenido actualizado? ? -> ", copyContenido);
+                    if (copyContenido) {
+                        showToast("Hecho!", "SUCCESS")                        
+                        return
+                    }
+                } catch (error) {
+                    showToast("Un error ha ocurrido!", "ERROR")
+                    return
+                }
+            })
+        })
     }
 
     function createTable(data) {
-        let rows = $("#tb-body-atencion").find("tr");
+        let rows = $("#tb-body-contenido").find("tr");
         ////console.log(rows.length);
         if (data.length > 0) {
             if (myTable) {
@@ -246,7 +259,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             } else {
                 // Inicializa DataTable si no ha sido inicializado antes
-                myTable = $("#table-atenciones").DataTable({
+                myTable = $("#table-contenidos").DataTable({
                     paging: true,
                     searching: false,
                     lengthMenu: [5, 10, 15, 20],
@@ -278,32 +291,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             .addEventListener("click", async (e) => {
                 if (e.target) {
                     idactivo = 0;
-                    if (e.target.classList.contains("btn-propuesta")) {
-                        await buttonPropuesta(e);
-                    }
-                    if (e.target.classList.contains("btn-cotizar")) {
-                        await buttonCotizar(e);
-                    }
-                    if (e.target.classList.contains("btn-pagar")) {
-                        await buttonPagar(e);
-                    }
-                    if (e.target.classList.contains("btn-contrato")) {
-                        await buttonContrato(e);
-                    }
-                    if (e.target.classList.contains("btn-reserva")) {
-                        await buttonReserva(e);
-                    }
-                    if (e.target.classList.contains("btn-convenio")) {
-                        await buttonConvenio(e);
-                    }
-                    if (e.target.classList.contains("btn-caja")) {
-                        await buttonCaja(e);
-                    }
-                    if (e.target.classList.contains("btn-actualizar")) {
-                        await buttonActualizar(e);
-                    }
-                    if (e.target.classList.contains("btn-cancelar")) {
-                        await buttonCancelar(e);
+                    if (e.target.classList.contains("btn-estado")) {
+                        await buttonCambiarEstado(e);
                     }
                     /* if(e.target.classList.contains("show-espec")){//abre el sidebar
                     await btnSBUpdateActivo(e);
@@ -314,6 +303,29 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             });
     }
+
+        // ********************************************* RENDERIZACION DE DATA ****************************************************************
+async function buttonCambiarEstado(e) {
+    /* idagendacommanager = e.target.getAttribute("data-idagendacommanager");
+    modalPendientes = new bootstrap.Modal($q("#modal-pendientes"))
+    modalPendientes.show() */
+    try {
+        const idagendacommanager = e.target.getAttribute("data-idagendacommanager")
+        console.log("valor -> ", e.target.checked);    
+        let estadoNuevo = e.target.checked ? 2 : 1
+        console.log("estado neuevo -> ", estadoNuevo);
+        const contenidoPublicado = await actualizarEstadoPublicarContenido(idagendacommanager, estadoNuevo)
+        console.log("contniod publicado- > ", contenidoPublicado);
+        if(contenidoPublicado){
+            showToast("Contenido Publicado!", "SUCCESS")                        
+            return
+        }
+    } catch (error) {
+        showToast("Un error ha ocurrido!", "ERROR")
+        return
+    }
+}
+
 
     // ********************************************* OBTENCION DE DATASA ****************************************************************
 
@@ -347,5 +359,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         const rbody = await fbody.json();
         return rbody;
     }
+    
+    async function actualizarCopyContenido(idagendacommanager, copy) {
+        const body = new FormData();
+        body.append("operation", "actualizarCopyContenido");
+        body.append("idagendacommanager", idagendacommanager); // id artista
+        body.append("copy", copy);
+
+        const fbody = await fetch(`${host}agendacmanager.controller.php`, {
+            method: "POST",
+            body: body,
+        });
+        const rbody = await fbody.json();
+        return rbody;
+    }
+
+    
     // ********************************************* EVENTOS  ****************************************************************
 })

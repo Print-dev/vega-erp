@@ -161,8 +161,9 @@ CREATE PROCEDURE sp_obtener_agenda_editores
 )
 BEGIN
 	SELECT 
-	AGE.idagendaeditor, AGE.idtipotarea, PER.nombres, USU.idusuario, AGE.fecha_entrega, AGE.estado
+	AGE.idagendaeditor, TIPO.idtipotarea, TIPO.tipotarea, PER.nombres, USU.idusuario, AGE.fecha_entrega, AGE.estado
     FROM agenda_editores AGE
+    LEFT JOIN tipotarea TIPO ON TIPO.idtipotarea = AGE.idtipotarea
     LEFT JOIN usuarios USU ON USU.idusuario = AGE.idusuario
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
     WHERE AGE.idagendaedicion = _idagendaedicion;

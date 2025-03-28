@@ -131,7 +131,7 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
               return
             }
              else if (data.rol === "Community Manager") {
-              window.location.href = 'http://localhost/vega-erp/views/commanager/listar-contenido-publicar';
+              window.location.href = 'http://localhost/vega-erp/views/agenda/listar-agenda-cmanager';
               return
             }
           } else {

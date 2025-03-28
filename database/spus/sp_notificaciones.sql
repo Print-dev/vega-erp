@@ -22,7 +22,7 @@ BEGIN
     END;
     
     -- Insertar la notificación
-    INSERT INTO notificaciones (idusuariodest, idusuariorem, tipo, idreferencia, mensaje) values (6, 1, 2, null, "ge mando ");
+    INSERT INTO notificaciones (idusuariodest, idusuariorem, tipo, idreferencia, mensaje)
     VALUES (_idusuariodest, _idusuariorem , _tipo, nullif(_idreferencia,''), _mensaje);
 
     IF existe_error = 1 THEN
