@@ -161,7 +161,7 @@
                                 </div>
                             </div>
 
-                            <div class="row g-3 align-items-center contenedor-viatico-viaje">
+                         <!--    <div class="row g-3 align-items-center contenedor-viatico-viaje">
                                 <div class="col-md-4 text-end">
                                     <label for="viaje" class="form-label">Viatico de viaje:</label>
                                 </div>
@@ -171,7 +171,7 @@
                                         <input type="number" id="viaje" name="viaje" class="form-control">
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
 
 

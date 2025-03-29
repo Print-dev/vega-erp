@@ -158,7 +158,7 @@
                                 </div>
                             </div>
 
-                            <div class="row g-3 align-items-center contenedor-viatico-viaje">
+                         <!--    <div class="row g-3 align-items-center contenedor-viatico-viaje">
                                 <div class="col-md-4 text-end">
                                     <label for="viaje" class="form-label">Viatico de viaje:</label>
                                 </div>
@@ -168,7 +168,7 @@
                                         <input type="number" id="viaje" name="viaje" class="form-control">
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
 
 
@@ -243,7 +243,7 @@
 </div>
 
 <div class="modal fade" id="modal-asignareditor" tabindex="-1" aria-labelledby="modalasignareditor" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="modalasignareditor">Asignar Editor</h1>
@@ -302,7 +302,7 @@
                         <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
                             <thead class="table-dark">
                                 <tr>
-                                    <th>Tareas</th>
+                                    <th>Contenido</th>
                                     <th>Editor</th>
                                     <th>Fecha de entrega</th>
                                     <th>Hora de entrega</th>

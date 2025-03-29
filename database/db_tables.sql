@@ -69,6 +69,8 @@ CREATE TABLE usuarios
     color		CHAR(7) null,
     porcentaje 	INT NULL,
     marcaagua 	varchar(40) null,
+    firma		varchar(40) null, -- recien agregado
+    esRepresentante tinyint null default 0, -- recien agregado
 	estado 		TINYINT NOT NULL DEFAULT 1, -- 1=activo, 2=baja/inactivo/suspendido/baneado/inhabilitado
 	create_at	  DATETIME			  NOT NULL DEFAULT NOW(),
     update_at	  DATETIME			  NULL,
@@ -272,7 +274,7 @@ CREATE TABLE notificaciones (
     idnotificacion INT AUTO_INCREMENT PRIMARY KEY,
     idusuariodest INT NOT NULL,-- Usuario que recibe la notificación
     idusuariorem INT NOT NULL, -- usuario que envia la notificacion
-    tipo INT NOT NULL, -- 1- viatico, 2- notificacion cualquiera
+    tipo INT NOT NULL, -- 1- viatico, 2- DETLLAE PRESENTACION
     idreferencia INT NULL, -- ID del registro relacionado
     mensaje VARCHAR(200) NOT NULL,
     estado INT NULL DEFAULT 1, 

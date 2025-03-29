@@ -1,5 +1,7 @@
 use vega_producciones_erp;
 
+-- USAR ESTE SPU SIEMPRE , EL OTRO SP_TAREA NO SE PQ LO CREE XD NO LO USES POR ESO (29/03/2025)
+
 DROP PROCEDURE IF EXISTS sp_registrar_tipotarea;
 DELIMITER $$
 CREATE PROCEDURE sp_registrar_tipotarea (
@@ -24,3 +26,27 @@ BEGIN
     END IF;
 END $$
 
+DROP PROCEDURE if exists sp_actualizar_nombre_tipotarea;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_nombre_tipotarea (
+	IN _idtipotarea INT,
+    IN _tipotarea varchar(30)
+)
+BEGIN
+		UPDATE tipotarea SET
+    tipotarea = _tipotarea    
+    WHERE idtipotarea = _idtipotarea; 
+END //
+
+DROP PROCEDURE IF EXISTS sp_remover_tipotarea;
+DELIMITER $$
+CREATE PROCEDURE sp_remover_tipotarea
+(
+    IN _idtipotarea INT
+)
+BEGIN	
+	DELETE FROM tipotarea WHERE idtipotarea = _idtipotarea;
+END $$
+
+SELECT * FROM tipotarea;
+CALL sp_remover_tipotarea (6);

@@ -214,6 +214,33 @@ document.addEventListener("DOMContentLoaded", async () => {
         return rbody;
     }
 
+    async function actualizarNombreTipoTarea(idtipotarea, tipotarea) {
+        const body = new FormData();
+        body.append("operation", "actualizarNombreTipoTarea");
+        body.append("idtipotarea", idtipotarea); // id artista
+        body.append("tipotarea", tipotarea);
+
+        const fbody = await fetch(`${host}tipotarea.controller.php`, {
+            method: "POST",
+            body: body,
+        });
+        const rbody = await fbody.json();
+        return rbody;
+    }
+
+    async function removerTipoTarea(idtipotarea) {
+        const body = new FormData();
+        body.append("operation", "removerTipoTarea");
+        body.append("idtipotarea", idtipotarea); // id artista
+
+        const fbody = await fetch(`${host}tipotarea.controller.php`, {
+            method: "POST",
+            body: body,
+        });
+        const rbody = await fbody.json();
+        return rbody;
+    }
+
     async function actualizarAgendaEditor(idagendaeditor, idusuario, idtipoentrega, fechaentrega, horaentrega) {
         const body = new FormData();
         body.append("operation", "actualizarAgendaEditor");
@@ -822,15 +849,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 $q(".contenedor-asignados").innerHTML += `
                     <tr>
-                        <td>
-                            <input type="text" class="form-control" name="tipotarea" value="${tipo.tipotarea}">
+                        <td>                            
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-square-xmark btnQuitarTipoTarea" data-idtipotarea="${tipo.idtipotarea}" title="Remover Contenido" style="cursor: pointer; color: red;"></i>
+                                <input type="text" class="form-control" name="tipotarea" value="${tipo.tipotarea}">
+                                <i class="fa-solid fa-pen-to-square btnActualizarNombreTipoTarea" data-idtipotarea="${tipo.idtipotarea}" style="cursor: pointer;" title="editar"></i>
+                            </div>
                         </td>
                         <td class="contenedor-asignados">
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <select name="asignacioneditor" class="form-select" data-idtipotarea="${tipo.idtipotarea}">
                                     ${opcionesEditores}
                                 </select>
-                                <i class="fa-solid fa-trash btnQuitarUsuarioTarea" data-idagendaeditor="${tareaAsignada?.idagendaeditor}" style="cursor: pointer; color: red;"></i>
+                                <i class="fa-solid fa-trash btnQuitarUsuarioTarea" data-idagendaeditor="${tareaAsignada?.idagendaeditor}" title="Quitar Editor" style="cursor: pointer; color: red;"></i>
                             </div>
                         </td>
             
@@ -845,7 +876,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 <select name="responsablepost" class="form-select">
                                     ${opcionesResponsables}
                                 </select>
-                                <i class="fa-solid fa-trash btnQuitarResponsablePosteo" data-idagendaeditor="${tareaAsignada?.idagendaeditor}" style="cursor: pointer; color: red;"></i>
+                                <i class="fa-solid fa-trash btnQuitarResponsablePosteo" data-idagendaeditor="${tareaAsignada?.idagendaeditor}" title="Quitar Responsable de publicar" style="cursor: pointer; color: red;"></i>
                             </div>
                         </td>
                     </tr>
@@ -877,6 +908,52 @@ document.addEventListener("DOMContentLoaded", async () => {
                         }
                     } catch (error) {
                         showToast("No puedes removerle la tarea por que se encuentra en desarollo", "ERROR")
+                        return
+                    }
+                })
+            })
+
+            $all(".btnActualizarNombreTipoTarea").forEach(btn => {
+                btn.addEventListener("click", async (e) => {
+                    try {
+                        let fila = e.target.closest("tr"); // Encuentra la fila actual
+                        console.log("fila para remover conteindo-> ", fila);
+                        let inputTipoTarea = fila.querySelector("input[name='tipotarea']").value;
+                        console.log("selectAsignacionEEDITOR -> ", inputTipoTarea);
+
+
+                        const idtipotarea = e.target.getAttribute("data-idtipotarea")
+                        console.log("idtipotarea ->", idtipotarea);
+                        const nombreTTactualizado = await actualizarNombreTipoTarea(idtipotarea, inputTipoTarea)
+                        console.log("nombreTTactualizado ? -> ", nombreTTactualizado);
+                        if (nombreTTactualizado) {
+                            showToast("Nombre de contenido actualizado!", "SUCCESS")
+                            return
+                        }
+                    } catch (error) {
+                        showToast("Un error ha ocurrido", "ERROR")
+                        return
+                    }
+                })
+            })
+
+            $all(".btnQuitarTipoTarea").forEach(btn => {
+                btn.addEventListener("click", async (e) => {
+                    try {
+                        let fila = e.target.closest("tr"); // Encuentra la fila actual
+                        console.log("fila para remover conteindo-> ", fila);
+
+                        const idtipotarea = e.target.getAttribute("data-idtipotarea")
+                        console.log("idtipotarea ->", idtipotarea);
+                        const tareaRemovida = await removerTipoTarea(idtipotarea)
+                        console.log("tareaRemovida ? -> ", tareaRemovida);
+                        if (tareaRemovida) {
+                            showToast("Contenido removido!", "SUCCESS")
+                            fila.remove()
+                            return
+                        }
+                    } catch (error) {
+                        showToast("No puedes remover este contenido porque ya tiene registros historicos", "ERROR")
                         return
                     }
                 })

@@ -165,7 +165,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         viatico.append("desayuno", desayuno ? 1 : 0);
         viatico.append("almuerzo", almuerzo ? 1 : 0);
         viatico.append("cena", cena ? 1 : 0);
-        viatico.append("viaje", $q("#viaje").value ? $q("#viaje").value : '');
 
         const fviatico = await fetch(`${host}viatico.controller.php`, {
             method: "POST",
@@ -199,7 +198,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         viatico.append("idviatico", idviatico);
         viatico.append("pasaje", $q("#pasaje").value);
         viatico.append("comida", $q("#comida").value);
-        viatico.append("viaje", $q("#viaje").value ? $q("#viaje").value : '');
+        //viatico.append("viaje", /* $q("#viaje").value ? $q("#viaje").value : ''); */
 
         const fviatico = await fetch(`${host}viatico.controller.php`, {
             method: "POST",
@@ -228,7 +227,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         $q("#btnGuardarViatico").hidden = false
         $q("#pasaje").value = ""
         $q("#comida").value = ""
-        $q("#viaje").value = ""
+        /* $q("#viaje").value = "" */
         let isLima = false;
         //console.log("iddp existe  ee -> ", iddp)
         console.log("idusuario filmmaker ->>>>>>>>>>>>>>>", idusuario);
@@ -237,7 +236,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (viaticoExiste.length > 0) {
             $q("#pasaje").value = viaticoExiste[0]?.pasaje
             $q("#comida").value = viaticoExiste[0]?.comida
-            $q("#viaje").value = viaticoExiste[0]?.viaje
+            /* $q("#viaje").value = viaticoExiste[0]?.viaje */
             $q("#btnActualizarViatico").hidden = false
             idviatico = viaticoExiste[0]?.idviatico
             $q("#btnGuardarViatico").hidden = true
@@ -249,11 +248,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         console.log("isLima ??", isLima)
-        if (isLima) {
+        /* if (isLima) {
             $q(".contenedor-viatico-viaje").hidden = true
         } else {
             $q(".contenedor-viatico-viaje").hidden = false
-        }
+        } */
 
     }
 
@@ -311,7 +310,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             listaSeleccionados = []
             $q("#pasaje").value = ""
             $q("#hospedaje").value = ""
-            $q("#viaje").value = ""
+            /* $q("#viaje").value = "" */
             $q("#chkdesayuno").checked = false
             $q("#chkalmuerzo").checked= false
             $q("#chkcena").checked= false
@@ -380,12 +379,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 console.log("isLima ??", isLima)
                 if (isLima) {
-                    $q(".contenedor-viatico-viaje").hidden = true
-                    showToast("No se puede reportar viatico para eventos en lima", "ERROR")
+/*                     $q(".contenedor-viatico-viaje").hidden = true
+ */                    showToast("No se puede reportar viatico para eventos en lima", "ERROR")
                     return
                 } else {
-                    $q(".contenedor-viatico-viaje").hidden = false
-                    modalViatico = new bootstrap.Modal($q("#modal-viatico"));
+/*                     $q(".contenedor-viatico-viaje").hidden = false
+ */                    modalViatico = new bootstrap.Modal($q("#modal-viatico"));
                     modalViatico.show()
                 }
                 //await renderizarInfoAgenda(idusuarioFilmmaker, iddepartamento)

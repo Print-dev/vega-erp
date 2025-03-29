@@ -115,8 +115,8 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
         });
         const data = await resp.json();
         console.log(data);
-        if (data.estado == 1) {
-          if (data.login) {
+        if (data.login) {
+          if (data.estado == 1) {
             if (data.rol === "Artista") {
               window.location.href = "http://localhost/vega-erp/views/agenda/listar-agenda-artista";
               return
@@ -129,16 +129,16 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
             } else if (data.rol === "Edicion y Produccion") {
               window.location.href = 'http://localhost/vega-erp/views/agenda/listar-agenda-edicion';
               return
-            }
-             else if (data.rol === "Community Manager") {
+            } else if (data.rol === "Community Manager") {
               window.location.href = 'http://localhost/vega-erp/views/agenda/listar-agenda-cmanager';
               return
             }
           } else {
-            showToast(data.mensaje, "ERROR");
+            showToast("Este usuario esta deshabilitado, reportalo a los administradores.", "INFO")
+            return
           }
-        }else{
-          showToast("Este usuario esta deshabilitado, reportalo a los administradores.", "INFO")
+        } else {
+          showToast(data.mensaje, "ERROR");
           return
         }
 

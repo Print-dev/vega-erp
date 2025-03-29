@@ -292,9 +292,9 @@ $monto_texto = numeroATexto($monto_numerico);
 
                     <tr>
                         <td colspan="5" style="position: relative; text-align: center;">
-                            <img src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818433/vegaimagenes/zfe8hbczrfj649fvbtoq.png" style="
+                            <img src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742792207/<?= $representante[0]['firma'] ?>" style="
         position: absolute;
-        top: -70px; /* Ajusta según sea necesario */
+        top: -100px; /* Ajusta según sea necesario */
         left: 50%;
         transform: translateX(-50%);
         width: 170px; /* Ajusta el tamaño */
@@ -309,7 +309,13 @@ $monto_texto = numeroATexto($monto_numerico);
                         <td colspan="5">Representado por</td>
                     </tr>
                     <tr>
-                        <td colspan="5">Nayade Liz Vega Pascual</td>
+                        <td colspan="5"><?php 
+                        if(isset($representante[0])){
+                            echo $representante[0]['nombres'] . $representante[0]['apellidos'];
+                        }else{
+                            echo "No hay representante asignado aun.";
+                        }
+                        ?></td>
                     </tr>
                     <tr>
                         <td colspan="5">EL REPRESENTANTE</td>

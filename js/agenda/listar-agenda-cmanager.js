@@ -188,18 +188,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td class="col-md-2">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <input type="text" class="form-control" name="txtportalweb" id="txtportalweb" value="${x.portalpublicar ? x.portalpublicar : ''}">
-                        <i class="fa-solid fa-floppy-disk btnGuardarPortalWeb" data-idagendacommanager="${x.idagendacommanager}" style="cursor: pointer; color: blue;"></i>
+                        <i class="fa-solid fa-floppy-disk btnGuardarPortalWeb" data-idagendacommanager="${x.idagendacommanager}" title="Guardar" style="cursor: pointer; width: 20px; transform: scale(1.5); height: 20px;"></i>
                     </div>
                 </td>    
                 <td>${x.fechapublicacion ? x.fechapublicacion : ''}</td>           
                 <td class="w-100">
                     <div style="display: flex; align-items: center; gap: 8px;" >
                         <textarea type="text" class="form-control " name="txtcopy" id="txtcopy" >${x.copy ? x.copy : ''}</textarea>
-                        <i class="fa-solid fa-floppy-disk btnGuardarCopy" data-idagendacommanager="${x.idagendacommanager}" style="cursor: pointer; color: blue;"></i>
+                        <i class="fa-solid fa-floppy-disk btnGuardarCopy" data-idagendacommanager="${x.idagendacommanager}" title="Guardar" style="cursor: pointer; width: 20px; transform: scale(1.5); height: 20px;"></i>
                     </div>
                 </td>                        
                 <td>
-                    <input type="checkbox" class="btn-estado" name="estado" id="estado" data-idagendacommanager="${x.idagendacommanager}" ${x.estado == 2 ? 'checked' : ''}>
+                    <input type="checkbox" class="btn-estado" title="Publicar" name="estado" id="estado" style="cursor: pointer; width: 20px; transform: scale(1.5); height: 20px;" data-idagendacommanager="${x.idagendacommanager}" ${x.estado == 2 ? 'checked' : ''}>
                 </td>
             </tr>
         `;

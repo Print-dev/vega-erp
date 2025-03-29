@@ -251,6 +251,19 @@ class DetalleEvento extends ExecQuery
     }
   }
 
+  public function obtenerNotificacionDP($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_notificacion_dp (?)");
+      $cmd->execute(array(
+        $params['idreferencia']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function obtenerDPporId($params = []): array
   {
     try {

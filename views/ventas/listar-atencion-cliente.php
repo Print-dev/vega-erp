@@ -1,5 +1,20 @@
 <?php require_once '../header.php' ?>
-<div class="container-fluid">
+<style>
+    .contenedor-general {
+        position: relative;
+        width: 100%;
+        height: calc(100vh - 100px);
+        /* Ajusta el 100% de la altura menos 100px para margen */
+        min-height: 500px;
+        /* Asegura una altura mínima */
+        max-height: 100vh;
+        /* Evita que crezca demasiado */
+        overflow: visible !important;
+        resize: vertical;
+        /* Permite ajuste manual si es necesario */
+    }
+</style>
+<div class="container-fluid contenedor-general">
     <div class="card" style="border-color: #f2f4f7; box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);
 -webkit-box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);
 -moz-box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);">
@@ -18,7 +33,7 @@
                         <div class="row g-0 mb-3">
                             <div class="card border-0">
                                 <div class="card-body border-0">
-                                <label for="">Filtros</label>
+                                    <label for="">Filtros</label>
                                     <div class="row">
                                         <div class="col-md-2">
                                             <div class="form-floating">

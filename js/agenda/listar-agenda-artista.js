@@ -1214,11 +1214,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     console.log("isLima ??", isLima)
-    if (isLima) {
+    /* if (isLima) {
       $q(".contenedor-viatico-viaje").hidden = true
     } else {
       $q(".contenedor-viatico-viaje").hidden = false
-    }
+    } */
 
   }
 

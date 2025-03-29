@@ -62,10 +62,10 @@
                                                 <th>Artista</th>
                                                 <th>Usuario Editor</th>
                                                 <th>Contenido</th>
-                                                <th>Portal Publicar</th>
+                                                <th>Red Social</th>
                                                 <th>Fecha Publicado</th>
                                                 <th>Copy</th>
-                                                <th>Opciones</th>
+                                                <th>Publicar</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tb-body-contenido">

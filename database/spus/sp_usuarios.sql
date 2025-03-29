@@ -11,6 +11,8 @@ CREATE PROCEDURE sp_registrar_usuario
     IN _color CHAR(7),
     IN _porcentaje INT,
     IN _marcaagua VARCHAR(40),
+    IN _firma	VARCHAR(40),
+    IN _esRepresentante TINYINT,
     IN _idnivelacceso INT
 )
 BEGIN
@@ -21,8 +23,8 @@ BEGIN
         SET existe_error = 1;
 	END;
     
-    INSERT INTO usuarios (idpersona, nom_usuario, claveacceso, color, porcentaje, marcaagua ,idnivelacceso)VALUES 
-		(_idpersona, _nom_usuario, _claveacceso, nullif(_color, ''), nullif(_porcentaje, ''), nullif(_marcaagua, ''), _idnivelacceso);
+    INSERT INTO usuarios (idpersona, nom_usuario, claveacceso, color, porcentaje, marcaagua ,firma, esRepresentante, idnivelacceso)VALUES 
+		(_idpersona, _nom_usuario, _claveacceso, nullif(_color, ''), nullif(_porcentaje, ''), nullif(_marcaagua, ''), nullif(_firma, ''), nullif(_esRepresentante, ''),_idnivelacceso);
         
 	IF existe_error= 1 THEN
 		SET _idusuario = -1;
@@ -119,8 +121,18 @@ BEGIN
   AND (US.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%') OR US.nom_usuario IS NULL);
 
 END $$
-
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS sp_obtener_representante;
+DELIMITER $$
+CREATE PROCEDURE sp_obtener_representante()
+BEGIN
+	SELECT
+		US.idusuario, PER.nombres, PER.apellidos, US.firma
+	FROM usuarios US
+	LEFT JOIN personas PER ON PER.idpersona = US.idpersona
+    WHERE US.esRepresentante = 1;
+END $$
 
 DROP PROCEDURE if exists sp_actualizar_usuario;
 DELIMITER //
@@ -130,17 +142,28 @@ CREATE PROCEDURE sp_actualizar_usuario (
     IN _claveacceso VARBINARY(255),
     IN _color	CHAR(7),
     IN _porcentaje INT,
-    IN _marcaagua varchar(40)
+    IN _marcaagua varchar(40),
+    IN _firma	VARCHAR(40),
+    IN _esRepresentante TINYINT
 )
 BEGIN
-		UPDATE usuarios SET
-        nom_usuario = nullif(_nom_usuario, ''),
-        claveacceso = nullif(_claveacceso ,''),
-        color = nullif(_color,''),
-        porcentaje = nullif(_porcentaje,''),
-        marcaagua = nullif(_marcaagua, ''),
-		update_at = now()
-    WHERE idusuario = _idusuario; 
+		UPDATE usuarios 
+    SET 
+        nom_usuario = NULLIF(_nom_usuario, ''),
+        color = NULLIF(_color, ''),
+        porcentaje = NULLIF(_porcentaje, ''),
+        marcaagua = NULLIF(_marcaagua, ''),
+        firma = NULLIF(_firma, ''),
+        esRepresentante = NULLIF(_esRepresentante, ''),
+        update_at = NOW()
+    WHERE idusuario = _idusuario;
+
+    -- Solo actualizar claveacceso si se proporciona un valor válido
+    IF _claveacceso IS NOT NULL AND LENGTH(_claveacceso) > 0 THEN
+        UPDATE usuarios 
+        SET claveacceso = _claveacceso
+        WHERE idusuario = _idusuario;
+    END IF;
 END //
 
 DROP PROCEDURE if exists sp_actualizar_persona;

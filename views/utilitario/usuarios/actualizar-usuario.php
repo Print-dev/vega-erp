@@ -7,7 +7,7 @@
       <div class="card-header border-0 d-flex justify-content-between align-items-center">
         <h2>Actualizar usuario</h2>
 
-        <a href="<?= $host ?>views/utilitario/usuarios/listar-usuarios" class="btn btn-outline-primary btn-sm ms-auto m-0" type="button"><i class="fa-solid fa-circle-left"></i> Regresar</a>
+        <a id="btnRegresarActualizarUsuario" class="btn btn-outline-primary btn-sm ms-auto m-0" type="button"><i class="fa-solid fa-circle-left"></i> Regresar</a>
       </div>
       <div class="card-body ">
         <h5>Datos de la Persona</h5>
@@ -24,10 +24,10 @@
                   class="form-control"
                   minlength="8"
                   maxlength="20"
-                  
+
                   autofocus
                   title="Ingresa solo números.">
-                
+
               </div>
               <div class="d-flex" style="display: flex;">
                 <span id="showTipoDoc" style="font-size: small; margin-left: auto; margin-right:12%"></span>
@@ -36,19 +36,19 @@
 
             <div class="col-md-3">
               <div class="form-floating">
-                <input type="text" autocomplete="off" class="form-control" id="apellidos" minlength="3" >
+                <input type="text" autocomplete="off" class="form-control" id="apellidos" minlength="3">
                 <label for="apellidos" class="form-label">Apellidos</label>
               </div>
             </div>
             <div class="col-md-3">
               <div class="form-floating">
-                <input type="text" autocomplete="off" class="form-control" id="nombres" >
+                <input type="text" autocomplete="off" class="form-control" id="nombres">
                 <label for="nombres" class="form-label">Nombres</label>
               </div>
             </div>
             <div class="col-md-2">
               <div class="form-floating">
-                <select name="genero" id="genero" class="form-select" >
+                <select name="genero" id="genero" class="form-select">
                   <option value="">Selecciona</option>
                   <option value="F">Femenino</option>
                   <option value="M">Masculino</option>
@@ -102,7 +102,7 @@
               <div class="form-floating">
                 <select name="nacionalidad" id="nacionalidad" class="form-select" ">
                   <option value="">Selecciona</option>
-                  <option value="31">Peru</option>
+                  <option value=" 31">Peru</option>
                 </select>
                 <label for="nacionalidad" class="form-label">Nacionalidad</label>
               </div>
@@ -111,21 +111,21 @@
               <div class="form-floating">
                 <select name="departamento" id="departamento" class="form-select" ">
                 </select>
-                <label for="departamento" class="form-label">Departamento</label>
+                <label for=" departamento" class="form-label">Departamento</label>
               </div>
             </div>
             <div class="col-md-3">
               <div class="form-floating">
                 <select name="provincia" id="provincia" class="form-select" ">
                 </select>
-                <label for="provincia" class="form-label">Provincia</label>
+                <label for=" provincia" class="form-label">Provincia</label>
               </div>
             </div>
             <div class="col-md-3 ">
               <div class="form-floating">
                 <select name="distrito" id="distrito" class="form-select" ">
                 </select>
-                <label for="distrito" class="form-label">Distrito</label>
+                <label for=" distrito" class="form-label">Distrito</label>
               </div>
             </div>
           </div>
@@ -139,18 +139,18 @@
           <hr>
           <div class="row g-2 mb-3 mt-3 form-group">
             <h5>Datos del usuario</h5>
-            <label for="nom_usuario" class="col-sm-1 form-label size-label mt-3">Nombre Usuario:</label>
+            <label for="nom_usuario" class="col-sm-1 form-label size-label mt-3">Nombre Usuario (Opcional):</label>
             <div class="col-sm-5">
               <input type="text" id="nom_usuario" class="form-control" autocomplete="off" required>
             </div>
           </div>
           <div class="row g-2 mb-3 mt-3 form-group">
-            <label for="claveacceso" class="col-sm-1 form-label size-label mt-3">Nueva Contraseña:</label>
+            <label for="claveacceso" class="col-sm-1 form-label size-label mt-3">Nueva Contraseña (Opcional):</label>
             <div class="col-sm-5">
               <input type="password" id="claveacceso" class="form-control" autocomplete="off" required>
             </div>
           </div>
-          
+
           <div class="row g-2 mt-3 contenedor-color" hidden>
             <label for="color" class="col-sm-1 form-label size-label mt-3">Color:</label>
             <div class="col-sm-5">
@@ -167,7 +167,7 @@
             <label for="marcaagua" class="col-sm-1 form-label size-label mt-3">Marca de agua (para documentos):</label>
             <div class="col-sm-5 text-center">
               <label for="upload_widget" class="form-label fw-bold">Subir Imagen</label>
-              
+
               <button id="upload_widget" type="button" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
                 <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Archivo
               </button>
@@ -177,10 +177,26 @@
                 <img id="previewImagen" src="" alt="Vista previa" class="img-fluid rounded shadow" style="max-height: 300px;">
               </div>
             </div>
+          </div>
+          <div class="row g-2 mt-3 contenedor-firma">
+            <label for="firma" class="col-sm-1 form-label size-label mt-3">Firma (Opcional):</label>
+            <div class="col-sm-5 text-center">
+              <label for="upload_widget_firma" class="form-label fw-bold">Subir Imagen</label>
 
+              <button id="upload_widget_firma" type="button" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Archivo
+              </button>
+
+              <!-- Vista previa de la imagen firma -->
+              <div class="mt-3">
+                <img id="previewImagenFirma" src="" alt="Vista previa" class="img-fluid rounded shadow" style="max-height: 300px;">
+              </div>
             </div>
           </div>
-
+          <div class="contenedor-representante mt-3" hidden>
+            <label for="esrepresentante">Marcar como representante</label>
+            <input type="checkbox" name="esrepresentante" id="esrepresentante">
+          </div>
           <div class="row mt-3">
             <div class="col-sm-3 p-3">
               <button type="button" class="form-control btn btn-primary w-75" id="btnActualizarUsuario">

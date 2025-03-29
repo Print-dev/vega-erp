@@ -48,6 +48,13 @@ if (isset($_GET['operation'])) {
       ];
       echo json_encode($detalleevento->filtrarAtenciones($cleanData));
       break;
+      
+    case 'obtenerNotificacionDP':
+      $cleanData = [
+        'idreferencia' => $_GET['idreferencia'] === "" ? null : $detalleevento->limpiarCadena($_GET['idreferencia'])
+      ];
+      echo json_encode($detalleevento->obtenerNotificacionDP($cleanData));
+      break;
   }
 }
 if (isset($_POST['operation'])) {

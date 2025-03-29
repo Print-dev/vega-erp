@@ -61,7 +61,7 @@ class Viatico extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_viatico(@idviatico,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_viatico(@idviatico,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['iddetallepresentacion'],
@@ -71,7 +71,6 @@ class Viatico extends ExecQuery
           $params['desayuno'],
           $params['almuerzo'],
           $params['cena'],
-          $params['viaje']          
         )
       );
 

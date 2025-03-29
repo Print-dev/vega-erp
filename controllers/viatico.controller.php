@@ -46,7 +46,6 @@ if (isset($_POST['operation'])) {
         'desayuno'   => $viatico->limpiarCadena($_POST['desayuno']) ? $viatico->limpiarCadena($_POST['desayuno']) : '',
         'almuerzo'   => $viatico->limpiarCadena($_POST['almuerzo']) ?  $viatico->limpiarCadena($_POST['almuerzo']) : '',
         'cena'   => $viatico->limpiarCadena($_POST['cena']) ?  $viatico->limpiarCadena($_POST['cena']) : '',
-        'viaje'   => $viatico->limpiarCadena($_POST['viaje']) ? $viatico->limpiarCadena($_POST['viaje']) : '',
       ];
 
       $respuesta = ['idviatico' => -1];

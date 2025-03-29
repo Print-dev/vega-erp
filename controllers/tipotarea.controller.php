@@ -33,7 +33,26 @@ if (isset($_POST['operation'])) {
       echo json_encode($respuesta);
       break;
 
+    case 'actualizarNombreTipoTarea':
+      $cleanData = [
+        'idtipotarea'   => $tipotarea->limpiarCadena($_POST['idtipotarea']),
+        'tipotarea'   => $tipotarea->limpiarCadena($_POST['tipotarea']),
+      ];
 
-  
+      $tipotareaActualizado = $tipotarea->actualizarNombreTipoTarea($cleanData);
+
+      echo json_encode($tipotareaActualizado);
+      break;
+
+    case 'removerTipoTarea':
+      $cleanData = [
+        'idtipotarea'   => $tipotarea->limpiarCadena($_POST['idtipotarea'])
+      ];
+
+      $tareaRemovida = $tipotarea->removerTipoTarea($cleanData);
+
+      echo json_encode($tareaRemovida);
+      break;
+
   }
 }

@@ -3,6 +3,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 //require_once __DIR__ . '../../../../models/DetalleEvento.php';
 //require_once __DIR__ . '../../../../models/Tarifario.php';
 require_once __DIR__ .'../../../../models/Convenio.php';
+require_once __DIR__ .'../../../../models/Usuario.php';
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -18,6 +19,7 @@ $dompdf = new Dompdf($options);
 ob_start();
 
 $convenio = new Convenio();
+$usuario = new Usuario();
 //$tarifario = new Tarifario();
 
 
@@ -31,6 +33,8 @@ $precio = isset($_GET['precio']) && $_GET['precio'] !== "" ? $detalleevento->lim
 
 //EJECUTAR FUNCION
 $convenioContrato = $convenio->obtenerContratoConvenio(['idconvenio' => $idconvenio]);
+$representante = $usuario->obtenerRepresentanteEmpresa();
+// die(json_encode($representante));
 /* $cotizacion = $detalleevento->obtenerCotizacion(['iddetallepresentacion' => $iddetallepresentacion]);
 $tarifaArtista = $tarifario->obtenerTarifaArtistaPorProvincia(['idprovincia' => $idprovincia, 'idusuario' => $idusuario]);
 $igv = ($tarifaArtista[0]['precio'] + $precio) * 0.18; */

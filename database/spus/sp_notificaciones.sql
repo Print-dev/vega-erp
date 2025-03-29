@@ -49,4 +49,24 @@ BEGIN
     FROM notificaciones NOTIF
     WHERE NOTIF.idusuario = _idusuario;
 END $$
-select * from usuarios
+
+DROP PROCEDURE IF EXISTS sp_obtener_notificacion_dp;
+DELIMITER $$
+CREATE PROCEDURE sp_obtener_notificacion_dp
+(
+    IN _idreferencia INT
+)
+BEGIN
+	SELECT 
+		NOTIF.idnotificacion, RAE.tipo, RAE.fecha, RAE.hora, DP.iddetalle_presentacion, DP.fecha_presentacion, USU.nom_usuario, DP.horainicio, DP.horafinal, DP.establecimiento, DP.modalidad, DP.tipo_evento, DIS.distrito, PRO.provincia, DEP.departamento
+    FROM notificaciones NOTIF
+    LEFT JOIN reportes_artista_evento RAE ON RAE.idreporte = NOTIF.idreferencia
+    LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = RAE.iddetalle_presentacion
+    LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+    LEFT JOIN distritos DIS ON DIS.iddistrito = DP.iddistrito
+    LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
+    LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
+    WHERE NOTIF.idreferencia = _idreferencia AND NOTIF.tipo = 2;
+END $$
+
+CALL sp_obtener_notificacion_dp (27)

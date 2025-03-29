@@ -5,7 +5,7 @@ require_once 'ExecQuery.php';
 class Usuario extends ExecQuery
 {
 
-  
+
   public function filtrarUsuarios($params = []): array
   {
     try {
@@ -19,14 +19,14 @@ class Usuario extends ExecQuery
           $params['telefono'],
           $params['nomusuario'],
         )
-        
+
       );
       return $sp->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
       die($e->getMessage());
     }
   }
-  
+
   public function login($params = []): array
   {
     try {
@@ -53,7 +53,7 @@ class Usuario extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_usuario(@idusuario,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_usuario(@idusuario,?,?,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idpersona'],
@@ -62,6 +62,8 @@ class Usuario extends ExecQuery
           $params['color'],
           $params['porcentaje'],
           $params['marcaagua'],
+          $params['firma'],
+          $params['esRepresentante'],
           $params['idnivelacceso'],
         )
       );
@@ -116,6 +118,18 @@ class Usuario extends ExecQuery
     }
   }
 
+  public function obtenerRepresentanteEmpresa(): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_representante");
+      $cmd->execute();
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return [];
+    }
+  }
+
 
   public function updateUsuario($params = []): int
   {
@@ -136,12 +150,12 @@ class Usuario extends ExecQuery
       return false;
     }
   }
-  
+
   public function actualizarUsuario($params = []): bool
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare("CALL sp_actualizar_usuario(?,?,?,?,?,?)");
+      $cmd = $pdo->prepare("CALL sp_actualizar_usuario(?,?,?,?,?,?,?,?)");
       $act = $cmd->execute(
         array(
           $params['idusuario'],
@@ -150,6 +164,8 @@ class Usuario extends ExecQuery
           $params['color'],
           $params['porcentaje'],
           $params['marcaagua'],
+          $params['firma'],
+          $params['esRepresentante'],
         )
       );
 
@@ -176,7 +192,7 @@ class Usuario extends ExecQuery
           $params['telefono'],
           $params['telefono2'],
           $params['correo'],
-          $params['iddistrito'],          
+          $params['iddistrito'],
         )
       );
 
@@ -194,8 +210,8 @@ class Usuario extends ExecQuery
       $cmd = $pdo->prepare("CALL sp_deshabilitar_usuario(?,?)");
       $act = $cmd->execute(
         array(
-          $params['idusuario'], 
-          $params['estado'], 
+          $params['idusuario'],
+          $params['estado'],
         )
       );
 
@@ -239,6 +255,4 @@ class Usuario extends ExecQuery
       die($e->getMessage());
     }
   } */
-
-
 }

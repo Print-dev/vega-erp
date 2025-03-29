@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // VARIABLES
   let imagen_public_id = "";
+  let imagen_public_id_firma = "";
   const BASE_CLOUDINARY_URL = "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742792207/";
 
   const host = "http://localhost/vega-erp/controllers/";
@@ -44,10 +45,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   );
 
+  let myWidgetFirma = cloudinary.createUploadWidget(
+    {
+      cloudName: "dynpy0r4v",
+      uploadPreset: "vegaimagenes",
+      folder: "vegaimagenes",
+    },
+    async (error, result) => {
+      if (!error && result && result.event === "success") {
+        console.log("result -> ", result);
+
+        let previewImagen = document.getElementById("previewImagenFirma");
+        previewImagen.src = result.info.secure_url;
+        previewImagen.classList.remove("d-none");
+        imagen_public_id_firma = result.info?.public_id;
+        //$q("#btnGuardarContenido").disabled = false;
+      }
+    }
+  );
+
   $q("#upload_widget")?.addEventListener(
     "click",
     function () {
       myWidget.open();
+    },
+    false
+  );
+
+  $q("#upload_widget_firma")?.addEventListener(
+    "click",
+    function () {
+      myWidgetFirma.open();
     },
     false
   );
@@ -117,6 +145,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     params.append("color", $q("#color")?.value ? $q("#color")?.value : '');
     params.append("porcentaje", $q("#porcentaje")?.value ? $q("#porcentaje")?.value : '');
     params.append("marcaagua", imagen_public_id ? imagen_public_id : '');
+    params.append("firma", imagen_public_id_firma ? imagen_public_id_firma : '');
+    params.append("esRepresentante", $q("#esrepresentante").checked ? 1 : 0);
     params.append("idnivelacceso", $q("#idnivelacceso").value);
     const resp = await fetch(`${host}usuario.controller.php`, {
       method: 'POST',
@@ -175,6 +205,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#distrito").disabled = isblock;
     $q("#nom_usuario").disabled = isblock;
     $q("#claveacceso").disabled = isblock;
+    $q("#upload_widget_firma").disabled = isblock;
     $q("#idnivelacceso").disabled = isblock;
     //selector("externo").disabled = isblock
   }
@@ -251,28 +282,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     const validaNumDoc = $q("#num_doc").value.length === 8 || $q("#num_doc").value.length === 20 ? true : false;
 
     //if ($q("#num_doc").value !== "" && isNumeric && minLength && validaNumDoc) {
-      const data = await obtenerPersonaPorDoc();
-      const isblock = (data.length > 0); // confirma si la persona ya existe y bloquea los campos 
-      bloquearCampos(isblock);
+    const data = await obtenerPersonaPorDoc();
+    const isblock = (data.length > 0); // confirma si la persona ya existe y bloquea los campos 
+    bloquearCampos(isblock);
 
-      console.log(isblock);
-      console.log(data);
+    console.log(isblock);
+    console.log(data);
 
-      $q("#btnEnviar").disabled = false;
-      if (isblock) {
-        showToast("La persona ya existe", "WARNING");
-        $q("#btnEnviar").disabled = true;
-        showDatos(data[0]);
-      } else {
-        if (!isReset) {
-          resetUI();
-          const dataPersonaNR = await obtenerDataPersonaNoRegistrada()
-          await showDataPersonaNR(dataPersonaNR)
-        }
-        $q("#btnEnviar").disabled = false;
-      
+    $q("#btnEnviar").disabled = false;
+    if (isblock) {
+      showToast("La persona ya existe", "WARNING");
+      $q("#btnEnviar").disabled = true;
+      showDatos(data[0]);
+    } else {
+      if (!isReset) {
+        resetUI();
+        const dataPersonaNR = await obtenerDataPersonaNoRegistrada()
+        await showDataPersonaNR(dataPersonaNR)
       }
-      
+      $q("#btnEnviar").disabled = false;
+
+    }
+
     //}
     /* else {
       //console.log(isNumeric);
@@ -360,9 +391,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       $q(".contenedor-color").hidden = false
       $q(".contenedor-porcentaje").hidden = false
       $q(".contenedor-marcaagua").hidden = false
-    } else {
+      $q(".contenedor-representante").hidden = true
+    }
+    else if (e.target.value == "3") {
+      $q(".contenedor-representante").hidden = false
       $q(".contenedor-color").hidden = true
       $q(".contenedor-porcentaje").hidden = true
+      $q(".contenedor-marcaagua").hidden = true
+    }
+    else {
+      $q(".contenedor-representante").hidden = true
+      $q(".contenedor-color").hidden = true
+      $q(".contenedor-porcentaje").hidden = true
+      $q(".contenedor-representante").hidden = true
       $q(".contenedor-marcaagua").hidden = true
     }
   })
