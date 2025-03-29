@@ -647,10 +647,20 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
           <hr>
           <div class="mt-3">
-            <h4 class="fw-bold">Detalles Viatico:</h4><br>
-            <label class="fw-bold">Pasaje:</label> <span id="noti-pasaje">${viatico.pasaje}</span> <br>
-            <label class="fw-bold">Comida:</label> <span id="noti-comida">${viatico.comida}</span> <br>
-            ${viatico.iddepartamento == 15 ? `` : `<label class="fw-bold">Viaje:</label> <span id="noti-viaje">${viatico.viaje}</span>`}
+            <label class="fw-bold">Pasaje:</label> <span id="noti-pasaje">S/. ${viatico.pasaje ? viatico.pasaje : '0.00'}</span> <br>
+            <label class="fw-bold">Hospedaje:</label> <span id="noti-hospedaje">S/. ${viatico.hospedaje ? viatico.hospedaje : '0.00'}</span> <br>
+        
+            <label class="fw-bold">Desayuno:</label> <span id="noti-desayuno"> ${viatico.desayuno ? 'Si (S/. 13.30)' : 'No'}</span> <br>
+            <label class="fw-bold">Almuerzo:</label> <span id="noti-almuerzo">${viatico.almuerzo ? 'Si (S/. 13.30)' : 'No'}</span> <br>
+            <label class="fw-bold">Cena:</label> <span id="noti-cena">${viatico.cena ? 'Si (S/. 13.30)' : 'No'}</span> <br>
+            <label class="fw-bold">Total Viatico:</label> 
+            <span id="noti-total">S/. ${redondear(
+                (parseFloat(viatico.pasaje) || 0) + 
+                (parseFloat(viatico.hospedaje) || 0) + 
+                (viatico.desayuno ? 13.30 : 0) + 
+                (viatico.almuerzo ? 13.30 : 0) + 
+                (viatico.cena ? 13.30 : 0)
+            )}</span> <br>
           </div>
         `;
         }

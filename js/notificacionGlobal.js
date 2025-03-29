@@ -139,13 +139,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         <h4 class="fw-bold">Detalles Viatico:</h4><br>
         <label class="fw-bold">Pasaje:</label> <span id="noti-pasaje">S/. ${viatico.pasaje ? viatico.pasaje : '0.00'}</span> <br>
         <label class="fw-bold">Hospedaje:</label> <span id="noti-hospedaje">S/. ${viatico.hospedaje ? viatico.hospedaje : '0.00'}</span> <br>
-        ${viatico.iddepartamento == 15 ? `` : `<label class="fw-bold">Viaje:</label> <span id="noti-viaje">S/. ${viatico.viaje ? viatico.viaje : '0.00'}</span><br>`}
-        <label class="fw-bold">Desayuno:</label> <span id="noti-desayuno">S/. ${viatico.desayuno ? 'Si' : 'No'}</span> <br>
-        <label class="fw-bold">Almuerzo:</label> <span id="noti-almuerzo">S/. ${viatico.almuerzo ? 'Si' : 'No'}</span> <br>
-        <label class="fw-bold">Cena:</label> <span id="noti-cena">S/. ${viatico.cena ? 'Si' : 'No'}</span> <br>
+       
+        <label class="fw-bold">Desayuno:</label> <span id="noti-desayuno"> ${viatico.desayuno ? 'Si (S/. 13.30)' : 'No'}</span> <br>
+        <label class="fw-bold">Almuerzo:</label> <span id="noti-almuerzo">${viatico.almuerzo ? 'Si (S/. 13.30)' : 'No'}</span> <br>
+        <label class="fw-bold">Cena:</label> <span id="noti-cena">${viatico.cena ? 'Si (S/. 13.30)' : 'No'}</span> <br>
+        <label class="fw-bold">Total Viatico:</label> 
+    <span id="noti-total">S/. ${redondear(
+        (parseFloat(viatico.pasaje) || 0) + 
+        (parseFloat(viatico.hospedaje) || 0) + 
+        (viatico.desayuno ? 13.30 : 0) + 
+        (viatico.almuerzo ? 13.30 : 0) + 
+        (viatico.cena ? 13.30 : 0)
+    )}</span> <br>
+
       </div>
     `;
   }
+
+  function redondear(valor) {
+    return parseFloat(valor || 0).toFixed(2);
+}
 
   function cargarNotificacionDpEnModal(notificacion, usuario, viatico) {
     const fechahoraSeparada = notificacion?.fecha.split(" ")

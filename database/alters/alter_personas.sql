@@ -56,3 +56,4 @@ ALTER TABLE viaticos ADD COLUMN almuerzo tinyint null;
 ALTER TABLE viaticos ADD COLUMN cena tinyint null;
 ALTER TABLE detalles_presentacion ADD COLUMN lugardestino	varchar(100) null;
 ALTER TABLE detalles_presentacion DROP COLUMN lugardestino;
+ALTER TABLE viaticos DROP COLUMN viaje;

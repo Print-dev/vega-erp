@@ -157,9 +157,7 @@ CREATE TABLE reportes_artista_evento (
     hora		time null default now(),
 	constraint fk_iddp_report_art_evento foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 ) ENGINE = innodb;
-select * from reportes_artista_evento;
-select * from nivelaccesos;
-INSERT INTO reportes_artista_evento (iddetalle_presentacion, tipo, fecha, hora) values (?,?,?,?);
+
 
 CREATE TABLE agenda_asignaciones ( -- tabla que asigna la agenda a un filmmaker
     idasignacion INT AUTO_INCREMENT PRIMARY KEY,
@@ -225,12 +223,10 @@ CREATE TABLE viaticos (
     desayuno		tinyint null, -- recien agregado
     almuerzo		tinyint null,
     cena			tinyint	null,
-    viaje			decimal(10,2) null,
     constraint fk_iddp_viatico foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
     constraint fk_idusuario_v foreign key (idusuario) references usuarios (idusuario)
 ) engine = innodb;
 
-select * from viaticos;
 -- CONTABILIDAD 
 CREATE TABLE montoCajaChica (
     idmonto INT AUTO_INCREMENT PRIMARY KEY,
@@ -286,7 +282,7 @@ CREATE TABLE notificaciones (
     constraint chk_tipo check(tipo IN (1,2)), -- ir agregando mas tipos segun lo requiera
     constraint chk_estado_not check(estado IN (1,2))
 );
-select * from notificaciones;
+
 CREATE TABLE reparticion_ingresos (
 	idreparticion	int auto_increment primary key,
     iddetalle_presentacion int not null,    
@@ -326,7 +322,6 @@ CREATE TABLE tipotarea (
 	idtipotarea	int auto_increment primary key,
     tipotarea varchar(30) not null
 ) engine = innodb;
-select * from tipotarea;
  -- referencia: modal asignar editor
 CREATE TABLE agenda_editores (
 	idagendaeditor	int auto_increment primary key,
@@ -341,9 +336,7 @@ CREATE TABLE agenda_editores (
     constraint fk_idusuario_ag_edit foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idtipotarea_agen foreign key (idtipotarea) references tipotarea (idtipotarea)
 ) engine = innodb;
-select * from agenda_editores;
-select * from nivelaccesos;
-select*from usuarios;
+
 CREATE TABLE subidas_agenda_edicion (
 	idsubida	int  auto_increment primary key,
     idagendaeditor int not null,
@@ -365,7 +358,6 @@ CREATE TABLE agenda_commanager (
     constraint fk_idusuarioCmanaget foreign key (idusuarioCmanager) references usuarios (idusuario)
 ) engine = innodb;
 
-select * from agenda_commanager;
 --  -------------------------------------------- NUEVAS TABLAS AGREGASDAS -----------------------------------------
 -- AGREGADO EL 26-06-2025 - 16:33
 CREATE TABLE tareas_diarias (
@@ -384,5 +376,3 @@ CREATE TABLE tareas_diaria_asignacion (
     constraint fk_idusuario	foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idtareadiaria_asig foreign key (idtareadiaria) references tareas_diarias (idtareadiaria)
 ) engine = innodb;
-select * from tareas_diaria_asignacion ;
-select * from usuarios

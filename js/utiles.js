@@ -1,3 +1,6 @@
+function redondear(valor) {
+  return parseFloat(valor || 0).toFixed(2);
+}
 
 const obtenerFechaHoraPeru = () => {
   const fecha = new Date().toLocaleString("en-CA", { timeZone: "America/Lima" });

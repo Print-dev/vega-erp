@@ -10,8 +10,7 @@ CREATE PROCEDURE sp_registrar_viatico(
     IN _hospedaje decimal(10,2),
     IN _desayuno tinyint,
     IN _almuerzo tinyint,
-    IN _cena tinyint,
-    IN _viaje	decimal(10,2) -- ME QUEDE ACA RECIEN AGREGE LOS CAMPOS ESTOS PERO AUN NO HICE DROP Y CREATE DE NUEVOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+    IN _cena tinyint
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
@@ -21,8 +20,8 @@ BEGIN
         SET existe_error = 1;
     END;
     
-    INSERT INTO viaticos (iddetalle_presentacion, idusuario, pasaje, hospedaje, desayuno, almuerzo, cena, viaje)
-    VALUES (_iddetalle_presentacion, _idusuario, nullif(_pasaje,''), _hospedaje,nullif(_desayuno, ''), nullif(_almuerzo,''), nullif(_cena,'') ,nullif(_viaje, ''));
+    INSERT INTO viaticos (iddetalle_presentacion, idusuario, pasaje, hospedaje, desayuno, almuerzo, cena)
+    VALUES (_iddetalle_presentacion, _idusuario, nullif(_pasaje,''), _hospedaje,nullif(_desayuno, ''), nullif(_almuerzo,''), nullif(_cena,''));
     
     IF existe_error = 1 THEN
         SET _idviatico = -1;
@@ -38,15 +37,11 @@ DELIMITER $$
 CREATE PROCEDURE sp_actualizar_viatico
 (
 	IN _idviatico			INT,
-    IN _pasaje			INT,
-    IN _comida			INT,
-    IN _viaje			INT
+    IN _pasaje			INT
 )
 BEGIN 
 	UPDATE viaticos SET
-    pasaje = _pasaje,
-    comida = _comida,
-    viaje = nullif(_viaje, '')
+    pasaje = _pasaje
     WHERE idviatico = _idviatico;
 END $$
 
@@ -60,7 +55,7 @@ CREATE PROCEDURE sp_obtener_info_viatico_notificacion
 BEGIN
 	SELECT 
 		VIA.idviatico,
-        VIA.pasaje, VIA.hospedaje, VIA.desayuno, VIA.almuerzo, VIA.cena ,VIA.viaje,
+        VIA.pasaje, VIA.hospedaje, VIA.desayuno, VIA.almuerzo, VIA.cena,
         USU.nom_usuario,
         DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.establecimiento,
         DE.departamento, PRO.provincia, DIS.distrito,
@@ -86,7 +81,7 @@ CREATE PROCEDURE sp_obtener_info_viatico
 BEGIN
 	SELECT 
 		VIA.idviatico,
-        VIA.pasaje, VIA.comida, VIA.viaje,
+        VIA.pasaje, VIA.hospedaje, VIA.desayuno, VIA.almuerzo, VIA.cena,
         USU.nom_usuario,
         DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.establecimiento,
         DE.departamento, PRO.provincia, DIS.distrito,
@@ -101,5 +96,3 @@ BEGIN
     (_iddetallepresentacion IS NULL OR VIA.iddetalle_presentacion = _iddetallepresentacion) AND
     (_idusuario IS NULL OR VIA.idusuario = _idusuario);
 END $$
-
-CALL sp_obtener_info_viatico (3, null)

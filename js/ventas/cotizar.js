@@ -825,7 +825,7 @@ document.addEventListener('DOMContentLoaded', async function () {
               }
 
               if (detalleevento.iddetalleevento > 0) {
-                //window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
+            window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
               } else {
                 showToast("Hubo un error al registrar la atencion", "ERROR");
               }
@@ -875,7 +875,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
             console.log("detalle evento ->>>>>>", detalleevento);
             if (detalleevento.iddetalleevento > 0) {
-              ////window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
+              window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
             } else {
               showToast("Hubo un error al registrar la atencion", "ERROR");
             }
