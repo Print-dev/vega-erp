@@ -1,5 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
   //VARIABLES LONGITUDES Y LATITUDES
+  let ws
+  // Mantiene un indicador para saber si el WebSocket está listo para enviar
+  let wsReady = false;
   let iddetallepresentacion = -1
   let latOrigen
   let lonOrigen
@@ -12,6 +15,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     lonOrigen = position.coords.longitude;
     console.log(`Tu ubicación: ${latOrigen},${lonOrigen}`);
   });
+
+  (async () => {
+    ws = new WebSocket("ws://localhost:8000");
+
+    ws.onopen = () => {
+      wsReady = true;
+      console.log("WebSocket abierto pe");
+    };
+
+    ws.onclose = () => {
+      wsReady = false;
+      console.log("WebSocket cerrado pe");
+    };
+  })();
 
 
   //VARIABLES
@@ -55,6 +72,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data.json();
   }
 
+  // ********************************************* WEBSCOKETS **********************************************************
+  ws.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data);
+  
+      if (data.type === "notificacion") {
+        console.log("📢 Nueva notificación recibida:", data);
+  
+        // Aquí puedes mostrar la notificación en la UI
+        alert(`🔔 Nueva notificación: ${data.mensaje}`);
+      }
+    } catch (error) {
+      console.error("Error al procesar el mensaje WebSocket:", error);
+    }
+  };
   // ****************************************** OBTENER DATOS **********************************************************
 
   //(async () => {
@@ -308,6 +340,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     const rviatico = await fviatico.json();
     console.log("rivatico . ", rviatico)
+    if (wsReady) {
+      ws.send(JSON.stringify({
+        type: "notificacion", // Tipo de mensaje WebSocket
+        idusuariodest: idusuariodest, // Usuario destinatario
+        idusuariorem: idusuariorem, // Usuario remitente
+        tipo: tipo,
+        idreferencia: idviatico, // ID del viático
+        mensaje: mensaje
+      }));
+  
+      console.log("Notificación enviada por WebSocket.");
+    } else {
+      console.warn("WebSocket no está listo para enviar notificaciones.");
+    }
     return rviatico;
   }
 

@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  let ws
+  // Mantiene un indicador para saber si el WebSocket está listo para enviar
+  let wsReady = false;
+
   let modalNotificacion
   function $q(object = null) {
     return document.querySelector(object);
@@ -11,7 +15,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function getDatos(link, params) {
     let data = await fetch(`${link}?${params}`);
     return data.json();
+    
   }
+
+  (async () => {
+    ws = new WebSocket("ws://localhost:8000");
+
+    ws.onopen = () => {
+      wsReady = true;
+      console.log("WebSocket abierto pe");
+    };
+
+    ws.onclose = () => {
+      wsReady = false;
+      console.log("WebSocket cerrado pe");
+    };
+  })();
+
+
 
   console.log("NIVEL ACCESO USER LOGEADO --> ", nivelacceso);
   if (nivelacceso == "Administrador" || nivelacceso == "Artista") {
@@ -23,6 +44,31 @@ document.addEventListener("DOMContentLoaded", async () => {
   })
 
   console.log("idusuarioLogeado desde el notify globsal -> ", idusuarioLogeado);
+
+  // ********************************************* WEBSCOKETS **********************************************************
+  ws.onmessage = (event) => {
+    try {
+      console.log("antes de obtener la noti");
+      const data = JSON.parse(event.data);
+      console.log("data -> ", data);
+      if (Notification.permission === "granted") {
+        new Notification("¡Nueva Notificación!", {
+            body: "Esto es un mensaje de prueba.",
+            icon: "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png", // Puedes cambiar el icono
+        });
+    } else {
+        console.log("El usuario no concedió permisos.");
+    }
+      if (data.type === "notificacion") {
+        console.log("📢 Nueva notificación recibida:", data);
+  
+        // Aquí puedes mostrar la notificación en la UI
+        alert(`🔔 Nueva notificación: ${data.mensaje}`);
+      }
+    } catch (error) {
+      console.error("Error al procesar el mensaje WebSocket:", error);
+    }
+  };
 
   // ******************************************* OBTENER DATOS *****************************************
 
