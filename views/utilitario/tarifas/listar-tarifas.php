@@ -9,7 +9,7 @@
                     <h1>Tarifas</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a href="http://localhost/vega-erp/views/utilitario/tarifas/registrar-tarifa" class="btn btn-primary">Editar/Agregar Tarifarios</a>
+                    <a href="<?= $hostOnlyHeader ?>/views/utilitario/tarifas/registrar-tarifa" class="btn btn-primary">Editar/Agregar Tarifarios</a>
                 </div>
             </div>
             <div class="row">
@@ -61,7 +61,7 @@
     <?php require_once '../../footer.php' ?>
 
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-    <script src="http://localhost/vega-erp/js/tarifarios/listar-tarifarios.js"></script>
+    <script src="<?= $hostOnlyHeader ?>/js/tarifarios/listar-tarifarios.js"></script>
 
     </body>
 

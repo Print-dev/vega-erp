@@ -284,7 +284,7 @@ CREATE TABLE notificaciones (
     constraint chk_tipo check(tipo IN (1,2)), -- ir agregando mas tipos segun lo requiera
     constraint chk_estado_not check(estado IN (1,2))
 );
-
+select * from notificaciones;
 CREATE TABLE reparticion_ingresos (
 	idreparticion	int auto_increment primary key,
     iddetalle_presentacion int not null,    

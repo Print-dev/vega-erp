@@ -86,7 +86,29 @@
         text-decoration: none;
         cursor: pointer;
     }
+
+    @media (max-width: 768px) {
+    .fc-toolbar.fc-header-toolbar {
+        flex-direction: column;
+    }
+    .fc-toolbar-chunk {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    .fc-button-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .fc-button {
+        flex: 1;
+        min-width: 80px;
+        margin: 2px;
+    }
+}
 </style>
+
 
 <div class="row g-0 mb-3 contenedor-filtros-agenda">
     <div class="card border-0">
@@ -121,10 +143,12 @@
     </div>
 </div>
 
-<div class="contenedor-calendario">
-    <div id='calendar'></div>
-
+<div class="container-fluid">
+    <div class="contenedor-calendario">
+        <div id="calendar"></div>
+    </div>
 </div>
+
 
 <div class="modal fade" id="modal-viatico" tabindex="-1" aria-labelledby="modalviatico" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog">
@@ -300,8 +324,8 @@
     const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
 </script> -->
 
-<script src="http://localhost/vega-erp/js/agenda/obtencion-agenda-nivel.js"></script>
-<script src="http://localhost/vega-erp/js/agenda/listar-agenda-artista.js"></script>
+<script src="<?= $hostWithAppName ?>/js/agenda/obtencion-agenda-nivel.js"></script>
+<script src="<?= $hostWithAppName ?>/js/agenda/listar-agenda-artista.js"></script>
 
 </body>
 

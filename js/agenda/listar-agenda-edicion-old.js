@@ -444,7 +444,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const idagendaeditor = btnSubirTarea.getAttribute("data-idagendaeditor");
         window.localStorage.clear()
         window.localStorage.setItem("idagendaeditor", idagendaeditor)
-        window.location.href = `http://localhost/vega-erp/views/agenda/subir-contenido-edicion` //me quede acaaaa
+        window.location.href = `${host}/views/agenda/subir-contenido-edicion` //me quede acaaaa
         return
       }
       const btnVerProgresoIndividual = evento.jsEvent.target.closest("#btnVerProgresoIndividual")
@@ -486,7 +486,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log("id agenda edicion -> ", idagendaeditor);
             window.localStorage.clear()
             window.localStorage.setItem("idagendaeditor", idagendaeditor)
-            window.location.href = `http://localhost/vega-erp/views/agenda/subir-contenido-edicion`
+            window.location.href = `${host}/views/agenda/subir-contenido-edicion`
             return
           })
         })
@@ -510,7 +510,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (evento.event.extendedProps.estadoBadge?.text == "Incompleto") {
         window.localStorage.clear()
         window.localStorage.setItem("iddp", evento.event.extendedProps.iddetalle_presentacion)
-        window.location.href = `http://localhost/vega-erp/views/ventas/actualizar-atencion-cliente`
+        window.location.href = `${host}/views/ventas/actualizar-atencion-cliente`
       }
     },
   });
@@ -1023,7 +1023,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.target && e.target.id === "btnVerProgreso") {
       /* window.localStorage.clear()
       window.localStorage.setItem("idagendaedicion", idagendaedicion)
-      window.location.href = `http://localhost/vega-erp/views/agenda/asignar-agenda-edicion` */
+      window.location.href = `${host}/views/agenda/asignar-agenda-edicion` */
       idagendaedicion = e.target.getAttribute("data-idagendaedicion");
 
       modalProgresoEdicion = new bootstrap.Modal($q("#modal-progresoedicion"));
@@ -1057,7 +1057,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           console.log("id agenda edicion -> ", idagendaeditor);
           window.localStorage.clear()
           window.localStorage.setItem("idagendaeditor", idagendaeditor)
-          window.location.href = `http://localhost/vega-erp/views/agenda/subir-contenido-edicion`
+          window.location.href = `${host}/views/agenda/subir-contenido-edicion`
           return
         })
       })

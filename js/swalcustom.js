@@ -8,7 +8,7 @@ async function ask(pregunta = ``, modulo = ``){
   const respuesta = await Swal.fire({
     title: pregunta,
     text: modulo,
-    imageUrl: 'http://localhost/vega-erp/images/vega-p-logo.png',
+    imageUrl: `${hostOnlyJs}/images/vega-p-logo.png`,
     imageWidth: 100,
     showCancelButton: true,
     confirmButtonText: 'Aceptar',

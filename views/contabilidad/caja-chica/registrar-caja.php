@@ -81,7 +81,7 @@
                     <i class="fa-solid fa-plus px-2"></i>Registra Nuevo Gasto</button>
                 <button type="button" id="btnGenerarCierre" class="btn btn-primary">
                     <i class="fa-solid fa-floppy-disk px-2"></i>Generar Cierre</button>
-                <a href="http://localhost/vega-erp/views/contabilidad/caja-chica/caja-chica" class="btn btn-primary">
+                <a href="<?= $hostOnlyHeader ?>/views/contabilidad/caja-chica/caja-chica" class="btn btn-primary">
                     <i class="fa-solid fa-circle-left px-2"></i>Regresar</a>
 
             </div>
@@ -123,7 +123,7 @@
 
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
-    <script src="http://localhost/vega-erp/js/contabilidad/registrar-cajachica.js"></script>
+    <script src="<?= $hostOnlyHeader ?>/js/contabilidad/registrar-cajachica.js"></script>
 
     </body>
 

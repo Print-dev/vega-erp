@@ -66,7 +66,7 @@
     const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
 </script> -->
 
-<script src="http://localhost/vega-erp/js/agenda/subir-contenido-edicion.js"></script>
+<script src="<?= $hostWithAppName ?>/js/agenda/subir-contenido-edicion.js"></script>
 <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
 
 </body>

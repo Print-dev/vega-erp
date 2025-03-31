@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
 
-  const host = "http://localhost/vega-erp/controllers/";
   let myTable = null;
   let idprovincia = -1;
   let provincia = "";
@@ -774,7 +773,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("dpActualizado -> ", dpActualizado);
     window.localStorage.clear()
     window.localStorage.setItem("iddp", iddp)
-    window.location.href = `http://localhost/vega-erp/views/contabilidad/caja-chica/registrar-caja`
+    window.location.href = `${host}/views/contabilidad/caja-chica/registrar-caja`
     return
   }
 
@@ -782,7 +781,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     iddp = e.target.getAttribute("data-id")
     window.localStorage.clear()
     window.localStorage.setItem("iddp", iddp)
-    window.location.href = `http://localhost/vega-erp/views/ventas/actualizar-atencion-cliente`
+    window.location.href = `${host}/views/ventas/actualizar-atencion-cliente`
     return
   }
 
@@ -863,7 +862,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         // ACA SALE ERROR AUNQWEU YA LLENE TODOS LOS DATOS AUN SIGUE SALIENDO EL MODAL PARA LLENAR LOS DATOS IN OMPLETOS
         window.open(
-          `http://localhost/vega-erp/generators/generadores_pdf/contrato_convenio/contratoconvenio.php?idconvenio=${convenio[0]?.idconvenio}`
+          `${host}/generators/generadores_pdf/contrato_convenio/contratoconvenio.php?idconvenio=${convenio[0]?.idconvenio}`
         );
         return
       } else {
@@ -1035,7 +1034,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             window.open(
-              `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0]?.idcontrato
+              `${host}/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0]?.idcontrato
               }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${calcularDificultadPrecio?.costoDificultad}`
             );
             return
@@ -1044,7 +1043,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         /* window.open(
-          `http://localhost/vega-erp/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contrato[0]?.idcontrato
+          `${host}/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contrato[0]?.idcontrato
           }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
         );
         return */
@@ -1132,7 +1131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
           }
           window.open(
-            `http://localhost/vega-erp/generators/generadores_pdf/constancia_reserva/constanciareserva.php?iddetallepresentacion=${idcontrato}&idpagocontrato=${pagosContrato[0]?.idpagocontrato}` // esto en realida es el iddetalle_presentacion
+            `${host}/generators/generadores_pdf/constancia_reserva/constanciareserva.php?iddetallepresentacion=${idcontrato}&idpagocontrato=${pagosContrato[0]?.idpagocontrato}` // esto en realida es el iddetalle_presentacion
           );
           console.log("Si existe la reserva")
           return
@@ -1468,7 +1467,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   $q("#btnGenerarCotizacion").addEventListener("click", async (e) => {
     console.log("clickeando");
     window.open(
-      `http://localhost/vega-erp/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${calcularDificultadPrecio?.costoDificultad}`
+      `${host}/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${calcularDificultadPrecio?.costoDificultad}`
     );
     return;
   });

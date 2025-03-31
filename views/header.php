@@ -1,7 +1,8 @@
 <?php
+$hostOnlyHeader = "http://192.168.1.8/vega-erp";
 session_start();
 if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {
-  header('location:http://localhost/vega-erp');
+  header('location:'.$hostOnlyHeader);
 } else {
   //El usuario logeado, solo se le permitira acceso a las vistas indicadores por su PERFIL
   $url = $_SERVER['REQUEST_URI']; //obtener url
@@ -30,7 +31,8 @@ if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {
   //  die(print_r($listaAcceso));
 
   if (!$encontrado) {
-    header("Location:http://localhost/vega-erp/views/ventas/listar-atencion-cliente");
+    header('location:'.$hostOnlyHeader);
+
   }
 }
 $usuario = $_SESSION['login']['nom_usuario'];
@@ -47,7 +49,6 @@ switch ($_SESSION['login']['nivelacceso']) {
     $rol = "Artista";
     break;
 }
-$host = "http://localhost/vega-erp/";
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -71,9 +72,9 @@ $host = "http://localhost/vega-erp/";
 
 
   <!-- Volt CSS -->
-  <link type="text/css" href="http://localhost/vega-erp/css/dashboard/volt.css" rel="stylesheet" />
+  <link type="text/css" href="<?= $hostOnlyHeader ?>/css/dashboard/volt.css" rel="stylesheet" />
   <!-- Estilos personalizados -->
-  <link rel="stylesheet" href="http://localhost/vega-erp/css/global.css">
+  <link rel="stylesheet" href="<?= $hostOnlyHeader ?>/css/global.css">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
@@ -81,12 +82,12 @@ $host = "http://localhost/vega-erp/";
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jkanban@1.2.0/dist/jkanban.min.css">
 
   <!-- list-usuario -->
-  <link rel="stylesheet" href="http://localhost/vega-erp/css/usuarios/list-usuario.css">
-  <link rel="stylesheet" href="http://localhost/vega-erp/css/usuarios/registrar-usuario.css">
+  <link rel="stylesheet" href="<?= $hostOnlyHeader ?>/css/usuarios/list-usuario.css">
+  <link rel="stylesheet" href="<?= $hostOnlyHeader ?>/css/usuarios/registrar-usuario.css">
 
   <!-- activo -->
-  <!-- <link rel="stylesheet" href="http://localhost/vega-erp/css/activos/lista-activo.css">
-  <link rel="stylesheet" href="http://localhost/vega-erp/css/activos/registrar-activo.css"> -->
+  <!-- <link rel="stylesheet" href="<?= $hostOnlyHeader ?>/css/activos/lista-activo.css">
+  <link rel="stylesheet" href="<?= $hostOnlyHeader ?>/css/activos/registrar-activo.css"> -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
@@ -95,7 +96,7 @@ $host = "http://localhost/vega-erp/";
   <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
   <!-- Bajas -->
-  <!-- <link rel="stylesheet" href="http://localhost/vega-erp/css/baja-activo.css"> -->
+  <!-- <link rel="stylesheet" href="<?= $hostOnlyHeader ?>/css/baja-activo.css"> -->
 
   <!-- JQUERY -->
 
@@ -108,7 +109,7 @@ $host = "http://localhost/vega-erp/";
     rel="stylesheet"
     href="//cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" />
   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" href="http://localhost/vega-erp/css/global.css">
+  <link rel="stylesheet" href="<?= $hostOnlyHeader ?>/css/global.css">
 
 
 </head>
@@ -274,7 +275,7 @@ $host = "http://localhost/vega-erp/";
       <!-- OPCIONES SIDEBAR -->
       <ul class="nav flex-column pt-3 pt-md-0" id="options-sidebar" style="height: auto; max-height: 1500px; overflow-y: auto;">
         <li class="nav-item mb-3">
-          <a class="nav-link bg-white d-flex align-items-center" href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente">
+          <a class="nav-link bg-white d-flex align-items-center" href="<?= $hostOnlyHeader ?>/views/ventas/listar-atencion-cliente">
             <span class="sidebar-icon me-2">
               <img
                 src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png"
@@ -291,7 +292,7 @@ $host = "http://localhost/vega-erp/";
 
             echo "
               <li class='nav-item' >
-                <a href='http://localhost/vega-erp/views/{$access['modulo']}/{$access['subruta']}/{$access['ruta']}' class='nav-link' id='links'>
+                <a href='{$hostOnlyHeader}/views/{$access['modulo']}/{$access['subruta']}/{$access['ruta']}' class='nav-link' id='links'>
                   <i class='{$access['icono']}'></i>
                   <span class='sidebar-text mx-2'>{$access['texto']}</span>
                 </a>
@@ -312,7 +313,7 @@ $host = "http://localhost/vega-erp/";
               if (!$subAccess['visible'] && $subAccess['modulo'] === "ventas" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
                 echo "
                 <li class='sidebar-item nav-item list-ventas'>
-                  <a href='http://localhost/vega-erp/views/{$subAccess['modulo']}/{$subAccess['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                  <a href='{$hostOnlyHeader}/views/{$subAccess['modulo']}/{$subAccess['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
                     <i class='{$subAccess['icono']}'></i>
                     <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
                   </a>
@@ -326,7 +327,7 @@ $host = "http://localhost/vega-erp/";
               /* die(print_r("hola")); */
               echo "
               <li class='nav-item' >
-                <a href='http://localhost/vega-erp/views/{$access['modulo']}/{$access['subruta']}/{$access['ruta']}' class='nav-link' id='links'>
+                <a href='{$hostOnlyHeader}/views/{$access['modulo']}/{$access['subruta']}/{$access['ruta']}' class='nav-link' id='links'>
                   <i class='{$access['icono']}'></i>
                   <span class='sidebar-text mx-2'>{$access['texto']}</span>
                 </a>
@@ -345,7 +346,7 @@ $host = "http://localhost/vega-erp/";
               <ul id='utilitario' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#utilitario'>";
 
             foreach ($listaAcceso as $subAccess) {
-              $rutaCompleta = "http://localhost/vega-erp/views/{$subAccess['modulo']}/";
+              $rutaCompleta = "{$hostOnlyHeader}/views/{$subAccess['modulo']}/";
               if (!empty($subAccess['subruta'])) {
                 $rutaCompleta .= "{$subAccess['subruta']}/";
               }
@@ -374,7 +375,7 @@ $host = "http://localhost/vega-erp/";
               <ul id='pyp' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#pyp'>";
 
             foreach ($listaAcceso as $subAccess) {
-              $rutaCompleta = "http://localhost/vega-erp/views/{$subAccess['modulo']}/";
+              $rutaCompleta = "{$hostOnlyHeader}/views/{$subAccess['modulo']}/";
               if (!empty($subAccess['subruta'])) {
                 $rutaCompleta .= "{$subAccess['subruta']}/";
               }
@@ -403,7 +404,7 @@ $host = "http://localhost/vega-erp/";
               <ul id='contabilidad' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#contabilidad'>";
 
             foreach ($listaAcceso as $subAccess) {
-              $rutaCompleta = "http://localhost/vega-erp/views/{$subAccess['modulo']}/";
+              $rutaCompleta = "{$hostOnlyHeader}/views/{$subAccess['modulo']}/";
               if (!empty($subAccess['subruta'])) {
                 $rutaCompleta .= "{$subAccess['subruta']}/";
               }
@@ -435,7 +436,7 @@ $host = "http://localhost/vega-erp/";
               if (!$subAccess['visible'] && $subAccess['modulo'] === "agenda" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
                 echo "
                 <li class='sidebar-item nav-item list-agenda'>
-                  <a href='http://localhost/vega-erp/views/{$subAccess['modulo']}/{$subAccess['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                  <a href='{$hostOnlyHeader}/views/{$subAccess['modulo']}/{$subAccess['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
                     <i class='{$subAccess['icono']}'></i>
                     <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
                   </a>
@@ -537,7 +538,7 @@ $host = "http://localhost/vega-erp/";
                 </li>
                 <!-- Opción de logout -->
                 <li>
-                  <a class="dropdown-item d-flex align-items-center" href="<?= $host ?>/controllers/usuario.controller.php?operation=destroy">
+                  <a class="dropdown-item d-flex align-items-center" href="<?= $hostOnlyHeader ?>/controllers/usuario.controller.php?operation=destroy">
                     <svg
                       class="dropdown-icon text-danger me-2"
                       fill="none"
@@ -597,7 +598,7 @@ $host = "http://localhost/vega-erp/";
       document.querySelector("#configurar-perfil").addEventListener("click", () => {
         window.localStorage.clear()
         window.localStorage.setItem("idusuario", idusuarioLogeado)
-        window.location.href = `http://localhost/vega-erp/views/utilitario/usuarios/actualizar-usuario`
+        window.location.href = `${hostOnly}/views/utilitario/usuarios/actualizar-usuario`
         return
       })
 

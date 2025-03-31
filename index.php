@@ -1,8 +1,10 @@
 <?php
 session_start();
 
+$hostOnly = "http://192.168.1.8/vega-erp";
+
 if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
-  header('Location:http://localhost/vega-erp/views/ventas/listar-atencion-cliente');
+  header('Location:'.$hostOnly.'/views/ventas/listar-atencion-cliente');
 }
 ?>
 <!DOCTYPE html>
@@ -12,10 +14,13 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="http://localhost/vega-erp/css/login.css">
+  <link rel="stylesheet" href="<?= $hostOnly ?>/css/login.css">
   <link rel="icon" type="image/png" href="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png">
 
   <title>Inicia Sesion en Vega Producciones</title>
+  <script>
+    const hostOnly = "<?= $hostOnly ?>"; // Definir variable para JS
+  </script>
 </head>
 
 <style>
@@ -37,7 +42,7 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
   <div class="container-fluid d-flex flex-column align-items-center mt-5">
     <!-- Imagen -->
     <img
-      src="http://localhost/vega-erp/images/vega-p-logo.png"
+      src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png"
       alt="Logo"
       class=" mb-4"
       style="width: 105px; object-fit: cover;">
@@ -97,7 +102,7 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
     crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="http://localhost/vega-erp/js/swalcustom.js"></script>
+  <script src="<?= $hostOnly ?>/js/swalcustom.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       document.querySelector("#form-login").addEventListener("submit", async (e) => {
@@ -109,7 +114,7 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
         params.append("nom_usuario", document.querySelector("#usuario").value);
         params.append("claveacceso", document.querySelector("#claveacceso").value);
 
-        const resp = await fetch(`http://localhost/vega-erp/controllers/usuario.controller.php`, {
+        const resp = await fetch(`${hostOnly}/controllers/usuario.controller.php`, {
           'method': 'POST',
           'body': params
         });
@@ -118,19 +123,19 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
         if (data.login) {
           if (data.estado == 1) {
             if (data.rol === "Artista") {
-              window.location.href = "http://localhost/vega-erp/views/agenda/listar-agenda-artista";
+              window.location.href = `${hostOnly}/views/agenda/listar-agenda-artista`;
               return
             } else if (data.rol === "Filmmaker") {
-              window.location.href = "http://localhost/vega-erp/views/agenda/listar-agenda-filmmaker";
+              window.location.href = `${hostOnly}/views/agenda/listar-agenda-filmmaker`;
               return
             } else if (data.rol === "Administrador") {
-              window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente';
+              window.location.href = `${hostOnly}/views/ventas/listar-atencion-cliente`;
               return
             } else if (data.rol === "Edicion y Produccion") {
-              window.location.href = 'http://localhost/vega-erp/views/agenda/listar-agenda-edicion';
+              window.location.href = `${hostOnly}/views/agenda/listar-agenda-edicion`;
               return
             } else if (data.rol === "Community Manager") {
-              window.location.href = 'http://localhost/vega-erp/views/agenda/listar-agenda-cmanager';
+              window.location.href = `${hostOnly}/views/agenda/listar-agenda-cmanager`;
               return
             }
           } else {

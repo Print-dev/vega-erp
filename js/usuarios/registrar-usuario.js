@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   let imagen_public_id_firma = "";
   const BASE_CLOUDINARY_URL = "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742792207/";
 
-  const host = "http://localhost/vega-erp/controllers/";
   function $q(object = null) {
     return document.querySelector(object);
   }

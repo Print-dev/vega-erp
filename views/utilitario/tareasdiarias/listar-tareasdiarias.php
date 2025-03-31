@@ -118,7 +118,7 @@
                 </div>
             </div>
             <div class="text-end">
-                <a href="http://localhost/vega-erp/views/utilitario/tareasdiarias/registrar-tareadiaria" class="btn btn-primary" id="btnAsignarTareaDiaria">Asignar Tarea Diaria</a>
+                <a href="<?= $hostOnlyHeader ?>/views/utilitario/tareasdiarias/registrar-tareadiaria" class="btn btn-primary" id="btnAsignarTareaDiaria">Asignar Tarea Diaria</a>
             </div>
         </div>
 
@@ -153,7 +153,7 @@
 </div>
 
 <?php require_once '../../footer.php' ?>
-<script src="http://localhost/vega-erp/js/tareasdiarias/listar-tareasdiarias.js"></script>
+<script src="<?= $hostOnlyHeader ?>/js/tareasdiarias/listar-tareasdiarias.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <!-- Importar idioma español -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js"></script>

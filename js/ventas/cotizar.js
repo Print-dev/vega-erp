@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', async function () {
 
-  const host = "http://localhost/vega-erp/controllers/";
+  let ws
+  // Mantiene un indicador para saber si el WebSocket está listo para enviar
+  let wsReady = false;
   let isReset = false;
   bloquearCampos(true)
   let idcliente = -1
@@ -37,6 +39,42 @@ document.addEventListener('DOMContentLoaded', async function () {
       alert("generando pdf...")
     })
    */
+
+  (async () => {
+    ws = new WebSocket(`ws://192.168.1.8:8000`);
+
+    ws.onopen = () => {
+      wsReady = true;
+      console.log("WebSocket abierto pe");
+    };
+
+    ws.onclose = () => {
+      wsReady = false;
+      console.log("WebSocket cerrado pe");
+    };
+  })();
+
+
+  // ****************************************** CONFIGURACION DE NOTIFICACIONE S*********************************
+
+  function enviarWebsocket(type, mensaje) {
+    if (wsReady) {
+      ws.send(JSON.stringify({
+        type: type, // Tipo de mensaje WebSocket
+        /* idusuariodest: idusuariodest, // Usuario destinatario
+        idusuariorem: idusuariorem, // Usuario remitente
+        tipo: tipo,
+        idreferencia: idviatico, // ID del viático */
+        mensaje: mensaje
+      }));
+
+      console.log("Notificación enviada por WebSocket.");
+    } else {
+      console.warn("WebSocket no está listo para enviar notificaciones.");
+    }
+  }
+
+
   // ****************************** OBTENER DATOS ****************************** //
 
   async function obtenerDepartamentos(iddepartamento) {
@@ -700,7 +738,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   /* $q(".btnGuardarConvenio").addEventListener("click", () => {
     const convenio = registrarConvenio(iddetalleevento, 1)
     if (convenio) {
-      showToast("Se ha guardado el convenio", "SUCCESS", 1000, 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente');
+      showToast("Se ha guardado el convenio", "SUCCESS", 1000, '${host}/views/ventas/listar-atencion-cliente');
     }
   }) */
   /* 
@@ -708,7 +746,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       if (await ask("Confirma la acción")) {
         const convenio = registrarConvenio(iddetalleevento, 2)
         if (convenio) {
-          //window.location = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
+          //window.location = '${host}/views/ventas/listar-atencion-cliente'
         }
       }
     })
@@ -755,43 +793,100 @@ document.addEventListener('DOMContentLoaded', async function () {
           return;
         }
 
-        // 1️⃣ Verificar si hay al menos un evento vencido (estado == 2)
-        const hayEventoVencido = fechaOcupada.some(evento => evento.estado === 2);
-        console.log("¿Hay eventos vencidos?", hayEventoVencido);
-
-        // 2️⃣ Verificar si hay un evento con la **misma fecha y superposición de horario**
-        const horarioSuperpuesto = fechaOcupada.some(evento => {
-          return evento.fecha_presentacion === fechaSeleccionada &&
-            !(
-              horaFinalSeleccionada <= evento.horainicio || // Nuevo evento termina antes del inicio del existente
-              horaInicioSeleccionada >= evento.horafinal  // Nuevo evento inicia después de que el existente terminó
-            );
-        });
-
-        console.log("¿Existe superposición de horarios?", horarioSuperpuesto);
-
-        // ❌ Si hay otro evento en la misma fecha y se superpone en el horario, NO permitir registrar
-        if (horarioSuperpuesto) {
-          showToast("No se puede registrar el evento: ya existe otro en la misma fecha y horario.", "ERROR");
-          return;
-        }
-
-        // ✅ Si hay al menos un evento vencido (estado == 2) o no hay conflicto de horarios, permitir registrar
-        if (hayEventoVencido || fechaOcupada.length === 0 || !horarioSuperpuesto) {
+        const hayEventoConEstado3 = fechaOcupada.some(evento => evento.estado === 3);
+        if (hayEventoConEstado3) {
+          console.log("fechaOcupada ->>>>>>", fechaOcupada);
+          console.log("✅ Hay un evento con estado 3, se permite registrar sin restricciones.");
           permitirRegistrar = true;
         } else {
-          showToast("Esta fecha ya está tomada por otro evento.", "ERROR");
-          return;
+          // 2️⃣ Verificar si hay al menos un evento vencido (estado == 2)
+          const hayEventoVencido = fechaOcupada.some(evento => evento.estado === 2);
+          console.log("¿Hay eventos vencidos?", hayEventoVencido);
+
+          // 3️⃣ Verificar si hay un evento con la **misma fecha y superposición de horario**
+          const horarioSuperpuesto = fechaOcupada.some(evento => {
+            return evento.fecha_presentacion === fechaSeleccionada &&
+              !(
+                horaFinalSeleccionada <= evento.horainicio || // Nuevo evento termina antes del inicio del existente
+                horaInicioSeleccionada >= evento.horafinal  // Nuevo evento inicia después de que el existente terminó
+              );
+          });
+
+          console.log("fechaOcupada ->", fechaOcupada);
+          console.log("¿Existe superposición de horarios?", horarioSuperpuesto);
+
+          // ❌ Si hay otro evento en la misma fecha y se superpone en el horario, NO permitir registrar
+          if (horarioSuperpuesto) {
+            showToast("No se puede registrar el evento, ya existe otro en la misma fecha y horario.", "ERROR");
+            return;
+          }
+
+          // ✅ Si hay al menos un evento vencido (estado == 2) o no hay conflicto de horarios, permitir registrar
+          if (hayEventoVencido || fechaOcupada.length === 0 || !horarioSuperpuesto) {
+            permitirRegistrar = true;
+          } else {
+            showToast("Esta fecha ya está tomada por otro evento.", "ERROR");
+            return;
+          }
         }
-        console.log("idcliente -> ", idcliente);
-        if (idcliente == -1) {
-          if (permitirRegistrar) {
-            console.log("✅ SE PERMITIÓ REGISTRAR: Evento vencido o sin conflicto de horario. Cliente nuevo.");
-            const data = await registrarCliente();
-            console.log(data);
-            //alert("registrando persona")
-            if (data.idcliente > 0) {
-              //GENERAR NUMERO RANDOM ALEATORIO DE 9 DIGITOS
+
+        if (permitirRegistrar) {
+          // Código para proceder con el registro...
+          console.log("✅ Registro permitido.");
+          if (idcliente == -1) {
+            if (permitirRegistrar) {
+              console.log("✅ SE PERMITIÓ REGISTRAR: Evento vencido o sin conflicto de horario. Cliente nuevo.");
+              const data = await registrarCliente();
+              console.log(data);
+              //alert("registrando persona")
+              if (data.idcliente > 0) {
+                //GENERAR NUMERO RANDOM ALEATORIO DE 9 DIGITOS
+                const cotizaciones = await obtenerCotizacionesPorModalidad()
+                console.log("cotizaciones -> ", cotizaciones.at(-1))
+                const ultimaCotizacion = cotizaciones.at(-1); // Última cotización registrada
+
+                const nuevoNCotizacion = generarNuevoNCotizacion(ultimaCotizacion);
+                console.log("Nuevo número de cotización ->", nuevoNCotizacion);
+                ncotizacion = nuevoNCotizacion
+
+                if ($q("#modalidad").value == 1) {
+                  detalleevento = await registrarDetalleEvento(data.idcliente);
+                  const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                  console.log("repa registrado -> ", repaRegistrado);
+                  // REGISTRAR NOTIFICACION
+                  const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                  mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
+                  const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+                  console.log("notificacion registrada ? -> ", notificacionRegistrada)
+                  enviarWebsocket("evento", mensaje)
+                  console.log(detalleevento);
+                } else if ($q("#modalidad").value == 2) {
+                  detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
+                  const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                  mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
+                  const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+                  enviarWebsocket("evento", mensaje)
+                  console.log("notificacion registrada ? -> ", notificacionRegistrada)
+
+                  console.log(detalleevento);
+                } else {
+                  detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
+                  console.log(detalleevento);
+                  // ACA NO SE REGISTRA POR QUE EL EVENTO ESTA INCOMPLETO
+                }
+
+                if (detalleevento.iddetalleevento > 0) {
+                  //window.location.href = `${hostOnly}/views/ventas/listar-atencion-cliente`
+                } else {
+                  showToast("Hubo un error al registrar la atencion", "ERROR");
+                }
+              } else {
+                showToast("Hubo un error al registrar los datos del cliente", "ERROR");
+              }
+            }
+          } else {
+            if (permitirRegistrar) {
+              console.log("✅ SE PERMITIÓ REGISTRAR: Evento vencido o sin conflicto de horario. Cliente existente.");
               const cotizaciones = await obtenerCotizacionesPorModalidad()
               console.log("cotizaciones -> ", cotizaciones.at(-1))
               const ultimaCotizacion = cotizaciones.at(-1); // Última cotización registrada
@@ -801,86 +896,46 @@ document.addEventListener('DOMContentLoaded', async function () {
               ncotizacion = nuevoNCotizacion
 
               if ($q("#modalidad").value == 1) {
-                detalleevento = await registrarDetalleEvento(data.idcliente);
+                console.log("idcliente-> en valor 1 ", idcliente);
+                detalleevento = await registrarDetalleEvento(idcliente);
                 const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
                 console.log("repa registrado -> ", repaRegistrado);
-                // REGISTRAR NOTIFICACION
-                const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
-                mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
-                const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
-                console.log("notificacion registrada ? -> ", notificacionRegistrada)
                 console.log(detalleevento);
+                const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                console.log("usuario -> ", usuario);
+                mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
+                console.log("artista ->", $q("#artista").value);
+                console.log("idusuariolgeado ->", idusuarioLogeado);
+                console.log("mensaje ->", mensaje);
+
+                const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+                enviarWebsocket("evento", mensaje)
+                console.log("notificacion registrada ? -> ", notificacionRegistrada)
               } else if ($q("#modalidad").value == 2) {
-                detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
+                console.log("idcliente-> en valor 2 ", idcliente);
+                detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
+                console.log(detalleevento);
                 const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
                 mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
                 const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+                enviarWebsocket("evento", mensaje)
                 console.log("notificacion registrada ? -> ", notificacionRegistrada)
-
+              } else if ($q("#modalidad").value == -1) {
+                console.log("idcliente-> en valor -1 ", idcliente);
+                console.log("entrando a cuando no se selecciona ningun valor");
+                detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
                 console.log(detalleevento);
-              } else {
-                detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
-                console.log(detalleevento);
-                // ACA NO SE REGISTRA POR QUE EL EVENTO ESTA INCOMPLETO
               }
-
+              console.log("detalle evento ->>>>>>", detalleevento);
               if (detalleevento.iddetalleevento > 0) {
-            window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
+                //window.location.href = `${hostOnly}/views/ventas/listar-atencion-cliente`
               } else {
                 showToast("Hubo un error al registrar la atencion", "ERROR");
               }
-            } else {
-              showToast("Hubo un error al registrar los datos del cliente", "ERROR");
-            }
-          }
-        } else {
-          if (permitirRegistrar) {
-            console.log("✅ SE PERMITIÓ REGISTRAR: Evento vencido o sin conflicto de horario. Cliente existente.");
-            const cotizaciones = await obtenerCotizacionesPorModalidad()
-            console.log("cotizaciones -> ", cotizaciones.at(-1))
-            const ultimaCotizacion = cotizaciones.at(-1); // Última cotización registrada
-
-            const nuevoNCotizacion = generarNuevoNCotizacion(ultimaCotizacion);
-            console.log("Nuevo número de cotización ->", nuevoNCotizacion);
-            ncotizacion = nuevoNCotizacion
-
-            if ($q("#modalidad").value == 1) {
-              console.log("idcliente-> en valor 1 ", idcliente);
-              detalleevento = await registrarDetalleEvento(idcliente);
-              const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
-              console.log("repa registrado -> ", repaRegistrado);
-              console.log(detalleevento);
-              const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
-              console.log("usuario -> ", usuario);
-              mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
-              console.log("artista ->", $q("#artista").value);
-              console.log("idusuariolgeado ->", idusuarioLogeado);
-              console.log("mensaje ->", mensaje);
-              
-              const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
-              console.log("notificacion registrada ? -> ", notificacionRegistrada)
-            } else if ($q("#modalidad").value == 2) {
-              console.log("idcliente-> en valor 2 ", idcliente);
-              detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
-              console.log(detalleevento);
-              const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
-              mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
-              const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
-              console.log("notificacion registrada ? -> ", notificacionRegistrada)
-            } else if ($q("#modalidad").value == -1) {
-              console.log("idcliente-> en valor -1 ", idcliente);
-              console.log("entrando a cuando no se selecciona ningun valor");
-              detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
-              console.log(detalleevento);
-            }
-            console.log("detalle evento ->>>>>>", detalleevento);
-            if (detalleevento.iddetalleevento > 0) {
-              window.location.href = 'http://localhost/vega-erp/views/ventas/listar-atencion-cliente'
-            } else {
-              showToast("Hubo un error al registrar la atencion", "ERROR");
             }
           }
         }
+
       }
     } catch (error) {
       console.error("Error capturado:", error);

@@ -5,7 +5,7 @@
     <div class="row card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Datos del artista</h5>
-            <a href="<?= $host ?>views/utilitario/tarifas/listar-tarifas" class="btn btn-outline-primary btn-sm">
+            <a href="<?= $hostOnlyHeader ?>/views/utilitario/tarifas/listar-tarifas" class="btn btn-outline-primary btn-sm">
                 <i class="fa-solid fa-circle-left"></i> Regresar
             </a>
         </div>
@@ -59,7 +59,7 @@
 
 <?php require_once '../../footer.php'; ?>
 
-<script src="http://localhost/vega-erp/js/tarifarios/registrar-tarifario.js"></script>
+<script src="<?= $hostOnlyHeader ?>/js/tarifarios/registrar-tarifario.js"></script>
 
 </body>
 

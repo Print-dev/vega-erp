@@ -24,7 +24,7 @@
                     <h1>Atención al cliente</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a href="http://localhost/vega-erp/views/ventas/registrar-atencion-cliente" class="btn btn-primary">Nueva Atencion</a>
+                    <a href="<?= $hostOnlyHeader ?>/views/ventas/registrar-atencion-cliente" class="btn btn-primary">Nueva Atencion</a>
                 </div>
             </div>
             <div class="row">
@@ -398,7 +398,7 @@
 <?php require_once '../footer.php' ?>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script src="http://localhost/vega-erp/js/ventas/listar-atencion.js"></script>
+<script src="<?= $hostOnlyHeader ?>/js/ventas/listar-atencion.js"></script>
 
 </body>
 

@@ -10,7 +10,7 @@
                     <h1>Caja Chica</h1>
                 </div>
                 <div class="col-md-6 text-end contenedor-btn-nuevacaja">
-                    <a href="http://localhost/vega-erp/views/contabilidad/caja-chica/registrar-caja" class="btn btn-primary" id="btnNuevaCaja">Abrir Nueva Caja</a>
+                    <a href="<?= $hostOnlyHeader ?> /views/contabilidad/caja-chica/registrar-caja" class="btn btn-primary" id="btnNuevaCaja">Abrir Nueva Caja</a>
                 </div>
             </div>
             <div class="row">
@@ -179,7 +179,7 @@
 
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
-    <script src="http://localhost/vega-erp/js/contabilidad/listar-cajachica.js"></script>
+    <script src="<?= $hostOnlyHeader ?> /js/contabilidad/listar-cajachica.js"></script>
 
     </body>
 

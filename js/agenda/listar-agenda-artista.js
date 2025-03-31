@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   (async () => {
-    ws = new WebSocket("ws://localhost:8000");
+    ws = new WebSocket("ws://192.168.1.8:8000");
 
     ws.onopen = () => {
       wsReady = true;
@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ********************************************* WEBSCOKETS **********************************************************
-  ws.onmessage = (event) => {
+  /* ws.onmessage = (event) => {
     try {
       const data = JSON.parse(event.data);
   
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       console.error("Error al procesar el mensaje WebSocket:", error);
     }
-  };
+  }; */ // QUITADO PQ YA SE PUSO EN NOTIFICACION GLOBAL .JS
   // ****************************************** OBTENER DATOS **********************************************************
 
   //(async () => {
@@ -325,6 +325,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rviatico;
   }
 
+  function enviarWebsocket(type,mensaje) {
+    if (wsReady) {
+      ws.send(JSON.stringify({
+        type: type, // Tipo de mensaje WebSocket
+        /* idusuariodest: idusuariodest, // Usuario destinatario
+        idusuariorem: idusuariorem, // Usuario remitente
+        tipo: tipo,
+        idreferencia: idviatico, // ID del viático */
+        mensaje: mensaje
+      }));
+  
+      console.log("Notificación enviada por WebSocket.");
+    } else {
+      console.warn("WebSocket no está listo para enviar notificaciones.");
+    }
+  }
+
   async function registrarNotificacion(idusuariodest, idusuariorem, tipo, idviatico, mensaje) {
     const viatico = new FormData();
     viatico.append("operation", "registrarNotificacion");
@@ -340,20 +357,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     const rviatico = await fviatico.json();
     console.log("rivatico . ", rviatico)
-    if (wsReady) {
-      ws.send(JSON.stringify({
-        type: "notificacion", // Tipo de mensaje WebSocket
-        idusuariodest: idusuariodest, // Usuario destinatario
-        idusuariorem: idusuariorem, // Usuario remitente
-        tipo: tipo,
-        idreferencia: idviatico, // ID del viático
-        mensaje: mensaje
-      }));
-  
-      console.log("Notificación enviada por WebSocket.");
-    } else {
-      console.warn("WebSocket no está listo para enviar notificaciones.");
-    }
+    
     return rviatico;
   }
 
@@ -620,6 +624,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           for (const admins of usuariosAdmin) {
             console.log("admins -> ", admins);
             const notificacionSalida = await registrarNotificacion(admins.idusuario, idusuarioLogeado, 2, reporteRegistradoEventoArt.idreporte, mensaje)
+            enviarWebsocket("notificacion",mensaje)
             console.log("notificacion salida -> ", notificacionSalida);
           }
           //modalSalida.hide()
@@ -653,6 +658,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           for (const admins of usuariosAdmin) {
             console.log("admins -> ", admins);
             const notificacionRetorno = await registrarNotificacion(admins.idusuario, idusuarioLogeado, 2, reporteRegistradoEventoArt.idreporte, mensaje)
+            enviarWebsocket("notificacion",mensaje)
             console.log("notificacion retorno -> ", notificacionRetorno);
           }
           setTimeout(() => {
@@ -671,7 +677,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         window.localStorage.clear()
         window.localStorage.setItem("iddp", evento.event.extendedProps.iddetalle_presentacion)
-        window.location.href = `http://localhost/vega-erp/views/ventas/actualizar-atencion-cliente`
+        window.location.href = `${host}/views/ventas/actualizar-atencion-cliente`
       }
     },
   });
@@ -1021,7 +1027,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.target && e.target.id === "btnVerProgreso") {
       /* window.localStorage.clear()
       window.localStorage.setItem("idagendaedicion", idagendaedicion)
-      window.location.href = `http://localhost/vega-erp/views/agenda/asignar-agenda-edicion` */
+      window.location.href = `${host}/views/agenda/asignar-agenda-edicion` */
       idagendaedicion = e.target.getAttribute("data-idagendaedicion");
 
       modalProgresoEdicion = new bootstrap.Modal($q("#modal-progresoedicion"));
@@ -1056,7 +1062,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           console.log("id agenda edicion -> ", idagendaeditor);
           window.localStorage.clear()
           window.localStorage.setItem("idagendaeditor", idagendaeditor)
-          window.location.href = `http://localhost/vega-erp/views/agenda/subir-contenido-edicion`
+          window.location.href = `${host}/views/agenda/subir-contenido-edicion`
           return
         })
       })
@@ -1064,7 +1070,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.target && e.target.id === "btnAsignarEditor") {
       /* window.localStorage.clear()
       window.localStorage.setItem("idagendaedicion", idagendaedicion)
-      window.location.href = `http://localhost/vega-erp/views/agenda/asignar-agenda-edicion` */
+      window.location.href = `${host}/views/agenda/asignar-agenda-edicion` */
       idagendaedicion = e.target.getAttribute("data-idagendaedicion");
 
       modalAsignarEditor = new bootstrap.Modal($q("#modal-asignareditor"));

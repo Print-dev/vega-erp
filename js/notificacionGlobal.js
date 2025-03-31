@@ -15,11 +15,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function getDatos(link, params) {
     let data = await fetch(`${link}?${params}`);
     return data.json();
-    
+
   }
 
   (async () => {
-    ws = new WebSocket("ws://localhost:8000");
+    ws = new WebSocket(`ws://192.168.1.8:8000`);
 
     ws.onopen = () => {
       wsReady = true;
@@ -45,25 +45,43 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   console.log("idusuarioLogeado desde el notify globsal -> ", idusuarioLogeado);
 
+  // ****************************************** CONFIGURACION DE NOTIFICACIONE S*********************************
+
+  function recibirNotificacionAPI(body, type) {
+    if (Notification.permission === "granted") {
+      new Notification(`¡Nueva ${type}!`, {
+        body: body,
+        icon: "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png", // Puedes cambiar el icono
+      });
+    } else {
+      console.log("El usuario no concedió permisos.");
+    }
+  }
+
   // ********************************************* WEBSCOKETS **********************************************************
-  ws.onmessage = (event) => {
+  ws.onmessage = async (event) => {
     try {
       console.log("antes de obtener la noti");
       const data = JSON.parse(event.data);
       console.log("data -> ", data);
-      if (Notification.permission === "granted") {
-        new Notification("¡Nueva Notificación!", {
-            body: "Esto es un mensaje de prueba.",
-            icon: "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png", // Puedes cambiar el icono
-        });
-    } else {
-        console.log("El usuario no concedió permisos.");
-    }
+
       if (data.type === "notificacion") {
+        console.log("antes de recibir la notificacion api");
+        recibirNotificacionAPI (data?.mensaje, data?.type)
         console.log("📢 Nueva notificación recibida:", data);
-  
+        $q(".contenedor-notificacion").innerHTML = ''
+        await obtenerNotificaciones()
         // Aquí puedes mostrar la notificación en la UI
-        alert(`🔔 Nueva notificación: ${data.mensaje}`);
+        //alert(`🔔 Nueva notificación: ${data.mensaje}`);
+      }
+      else if (data.type === "evento") {
+        console.log("antes de recibir la notificacion api");
+        recibirNotificacionAPI (data?.mensaje, data?.type)
+        console.log("📢 Nueva notificación recibida:", data);
+        $q(".contenedor-notificacion").innerHTML = ''
+        await obtenerNotificaciones()
+        // Aquí puedes mostrar la notificación en la UI
+        //alert(`🔔 Nueva notificación: ${data.mensaje}`);
       }
     } catch (error) {
       console.error("Error al procesar el mensaje WebSocket:", error);

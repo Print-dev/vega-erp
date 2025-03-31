@@ -321,7 +321,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         "Caja chica cerrada correctamente",
         "SUCCESS",
         2000,
-        "http://localhost/vega-erp/views/contabilidad/caja-chica/caja-chica"
+        `${host}/views/contabilidad/caja-chica/caja-chica`
       );
     } else {
       showToast("Error al cerrar la caja chica", "ERROR");

@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const host = "http://localhost/vega-erp/controllers/";
   let myTable = null;
   let listCajas = []
 
@@ -280,7 +279,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     idcajachica = e.target.getAttribute("data-id");
     window.localStorage.clear()
     window.localStorage.setItem("idcajachica", idcajachica)
-    window.location.href = `http://localhost/vega-erp/views/contabilidad/caja-chica/registrar-caja`;
+    window.location.href = `${host}/views/contabilidad/caja-chica/registrar-caja`;
     return;
   }
 

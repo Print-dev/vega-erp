@@ -112,9 +112,9 @@
     const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
 </script> -->
 
-    <!-- <script src="http://localhost/vega-erp/js/agenda/obtencion-agenda-nivel.js"></script>
+    <!-- <script src="<?= $hostWithAppName ?>/js/agenda/obtencion-agenda-nivel.js"></script>
  -->
-    <script src="http://localhost/vega-erp/js/agenda/listar-agenda-cmanager.js"></script>
+    <script src="<?= $hostWithAppName ?>/js/agenda/listar-agenda-cmanager.js"></script>
 
     </body>
 

@@ -409,7 +409,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (evento.event.extendedProps.estadoBadge.text == "Incompleto") {
                 window.localStorage.clear()
                 window.localStorage.setItem("iddp", evento.event.extendedProps.iddetalle_presentacion)
-                window.location.href = `http://localhost/vega-erp/views/ventas/actualizar-atencion-cliente`
+                window.location.href = `${host}/views/ventas/actualizar-atencion-cliente`
             }
             /* const idDetalle = evento.event.extendedProps.iddetalle_presentacion;
             await renderizarInfoAgenda(idDetalle);

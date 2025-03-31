@@ -122,7 +122,7 @@
         </div>
     </div>
 </div>
-<!-- <a href="http://localhost/vega-erp/views/utilitario/tareasdiarias/listar-tareasdiarias" class="btn btn-primary" id="btnAsignarTareaDiaria">Asignar Tarea Diaria</a>
+<!-- <a href="<?= $hostWithAppName ?>/views/utilitario/tareasdiarias/listar-tareasdiarias" class="btn btn-primary" id="btnAsignarTareaDiaria">Asignar Tarea Diaria</a>
  -->
 <div class="contenedor-calendario">
     <div id='calendar'></div>
@@ -404,8 +404,8 @@
     const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
 </script> -->
 
-<script src="http://localhost/vega-erp/js/agenda/listar-agenda-filmmaker.js"></script>
-<script src="http://localhost/vega-erp/js/agenda/obtencion-agenda-nivel.js"></script>
+<script src="<?= $hostWithAppName ?>/js/agenda/listar-agenda-filmmaker.js"></script>
+<script src="<?= $hostWithAppName ?>/js/agenda/obtencion-agenda-nivel.js"></script>
 
 </body>
 

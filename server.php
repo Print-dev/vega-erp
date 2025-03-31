@@ -1,10 +1,10 @@
+
 <?php
 // servidor.php
-error_reporting(E_ALL); //configura el nivel de error que el script reportará (TODOS)
-set_time_limit(0); //establece el tiempo máximo de ejecución de un script en segundos.
-ob_implicit_flush(); //volcado implícito de la salida, envía datos del script mientras se ejecuta, no al terminar
+error_reporting(E_ALL);
+set_time_limit(0);
+ob_implicit_flush();
 
-//Apertura el servicio seguro
 function ws_handshake($client, $headers)
 {
   if (preg_match('/Sec-WebSocket-Key: (.*)\r\n/', $headers, $matches)) {
@@ -19,11 +19,10 @@ function ws_handshake($client, $headers)
   return false;
 }
 
-//Decodificar datos del WS
 function ws_decode($data)
 {
   if (empty($data) || strlen($data) < 2) {
-    return '';  // Retornar una cadena vacía si $data no tiene suficiente longitud
+    return '';
   }
 
   $length = ord($data[1]) & 127;
@@ -37,6 +36,7 @@ function ws_decode($data)
     $masks = substr($data, 2, 4);
     $data = substr($data, 6);
   }
+
   $text = '';
   for ($i = 0; $i < strlen($data); ++$i) {
     $text .= $data[$i] ^ $masks[$i % 4];
@@ -44,7 +44,6 @@ function ws_decode($data)
   return $text;
 }
 
-//Codificar WS
 function ws_encode($text)
 {
   $b1 = 0x80 | (0x1 & 0x0f);
@@ -65,15 +64,15 @@ socket_set_option($socket, SOL_SOCKET, SO_REUSEADDR, 1);
 socket_bind($socket, '0.0.0.0', 8000);
 socket_listen($socket);
 
-$clients = array();
-$client_ids = array();
-$handshakes = array();
-$nicknames = array();
+$clients = [];
+$client_ids = [];
+$handshakes = [];
+$nicknames = [];
 
 echo "Servidor WebSocket iniciado en el puerto 8000...\n";
 
 while (true) {
-  $read = array_merge(array($socket), $clients);
+  $read = array_merge([$socket], $clients);
   $write = $except = null;
 
   if (socket_select($read, $write, $except, null) < 1) {
@@ -143,30 +142,44 @@ while (true) {
     if (!empty($message)) {
       $decoded = json_decode($message, true);
 
-      if ($decoded != null || $decoded != "") {
+      if ($decoded !== null) {
         if ($decoded['type'] === 'notificacion') {
-            $response = json_encode([
-              'type' => 'notificacion',
-              'idusuariodest' => $decoded['idusuariodest'],
+          $response = json_encode([
+            'type' => 'notificacion',
+            /* 'idusuariodest' => $decoded['idusuariodest'],
               'idusuariorem' => $decoded['idusuariorem'],
               'tipo' => $decoded['tipo'],
-              'idreferencia' => $decoded['idreferencia'],
-              'mensaje' => $decoded['mensaje']
-            ]);
-          
-            echo "📢 Notificación enviada: {$decoded['mensaje']}\n";
-          
-            foreach ($clients as $client) {
+              'idreferencia' => $decoded['idreferencia'], */
+            'mensaje' => $decoded['mensaje']
+          ]);
+
+          foreach ($clients as $client) {
+            if ($client !== $read_socket) { // No reenviar al emisor
               socket_write($client, ws_encode($response));
             }
           }
-          
+        }
+        else if ($decoded['type'] === 'evento') {
+          $response = json_encode([
+            'type' => 'evento',
+            /* 'idusuariodest' => $decoded['idusuariodest'],
+              'idusuariorem' => $decoded['idusuariorem'],
+              'tipo' => $decoded['tipo'],
+              'idreferencia' => $decoded['idreferencia'], */
+            'mensaje' => $decoded['mensaje']
+          ]);
+
+          foreach ($clients as $client) {
+            if ($client !== $read_socket) { // No reenviar al emisor
+              socket_write($client, ws_encode($response));
+            }
+          }
+        }
       }
     }
   }
 
-  // Pequeña pausa para no saturar el CPU
-  usleep(100000); //100 ms
+  usleep(100000);
 }
 
 socket_close($socket);

@@ -1,5 +1,5 @@
 <?php require_once '../../header.php' ?>
-<!-- <link rel="stylesheet" href="http://localhost/SIGEMAPRE/css/usuario-register.css"> -->
+<!-- <link rel="stylesheet" href="http://localhostOnlyHeader/SIGEMAPRE/css/usuario-register.css"> -->
 
 <div class="row g-0 h-100 mb-3">
   <div class="col-md-12">
@@ -7,7 +7,7 @@
       <div class="card-header border-0 d-flex justify-content-between align-items-center">
         <h2>Registrar usuario</h2>
 
-        <a href="<?= $host ?>views/utilitario/usuarios/listar-usuarios" class="btn btn-outline-primary btn-sm ms-auto m-0" type="button"><i class="fa-solid fa-circle-left"></i> Regresar</a>
+        <a href="<?= $hostOnlyHeader ?>/views/utilitario/usuarios/listar-usuarios" class="btn btn-outline-primary btn-sm ms-auto m-0" type="button"><i class="fa-solid fa-circle-left"></i> Regresar</a>
       </div>
       <div class="card-body ">
         <h5>Datos de la Persona</h5>
@@ -216,7 +216,7 @@
 </div>
 </div>
 <?php require_once '../../footer.php' ?>
-<script src="http://localhost/vega-erp/js/usuarios/registrar-usuario.js"></script>
+<script src="<?= $hostOnlyHeader ?>/js/usuarios/registrar-usuario.js"></script>
 <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
 </body>
 

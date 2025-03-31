@@ -9,7 +9,7 @@
                     <h1>Usuarios</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a href="http://localhost/vega-erp/views/utilitario/usuarios/registrar-usuario" class="btn btn-primary">Nuevo Usuario</a>
+                    <a href="<?= $hostOnlyHeader ?>/views/utilitario/usuarios/registrar-usuario" class="btn btn-primary">Nuevo Usuario</a>
                 </div>
             </div>
             <div class="row">
@@ -95,7 +95,7 @@
     <?php require_once '../../footer.php' ?>
 
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-    <script src="http://localhost/vega-erp/js/usuarios/listar-usuarios.js"></script>
+    <script src="<?= $hostOnlyHeader ?>/js/usuarios/listar-usuarios.js"></script>
 
     </body>
 

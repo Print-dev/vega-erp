@@ -1,5 +1,5 @@
 <?php require_once '../../header.php' ?>
-<!-- <link rel="stylesheet" href="http://localhost/SIGEMAPRE/css/usuario-register.css"> -->
+<!-- <link rel="stylesheet" href="http://localhostOnlyHeader/SIGEMAPRE/css/usuario-register.css"> -->
 
 <div class="row g-0 h-100 mb-3">
   <div class="col-md-12">
@@ -210,7 +210,7 @@
   </div>
 </div>
 <?php require_once '../../footer.php' ?>
-<script src="http://localhost/vega-erp/js/usuarios/actualizar-usuario.js"></script>
+<script src="<?= $hostOnlyHeader ?>/js/usuarios/actualizar-usuario.js"></script>
 <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
 </body>
 

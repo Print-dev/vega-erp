@@ -242,7 +242,7 @@
                             <i class="fa-solid fa-floppy-disk px-2"></i>Guardar</button>
                         <button type="button" id="btnLimpiarAC" class="btn btn-primary">
                             <i class="fa-solid fa-eraser px-2"></i>Limpiar</button>
-                        <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" id="btnRegresarAC" class="btn btn-primary">
+                        <a href="<?= $hostOnlyHeader ?>/views/ventas/listar-atencion-cliente" id="btnRegresarAC" class="btn btn-primary">
                             <i class="fa-solid fa-circle-left px-2"></i>Regresar</a>
                         <button class="btn btn-primary" type="button" id="btnConsultarFecha">
                             <i class="fa-solid fa-magnifying-glass"></i> Consultar fechas reservadas</button>
@@ -281,7 +281,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="modalContratoConvenio">Previa Convenio</h1>
-                <a href="http://localhost/vega-erp/views/ventas/listar-atencion-cliente" class="btn-close"></a>
+                <a href="<?= $hostOnlyHeader ?>/views/ventas/listar-atencion-cliente" class="btn-close"></a>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
@@ -325,7 +325,7 @@
 <?php require_once '../footer.php' ?>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script src="http://localhost/vega-erp/js/ventas/cotizar.js"></script>
+<script src="<?= $hostOnlyHeader ?>/js/ventas/cotizar.js"></script>
 
 </body>
 

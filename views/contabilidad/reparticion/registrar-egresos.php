@@ -38,7 +38,7 @@
             <div class="d-flex gap-2">
                 <button type="button" id="btnRegistrarNuevoEgreso" class="btn btn-primary text-start">
                     <i class="fa-solid fa-plus px-2"></i>Registra Nuevo Egreso</button>
-                <a href="http://localhost/vega-erp/views/contabilidad/reparticion/listar-reparticion" class="btn btn-primary">
+                <a href="<?= $hostOnlyHeader ?>/views/contabilidad/reparticion/listar-reparticion" class="btn btn-primary">
                     <i class="fa-solid fa-circle-left px-2"></i>Regresar</a>
 
             </div>
@@ -95,7 +95,7 @@
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
-<script src="http://localhost/vega-erp/js/reparticiones/registrar-egresos.js"></script>
+<script src="<?= $hostOnlyHeader ?>/js/reparticiones/registrar-egresos.js"></script>
 
 </body>
 

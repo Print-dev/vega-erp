@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const host = "http://localhost/vega-erp/controllers/";
 
   let idusuario = window.localStorage.getItem("idusuario") ? window.localStorage.getItem("idusuario") : -1
   let idpersona = -1
@@ -275,7 +274,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   })
 
   $q("#btnRegresarActualizarUsuario").addEventListener("click", ()=> {
-    window.location.href = `http://localhost/vega-erp/views/utilitario/usuarios/listar-usuarios`
+    window.location.href = `${host}/views/utilitario/usuarios/listar-usuarios`
   })
 
 })

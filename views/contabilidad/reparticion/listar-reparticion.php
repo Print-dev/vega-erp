@@ -9,7 +9,7 @@
                     <h1>Reparticiones</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <!-- <a href="http://localhost/vega-erp/views/utilitario/usuarios/registrar-usuario" class="btn btn-primary"></a> nomusuario -->
+                    <!-- <a href="<?= $hostOnlyHeader ?>/views/utilitario/usuarios/registrar-usuario" class="btn btn-primary"></a> nomusuario -->
                 </div>
             </div>
             <div class="row">
@@ -193,7 +193,7 @@
 
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
-    <script src="http://localhost/vega-erp/js/reparticiones/listar-reparticiones.js"></script>
+    <script src="<?= $hostOnlyHeader ?>/js/reparticiones/listar-reparticiones.js"></script>
 
     </body>
 

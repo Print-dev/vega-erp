@@ -70,7 +70,7 @@
 
 
 <?php require_once '../../footer.php' ?>
-<script src="http://localhost/vega-erp/js/tareasdiarias/registrar-tareadiaria.js"></script>
+<script src="<?= $hostOnlyHeader ?>/js/tareasdiarias/registrar-tareadiaria.js"></script>
 </body>
 
 </html>

@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    const host = "http://localhost/vega-erp/controllers/";
     let myTable = null;
     
     function $q(object = null) {
