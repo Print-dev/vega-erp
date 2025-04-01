@@ -13,6 +13,7 @@ BEGIN
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
     
 
-select * from sucursales
-insert into sucursales (iddistrito, nombre, ruc, telefono, direccion)
+select * from distritos
+select * from provincias
+insert into sucursales (iddistrito, nombre, ruc, telefono, direccion) values (959, 'NEGOCIACIONES Y PRODUCCIONES VEGA S.A.C.', '20608627422', '')
 END //
