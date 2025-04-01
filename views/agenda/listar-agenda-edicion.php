@@ -86,6 +86,30 @@
         text-decoration: none;
         cursor: pointer;
     }
+
+    @media (max-width: 768px) {
+        .fc-toolbar.fc-header-toolbar {
+            flex-direction: column;
+        }
+
+        .fc-toolbar-chunk {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .fc-button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .fc-button {
+            flex: 1;
+            min-width: 80px;
+            margin: 2px;
+        }
+    }
 </style>
 
 <div class="row g-0 mb-3 contenedor-filtros-agenda">
@@ -110,17 +134,18 @@
                     </div>
                 </div>
             </div>
-           <!--  <div class="text-end">
+            <!--  <div class="text-end">
             <a href="<?= $hostWithAppName ?>/views/utilitario/tareasdiarias/listar-tareasdiarias" class="btn btn-primary" id="btnAsignarTareaDiaria">Asignar Tarea Diaria</a>
         </div> -->
         </div>
-        
+
     </div>
 </div>
 
-<div class="contenedor-calendario">
-    <div id='calendar'></div>
-
+<div class="container-fluid">
+    <div class="contenedor-calendario">
+        <div id='calendar'></div>
+    </div>
 </div>
 
 <div class="modal fade" id="modal-viatico" tabindex="-1" aria-labelledby="modalviatico" aria-hidden="true" data-bs-backdrop="static">
@@ -158,7 +183,7 @@
                                 </div>
                             </div>
 
-                         <!--    <div class="row g-3 align-items-center contenedor-viatico-viaje">
+                            <!--    <div class="row g-3 align-items-center contenedor-viatico-viaje">
                                 <div class="col-md-4 text-end">
                                     <label for="viaje" class="form-label">Viatico de viaje:</label>
                                 </div>
@@ -309,8 +334,8 @@
                                     <th>Responsable de Publicacion</th>
                                 </tr>
                             </thead>
-                            <tbody class="contenedor-asignados" >
-                                
+                            <tbody class="contenedor-asignados">
+
                             </tbody>
                         </table>
                     </div>

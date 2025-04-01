@@ -30,6 +30,16 @@ CREATE TABLE distritos
     CONSTRAINT fk_idprovincia FOREIGN KEY(idprovincia) REFERENCES provincias(idprovincia)
 )ENGINE=INNODB;
 
+CREATE TABLE sucursales (
+	idsucursal		int auto_increment primary key,
+    iddistrito		int not null,
+	nombre			varchar(120) not null,
+	ruc				char(11) not null,
+    telefono		char(20) not null,
+    direccion		varchar(120) not null,
+    constraint fk_iddistrito_suc foreign key (iddistrito) references distritos (iddistrito)
+)  ENGINE=INNODB;
+
 CREATE TABLE personas
 (
 	idpersona     int auto_increment  primary key,

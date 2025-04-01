@@ -539,6 +539,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           await dataFilters();
         });
       }
+      if (x.id === "fechapresentacion") {
+        x.addEventListener("change", async () => {
+          await dataFilters();
+        });
+      }
     });
   }
 
@@ -558,6 +563,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
     params.append("nomusuario", $q("#nomusuario").value ? $q("#nomusuario").value : "")
     params.append("establecimiento", $q("#establecimiento").value ? $q("#establecimiento").value : "")
+    params.append("fechapresentacion", $q("#fechapresentacion").value ? $q("#fechapresentacion").value : "")
 
     const data = await getDatos(`${host}detalleevento.controller.php`, params);
     console.log("data -> ", data);
@@ -889,6 +895,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     $q("#abonogarantia").value = ''
     $q("#abonopublicidad").value = ''
+    $q("#porcentajevega").value = ''
+    $q("#porcentajepromotor").value = ''
     $q("#propuestacliente").value = ''
 
     const convenioExiste = await obtenerConvenioPorIdDP(idpropuesta)
@@ -1478,7 +1486,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
 
     $q("#porciento").innerHTML = "";
-    $q("#btnGuardar").hidden = true
+    $q("#btnGuardar").hidden = false
     let precioFinal = -1;
     let precio25 = -1;
     let precio50 = -1;
@@ -1693,6 +1701,52 @@ document.addEventListener("DOMContentLoaded", async () => {
           console.log("idcontrato > ", idcontrato)
            */
 
+        } else {
+          console.log("adelanto..");
+          console.log("verificando que existe el idcontrato ->", idcontrato)
+
+          if ($q("#tipopago").value == 1) {
+            if ($q("#noperacion").value.trim() !== "") {
+              const pagoContrato = await registrarPagoContrato(idcontrato, 1)
+
+              console.log("Pago guardado", pagoContrato)
+              if (pagoContrato.idpagocontrato) {
+                showToast("Pago guardado", "SUCCESS");
+                modalDatosContrato?.hide()
+                const dpExiste = await obtenerDPporId(iddetallepresentacion)
+                console.log("DP EXISTE ? -> ", dpExiste)
+
+                if (dpExiste[0]?.reserva == 0) {
+                  const estadoReserva = await actualizarEstadoReservaDp(iddetallepresentacion, 1)
+                  console.log("Estado reserva actualizado", estadoReserva)
+                  await dataFilters()
+                } else if (dpExiste[0]?.reserva == 1) {
+                  return
+                }
+              }
+              return
+            }
+            showToast("Digite el numero de operación.", "ERROR");
+          } else if ($q("#tipopago").value == 2) {
+            const pagoContrato = await registrarPagoContrato(idcontrato, 1)
+            console.log("Pago guardado", pagoContrato)
+            if (pagoContrato.idpagocontrato) {
+              showToast("Pago guardado", "SUCCESS");
+              modalDatosContrato?.hide()
+              const dpExiste = await obtenerDPporId(iddetallepresentacion)
+              console.log("DP EXISTE ? -> ", dpExiste)
+              if (dpExiste[0]?.reserva == 0) {
+                const estadoReserva = await actualizarEstadoReservaDp(iddetallepresentacion, 1)
+                console.log("Estado reserva actualizado", estadoReserva)
+                await dataFilters()
+              } else if (dpExiste[0]?.reserva == 1) {
+
+                return
+              }
+            }
+          } else {
+            showToast("Eliga una opcion de pago", "ERROR");
+          }
         }
       } else if ($q("#montopagado").value < 0) {
         showToast("No puede ingresar un monto negativo", "WARNING", 3000);

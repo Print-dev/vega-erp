@@ -86,6 +86,30 @@
         text-decoration: none;
         cursor: pointer;
     }
+
+    @media (max-width: 768px) {
+        .fc-toolbar.fc-header-toolbar {
+            flex-direction: column;
+        }
+
+        .fc-toolbar-chunk {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .fc-button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .fc-button {
+            flex: 1;
+            min-width: 80px;
+            margin: 2px;
+        }
+    }
 </style>
 
 
@@ -124,9 +148,10 @@
 </div>
 <!-- <a href="<?= $hostWithAppName ?>/views/utilitario/tareasdiarias/listar-tareasdiarias" class="btn btn-primary" id="btnAsignarTareaDiaria">Asignar Tarea Diaria</a>
  -->
-<div class="contenedor-calendario">
-    <div id='calendar'></div>
-
+<div class="container-fluid">
+    <div class="contenedor-calendario">
+        <div id='calendar'></div>
+    </div>
 </div>
 
 <div class="modal fade" id="modal-viatico" tabindex="-1" aria-labelledby="modalviatico" aria-hidden="true" data-bs-backdrop="static">
@@ -182,7 +207,7 @@
 
                         <!-- Sección de destinatarios -->
                         <div class="col-md-6 contenedor-admins">
-                           
+
                         </div>
                     </div>
                 </div>

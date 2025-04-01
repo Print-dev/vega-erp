@@ -363,16 +363,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     detalle.append("operation", "registrarDetallePresentacion");
     detalle.append("idusuario", $q("#artista").value);
     detalle.append("idcliente", idcliente);
-    detalle.append("iddistrito", iddistrito2);
+    detalle.append("iddistrito", iddistrito2 || '');
     detalle.append("ncotizacion", ncotizacion || '');
-    detalle.append("fechapresentacion", fechapresentacion);
+    detalle.append("fechapresentacion", fechapresentacion || '');
     detalle.append("horainicio", horainicio);
     detalle.append("horafinal", horafinal);
-    detalle.append("establecimiento", establecimiento);
-    detalle.append("referencia", referencia);
+    detalle.append("establecimiento", establecimiento || '');
+    detalle.append("referencia", referencia || '');
     detalle.append("acuerdo", $q("#acuerdo")?.value || '');
-    detalle.append("tipoevento", tipoevento);
-    detalle.append("modalidad", modalidad);
+    detalle.append("tipoevento", tipoevento || '');
+    detalle.append("modalidad", modalidad || '');
     detalle.append("validez", validez || '');
     detalle.append("igv", $q("#igv").checked ? 1 : 0);
 
@@ -876,7 +876,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 }
 
                 if (detalleevento.iddetalleevento > 0) {
-                  //window.location.href = `${hostOnly}/views/ventas/listar-atencion-cliente`
+                  window.location.href = `${hostOnly}/views/ventas/listar-atencion-cliente`
                 } else {
                   showToast("Hubo un error al registrar la atencion", "ERROR");
                 }
@@ -928,7 +928,7 @@ document.addEventListener('DOMContentLoaded', async function () {
               }
               console.log("detalle evento ->>>>>>", detalleevento);
               if (detalleevento.iddetalleevento > 0) {
-                //window.location.href = `${hostOnly}/views/ventas/listar-atencion-cliente`
+                window.location.href = `${hostOnly}/views/ventas/listar-atencion-cliente`
               } else {
                 showToast("Hubo un error al registrar la atencion", "ERROR");
               }

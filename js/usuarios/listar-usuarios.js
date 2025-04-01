@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
   }
-
+  
   /**
 * Carga los botones que estan en la tabla
 */

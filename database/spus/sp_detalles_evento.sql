@@ -72,7 +72,7 @@ BEGIN
     ) VALUES (
         _idusuario, _idcliente, _iddistrito, NULLIF(_ncotizacion, ''), 
         _fechapresentacion, _horainicio, _horafinal, NULLIF(_establecimiento, ''), 
-        NULLIF(_referencia, ''), NULLIF(_acuerdo, ''), _tipoevento, _modalidad, _validez, _igv
+        NULLIF(_referencia, ''), NULLIF(_acuerdo, ''), nullif(_tipoevento,''), nullif(_modalidad,''), _validez, _igv
     );
 
     SET _iddetalle_presentacion = LAST_INSERT_ID();
@@ -132,7 +132,8 @@ CREATE PROCEDURE `sp_obtener_detalles_evento`(
     IN _ncotizacion CHAR(9),
     IN _ndocumento CHAR(9),
     IN _nom_usuario CHAR(30),
-    IN _establecimiento VARCHAR(80)
+    IN _establecimiento VARCHAR(80),
+    IN _fecha_presentacion DATE
 )
 BEGIN
     SELECT 
@@ -174,11 +175,12 @@ BEGIN
     AND (CLI.ndocumento LIKE CONCAT('%', COALESCE(_ndocumento, ''), '%') OR _ndocumento IS NULL)
     AND (USU.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%') OR _nom_usuario IS NULL)
     AND (DP.establecimiento LIKE CONCAT('%', COALESCE(_establecimiento, ''), '%') OR _establecimiento IS NULL)
+    AND (DP.fecha_presentacion LIKE CONCAT('%', COALESCE(_fecha_presentacion, ''), '%') OR _fecha_presentacion IS NULL)
     GROUP BY DP.iddetalle_presentacion, CO.idcontrato;
 
 END //
 
--- CALL sp_obtener_detalles_evento (null, null, "a", null)
+-- CALL sp_obtener_detalles_evento (null, null, NULL, null, "2025-03-08")
 
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_artista;
 DELIMITER //

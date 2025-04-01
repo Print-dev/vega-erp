@@ -88,25 +88,28 @@
     }
 
     @media (max-width: 768px) {
-    .fc-toolbar.fc-header-toolbar {
-        flex-direction: column;
+        .fc-toolbar.fc-header-toolbar {
+            flex-direction: column;
+        }
+
+        .fc-toolbar-chunk {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .fc-button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .fc-button {
+            flex: 1;
+            min-width: 80px;
+            margin: 2px;
+        }
     }
-    .fc-toolbar-chunk {
-        width: 100%;
-        text-align: center;
-        margin-bottom: 5px;
-    }
-    .fc-button-group {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .fc-button {
-        flex: 1;
-        min-width: 80px;
-        margin: 2px;
-    }
-}
 </style>
 
 
@@ -185,7 +188,7 @@
                                 </div>
                             </div>
 
-                         <!--    <div class="row g-3 align-items-center contenedor-viatico-viaje">
+                            <!--    <div class="row g-3 align-items-center contenedor-viatico-viaje">
                                 <div class="col-md-4 text-end">
                                     <label for="viaje" class="form-label">Viatico de viaje:</label>
                                 </div>

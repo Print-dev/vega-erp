@@ -1,17 +1,10 @@
 <?php require_once '../header.php' ?>
 <style>
     .contenedor-general {
-        position: relative;
-        width: 100%;
-        height: calc(100vh - 100px);
-        /* Ajusta el 100% de la altura menos 100px para margen */
-        min-height: 500px;
-        /* Asegura una altura mínima */
-        max-height: 100vh;
-        /* Evita que crezca demasiado */
-        overflow: visible !important;
-        resize: vertical;
-        /* Permite ajuste manual si es necesario */
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
     }
 </style>
 <div class="container-fluid contenedor-general">
@@ -58,6 +51,12 @@
                                             <div class="form-floating">
                                                 <input type="text" class="form-control filter" id="establecimiento" autocomplete="off">
                                                 <label for="establecimiento">Lugar/establecimiento</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-floating">
+                                                <input type="date" class="form-control filter" id="fechapresentacion" autocomplete="off">
+                                                <label for="fechapresentacion">Fecha de presentacion</label>
                                             </div>
                                         </div>
                                     </div>

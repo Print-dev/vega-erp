@@ -45,6 +45,7 @@ if (isset($_GET['operation'])) {
         'ndocumento' => $_GET['ndocumento'] === "" ? null : $detalleevento->limpiarCadena($_GET['ndocumento']),
         'nomusuario' => $_GET['nomusuario'] === "" ? null : $detalleevento->limpiarCadena($_GET['nomusuario']),
         'establecimiento' => $_GET['establecimiento'] === "" ? null : $detalleevento->limpiarCadena($_GET['establecimiento']),
+        'fechapresentacion' => $_GET['fechapresentacion'] === "" ? null : $detalleevento->limpiarCadena($_GET['fechapresentacion']),
       ];
       echo json_encode($detalleevento->filtrarAtenciones($cleanData));
       break;
