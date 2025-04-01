@@ -274,7 +274,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   })
 
   $q("#btnRegresarActualizarUsuario").addEventListener("click", ()=> {
-    window.location.href = `${host}/views/utilitario/usuarios/listar-usuarios`
+    window.location.href = `${hostOnly}/views/utilitario/usuarios/listar-usuarios`
   })
 
 })

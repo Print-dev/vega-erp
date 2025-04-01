@@ -175,6 +175,38 @@ while (true) {
             }
           }
         }
+        else if ($decoded['type'] === 'asignacion filmmaker') {
+          $response = json_encode([
+            'type' => 'asignacion filmmaker',
+            /* 'idusuariodest' => $decoded['idusuariodest'],
+              'idusuariorem' => $decoded['idusuariorem'],
+              'tipo' => $decoded['tipo'],
+              'idreferencia' => $decoded['idreferencia'], */
+            'mensaje' => $decoded['mensaje']
+          ]);
+
+          foreach ($clients as $client) {
+            if ($client !== $read_socket) { // No reenviar al emisor
+              socket_write($client, ws_encode($response));
+            }
+          }
+        }
+        else if ($decoded['type'] === 'viatico') {
+          $response = json_encode([
+            'type' => 'viatico',
+            /* 'idusuariodest' => $decoded['idusuariodest'],
+              'idusuariorem' => $decoded['idusuariorem'],
+              'tipo' => $decoded['tipo'],
+              'idreferencia' => $decoded['idreferencia'], */
+            'mensaje' => $decoded['mensaje']
+          ]);
+
+          foreach ($clients as $client) {
+            if ($client !== $read_socket) { // No reenviar al emisor
+              socket_write($client, ws_encode($response));
+            }
+          }
+        }
       }
     }
   }

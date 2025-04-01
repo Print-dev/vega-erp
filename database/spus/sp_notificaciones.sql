@@ -50,6 +50,23 @@ BEGIN
     WHERE NOTIF.idusuario = _idusuario;
 END $$
 
+DROP PROCEDURE IF EXISTS sp_obtener_notificaciones_por_nivel;
+DELIMITER $$
+CREATE PROCEDURE sp_obtener_notificaciones_por_nivel
+(
+	IN _idnivelacceso INT,
+    IN _idusuario INT
+)
+BEGIN
+	SELECT 
+		NOTIF.idnotificacion, NOTIF.idreferencia, NOTIF.mensaje
+    FROM notificaciones NOTIF
+    LEFT JOIN usuarios USU ON USU.idusuario = NOTIF.idusuariodest
+    LEFT JOIN nivelaccesos NIVEL ON NIVEL.idnivelacceso = USU.idnivelacceso
+    WHERE USU.idnivelacceso = _idnivelacceso AND USU.idusuario = _idusuario;
+END $$
+-- call sp_obtener_notificaciones (3)
+
 DROP PROCEDURE IF EXISTS sp_obtener_notificacion_dp;
 DELIMITER $$
 CREATE PROCEDURE sp_obtener_notificacion_dp

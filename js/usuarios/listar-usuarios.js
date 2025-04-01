@@ -257,7 +257,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("id usuario", idusuario);
     window.localStorage.clear()
     window.localStorage.setItem("idusuario", idusuario)
-    window.location.href = `${host}/views/utilitario/usuarios/actualizar-usuario`
+    window.location.href = `${hostOnly}/views/utilitario/usuarios/actualizar-usuario`
     return
   }
 

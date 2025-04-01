@@ -1,5 +1,5 @@
 <?php
-$hostOnlyHeader = "http://192.168.1.8/vega-erp";
+$hostOnlyHeader = "http://localhost/vega-erp";
 session_start();
 if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {
   header('location:'.$hostOnlyHeader);
@@ -582,6 +582,10 @@ switch ($_SESSION['login']['nivelacceso']) {
 
     <!-- /NAVBAR-HEADER -->
     <script>
+    const idusuarioLogeado = "<?php echo $_SESSION['login']['idusuario']; ?>"
+    const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
+</script>
+    <script>
       document.querySelectorAll('.sidebar-item').forEach(item => {
         item.addEventListener('click', function() {
           const icon = this.querySelector('.toggle-icon'); // Selecciona el ícono dentro del <li>
@@ -611,7 +615,6 @@ switch ($_SESSION['login']['nivelacceso']) {
           }
         });
       }
-
       /* function mostrarNotificacionViatico() {
         if (Notification.permission === "granted") {
           new Notification("¡Nueva Notificación!", {

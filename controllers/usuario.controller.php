@@ -6,7 +6,7 @@ header("Content-type: application/json; charset=utf-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Métodos permitidos
 header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Encabezados permitidos
 
-$hostOnly  = "http://192.168.1.8/vega-erp";
+$hostOnly  = "http://localhost/vega-erp";
 // cuando se pone en visible true se pone como dropdown
 $accesos = [
   'Administrador' => [

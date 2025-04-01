@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   (async () => {
-    ws = new WebSocket("ws://192.168.1.8:8000");
+    ws = new WebSocket("ws://localhost:8000");
 
     ws.onopen = () => {
       wsReady = true;
@@ -1324,21 +1324,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("click al btn guardar filmmaker")
     console.log("iddp-- > ", iddp);
     console.log("valor filmamker elegido -> ", $q("#filmmaker").value);
-    const dpObtenido = await obtenerFilmmakerAsociadoEvento($q("#filmmaker").value)
-    console.log("este filmmaker esta asociado a un evento -> ", dpObtenido);
-    if ($q("#filmmaker").value == dpObtenido[0]?.idusuario && iddp == dpObtenido[0].iddetalle_presentacion) {
-      showToast("Este filmmaker ya esta asignado a este evento", "ERROR")
-      return
-    } // este id usuario es del filmmaker
+    const dpObtenido = await obtenerFilmmakerAsociadoEvento($q("#filmmaker").value);
+console.log("Este filmmaker está asociado a un evento -> ", dpObtenido);
+
+// Verificar si algún elemento tiene el mismo iddetalle_presentacion que iddp
+const existe = dpObtenido.some(item => item.idusuario == $q("#filmmaker").value && item.iddetalle_presentacion == iddp);
+
+if (existe) {
+  showToast("Este filmmaker ya está asignado a este evento", "ERROR");
+  return;
+} // este id usuario es del filmmaker
     const filmmakerAsignado = await asignarAgenda(iddp)
     console.log("filmmakerAsignado -> ", filmmakerAsignado)
     if (filmmakerAsignado.idasignacion) {
       showToast("Filmmaker asignado correctamente", "SUCCESS")
+      const notiAsigFilm = await registrarNotificacion( $q("#filmmaker").value, idusuarioLogeado, 3, filmmakerAsignado.idasignacion, "Has sido asignado a un nuevo evento, revisa tu agenda")
+      console.log("noti asig film -< ", notiAsigFilm);
+      enviarWebsocket("asignacion filmmaker", "Has sido asignado a un nuevo evento, revisa tu agenda")
       /*       const agendaUsuario = await obtenerAgenda(idUsuario);
             console.log("agendaUsuario todo obtenido ->", agendaUsuario);
       
             calendar.removeAllEvents()
             await configurarCalendario(agendaUsuario) */
+
       modalFilmmaker.hide()
     }
   })

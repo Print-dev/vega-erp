@@ -43,16 +43,16 @@
 <!-- ./Modal de crear especificaciones -->
 
 <script>
-  const host = "http://192.168.1.8/vega-erp/controllers/";
-  const hostOnlyJs = "http://192.168.1.8/vega-erp"
-  <?php $hostOnly = "http://192.168.1.8/vega-erp" ?>
+  const host = "http://localhost/vega-erp/controllers/";
+  const hostOnlyJs = "http://localhost/vega-erp"
+  <?php $hostOnly = "http://localhost/vega-erp" ?>
   const hostOnly = "<?= $hostOnly ?>";
-  <?php $hostWithAppName = "http://192.168.1.8/vega-erp"?>
+  <?php $hostWithAppName = "http://localhost/vega-erp"?>
 </script>
-<script>
+<!-- <script>
     const idusuarioLogeado = "<?php echo $_SESSION['login']['idusuario']; ?>"
     const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
-</script>
+</script> -->
 
   <!-- Notificaciones js -->
 
@@ -65,7 +65,7 @@
 <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"> -->
 <!-- Script personzalizado -->
 
-<!-- <script src="http://192.168.1.8/CMMS/js/dashboard/select-option.js"></script> -->
+<!-- <script src="http://localhost/CMMS/js/dashboard/select-option.js"></script> -->
 <!-- SWEET ALERT -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- Libreria que simplifica sweet alert -->
@@ -98,6 +98,6 @@
   //--------------------------------------------------------------------------------------------//
 
   document.addEventListener("DOMContentLoaded", () => {
-    //const host = `http://192.168.1.8/vega-erp/controllers/`;
+    //const host = `http://localhost/vega-erp/controllers/`;
   });
 </script>

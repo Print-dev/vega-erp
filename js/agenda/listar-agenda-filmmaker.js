@@ -1,5 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
     // variables 
+    let ws
+  // Mantiene un indicador para saber si el WebSocket está listo para enviar
+  let wsReady = false;
     let usuarioSelect = $q("#usuario")
     let agenda = []
     let calendar
@@ -25,8 +28,42 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
+    (async () => {
+        ws = new WebSocket("ws://localhost:8000");
+    
+        ws.onopen = () => {
+          wsReady = true;
+          console.log("WebSocket abierto pe");
+        };
+    
+        ws.onclose = () => {
+          wsReady = false;
+          console.log("WebSocket cerrado pe");
+        };
+      })();
+    
+      function enviarWebsocket(type,mensaje) {
+        if (wsReady) {
+          ws.send(JSON.stringify({
+            type: type, // Tipo de mensaje WebSocket
+            /* idusuariodest: idusuariodest, // Usuario destinatario
+            idusuariorem: idusuariorem, // Usuario remitente
+            tipo: tipo,
+            idreferencia: idviatico, // ID del viático */
+            mensaje: mensaje
+          }));
+      
+          console.log("Notificación enviada por WebSocket.");
+        } else {
+          console.warn("WebSocket no está listo para enviar notificaciones.");
+        }
+      }
+
+      
     const usuariosAdmin = await obtenerUsuariosPorNivel("3")
     await renderizarAdmins(usuariosAdmin)
+
+    
 
     // ************************************************ OBTENER DATOS *********************************************************************** */
     async function obtenerUsuarios(idnivelacceso) {
@@ -289,8 +326,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("viaticoRegistrado -> ", viaticoRegistrado);
 
         const usuarioFilmmaker = await obtenerUsuarioPorId(idusuarioLogeado);
-        console.log("usuarioFilmmaker -> ", usuarioFilmmaker);
-
+        console.log("usuarioFilmmaker -> ", usuarioFilmmaker)
         if (viaticoRegistrado.idviatico) {
             console.log("Entrando a la validación...");
 
@@ -301,6 +337,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 console.log("registrando viatic..");
                 const notificacionRegistrada = await registrarNotificacion(idAdmin, idusuarioLogeado, 1, viaticoRegistrado.idviatico, mensaje);
                 console.log(`Notificación enviada a ${idAdmin}:`, notificacionRegistrada);
+                enviarWebsocket("viatico", mensaje)
             }
 
             document.querySelectorAll(".chkAdmin").forEach(checkbox => {

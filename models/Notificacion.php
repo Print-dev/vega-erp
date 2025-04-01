@@ -103,4 +103,20 @@ class Notificacion extends ExecQuery
       die($e->getMessage());
     }
   }
+
+  public function obtenerNotificacionPorNivel($params = []): array
+  {
+    try {
+      $sp = parent::execQ("CALL sp_obtener_notificaciones_por_nivel (?,?)");
+      $sp->execute(
+        array(
+          $params["idnivelacceso"],
+          $params["idusuario"],
+        )
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
 }

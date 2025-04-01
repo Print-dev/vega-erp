@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async function () {
    */
 
   (async () => {
-    ws = new WebSocket(`ws://192.168.1.8:8000`);
+    ws = new WebSocket(`ws://localhost:8000`);
 
     ws.onopen = () => {
       wsReady = true;

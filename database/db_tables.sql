@@ -168,7 +168,7 @@ CREATE TABLE agenda_asignaciones ( -- tabla que asigna la agenda a un filmmaker
     FOREIGN KEY (iddetalle_presentacion) REFERENCES detalles_presentacion(iddetalle_presentacion) ON DELETE CASCADE,
     FOREIGN KEY (idusuario) REFERENCES usuarios(idusuario) ON DELETE CASCADE
 );
-select * from nivelaccesos;
+select * from agenda_asignaciones;
 create table convenios (
 	idconvenio	int auto_increment primary key,
     iddetalle_presentacion int not null,
@@ -274,16 +274,17 @@ CREATE TABLE notificaciones (
     idnotificacion INT AUTO_INCREMENT PRIMARY KEY,
     idusuariodest INT NOT NULL,-- Usuario que recibe la notificación
     idusuariorem INT NOT NULL, -- usuario que envia la notificacion
-    tipo INT NOT NULL, -- 1- viatico, 2- DETLLAE PRESENTACION
+    tipo INT NOT NULL, -- 1- viatico, 2- DETLLAE PRESENTACION, 3: asignacion de filmmaker
     idreferencia INT NULL, -- ID del registro relacionado
     mensaje VARCHAR(200) NOT NULL,
     estado INT NULL DEFAULT 1, 
     fecha DATETIME DEFAULT NOW(),
     constraint fk_usuario_notif foreign key (idusuariodest) references usuarios(idusuario),
     constraint fk_usuario_rem foreign key (idusuariorem) references usuarios(idusuario),
-    constraint chk_tipo check(tipo IN (1,2)), -- ir agregando mas tipos segun lo requiera
     constraint chk_estado_not check(estado IN (1,2))
 );
+-- ALTER TABLE notificaciones DROP CONSTRAINT chk_tipo;
+
 select * from notificaciones;
 CREATE TABLE reparticion_ingresos (
 	idreparticion	int auto_increment primary key,

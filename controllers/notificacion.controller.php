@@ -25,6 +25,14 @@ if(isset($_GET['operation'])){
         ];
         echo json_encode($notificacion->obtenerTodasLasNotificaciones($cleanData));
         break;
+
+    case 'obtenerNotificacionPorNivel':
+        $cleanData = [
+          'idnivelacceso'   => $notificacion->limpiarCadena($_GET['idnivelacceso']),
+          'idusuario'   => $notificacion->limpiarCadena($_GET['idusuario']),
+        ];
+        echo json_encode($notificacion->obtenerNotificacionPorNivel($cleanData));
+        break;
   }
 }
 

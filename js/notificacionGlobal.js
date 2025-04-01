@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   (async () => {
-    ws = new WebSocket(`ws://192.168.1.8:8000`);
+    ws = new WebSocket(`ws://localhost:8000`);
 
     ws.onopen = () => {
       wsReady = true;
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
   console.log("NIVEL ACCESO USER LOGEADO --> ", nivelacceso);
-  if (nivelacceso == "Administrador" || nivelacceso == "Artista") {
+  if (nivelacceso == "Administrador" || nivelacceso == "Artista" || nivelacceso == "Filmmaker") {
     obtenerNotificaciones();
   }
 
@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ****************************************** CONFIGURACION DE NOTIFICACIONE S*********************************
 
   function recibirNotificacionAPI(body, type) {
+    console.log("Notification.permission-> ", Notification.permission);
     if (Notification.permission === "granted") {
       new Notification(`¡Nueva ${type}!`, {
         body: body,
@@ -75,6 +76,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         //alert(`🔔 Nueva notificación: ${data.mensaje}`);
       }
       else if (data.type === "evento") {
+        console.log("antes de recibir la notificacion api");
+        recibirNotificacionAPI (data?.mensaje, data?.type)
+        console.log("📢 Nueva notificación recibida:", data);
+        $q(".contenedor-notificacion").innerHTML = ''
+        await obtenerNotificaciones()
+        // Aquí puedes mostrar la notificación en la UI
+        //alert(`🔔 Nueva notificación: ${data.mensaje}`);
+      }
+      else if (data.type === "asignacion filmmaker") {
+        console.log("antes de recibir la notificacion api");
+        recibirNotificacionAPI (data?.mensaje, data?.type)
+        console.log("📢 Nueva notificación recibida:", data);
+        $q(".contenedor-notificacion").innerHTML = ''
+        await obtenerNotificaciones()
+        // Aquí puedes mostrar la notificación en la UI
+        //alert(`🔔 Nueva notificación: ${data.mensaje}`);
+      }
+      else if (data.type === "viatico") {
         console.log("antes de recibir la notificacion api");
         recibirNotificacionAPI (data?.mensaje, data?.type)
         console.log("📢 Nueva notificación recibida:", data);
@@ -143,6 +162,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     return fpersona
   }
 
+  async function obtenerNotificacionPorNivel(idreferencia) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerNotificacionPorNivel");
+    params.append("idreferencia", idreferencia ? idreferencia : '');
+    const fpersona = await getDatos(`${host}detalleevento.controller.php`, params)
+    console.log(fpersona);
+    return fpersona
+  }
+
   //* *********************************** RENDERIZACIONES *************************************************
 
   function mostrarNotificaciones(notificaciones, idusuario) {
@@ -198,6 +226,16 @@ document.addEventListener("DOMContentLoaded", async () => {
           cargarNotificacionDpEnModal(notificacionDP[0])
 
         }
+        /* else if (notificacion.tipo == 2) { // esto sera para eventos / detalles_presentacion
+          console.log("id referencia .> ", idNotificacion);
+          modalNotificacion = new bootstrap.Modal($q("#modal-notificacion"))
+          modalNotificacion.show() // AQUI ABRE EL MODAL 
+
+          const notificacionDP = await obtenerNotificacionDP(idNotificacion)
+          console.log("notiifacion dp clickeada -> ", notificacionDP);
+          cargarNotificacionDpEnModal(notificacionDP[0])
+
+        } */ // ME QUEDE ACA FALTA LISTAR LA S NOTIFICACIOINES PARA ASIGNACIONS FILMMAKER
       });
 
       contenedor.appendChild(notificacionElemento);

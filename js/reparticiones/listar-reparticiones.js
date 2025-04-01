@@ -307,7 +307,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.localStorage.clear()
     window.localStorage.setItem("idreparticion", idreparticion)
     window.localStorage.setItem("iddp", iddp)
-    window.location.href = `${host}/views/contabilidad/reparticion/registrar-ingresos`
+    window.location.href = `${hostOnly}/views/contabilidad/reparticion/registrar-ingresos`
     return
   }
 
@@ -317,7 +317,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.localStorage.clear()
     window.localStorage.setItem("idreparticion", idreparticion)
     window.localStorage.setItem("iddp", iddp)
-    window.location.href = `${host}/views/contabilidad/reparticion/registrar-egresos`
+    window.location.href = `${hostOnly}/views/contabilidad/reparticion/registrar-egresos`
     return
   }
 

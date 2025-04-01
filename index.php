@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-$hostOnly = "http://192.168.1.8/vega-erp";
+$hostOnly = "http://localhost/vega-erp";
 
 if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
   header('Location:'.$hostOnly.'/views/ventas/listar-atencion-cliente');
@@ -105,8 +105,41 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
   <script src="<?= $hostOnly ?>/js/swalcustom.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      document.querySelector("#form-login").addEventListener("submit", async (e) => {
+    function mostrarNotificacionVentana(nivelacceso) {
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    enviarNotificacion(nivelacceso);
+                }
+            });
+        } else {
+            enviarNotificacion(nivelacceso);
+        }
+    }
 
+    function enviarNotificacion(nivelacceso) {
+        console.log("nivelacceso -> ", nivelacceso);
+        if (["Filmmaker", "Artista", "Edicion y Produccion"].includes(nivelacceso)) {
+            new Notification(`Vega Producciones`, {
+                body: "¡Bienvenido de nuevo, recuerda revisar tu agenda y tareas diarias!",
+                icon: "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png",
+            });
+        } else if (["Community Manager"].includes(nivelacceso)){
+          new Notification(`Vega Producciones`, {
+                body: "¡Bienvenido de nuevo, recuerda revisar los contenidos a publicar!",
+                icon: "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png",
+            });
+        } 
+        else if (nivelacceso === "Administrador") {
+            console.log("soltando la notificacion");
+            new Notification(`Vega Producciones`, {
+                body: "¡Bienvenido de nuevo!",
+                icon: "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png",
+            });
+        }
+    }
+
+    document.querySelector("#form-login").addEventListener("submit", async (e) => {
         e.preventDefault();
 
         const params = new URLSearchParams();
@@ -115,40 +148,49 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
         params.append("claveacceso", document.querySelector("#claveacceso").value);
 
         const resp = await fetch(`${hostOnly}/controllers/usuario.controller.php`, {
-          'method': 'POST',
-          'body': params
+            method: 'POST',
+            body: params
         });
+
         const data = await resp.json();
         console.log(data);
-        if (data.login) {
-          if (data.estado == 1) {
-            if (data.rol === "Artista") {
-              window.location.href = `${hostOnly}/views/agenda/listar-agenda-artista`;
-              return
-            } else if (data.rol === "Filmmaker") {
-              window.location.href = `${hostOnly}/views/agenda/listar-agenda-filmmaker`;
-              return
-            } else if (data.rol === "Administrador") {
-              window.location.href = `${hostOnly}/views/ventas/listar-atencion-cliente`;
-              return
-            } else if (data.rol === "Edicion y Produccion") {
-              window.location.href = `${hostOnly}/views/agenda/listar-agenda-edicion`;
-              return
-            } else if (data.rol === "Community Manager") {
-              window.location.href = `${hostOnly}/views/agenda/listar-agenda-cmanager`;
-              return
-            }
-          } else {
-            showToast("Este usuario esta deshabilitado, reportalo a los administradores.", "INFO")
-            return
-          }
-        } else {
-          showToast(data.mensaje, "ERROR");
-          return
-        }
 
-      })
-    })
+        if (data.login) {
+            if (data.estado == 1) {
+                switch (data.rol) {
+                    case "Artista":
+                        window.location.href = `${hostOnly}/views/agenda/listar-agenda-artista`;
+                        break;
+                    case "Filmmaker":
+                        window.location.href = `${hostOnly}/views/agenda/listar-agenda-filmmaker`;
+                        mostrarNotificacionVentana(data.rol);
+                        break;
+                    case "Administrador":
+                        window.location.href = `${hostOnly}/views/ventas/listar-atencion-cliente`;
+                        mostrarNotificacionVentana(data.rol);
+                        break;
+                    case "Edicion y Produccion":
+                        window.location.href = `${hostOnly}/views/agenda/listar-agenda-edicion`;
+                        mostrarNotificacionVentana(data.rol);
+                        break;
+                    case "Community Manager":
+                        window.location.href = `${hostOnly}/views/agenda/listar-agenda-cmanager`;
+                        mostrarNotificacionVentana(data.rol);
+                        break;
+                    default:
+                        console.warn("Rol no reconocido:", data.rol);
+                        break;
+                }
+            } else {
+                showToast("Este usuario está deshabilitado, repórtalo a los administradores.", "INFO");
+            }
+        } else {
+            showToast(data.mensaje, "ERROR");
+        }
+    });
+});
+
+    
   </script>
   <script src="index.js"></script>
 
