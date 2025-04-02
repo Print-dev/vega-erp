@@ -1,52 +1,46 @@
 <?php
-// Cargar el XML de la factura
-$xmlFile = 'factura.xml'; // Ruta de tu archivo XML
-$xml = new DOMDocument;
-$xml->load($xmlFile);
+// Configuración
+$ruc = "20608627422";
+$usuarioSol = "NEGOVEGA";
+$claveSol = "VegaSAC2068";
+$archivoZip = "20608627422-01-F001-1.zip";
+$contenidoZip = file_get_contents($archivoZip);
+$nombreArchivoZip = basename($archivoZip);
 
-// Cargar el XSL de validación
-$xslFile = 'ValidaExprRegFactura-2.0.1.xsl'; // Ruta del archivo XSL
-$xsl = new DOMDocument;
-$xsl->load($xslFile);
+// Crear el XML de la solicitud SOAP
+$soapRequest = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://service.sunat.gob.pe">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ser:sendBill>
+         <fileName>$nombreArchivoZip</fileName>
+         <contentFile><![CDATA[" . base64_encode($contenidoZip) . "]]></contentFile>
+         <party>
+            <ruc>$ruc</ruc>
+            <user>$usuarioSol</user>
+            <password>$claveSol</password>
+         </party>
+      </ser:sendBill>
+   </soapenv:Body>
+</soapenv:Envelope>
+XML;
 
-// Configurar el procesador XSLT
-$proc = new XSLTProcessor;
-$proc->importStylesheet($xsl);
+// Configuración de la conexión SOAP
+$ch = curl_init("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $soapRequest);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "Content-Type: text/xml; charset=utf-8",
+    "Content-Length: " . strlen($soapRequest),
+]);
 
-// Aplicar la transformación XSL al XML
-$result = $proc->transformToXML($xml);
+// Ejecutar la solicitud
+$response = curl_exec($ch);
+curl_close($ch);
 
-// Mostrar el resultado de la validación
-if ($result === false) {
-    echo "Error: La validación falló.";
-} else {
-    echo "Validación completada con éxito.\n";
-    echo $result; // Esto mostrará los posibles errores encontrados
-}
-?>
-<?php
-// Cargar el XML de la factura
-$xmlFile = 'factura.xml'; // Ruta de tu archivo XML
-$xml = new DOMDocument;
-$xml->load($xmlFile);
+// Guardar la respuesta de SUNAT
+file_put_contents("respuesta_sunat.xml", $response);
 
-// Cargar el XSL de validación
-$xsl = new DOMDocument;
-$xslFile = "C:\\xampp\\htdocs\\vega-erp\\validaciones\\ValidaExprRegFactura-2.0.1.xsl";
-$xsl->load($xslFile);
-
-// Configurar el procesador XSLT
-$proc = new XSLTProcessor;
-$proc->importStylesheet($xsl);
-
-// Aplicar la transformación XSL al XML
-$result = $proc->transformToXML($xml);
-
-// Mostrar el resultado de la validación
-if ($result === false) {
-    echo "Error: La validación falló.";
-} else {
-    echo "Validación completada con éxito.\n";
-    echo $result; // Esto mostrará los posibles errores encontrados
-}
-?>
+echo "Respuesta recibida de SUNAT y guardada en respuesta_sunat.xml";

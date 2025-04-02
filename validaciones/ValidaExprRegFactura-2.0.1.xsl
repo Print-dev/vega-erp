@@ -12,7 +12,7 @@
     xmlns:date="http://exslt.org/dates-and-times"
     extension-element-prefixes="dp" exclude-result-prefixes="dp" version="1.0">
     
-	<xsl:include href="local:///commons/error/validate_utils.xsl" dp:ignore-multiple="yes" />
+	<!-- <xsl:include href="local:///commons/error/validate_utils.xsl" dp:ignore-multiple="yes" /> -->
 
     <!-- key Documentos Relacionados Duplicados -->
     <xsl:key name="by-document-despatch-reference" match="*[local-name()='Invoice']/cac:DespatchDocumentReference" use="concat(cbc:DocumentTypeCode,' ', cbc:ID)"/>

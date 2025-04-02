@@ -650,6 +650,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("usuarioLogeado -> ", usuarioLogeado);
         const mensaje = `${usuarioLogeado[0]?.nom_usuario} ha acaba de retornar el ${formatDate(fecha)} a las ${formatHour(hora)}, click para mas detalles`
         console.log("usuariosAdmin -> ", usuariosAdmin);
+        console.log("el que pueda leer esto se la come completa XD");
         const reporteRegistradoEventoArt = await reportarSalidaRetornoArtista(iddetallepresentacion, 2, fecha, hora)
 
         console.log("reporte de registro de retorno del arrtista-> ", reporteRegistradoEventoArt);
