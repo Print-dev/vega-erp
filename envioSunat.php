@@ -1,29 +1,52 @@
 <?php
+// Cargar el XML de la factura
+$xmlFile = 'factura.xml'; // Ruta de tu archivo XML
+$xml = new DOMDocument;
+$xml->load($xmlFile);
 
-$wsdl = "https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService?wsdl";
-$client = new SoapClient($wsdl, [
-    'trace' => 1,
-    'exceptions' => true,
-    'soap_version' => SOAP_1_1,
-]);
+// Cargar el XSL de validación
+$xslFile = 'ValidaExprRegFactura-2.0.1.xsl'; // Ruta del archivo XSL
+$xsl = new DOMDocument;
+$xsl->load($xslFile);
 
-// Datos de autenticación (RUC + usuario SOL)
-$ruc = "20608627422";
-$usuario = "NEGOVEGA";
-$clave = "VegaSAC2068";
-$zipBase64 = base64_encode(file_get_contents("factura.zip"));
+// Configurar el procesador XSLT
+$proc = new XSLTProcessor;
+$proc->importStylesheet($xsl);
 
-$params = [
-    'fileName' => '20608627422-01-F001-00001234.zip', // Formato: RUC-TipoSerie-Numero
-    'contentFile' => $zipBase64
-];
+// Aplicar la transformación XSL al XML
+$result = $proc->transformToXML($xml);
 
-$response = $client->__soapCall("sendBill", [$params], [
-    'login' => "$ruc$usuario",
-    'password' => $clave,
-]);
+// Mostrar el resultado de la validación
+if ($result === false) {
+    echo "Error: La validación falló.";
+} else {
+    echo "Validación completada con éxito.\n";
+    echo $result; // Esto mostrará los posibles errores encontrados
+}
+?>
+<?php
+// Cargar el XML de la factura
+$xmlFile = 'factura.xml'; // Ruta de tu archivo XML
+$xml = new DOMDocument;
+$xml->load($xmlFile);
 
-// Guardar CDR (Constancia de Recepción)
-file_put_contents("cdr.zip", base64_decode($response->applicationResponse));
+// Cargar el XSL de validación
+$xsl = new DOMDocument;
+$xslFile = "C:\\xampp\\htdocs\\vega-erp\\validaciones\\ValidaExprRegFactura-2.0.1.xsl";
+$xsl->load($xslFile);
 
-echo "Factura enviada correctamente.";
+// Configurar el procesador XSLT
+$proc = new XSLTProcessor;
+$proc->importStylesheet($xsl);
+
+// Aplicar la transformación XSL al XML
+$result = $proc->transformToXML($xml);
+
+// Mostrar el resultado de la validación
+if ($result === false) {
+    echo "Error: La validación falló.";
+} else {
+    echo "Validación completada con éxito.\n";
+    echo $result; // Esto mostrará los posibles errores encontrados
+}
+?>
