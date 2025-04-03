@@ -1,6 +1,4 @@
-<?php
-
-$xmlContent = '<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
     xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
     xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
@@ -11,15 +9,18 @@ $xmlContent = '<?xml version="1.0" encoding="UTF-8"?>
         <ext:UBLExtension>
             <ext:ExtensionContent>
                 <ds:Signature Id="signatureKG">
-                    <ds:SignedInfo>
-                        <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-                        <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+                    <!-- <ds:SignedInfo>
+                        <ds:CanonicalizationMethod
+                            Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+                        <ds:SignatureMethod
+                            Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
                         <ds:Reference URI="">
-                        <ds:Transforms>
-                            <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
-                        </ds:Transforms>
-                        <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                        <ds:DigestValue>+pruib33lOapq6GSw58GgQLR8VGIGqANloj4EqB1cb4=</ds:DigestValue>
+                            <ds:Transforms>
+                                <ds:Transform
+                                    Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+                            </ds:Transforms>
+                            <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+                            <ds:DigestValue>+pruib33lOapq6GSw58GgQLR8VGIGqANloj4EqB1cb4=</ds:DigestValue>
                         </ds:Reference>
                     </ds:SignedInfo>
                     <ds:SignatureValue></ds:SignatureValue>
@@ -27,7 +28,7 @@ $xmlContent = '<?xml version="1.0" encoding="UTF-8"?>
                         <ds:X509Data>
                             <ds:X509Certificate></ds:X509Certificate>
                         </ds:X509Data>
-                    </ds:KeyInfo>
+                    </ds:KeyInfo> -->
                 </ds:Signature>
             </ext:ExtensionContent>
         </ext:UBLExtension>
@@ -37,7 +38,7 @@ $xmlContent = '<?xml version="1.0" encoding="UTF-8"?>
     <cbc:ProfileID
         schemeName=" SUNAT:Identificador de Tipo de Operación"
         schemeAgencyName="PE:SUNAT"
-        schemeURI=" urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo17" >0101</cbc:ProfileID>
+        schemeURI=" urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo17">0101</cbc:ProfileID>
     <cbc:ID>F002-00001</cbc:ID>
     <cbc:IssueDate>2017-04-28</cbc:IssueDate>
     <cbc:IssueTime>11:40:21</cbc:IssueTime>
@@ -48,7 +49,7 @@ $xmlContent = '<?xml version="1.0" encoding="UTF-8"?>
         listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">01</cbc:InvoiceTypeCode>
     <cbc:Note
         languageLocaleID="1000">MIL OCHOCIENTOS CINCUENTA Y OCHO CON 59/100 Soles</cbc:Note>
-        <cbc:Note
+    <cbc:Note
         languageLocaleID="3000">05010020170428000005</cbc:Note>
     <cbc:DocumentCurrencyCode
         listID="ISO 4217 Alpha"
@@ -57,16 +58,16 @@ $xmlContent = '<?xml version="1.0" encoding="UTF-8"?>
     <cac:DespatchDocumentReference>
         <cbc:ID>031-002020</cbc:ID>
         <cbc:DocumentTypeCode
-        listAgencyName="PE:SUNAT"
-        listName="SUNAT:Identificador de guía relacionada"
-        listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">09</cbc:DocumentTypeCode>
+            listAgencyName="PE:SUNAT"
+            listName="SUNAT:Identificador de guía relacionada"
+            listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">09</cbc:DocumentTypeCode>
     </cac:DespatchDocumentReference>
     <cac:AdditionalDocumentReference>
         <cbc:ID>024099</cbc:ID>
         <cbc:DocumentTypeCode
-        listAgencyName="PE:SUNAT"
-        listName="SUNAT: Identificador de documento relacionado"
-        listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo12">99</cbc:DocumentTypeCode>
+            listAgencyName="PE:SUNAT"
+            listName="SUNAT: Identificador de documento relacionado"
+            listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo12">99</cbc:DocumentTypeCode>
     </cac:AdditionalDocumentReference>
     <cac:AccountingSupplierParty>
         <cac:Party>
@@ -105,22 +106,22 @@ $xmlContent = '<?xml version="1.0" encoding="UTF-8"?>
         </cac:Party>
     </cac:AccountingCustomerParty>
     <cac:DeliveryTerms>
-        <cac:DeliveryLocation >
+        <cac:DeliveryLocation>
             <cac:Address>
                 <cbc:StreetName>CALLE NEGOCIOS # 420</cbc:StreetName>
-                <cbc:CitySubdivisionName/>
+                <cbc:CitySubdivisionName />
                 <cbc:CityName>LIMA</cbc:CityName>
                 <cbc:CountrySubentity>LIMA</cbc:CountrySubentity>
                 <cbc:CountrySubentityCode>150141</cbc:CountrySubentityCode>
                 <cbc:District>SURQUILLO</cbc:District>
                 <cac:Country>
                     <cbc:IdentificationCode
-                    listID="ISO 3166-1"
-                    listAgencyName="United Nations Economic Commission for Europe"
-                    listName="Country">PE</cbc:IdentificationCode>
+                        listID="ISO 3166-1"
+                        listAgencyName="United Nations Economic Commission for Europe"
+                        listName="Country">PE</cbc:IdentificationCode>
                 </cac:Country>
             </cac:Address>
-        </cac:DeliveryLocation >
+        </cac:DeliveryLocation>
     </cac:DeliveryTerms>
     <cac:AllowanceCharge>
         <cbc:ChargeIndicator>False</cbc:ChargeIndicator>
@@ -150,9 +151,9 @@ $xmlContent = '<?xml version="1.0" encoding="UTF-8"?>
             <cbc:TaxAmount currencyID="PEN">0.00</cbc:TaxAmount>
             <cac:TaxCategory>
                 <cbc:ID
-                schemeID="UN/ECE 5305"
-                schemeName="Tax Category Identifier"
-                schemeAgencyName="United Nations Economic Commission for Europe">E</cbc:ID>
+                    schemeID="UN/ECE 5305"
+                    schemeName="Tax Category Identifier"
+                    schemeAgencyName="United Nations Economic Commission for Europe">E</cbc:ID>
                 <cac:TaxScheme>
                     <cbc:ID schemeID="UN/ECE 5305" schemeAgencyID="6">9997</cbc:ID>
                     <cbc:Name>EXONERADO</cbc:Name>
@@ -172,26 +173,26 @@ $xmlContent = '<?xml version="1.0" encoding="UTF-8"?>
     <cac:InvoiceLine>
         <cbc:ID>1</cbc:ID>
         <cbc:InvoicedQuantity
-        unitCode="CS"
-        unitCodeListID="UN/ECE rec 20"
-        unitCodeListAgencyName="United Nations Economic Commission for Europe">50</cbc:InvoicedQuantity>
+            unitCode="CS"
+            unitCodeListID="UN/ECE rec 20"
+            unitCodeListAgencyName="United Nations Economic Commission for Europe">50</cbc:InvoicedQuantity>
         <cbc:LineExtensionAmount currencyID="PEN">1439.48</cbc:LineExtensionAmount>
         <cac:PricingReference>
             <cac:AlternativeConditionPrice>
                 <cbc:PriceAmount currencyID="PEN">34.99</cbc:PriceAmount>
                 <cbc:PriceTypeCode
-                listName="SUNAT:Indicador de Tipo de Precio"
-                listAgencyName="PE:SUNAT"
-                listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16">01</cbc:PriceTypeCode>
+                    listName="SUNAT:Indicador de Tipo de Precio"
+                    listAgencyName="PE:SUNAT"
+                    listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16">01</cbc:PriceTypeCode>
             </cac:AlternativeConditionPrice>
         </cac:PricingReference>
         <cac:PricingReference>
             <cac:AlternativeConditionPrice>
                 <cbc:PriceAmount currencyID="PEN">250.00</cbc:PriceAmount>
                 <cbc:PriceTypeCode
-                listName="SUNAT:Indicador de Tipo de Precio"
-                listAgencyName="PE:SUNAT"
-                listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16">02</cbc:PriceTypeCode>
+                    listName="SUNAT:Indicador de Tipo de Precio"
+                    listAgencyName="PE:SUNAT"
+                    listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16">02</cbc:PriceTypeCode>
             </cac:AlternativeConditionPrice>
         </cac:PricingReference>
         <cac:AllowanceCharge>
@@ -214,18 +215,19 @@ $xmlContent = '<?xml version="1.0" encoding="UTF-8"?>
                 <cbc:TaxAmount currencyID="PEN">259.11</cbc:TaxAmount>
                 <cac:TaxCategory>
                     <cbc:ID
-                    schemeID="UN/ECE 5305"
-                    schemeName="Tax Category Identifier"
-                    schemeAgencyName="United Nations Economic Commission for Europe">S</cbc:ID>
-                        <cbc:Percent>18.00</cbc:Percent>
+                        schemeID="UN/ECE 5305"
+                        schemeName="Tax Category Identifier"
+                        schemeAgencyName="United Nations Economic Commission for Europe">S</cbc:ID>
+                    <cbc:Percent>18.00</cbc:Percent>
                     <cbc:TaxExemptionReasonCode
-                    listAgencyName="PE:SUNAT"
-                    listName="SUNAT:Codigo de Tipo de Afectación del IGV"
-                    listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07">10</cbc:TaxExemptionReasonCode>
+                        listAgencyName="PE:SUNAT"
+                        listName="SUNAT:Codigo de Tipo de Afectación del IGV"
+                        listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07">10</cbc:TaxExemptionReasonCode>
                     <cac:TaxScheme>
                         <cbc:ID schemeID="UN/ECE 5153" schemeName="Tax Scheme Identifier"
                             schemeAgencyName="United Nations Economic Commission for
-                            Europe">1000</cbc:ID>
+                            Europe">
+                            1000</cbc:ID>
                         <cbc:Name>IGV</cbc:Name>
                         <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
                     </cac:TaxScheme>
@@ -238,23 +240,24 @@ $xmlContent = '<?xml version="1.0" encoding="UTF-8"?>
                 <cbc:TaxableAmount currencyID="PEN">8752.60</cbc:TaxableAmount>
                 <cbc:TaxAmount currencyID="PEN">1750.52</cbc:TaxAmount>
                 <cac:TaxCategory>
-                <cbc:ID
-                schemeID="UN/ECE 5305"
-                schemeName="Tax Category Identifier"
-                schemeAgencyName="United Nations Economic Commission for Europe">S</cbc:ID>
+                    <cbc:ID
+                        schemeID="UN/ECE 5305"
+                        schemeName="Tax Category Identifier"
+                        schemeAgencyName="United Nations Economic Commission for Europe">S</cbc:ID>
                     <cbc:Percent>20.00</cbc:Percent>
-                <cbc:TaxExemptionReasonCode
-                listAgencyName="PE:SUNAT"
-                listName="SUNAT:Codigo de Tipo de Afectación del IGV"
-                listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07">10</cbc:TaxExemptionReasonCode>
-                <cac:TierRange>01</cac:TierRange>
-                <cac:TaxScheme>
-                <cbc:ID schemeID="UN/ECE 5153" schemeName="Tax Scheme Identifier"
-                schemeAgencyName="United Nations Economic Commission for
-                Europe">2000</cbc:ID>
-                <cbc:Name>ISC</cbc:Name>
-                <cbc:TaxTypeCode>EXC</cbc:TaxTypeCode>
-                </cac:TaxScheme>
+                    <cbc:TaxExemptionReasonCode
+                        listAgencyName="PE:SUNAT"
+                        listName="SUNAT:Codigo de Tipo de Afectación del IGV"
+                        listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07">10</cbc:TaxExemptionReasonCode>
+                    <cac:TierRange>01</cac:TierRange>
+                    <cac:TaxScheme>
+                        <cbc:ID schemeID="UN/ECE 5153" schemeName="Tax Scheme Identifier"
+                            schemeAgencyName="United Nations Economic Commission for
+                Europe">
+                            2000</cbc:ID>
+                        <cbc:Name>ISC</cbc:Name>
+                        <cbc:TaxTypeCode>EXC</cbc:TaxTypeCode>
+                    </cac:TaxScheme>
                 </cac:TaxCategory>
             </cac:TaxSubtotal>
         </cac:TaxTotal>
@@ -265,32 +268,20 @@ $xmlContent = '<?xml version="1.0" encoding="UTF-8"?>
             </cbc:SellersItemIdentification>
             <cac:CommodityClassification>
                 <ItemClassificationCode
-                listID="UNSPSC"
-                listAgencyName="GS1 US"
-                listName="Item Classification">51121703</ItemClassificationCode>
+                    listID="UNSPSC"
+                    listAgencyName="GS1 US"
+                    listName="Item Classification">51121703</ItemClassificationCode>
             </cac:CommodityClassification>
-            <cac:AdditionalItemProperty >
+            <cac:AdditionalItemProperty>
                 <Name>Gastos Art. 37 Renta: Número de Placa</Name>
                 <NameCode
-                listName="SUNAT :Identificador de la propiedad del ítem"
-                listAgencyName="PE:SUNAT">7000</NameCode>
+                    listName="SUNAT :Identificador de la propiedad del ítem"
+                    listAgencyName="PE:SUNAT">7000</NameCode>
                 <Value>B6F-045</Value>
             </cac:AdditionalItemProperty>
         </cac:Item>
-        <cac:Price>            
-            <cbc:PriceAmount CurrencyID="PEN">785.20</cbc:PriceAmount>            
+        <cac:Price>
+            <cbc:PriceAmount CurrencyID="PEN">785.20</cbc:PriceAmount>
         </cac:Price>
     </cac:InvoiceLine>
-</Invoice>';
-
-$documento = new DOMDocument('1.0', 'UTF-8');
-$documento->loadXML($xmlContent);
-$documento->formatOutput = true;
-
-
-
-// Guardar XML
-$xmlFile = '20608627422-01-F001-000001.xml';
-$documento->save($xmlFile);
-
-echo "Factura firmada generada: $xmlFile";
+</Invoice>
