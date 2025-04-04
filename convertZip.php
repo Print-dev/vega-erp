@@ -11,3 +11,16 @@ if ($zip->open($zipFileName, ZipArchive::CREATE) === TRUE) {
 } else {
     echo "Error al crear el archivo ZIP";
 }
+
+function comprimirXML($xmlFilePath, $zipFilePath)
+{
+    $zip = new ZipArchive();
+    if ($zip->open($zipFilePath, ZipArchive::CREATE) === true) {
+        $xmlFileName = basename($xmlFilePath); // solo el nombre sin ruta
+        $zip->addFile($xmlFilePath, $xmlFileName);
+        $zip->close();
+        return true;
+    } else {
+        return false;
+    }
+}

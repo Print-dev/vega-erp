@@ -2,11 +2,13 @@
 
 // Ruta al archivo de la clave privada, el certificado y el XML a firmar
 $private_key_file = 'certificado/clave.pem';
-$certificate_file = 'certificado/certificado_public.pem';
+$certificate_file = 'certificado/certificado_publico.pem';
 $xml_file = 'xmlprueba.xml';
 
 // Cargar el archivo XML
 $dom = new DOMDocument();
+$dom->preserveWhiteSpace = false;
+$dom->formatOutput = true;
 $dom->load($xml_file);
 
 // Cargar la clave privada
@@ -19,79 +21,87 @@ $certificate_content = file_get_contents($certificate_file);
 // Eliminar las líneas de encabezado y pie del certificado PEM
 $certificate_content = preg_replace('/-----BEGIN CERTIFICATE-----/', '', $certificate_content);
 $certificate_content = preg_replace('/-----END CERTIFICATE-----/', '', $certificate_content);
+$certificate_content = trim($certificate_content); // Limpiar espacios innecesarios
 
 // Codificar el certificado en base64
 $base64_certificate = base64_encode($certificate_content);
 
-// Buscar el nodo con Id="signatureKG"
-$signatureNode = $dom->getElementById('signatureKG');
+// Buscar el nodo <ext:ExtensionContent>
+$xpath = new DOMXPath($dom);
+$extensionContentNode = $xpath->query('//ext:ExtensionContent')->item(0);
 
-// Si no se encuentra el nodo, crear uno nuevo (si es necesario)
-if (!$signatureNode) {
+if ($extensionContentNode) {
+    // Crear el nodo ds:Signature
     $signatureNode = $dom->createElement('ds:Signature');
     $signatureNode->setAttribute('Id', 'signatureKG');
-    $dom->documentElement->appendChild($signatureNode);  // Agregarlo al final del documento
+
+    // Crear el nodo ds:SignedInfo
+    $signed_info = $dom->createElement('ds:SignedInfo');
+
+    // CanonicalizationMethod
+    $canonicalization_method = $dom->createElement('ds:CanonicalizationMethod');
+    $canonicalization_method->setAttribute('Algorithm', 'http://www.w3.org/TR/2001/REC-xml-c14n20010315#WithComments');
+
+    // SignatureMethod
+    $signature_method = $dom->createElement('ds:SignatureMethod');
+    $signature_method->setAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#dsa-sha1');
+
+    // Reference
+    $reference = $dom->createElement('ds:Reference');
+    $reference->setAttribute('URI', '');
+
+    // Transforms
+    $transforms = $dom->createElement('ds:Transforms');
+    $transform = $dom->createElement('ds:Transform');
+    $transform->setAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#envelopedsignature');
+    $transforms->appendChild($transform);
+
+    // DigestMethod
+    $digest_method = $dom->createElement('ds:DigestMethod');
+    $digest_method->setAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#sha1');
+
+    // DigestValue
+    $digest_value = $dom->createElement('ds:DigestValue', '+pruib33lOapq6GSw58GgQLR8VGIGqANloj4EqB1cb4=');
+
+    // Estructura de ds:Reference
+    $reference->appendChild($transforms);
+    $reference->appendChild($digest_method);
+    $reference->appendChild($digest_value);
+
+    // Estructura de ds:SignedInfo
+    $signed_info->appendChild($canonicalization_method);
+    $signed_info->appendChild($signature_method);
+    $signed_info->appendChild($reference);
+
+    // Agregar ds:SignedInfo a ds:Signature
+    $signatureNode->appendChild($signed_info);
+
+    // Firmar el documento
+    openssl_sign($dom->C14N(), $signature, $private_key_resource, OPENSSL_ALGO_SHA256);
+    $signature_value = $dom->createElement('ds:SignatureValue', base64_encode($signature));
+    $signatureNode->appendChild($signature_value);
+
+    // Agregar certificado
+    $key_info = $dom->createElement('ds:KeyInfo');
+    $x509_data = $dom->createElement('ds:X509Data');
+    $x509_certificate = $dom->createElement('ds:X509Certificate', $base64_certificate);
+    $x509_data->appendChild($x509_certificate);
+    $key_info->appendChild($x509_data);
+
+    // Agregar ds:KeyInfo a ds:Signature
+    $signatureNode->appendChild($key_info);
+
+    // Insertar <ds:Signature> después de <ext:ExtensionContent>
+    if ($extensionContentNode->parentNode) {
+        $extensionContentNode->appendChild($signatureNode);
+    }
+
+    // Guardar el XML firmado
+    $dom->save('20608627422-01-F001-000001.xml');
+
+    echo "XML firmado exitosamente. Guardado como 'factura_firmada.xml'.";
+} else {
+    echo "Error: No se encontró <ext:ExtensionContent> en el XML.";
 }
 
-// Crear el nodo ds:SignedInfo (información sobre la firma)
-$signed_info = $dom->createElement('ds:SignedInfo');
-
-// Crear los nodos CanonicalizationMethod y SignatureMethod
-$canonicalization_method = $dom->createElement('ds:CanonicalizationMethod');
-$canonicalization_method->setAttribute('Algorithm', 'http://www.w3.org/2001/10/xml-exc-c14n#');
-
-$signature_method = $dom->createElement('ds:SignatureMethod');
-$signature_method->setAttribute('Algorithm', 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256');
-
-// Crear el nodo ds:Reference (el recurso que se firma)
-$reference = $dom->createElement('ds:Reference');
-$reference->setAttribute('URI', '#signatureKG');  // Referencia al ID de la firma
-
-// Crear los nodos ds:Transforms y ds:Transform
-$transforms = $dom->createElement('ds:Transforms');
-$transform = $dom->createElement('ds:Transform');
-$transform->setAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#enveloped-signature');
-$transforms->appendChild($transform);
-
-// Crear el nodo ds:DigestMethod
-$digest_method = $dom->createElement('ds:DigestMethod');
-$digest_method->setAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#sha1');
-
-// Crear el nodo ds:DigestValue (valor del hash)
-$digest_value = $dom->createElement('ds:DigestValue', '+pruib33lOapq6GSw58GgQLR8VGIGqANloj4EqB1cb4=');
-
-// Anidar los elementos dentro de ds:Reference
-$reference->appendChild($transforms);
-$reference->appendChild($digest_method);
-$reference->appendChild($digest_value);
-
-// Agregar ds:Reference a ds:SignedInfo
-$signed_info->appendChild($canonicalization_method);
-$signed_info->appendChild($signature_method);
-$signed_info->appendChild($reference);
-
-// Agregar ds:SignedInfo al nodo ds:Signature
-$signatureNode->appendChild($signed_info);
-
-// Crear la firma digital usando OpenSSL
-openssl_sign($dom->C14N(), $signature, $private_key_resource, OPENSSL_ALGO_SHA256);
-
-// Crear el nodo ds:SignatureValue y agregar la firma digital
-$signature_value = $dom->createElement('ds:SignatureValue', base64_encode($signature));
-$signatureNode->appendChild($signature_value);
-
-// Crear el nodo ds:KeyInfo y agregar el certificado X.509
-$key_info = $dom->createElement('ds:KeyInfo');
-$x509_data = $dom->createElement('ds:X509Data');
-$x509_certificate = $dom->createElement('ds:X509Certificate', $base64_certificate);
-$x509_data->appendChild($x509_certificate);
-$key_info->appendChild($x509_data);
-
-// Agregar ds:KeyInfo a la firma
-$signatureNode->appendChild($key_info);
-
-// Guardar el XML firmado
-$dom->save('factura_firmada.xml');
-
-echo "XML firmado exitosamente con el certificado. El archivo se ha guardado como 'factura_firmada.xml'.";
 ?>

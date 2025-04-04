@@ -8,28 +8,7 @@
     <ext:UBLExtensions>
         <ext:UBLExtension>
             <ext:ExtensionContent>
-                <ds:Signature Id="signatureKG">
-                    <!-- <ds:SignedInfo>
-                        <ds:CanonicalizationMethod
-                            Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
-                        <ds:SignatureMethod
-                            Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
-                        <ds:Reference URI="">
-                            <ds:Transforms>
-                                <ds:Transform
-                                    Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
-                            </ds:Transforms>
-                            <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-                            <ds:DigestValue>+pruib33lOapq6GSw58GgQLR8VGIGqANloj4EqB1cb4=</ds:DigestValue>
-                        </ds:Reference>
-                    </ds:SignedInfo>
-                    <ds:SignatureValue></ds:SignatureValue>
-                    <ds:KeyInfo>
-                        <ds:X509Data>
-                            <ds:X509Certificate></ds:X509Certificate>
-                        </ds:X509Data>
-                    </ds:KeyInfo> -->
-                </ds:Signature>
+
             </ext:ExtensionContent>
         </ext:UBLExtension>
     </ext:UBLExtensions>
@@ -39,10 +18,10 @@
         schemeName=" SUNAT:Identificador de Tipo de Operación"
         schemeAgencyName="PE:SUNAT"
         schemeURI=" urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo17">0101</cbc:ProfileID>
-    <cbc:ID>F002-00001</cbc:ID>
-    <cbc:IssueDate>2017-04-28</cbc:IssueDate>
-    <cbc:IssueTime>11:40:21</cbc:IssueTime>
-    <cbc:DueDate>2017-05-28</cbc:DueDate>
+    <cbc:ID>F001-000001</cbc:ID>
+    <cbc:IssueDate>2025-04-04</cbc:IssueDate>
+    <cbc:IssueTime>07:37:00</cbc:IssueTime>
+    <cbc:DueDate>2025-04-05</cbc:DueDate>
     <cbc:InvoiceTypeCode
         listAgencyName="PE:SUNAT"
         listName="SUNAT:Identificador de Tipo de Documento"
@@ -72,15 +51,13 @@
     <cac:AccountingSupplierParty>
         <cac:Party>
             <cac:PartyName>
-                <cbc:Name><![CDATA[K&G Laboratorios]]></cbc:Name>
+                <cbc:Name><![CDATA[NEGOCIACIONES Y PRODUCCIONES VEGA S.A.C]]></cbc:Name>
             </cac:PartyName>
             <cac:PartyTaxScheme>
-                <cbc:RegistrationName><![CDATA[K&G Asociados S. A.]]></cbc:RegistrationName>
-                <CompanyID
-                    schemeID="6"
-                    schemeName="SUNAT:Identificador de Documento de Identidad"
+                <cbc:RegistrationName><![CDATA[NEGOCIACIONES Y PRODUCCIONES VEGA S.A.C]]></cbc:RegistrationName>
+                <CompanyID schemeID="6" schemeName="SUNAT:Identificador de Documento de Identidad"
                     schemeAgencyName="PE:SUNAT"
-                    schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20100113612</CompanyID>
+                    schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20608627422</CompanyID>
                 <cac:TaxScheme>
                     <cbc:ID>-</cbc:ID>
                 </cac:TaxScheme>
@@ -93,12 +70,12 @@
     <cac:AccountingCustomerParty>
         <cac:Party>
             <cac:PartyTaxScheme>
-                <cbc:RegistrationName><![CDATA[CECI FARMA IMPORT S.R.L.]]></cbc:RegistrationName>
-                <cbc:CompanyID
-                    schemeID="6"
+                <cbc:RegistrationName><![CDATA[AVALOS ROMERO ROYER ALEXIS]]></cbc:RegistrationName>
+                <cbc:CompanyID schemeID="6"
                     schemeName="SUNAT:Identificador de Documento de Identidad"
                     schemeAgencyName="PE:SUNAT"
-                    schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20102420706</cbc:CompanyID>
+                    schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">
+                    10727547521</cbc:CompanyID>
                 <cac:TaxScheme>
                     <cbc:ID>-</cbc:ID>
                 </cac:TaxScheme>
@@ -252,9 +229,7 @@
                     <cac:TierRange>01</cac:TierRange>
                     <cac:TaxScheme>
                         <cbc:ID schemeID="UN/ECE 5153" schemeName="Tax Scheme Identifier"
-                            schemeAgencyName="United Nations Economic Commission for
-                Europe">
-                            2000</cbc:ID>
+                            schemeAgencyName="United Nations Economic Commission for Europe">2000</cbc:ID>
                         <cbc:Name>ISC</cbc:Name>
                         <cbc:TaxTypeCode>EXC</cbc:TaxTypeCode>
                     </cac:TaxScheme>
