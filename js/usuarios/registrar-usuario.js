@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     params.append("porcentaje", $q("#porcentaje")?.value ? $q("#porcentaje")?.value : '');
     params.append("marcaagua", imagen_public_id ? imagen_public_id : '');
     params.append("firma", imagen_public_id_firma ? imagen_public_id_firma : '');
-    params.append("esRepresentante", $q("#esrepresentante").checked ? 1 : 0);
+    //params.append("esRepresentante", $q("#esrepresentante").checked ? 1 : 0);
     params.append("idnivelacceso", $q("#idnivelacceso").value);
     const resp = await fetch(`${host}usuario.controller.php`, {
       method: 'POST',
@@ -390,19 +390,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       $q(".contenedor-color").hidden = false
       $q(".contenedor-porcentaje").hidden = false
       $q(".contenedor-marcaagua").hidden = false
-      $q(".contenedor-representante").hidden = true
+      //$q(".contenedor-representante").hidden = true
     }
     else if (e.target.value == "3") {
-      $q(".contenedor-representante").hidden = false
+      //$q(".contenedor-representante").hidden = false
       $q(".contenedor-color").hidden = true
       $q(".contenedor-porcentaje").hidden = true
       $q(".contenedor-marcaagua").hidden = true
     }
     else {
-      $q(".contenedor-representante").hidden = true
+     // $q(".contenedor-representante").hidden = true
       $q(".contenedor-color").hidden = true
       $q(".contenedor-porcentaje").hidden = true
-      $q(".contenedor-representante").hidden = true
+      //$q(".contenedor-representante").hidden = true
       $q(".contenedor-marcaagua").hidden = true
     }
   })

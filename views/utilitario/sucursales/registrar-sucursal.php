@@ -9,7 +9,7 @@
                 </a>
             </div>
             <div class="card-body">
-                <form action="guardar_sucursal.php" method="POST" enctype="multipart/form-data" id="form-sucursal">
+                <form id="form-sucursal">
                     <h5>Datos de la Sucursal</h5>
 
                     <div class="row g-2 mb-3">
@@ -95,21 +95,7 @@
                                 </select>
                                 <label for="idresponsable">Responsable</label>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Logo de la sucursal</label>
-                            <div class="col text-center">
-                                <label for="upload_widget_firma" class="form-label fw-bold">Subir Imagen</label>
-
-                                <button id="upload_widget_firma" type="button" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
-                                    <i class="fa-solid fa-image"></i> Seleccionar Logo
-                                </button>
-                                <input type="file" class="d-none" name="logo" id="logo" accept="image/*">
-                                <div class="mt-3">
-                                    <img id="previewImagenFirma" src="" alt="Vista previa" class="img-fluid rounded shadow d-none" style="max-height: 300px;">
-                                </div>
-                            </div>
-                        </div>
+                        </div>                        
 
                     </div>
 

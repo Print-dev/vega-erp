@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 //require_once __DIR__ . '../../../../models/DetalleEvento.php';
 //require_once __DIR__ . '../../../../models/Tarifario.php';
 require_once __DIR__ .'../../../../models/Convenio.php';
-require_once __DIR__ .'../../../../models/Usuario.php';
+require_once __DIR__ .'../../../../models/Sucursal.php';
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -19,7 +19,7 @@ $dompdf = new Dompdf($options);
 ob_start();
 
 $convenio = new Convenio();
-$usuario = new Usuario();
+$sucursal = new Sucursal();
 //$tarifario = new Tarifario();
 
 
@@ -33,7 +33,7 @@ $precio = isset($_GET['precio']) && $_GET['precio'] !== "" ? $detalleevento->lim
 
 //EJECUTAR FUNCION
 $convenioContrato = $convenio->obtenerContratoConvenio(['idconvenio' => $idconvenio]);
-$representante = $usuario->obtenerRepresentanteEmpresa();
+$representante = $sucursal->obtenerRepresentanteEmpresa(['idsucursal' => $sucursal->limpiarCadena($_GET['idsucursal'])]); // OBTENER EL REPRESENTANTES DESDE LA TABLA SUCURSALES
 // die(json_encode($representante));
 /* $cotizacion = $detalleevento->obtenerCotizacion(['iddetallepresentacion' => $iddetallepresentacion]);
 $tarifaArtista = $tarifario->obtenerTarifaArtistaPorProvincia(['idprovincia' => $idprovincia, 'idusuario' => $idusuario]);

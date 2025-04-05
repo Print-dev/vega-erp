@@ -195,10 +195,10 @@
               </div>
             </div>
           </div>
-          <div class=" mt-3 contenedor-representante" hidden>
+          <!-- <div class=" mt-3 contenedor-representante" hidden>
             <label for="esrepresentante">Marcar como representante</label>
             <input type="checkbox" name="esrepresentante"  id="esrepresentante">
-          </div>
+          </div> -->
       </div>
 
     </div>

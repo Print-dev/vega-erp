@@ -53,7 +53,7 @@ class Usuario extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_usuario(@idusuario,?,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_usuario(@idusuario,?,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idpersona'],
@@ -63,7 +63,7 @@ class Usuario extends ExecQuery
           $params['porcentaje'],
           $params['marcaagua'],
           $params['firma'],
-          $params['esRepresentante'],
+          //$params['esRepresentante'],
           $params['idnivelacceso'],
         )
       );
@@ -118,7 +118,7 @@ class Usuario extends ExecQuery
     }
   }
 
-  public function obtenerRepresentanteEmpresa(): array
+/*   public function obtenerRepresentanteEmpresa(): array
   {
     try {
       $cmd = parent::execQ("CALL sp_obtener_representante");
@@ -129,7 +129,7 @@ class Usuario extends ExecQuery
       return [];
     }
   }
-
+ */
 
   public function updateUsuario($params = []): int
   {
@@ -155,7 +155,7 @@ class Usuario extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare("CALL sp_actualizar_usuario(?,?,?,?,?,?,?,?)");
+      $cmd = $pdo->prepare("CALL sp_actualizar_usuario(?,?,?,?,?,?,?)");
       $act = $cmd->execute(
         array(
           $params['idusuario'],
@@ -165,7 +165,7 @@ class Usuario extends ExecQuery
           $params['porcentaje'],
           $params['marcaagua'],
           $params['firma'],
-          $params['esRepresentante'],
+          //$params['esRepresentante'],
         )
       );
 

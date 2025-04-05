@@ -193,10 +193,10 @@
               </div>
             </div>
           </div>
-          <div class="contenedor-representante mt-3" hidden>
+          <!-- <div class="contenedor-representante mt-3" hidden>
             <label for="esrepresentante">Marcar como representante</label>
             <input type="checkbox" name="esrepresentante" id="esrepresentante">
-          </div>
+          </div> -->
           <div class="row mt-3">
             <div class="col-sm-3 p-3">
               <button type="button" class="form-control btn btn-primary w-75" id="btnActualizarUsuario">

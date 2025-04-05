@@ -14,6 +14,57 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
+    // ****************************************** RENDER PREVIEW ****************************************************
+
+    async function obtenerDepartamentos() {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerDepartamentos");
+        params.append("idnacionalidad", $q("#nacionalidad").value);
+        const data = await getDatos(`${host}recurso.controller.php`, params);
+        return data
+    }
+
+    async function obtenerProvincias() {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerProvincias");
+        params.append("iddepartamento", $q("#departamento").value);
+        const data = await getDatos(`${host}recurso.controller.php`, params);
+        return data
+    }
+
+    async function obtenerDistritos() {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerDistritos");
+        params.append("idprovincia", $q("#provincia").value);
+        const data = await getDatos(`${host}recurso.controller.php`, params);
+        return data
+    }
+
+    $q("#nacionalidad").addEventListener("change", async () => {
+        const departamentos = await obtenerDepartamentos();
+        $q("#departamento").innerHTML = "<option value=''>Selecciona</option>";
+        departamentos.forEach(dpa => {
+            $q("#departamento").innerHTML += `<option value="${dpa.iddepartamento}">${dpa.departamento}</option>`;
+        });
+    });
+
+    $q("#departamento").addEventListener("change", async () => {
+        const provincias = await obtenerProvincias();
+        $q("#provincia").innerHTML = "<option value=''>Selecciona</option>";
+        provincias.forEach(prv => {
+            $q("#provincia").innerHTML += `<option value="${prv.idprovincia}">${prv.provincia}</option>`;
+        });
+    });
+
+    $q("#provincia").addEventListener("change", async () => {
+        const distritos = await obtenerDistritos();
+        $q("#distrito").innerHTML = "<option value=''>Selecciona</option>";
+        distritos.forEach(dst => {
+            $q("#distrito").innerHTML += `<option value="${dst.iddistrito}">${dst.distrito}</option>`;
+        });
+    });
+
+
     // ******************************* CONFIGURACION DE TABLA *******************************************************
 
     function createTable(data) {
@@ -66,28 +117,29 @@ document.addEventListener("DOMContentLoaded", async () => {
             x.addEventListener("change", async () => {
                 await dataFilters();
             });
-            if (x.id === "ndocumento") {
+            if (x.id === "nombresucursal") {
                 x.addEventListener("input", async () => {
                     await dataFilters();
                 });
             }
-            if (x.id === "nombres") {
-                x.addEventListener("input", async () => {
+            if (x.id === "nacionalidad") {
+                x.addEventListener("change", async () => {
                     await dataFilters();
                 });
             }
-            if (x.id === "apellidos") {
-                x.addEventListener("input", async () => {
+            if (x.id === "departamento") {
+                x.addEventListener("change", async (e) => {
+                    console.log(e.target.value);
                     await dataFilters();
                 });
             }
-            if (x.id === "nomusuario") {
-                x.addEventListener("input", async () => {
+            if (x.id === "provincia") {
+                x.addEventListener("change", async () => {
                     await dataFilters();
                 });
             }
-            if (x.id === "telefono") {
-                x.addEventListener("input", async () => {
+            if (x.id === "distrito") {
+                x.addEventListener("change", async () => {
                     await dataFilters();
                 });
             }
@@ -98,15 +150,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function dataFilters() {
         const params = new URLSearchParams();
-        params.append("operation", "filtrarUsuarios");
-        params.append("nivelacceso", $q("#nivelacceso").value ? $q("#nivelacceso").value : '');
-        params.append("numdoc", $q("#ndocumento").value ? $q("#ndocumento").value : '');
-        params.append("nombres", $q("#nombres").value ? $q("#nombres").value : '');
-        params.append("apellidos", $q("#apellidos").value ? $q("#apellidos").value : '');
-        params.append("telefono", $q("#telefono").value ? $q("#telefono").value : '');
-        params.append("nomusuario", $q("#nomusuario").value ? $q("#nomusuario").value : '');
+        params.append("operation", "filtrarSucursales");
+        params.append("nombre", $q("#nombresucursal").value ? $q("#nombresucursal").value : '');
+        params.append("iddepartamento", $q("#departamento").value ? $q("#departamento").value : '');
+        params.append("idprovincia", $q("#provincia").value ? $q("#provincia").value : '');
+        params.append("iddistrito", $q("#distrito").value ? $q("#distrito").value : '');
         //alert("asdasdd")
-        const data = await getDatos(`${host}usuario.controller.php`, params);
+        const data = await getDatos(`${host}sucursal.controller.php`, params);
         //console.log(data);
         console.log("data -> ", data)
         $q("#table-sucursales tbody").innerHTML = "";
@@ -122,26 +172,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         data.forEach((x, i) => {
             $q("#table-sucursales tbody").innerHTML += `
               <tr>
-                <td>${x.idusuario}</td>
-                <td>${x.nivelacceso}</td>
-                <td>${x.num_doc}</td>
-                <td>${x.nombres}</td>
-                <td>${x.apellidos}</td>
-                <td>${x.nom_usuario}</td>  
+                <td>${x.departamento} - ${x.provincia}</td>
+                <td>${x.nombre}</td>
+                <td>${x.ruc}</td>
                 <td>${x.telefono}</td>
-                <td>${x.estado == 1 ? "Activo" :
-                    x.estado == 2 ? "Inhabilitado" :
-                        ``}</td>
-                                                             
+                <td>${x.direccion}</td>
+                <td>${x.nombres} ${x.apellidos}</td>                                                                               
                 <td>
-                  <button type="button" class="btn btn-sm btn-success btn-editar" data-id=${x.idusuario} title="Editar usuario">
+                  <button type="button" class="btn btn-sm btn-success btn-editar" data-idsucursal=${x.idsucursal} title="Editar usuario">
                       Editar
-                    </button>
-                   ${x.estado == 1 ? ` <button type="button" class="btn btn-sm btn-danger btn-deshabilitar" data-id=${x.idusuario} title="Deshabilitar usuario">
-                      Deshabilitar
-                    </button>` : x.estado == 2 ? `<button type="button" class="btn btn-sm btn-success btn-habilitar" data-id=${x.idusuario} title="Habilitar usuario">
-                      Habilitar
-                    </button>` : ''}        
+                    </button>                           
                 </td>
               </tr>
               `;
@@ -196,13 +236,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (e.target.classList.contains("btn-editar")) {
                     buttonEditar(e);
                 }
-                if (e.target.classList.contains("btn-deshabilitar")) {
+                /* if (e.target.classList.contains("btn-deshabilitar")) {
                     buttonDeshabilitar(e);
                 }
 
                 if (e.target.classList.contains("btn-habilitar")) {
                     buttonHabilitar(e);
-                }
+                } */
                 /* if(e.target.classList.contains("btn-info-baja")){
                   await showReporte(e);
                 }
@@ -214,5 +254,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 } */
             }
         });
+    }
+
+    function buttonEditar(e) {
+        idsucursal = e.target.getAttribute("data-idsucursal");
+        window.localStorage.clear()
+        window.localStorage.setItem("idsucursal", idsucursal);
+        window.location.href = `${hostOnly}/views/utilitario/sucursales/actualizar-sucursal`;
     }
 })

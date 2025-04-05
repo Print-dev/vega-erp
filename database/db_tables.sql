@@ -39,8 +39,7 @@ CREATE TABLE sucursales (
     telefono		char(20) not null,
     direccion		varchar(120) not null,
     web				varchar(120) not null,
-    email			varchar(129) not null,
-    logo			varchar(40) not null,
+    email			varchar(120) not null,
     constraint fk_iddistrito_suc foreign key (iddistrito) references distritos (iddistrito)
 )  ENGINE=INNODB;
 
@@ -84,7 +83,7 @@ CREATE TABLE usuarios
     porcentaje 	INT NULL,
     marcaagua 	varchar(40) null,
     firma		varchar(40) null, -- recien agregado
-    esRepresentante tinyint null default 0, -- recien agregado
+    -- esRepresentante tinyint null default 0, -- recien agregado, actualizacion: quitado
 	estado 		TINYINT NOT NULL DEFAULT 1, -- 1=activo, 2=baja/inactivo/suspendido/baneado/inhabilitado
 	create_at	  DATETIME			  NOT NULL DEFAULT NOW(),
     update_at	  DATETIME			  NULL,

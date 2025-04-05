@@ -59,3 +59,4 @@ ALTER TABLE detalles_presentacion DROP COLUMN lugardestino;
 ALTER TABLE viaticos DROP COLUMN viaje;
 ALTER TABLE usuarios ADD COLUMN firma varchar(40) null;
 ALTER TABLE usuarios ADD COLUMN esRepresentante tinyint null;
+ALTER TABLE usuarios DROP COLUMN esRepresentante;

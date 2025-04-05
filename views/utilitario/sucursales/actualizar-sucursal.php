@@ -96,26 +96,13 @@
                                 <label for="idresponsable">Responsable</label>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Logo de la sucursal</label>
-                            <div class="col text-center">
-                                <label for="upload_widget_firma" class="form-label fw-bold">Subir Imagen</label>
-
-                                <button id="upload_widget_firma" type="button" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
-                                    <i class="fa-solid fa-image"></i> Seleccionar Logo
-                                </button>
-                                <input type="file" class="d-none" name="logo" id="logo" accept="image/*">
-                                <div class="mt-3">
-                                    <img id="previewImagenFirma" src="" alt="Vista previa" class="img-fluid rounded shadow d-none" style="max-height: 300px;">
-                                </div>
-                            </div>
-                        </div>
+                        
 
                     </div>
 
                     <div class="row mt-4">
                         <div class="col-md-3">
-                            <button type="submit" class="btn btn-primary form-control">Registrar Sucursal</button>
+                            <button type="submit" class="btn btn-primary form-control">Actualizar Sucursal</button>
                         </div>
                     </div>
                 </form>
@@ -124,7 +111,7 @@
     </div>
 </div>
 <?php require_once '../../footer.php' ?>
-<script src="<?= $hostOnlyHeader ?>/js/sucursales/registrar-sucursal.js"></script>
+<script src="<?= $hostOnlyHeader ?>/js/sucursales/actualizar-sucursal.js"></script>
 </body>
 
 </html>

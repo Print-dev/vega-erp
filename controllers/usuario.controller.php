@@ -149,9 +149,9 @@ if (isset($_GET['operation'])) {
       echo json_encode($usuario->obtenerUsuarioPorNivel(['idnivelacceso' => $_GET['idnivelacceso']]));
       break;
 
-    case 'obtenerRepresentanteEmpresa':
+/*     case 'obtenerRepresentanteEmpresa':
       echo json_encode($usuario->obtenerRepresentanteEmpresa());
-      break;
+      break; */
 
     /* case 'obtenerMarcaAguaPorUsuario':
       echo json_encode($usuario->obtenerMarcaAguaPorUsuario(['idusuario' => $_GET['idusuario']]));
@@ -240,7 +240,7 @@ if (isset($_POST['operation'])) {
         'porcentaje' =>  $usuario->limpiarCadena($_POST['porcentaje']) ? $usuario->limpiarCadena($_POST['porcentaje']) : '',
         'marcaagua' =>  $usuario->limpiarCadena($_POST['marcaagua']) ? $usuario->limpiarCadena($_POST['marcaagua']) : '',
         'firma' =>  $usuario->limpiarCadena($_POST['firma']) ? $usuario->limpiarCadena($_POST['firma']) : '',
-        'esRepresentante' =>  $usuario->limpiarCadena($_POST['esRepresentante']) ? $usuario->limpiarCadena($_POST['esRepresentante']) : '',
+        //'esRepresentante' =>  $usuario->limpiarCadena($_POST['esRepresentante']) ? $usuario->limpiarCadena($_POST['esRepresentante']) : '',
         'idnivelacceso' =>  $usuario->limpiarCadena($_POST['idnivelacceso']) ? $usuario->limpiarCadena($_POST['idnivelacceso']) : '',
       ];
 
@@ -264,7 +264,7 @@ if (isset($_POST['operation'])) {
         'porcentaje' => $usuario->limpiarCadena($_POST['porcentaje']) ? $usuario->limpiarCadena($_POST['porcentaje']) : '',
         'marcaagua' => $usuario->limpiarCadena($_POST['marcaagua']) ? $usuario->limpiarCadena($_POST['marcaagua']) : '',
         'firma' =>  $usuario->limpiarCadena($_POST['firma']) ? $usuario->limpiarCadena($_POST['firma']) : '',
-        'esRepresentante' =>  $usuario->limpiarCadena($_POST['esRepresentante']) ? $usuario->limpiarCadena($_POST['esRepresentante']) : '',
+        //'esRepresentante' =>  $usuario->limpiarCadena($_POST['esRepresentante']) ? $usuario->limpiarCadena($_POST['esRepresentante']) : '',
       ];
 
       $update = $usuario->actualizarUsuario($cleanData);
