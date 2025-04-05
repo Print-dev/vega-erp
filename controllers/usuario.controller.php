@@ -28,10 +28,10 @@ $accesos = [
     ['modulo' => 'utilitario', 'ruta' => 'listar-tareasdiarias', 'subruta' => 'tareasdiarias', 'texto' => 'Tareas Diarias', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'utilitario', 'ruta' => 'registrar-tareadiaria', 'subruta' => 'tareasdiarias', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-usuario', 'subruta' => 'usuarios', 'texto' => '', 'visible' => false, 'icono' => ''],
-    ['modulo' => 'utilitario', 'ruta' => 'listar-sucursales', 'subruta' => 'sucursales', 'texto' => 'Sucursales', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+/*     ['modulo' => 'utilitario', 'ruta' => 'listar-sucursales', 'subruta' => 'sucursales', 'texto' => 'Sucursales', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'utilitario', 'ruta' => 'registrar-sucursal', 'subruta' => 'sucursales', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-sucursal', 'subruta' => 'sucursales', 'texto' => '', 'visible' => false, 'icono' => ''],
-
+ */
     /* ['modulo' => 'pyp', 'ruta' => '', 'texto' => 'Planeamiento', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-lightbulb'],
 
     ['modulo' => 'pyp', 'ruta' => 'listar-planeamientos', 'subruta' => 'planeamientos', 'texto' => 'Planeamientos', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],

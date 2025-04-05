@@ -89,7 +89,7 @@ CREATE TABLE usuarios
     CONSTRAINT uk_nom_usuario UNIQUE(nom_usuario),
     constraint ck_estado_usuario check(estado IN (1,2))
 )ENGINE=INNODB;
-
+select * from usuarios;
 CREATE TABLE tarifario (
 	idtarifario int auto_increment primary key,
     idusuario		int not null,

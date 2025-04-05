@@ -1,38 +1,12 @@
 <?php
-$ruc = "20608627422";
-$tipoDoc = "01"; // Factura
-$serie = "F001";
-$correlativo = "000001";
-
-$nombreComprobante = "{$ruc}-{$tipoDoc}-{$serie}-{$correlativo}";
-$xmlFilePath = __DIR__ . "/{$nombreComprobante}.xml";
-$zipFilePath = __DIR__ . "/{$nombreComprobante}.zip";
-
-// ✅ Crear el ZIP
 $zip = new ZipArchive();
-if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
-    // Añadir el archivo XML al ZIP (asegúrate que exista)
-    if (file_exists($xmlFilePath)) {
-        $zip->addFile($xmlFilePath, "{$nombreComprobante}.xml");
-        $zip->close();
-        echo "✅ ZIP generado correctamente: {$nombreComprobante}.zip\n";
-    } else {
-        echo "❌ El archivo XML no existe: {$xmlFilePath}\n";
-        exit;
-    }
-} else {
-    echo "❌ No se pudo crear el ZIP\n";
-    exit;
-}
+$nombreZip = '20608627422-01-F001-000001.zip';
+$xmlFirmado = '20608627422-01-F001-000001.xml';
 
-// 🔍 Verificar contenido del ZIP
-$zip = new ZipArchive();
-if ($zip->open($zipFilePath) === true) {
-    echo "📦 Contenido del ZIP:\n";
-    for ($i = 0; $i < $zip->numFiles; $i++) {
-        echo "- " . $zip->getNameIndex($i) . "\n";
-    }
+if ($zip->open($nombreZip, ZipArchive::CREATE) === true) {
+    $zip->addFile($xmlFirmado, $xmlFirmado); // importante que el nombre interno coincida
     $zip->close();
+    echo "✅ ZIP creado correctamente.\n";
 } else {
-    echo "❌ No se pudo abrir el ZIP para ver el contenido\n";
+    echo "❌ Error al crear el ZIP\n";
 }

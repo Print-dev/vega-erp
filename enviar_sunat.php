@@ -1,9 +1,9 @@
 <?php
-$ruc = "";
-$usuarioSol = ""; // Reemplaza si usas PRODUCCIÓN
-$claveSol = "";   // Reemplaza si usas PRODUCCIÓN
+$ruc = "20608627422";
+$usuarioSol = "NEGOVEGA"; // Reemplaza si usas PRODUCCIÓN
+$claveSol = "VegaSAC2068";   // Reemplaza si usas PRODUCCIÓN
 
-$nombreArchivo = "00000000000-01-F001-000001";
+$nombreArchivo = "20608627422-01-F001-000001";
 $zipFile = $nombreArchivo . ".zip";
 
 // Leer contenido del ZIP en base64

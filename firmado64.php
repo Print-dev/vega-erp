@@ -40,11 +40,11 @@ if ($extensionContentNode) {
 
     // CanonicalizationMethod
     $canonicalization_method = $dom->createElement('ds:CanonicalizationMethod');
-    $canonicalization_method->setAttribute('Algorithm', 'http://www.w3.org/TR/2001/REC-xml-c14n20010315#WithComments');
+    $canonicalization_method->setAttribute('Algorithm', 'http://www.w3.org/TR/2001/REC-xml-c14n20010315');
 
     // SignatureMethod
     $signature_method = $dom->createElement('ds:SignatureMethod');
-    $signature_method->setAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#dsa-sha1');
+    $signature_method->setAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#rsa-sha1');
 
     // Reference
     $reference = $dom->createElement('ds:Reference');
@@ -99,9 +99,7 @@ if ($extensionContentNode) {
     // Guardar el XML firmado
     $dom->save('20608627422-01-F001-000001.xml');
 
-    echo "XML firmado exitosamente. Guardado como 'factura_firmada.xml'.";
+    echo "XML firmado exitosamente. Guardado como '20608627422-01-F001-000001.xml'.";
 } else {
     echo "Error: No se encontró <ext:ExtensionContent> en el XML.";
 }
-
-?>

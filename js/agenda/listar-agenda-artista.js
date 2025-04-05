@@ -325,7 +325,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rviatico;
   }
 
-  function enviarWebsocket(type,mensaje) {
+  function enviarWebsocket(type, mensaje) {
     if (wsReady) {
       ws.send(JSON.stringify({
         type: type, // Tipo de mensaje WebSocket
@@ -335,7 +335,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         idreferencia: idviatico, // ID del viático */
         mensaje: mensaje
       }));
-  
+
       console.log("Notificación enviada por WebSocket.");
     } else {
       console.warn("WebSocket no está listo para enviar notificaciones.");
@@ -357,7 +357,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     const rviatico = await fviatico.json();
     console.log("rivatico . ", rviatico)
-    
+
     return rviatico;
   }
 
@@ -624,7 +624,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           for (const admins of usuariosAdmin) {
             console.log("admins -> ", admins);
             const notificacionSalida = await registrarNotificacion(admins.idusuario, idusuarioLogeado, 2, reporteRegistradoEventoArt.idreporte, mensaje)
-            enviarWebsocket("notificacion",mensaje)
+            enviarWebsocket("notificacion", mensaje)
             console.log("notificacion salida -> ", notificacionSalida);
           }
           //modalSalida.hide()
@@ -659,7 +659,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           for (const admins of usuariosAdmin) {
             console.log("admins -> ", admins);
             const notificacionRetorno = await registrarNotificacion(admins.idusuario, idusuarioLogeado, 2, reporteRegistradoEventoArt.idreporte, mensaje)
-            enviarWebsocket("notificacion",mensaje)
+            enviarWebsocket("notificacion", mensaje)
             console.log("notificacion retorno -> ", notificacionRetorno);
           }
           setTimeout(() => {
@@ -678,7 +678,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         window.localStorage.clear()
         window.localStorage.setItem("iddp", evento.event.extendedProps.iddetalle_presentacion)
-        window.location.href = `${host}/views/ventas/actualizar-atencion-cliente`
+        window.location.href = `${hostOnly}/views/ventas/actualizar-atencion-cliente`
       }
     },
   });
@@ -745,7 +745,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         class: "badge bg-danger",
       };
 
-      if (esContratoValido || esConvenioValido) {
+      if (evento.estado == 2) {
+        estadoBadge = {
+          text: "Caducado",
+          class: "badge bg-danger",
+        };
+      }
+      else if (esContratoValido || esConvenioValido) {
         estadoBadge = {
           text: "Confirmado",
           class: "badge bg-success",
@@ -758,11 +764,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       } else if (evento.estado == 3) {
         estadoBadge = {
           text: "Cancelado",
-          class: "badge bg-danger",
-        };
-      } else if (evento.estado == 2) {
-        estadoBadge = {
-          text: "Caducado",
           class: "badge bg-danger",
         };
       }
@@ -1063,7 +1064,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           console.log("id agenda edicion -> ", idagendaeditor);
           window.localStorage.clear()
           window.localStorage.setItem("idagendaeditor", idagendaeditor)
-          window.location.href = `${host}/views/agenda/subir-contenido-edicion`
+          window.location.href = `${hostOnly}/views/agenda/subir-contenido-edicion`
           return
         })
       })
@@ -1326,20 +1327,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("iddp-- > ", iddp);
     console.log("valor filmamker elegido -> ", $q("#filmmaker").value);
     const dpObtenido = await obtenerFilmmakerAsociadoEvento($q("#filmmaker").value);
-console.log("Este filmmaker está asociado a un evento -> ", dpObtenido);
+    console.log("Este filmmaker está asociado a un evento -> ", dpObtenido);
 
-// Verificar si algún elemento tiene el mismo iddetalle_presentacion que iddp
-const existe = dpObtenido.some(item => item.idusuario == $q("#filmmaker").value && item.iddetalle_presentacion == iddp);
+    // Verificar si algún elemento tiene el mismo iddetalle_presentacion que iddp
+    const existe = dpObtenido.some(item => item.idusuario == $q("#filmmaker").value && item.iddetalle_presentacion == iddp);
 
-if (existe) {
-  showToast("Este filmmaker ya está asignado a este evento", "ERROR");
-  return;
-} // este id usuario es del filmmaker
+    if (existe) {
+      showToast("Este filmmaker ya está asignado a este evento", "ERROR");
+      return;
+    } // este id usuario es del filmmaker
     const filmmakerAsignado = await asignarAgenda(iddp)
     console.log("filmmakerAsignado -> ", filmmakerAsignado)
     if (filmmakerAsignado.idasignacion) {
       showToast("Filmmaker asignado correctamente", "SUCCESS")
-      const notiAsigFilm = await registrarNotificacion( $q("#filmmaker").value, idusuarioLogeado, 3, filmmakerAsignado.idasignacion, "Has sido asignado a un nuevo evento, revisa tu agenda")
+      const notiAsigFilm = await registrarNotificacion($q("#filmmaker").value, idusuarioLogeado, 3, filmmakerAsignado.idasignacion, "Has sido asignado a un nuevo evento, revisa tu agenda")
       console.log("noti asig film -< ", notiAsigFilm);
       enviarWebsocket("asignacion filmmaker", "Has sido asignado a un nuevo evento, revisa tu agenda")
       /*       const agendaUsuario = await obtenerAgenda(idUsuario);

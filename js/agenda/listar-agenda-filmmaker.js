@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
     // variables 
     let ws
-  // Mantiene un indicador para saber si el WebSocket está listo para enviar
-  let wsReady = false;
+    // Mantiene un indicador para saber si el WebSocket está listo para enviar
+    let wsReady = false;
     let usuarioSelect = $q("#usuario")
     let agenda = []
     let calendar
@@ -30,40 +30,40 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     (async () => {
         ws = new WebSocket("ws://localhost:8000");
-    
-        ws.onopen = () => {
-          wsReady = true;
-          console.log("WebSocket abierto pe");
-        };
-    
-        ws.onclose = () => {
-          wsReady = false;
-          console.log("WebSocket cerrado pe");
-        };
-      })();
-    
-      function enviarWebsocket(type,mensaje) {
-        if (wsReady) {
-          ws.send(JSON.stringify({
-            type: type, // Tipo de mensaje WebSocket
-            /* idusuariodest: idusuariodest, // Usuario destinatario
-            idusuariorem: idusuariorem, // Usuario remitente
-            tipo: tipo,
-            idreferencia: idviatico, // ID del viático */
-            mensaje: mensaje
-          }));
-      
-          console.log("Notificación enviada por WebSocket.");
-        } else {
-          console.warn("WebSocket no está listo para enviar notificaciones.");
-        }
-      }
 
-      
+        ws.onopen = () => {
+            wsReady = true;
+            console.log("WebSocket abierto pe");
+        };
+
+        ws.onclose = () => {
+            wsReady = false;
+            console.log("WebSocket cerrado pe");
+        };
+    })();
+
+    function enviarWebsocket(type, mensaje) {
+        if (wsReady) {
+            ws.send(JSON.stringify({
+                type: type, // Tipo de mensaje WebSocket
+                /* idusuariodest: idusuariodest, // Usuario destinatario
+                idusuariorem: idusuariorem, // Usuario remitente
+                tipo: tipo,
+                idreferencia: idviatico, // ID del viático */
+                mensaje: mensaje
+            }));
+
+            console.log("Notificación enviada por WebSocket.");
+        } else {
+            console.warn("WebSocket no está listo para enviar notificaciones.");
+        }
+    }
+
+
     const usuariosAdmin = await obtenerUsuariosPorNivel("3")
     await renderizarAdmins(usuariosAdmin)
 
-    
+
 
     // ************************************************ OBTENER DATOS *********************************************************************** */
     async function obtenerUsuarios(idnivelacceso) {
@@ -190,6 +190,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         const data = await getDatos(`${host}agenda.controller.php`, params);
         return data;
     }
+
+    async function registrarCajaChica(
+        iddetallepresentacion,
+        idmonto,
+        ccinicial,
+        incremento,
+        decremento,
+        ccfinal
+    ) {
+        const cajachica = new FormData();
+        cajachica.append("operation", "registrarCajaChica");
+        cajachica.append(
+            "iddetallepresentacion",
+            iddetallepresentacion ? iddetallepresentacion : ""
+        );
+        cajachica.append("idmonto", idmonto);
+        cajachica.append("ccinicial", ccinicial);
+        cajachica.append("incremento", incremento); // id artista
+        cajachica.append("decremento", decremento); // id artista
+        cajachica.append("ccfinal", ccfinal);
+
+        const fcajachica = await fetch(`${host}cajachica.controller.php`, {
+            method: "POST",
+            body: cajachica,
+        });
+        const rcajachica = await fcajachica.json();
+        return rcajachica;
+    }
+
 
     async function registrarViatico(iddetallepresentacion, idusuario, desayuno, almuerzo, cena) {
 
@@ -318,8 +347,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("check chkalmuerzo? .> ", chkalmuerzo);
         console.log("check chkcena? .> ", chkcena);
 
-        if(listaSeleccionados.length == 0){
-            showToast("Eliga a quienes notificar su viatico" , "INFO")
+        if (listaSeleccionados.length == 0) {
+            showToast("Eliga a quienes notificar su viatico", "INFO")
             return
         }
         const viaticoRegistrado = await registrarViatico(iddp, idusuarioLogeado, chkdesayuno, chkalmuerzo, chkcena);
@@ -328,6 +357,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const usuarioFilmmaker = await obtenerUsuarioPorId(idusuarioLogeado);
         console.log("usuarioFilmmaker -> ", usuarioFilmmaker)
         if (viaticoRegistrado.idviatico) {
+            //await registrarCajaChica(iddp, 1, 0, viaticoRegistrado.pasaje, viaticoRegistrado.hospedaje, 0)
             console.log("Entrando a la validación...");
 
             const mensaje = `${usuarioFilmmaker[0]?.dato} ha reportado un viático, haz click para ver`;
@@ -349,8 +379,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             $q("#hospedaje").value = ""
             /* $q("#viaje").value = "" */
             $q("#chkdesayuno").checked = false
-            $q("#chkalmuerzo").checked= false
-            $q("#chkcena").checked= false
+            $q("#chkalmuerzo").checked = false
+            $q("#chkcena").checked = false
             modalViatico.hide();
 
         }
@@ -691,10 +721,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             <label class="fw-bold">Cena:</label> <span id="noti-cena">${viatico.cena ? 'Si (S/. 13.30)' : 'No'}</span> <br>
             <label class="fw-bold">Total Viatico:</label> 
             <span id="noti-total">S/. ${redondear(
-                (parseFloat(viatico.pasaje) || 0) + 
-                (parseFloat(viatico.hospedaje) || 0) + 
-                (viatico.desayuno ? 13.30 : 0) + 
-                (viatico.almuerzo ? 13.30 : 0) + 
+                (parseFloat(viatico.pasaje) || 0) +
+                (parseFloat(viatico.hospedaje) || 0) +
+                (viatico.desayuno ? 13.30 : 0) +
+                (viatico.almuerzo ? 13.30 : 0) +
                 (viatico.cena ? 13.30 : 0)
             )}</span> <br>
           </div>
