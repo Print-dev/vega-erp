@@ -48,7 +48,7 @@
 
 
         <div class="card-body d-flex justify-content-center">
-            <div class="table-responsive" style="max-width: 800px; width: 100%;">
+            <div class="table-responsive" style="width: 100%;">
                 <table class="table table-striped table-hover text-center align-middle">
                     <thead class="table-dark">
                         <tr>

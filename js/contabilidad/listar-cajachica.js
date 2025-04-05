@@ -279,7 +279,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     idcajachica = e.target.getAttribute("data-id");
     window.localStorage.clear()
     window.localStorage.setItem("idcajachica", idcajachica)
-    window.location.href = `${host}/views/contabilidad/caja-chica/registrar-caja`;
+    window.location.href = `${hostOnly}/views/contabilidad/caja-chica/registrar-caja`;
     return;
   }
 

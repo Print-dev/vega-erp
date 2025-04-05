@@ -33,10 +33,14 @@ CREATE TABLE distritos
 CREATE TABLE sucursales (
 	idsucursal		int auto_increment primary key,
     iddistrito		int not null,
+    idresponsable	int not null, -- idusuario
 	nombre			varchar(120) not null,
 	ruc				char(11) not null,
     telefono		char(20) not null,
     direccion		varchar(120) not null,
+    web				varchar(120) not null,
+    email			varchar(129) not null,
+    logo			varchar(40) not null,
     constraint fk_iddistrito_suc foreign key (iddistrito) references distritos (iddistrito)
 )  ENGINE=INNODB;
 

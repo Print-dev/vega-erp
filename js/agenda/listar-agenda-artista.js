@@ -751,12 +751,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           class: "badge bg-danger",
         };
       }
-      else if (esContratoValido || esConvenioValido) {
-        estadoBadge = {
-          text: "Confirmado",
-          class: "badge bg-success",
-        };
-      } else if (incompleto) {
+      else if (incompleto) {
         estadoBadge = {
           text: "Incompleto",
           class: "badge bg-danger",
@@ -766,6 +761,13 @@ document.addEventListener("DOMContentLoaded", async () => {
           text: "Cancelado",
           class: "badge bg-danger",
         };
+      } else {
+        if (esContratoValido || esConvenioValido) {
+          estadoBadge = {
+            text: "Confirmado",
+            class: "badge bg-success",
+          };
+        }
       }
 
       const idsUsuarios = evento.idusuarioAgenda && typeof evento.idusuarioAgenda === "string"

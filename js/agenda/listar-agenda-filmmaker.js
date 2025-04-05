@@ -191,6 +191,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data;
     }
 
+    async function obtenerCajaChicaPorDP(iddetallepresentacion) {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerCajaChicaPorDP");
+        params.append("iddetallepresentacion", iddetallepresentacion);
+        const data = await getDatos(`${host}cajachica.controller.php`, params);
+        return data;
+    }
+
+
     async function registrarCajaChica(
         iddetallepresentacion,
         idmonto,
@@ -219,6 +228,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         return rcajachica;
     }
 
+    async function registrarGasto(idcajachica, concepto, monto) {
+        const gasto = new FormData();
+        gasto.append("operation", "registrarGasto");
+        gasto.append("idcajachica", idcajachica);
+        gasto.append("concepto", concepto); // id artista
+        gasto.append("monto", monto);
+
+        const fgasto = await fetch(`${host}cajachica.controller.php`, {
+            method: "POST",
+            body: gasto,
+        });
+        const rgasto = await fgasto.json();
+        return rgasto;
+    }
 
     async function registrarViatico(iddetallepresentacion, idusuario, desayuno, almuerzo, cena) {
 
@@ -333,6 +356,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     } */
 
+    function redondear(valor) {
+        return parseFloat(valor || 0).toFixed(2);
+    }
+
     async function guardarViatico() {
         if ($q("#hospedaje").value == "") {
             showToast("Por favor, complete los campos obligatorios", "ERROR");
@@ -354,10 +381,47 @@ document.addEventListener("DOMContentLoaded", async () => {
         const viaticoRegistrado = await registrarViatico(iddp, idusuarioLogeado, chkdesayuno, chkalmuerzo, chkcena);
         console.log("viaticoRegistrado -> ", viaticoRegistrado);
 
+        const pasaje = $q("#pasaje").value ? $q("#pasaje").value : 0
+        const hospedaje = $q("#hospedaje").value ? $q("#hospedaje").value : 0
+        const montoDesayuno = $q("#chkdesayuno").checked ? 13.30 : 0
+        const montoAlmuerzo = $q("#chkalmuerzo").checked ? 13.30 : 0
+        const montoCena = $q("#chkcena").checked ? 13.30 : 0
+        const totalViatico = redondear(parseFloat(pasaje) + parseFloat(hospedaje) + parseFloat(montoDesayuno) + parseFloat(montoAlmuerzo) + parseFloat(montoCena))
+
         const usuarioFilmmaker = await obtenerUsuarioPorId(idusuarioLogeado);
         console.log("usuarioFilmmaker -> ", usuarioFilmmaker)
         if (viaticoRegistrado.idviatico) {
-            //await registrarCajaChica(iddp, 1, 0, viaticoRegistrado.pasaje, viaticoRegistrado.hospedaje, 0)
+            // Construir descripción del gasto dinámicamente
+            let conceptos = [];
+            if (parseFloat(pasaje) > 0) conceptos.push(`Pasaje: S/. ${parseFloat(pasaje).toFixed(2)}`);
+            if (parseFloat(hospedaje) > 0) conceptos.push(`Hospedaje: S/. ${parseFloat(hospedaje).toFixed(2)}`);
+            if (chkdesayuno) conceptos.push(`Desayuno: S/. 13.30`);
+            if (chkalmuerzo) conceptos.push(`Almuerzo: S/. 13.30`);
+            if (chkcena) conceptos.push(`Cena: S/. 13.30`);
+
+            const nombreUsuario = `${usuarioFilmmaker[0]?.dato} ${usuarioFilmmaker[0]?.apellidos}`;
+            const descripcionGasto = `Viático de Filmmaker ${nombreUsuario}:\n${conceptos.join("\n")}`;
+
+            console.log("id detalle presentacion para registrarlo con la nueva caja chica .> ", iddp);
+            const cajaChicaExistente = await obtenerCajaChicaPorDP(iddp)
+            console.log("caja chica existente -> ", cajaChicaExistente);
+            if (cajaChicaExistente.length > 0) {
+
+                if (cajaChicaExistente[0].idcajachica) {
+                    console.log("Caja chica registrada correctamente.");
+                    const viaticoGasto = await registrarGasto(cajaChicaExistente[0]?.idcajachica, descripcionGasto, totalViatico)
+                    console.log("viatico gasto -> ", viaticoGasto);
+                }
+            } else {
+                const viaticoCaja = await registrarCajaChica(iddp, 1, 0, 0, 0, 0)
+                console.log("viaticoCaja -> ", viaticoCaja);
+                if (viaticoCaja.idcajachica) {
+                    console.log("Caja chica registrada correctamente.");
+                    const viaticoGasto = await registrarGasto(viaticoCaja.idcajachica, descripcionGasto, totalViatico)
+                    console.log("viatico gasto -> ", viaticoGasto);
+                }
+            }
+
             console.log("Entrando a la validación...");
 
             const mensaje = `${usuarioFilmmaker[0]?.dato} ha reportado un viático, haz click para ver`;
@@ -413,6 +477,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         eventClick: async function (evento) {
             const btnVerViatico = evento.jsEvent.target.closest("#btnVerViatico");
             const btnViatico = evento.jsEvent.target.closest("#btnViatico");
+
             if (btnVerViatico) {
                 console.log("clbikc a btn");
 
@@ -473,10 +538,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
             console.log("evento -> ", evento)
+            
             if (evento.event.extendedProps.estadoBadge.text == "Incompleto") {
+                if (nivelacceso == "Artista" || nivelacceso == "Filmmaker") {
+                    return
+
+                }
                 window.localStorage.clear()
                 window.localStorage.setItem("iddp", evento.event.extendedProps.iddetalle_presentacion)
-                window.location.href = `${host}/views/ventas/actualizar-atencion-cliente`
+                window.location.href = `${hostOnly}/views/ventas/actualizar-atencion-cliente`
             }
             /* const idDetalle = evento.event.extendedProps.iddetalle_presentacion;
             await renderizarInfoAgenda(idDetalle);
@@ -535,22 +605,29 @@ document.addEventListener("DOMContentLoaded", async () => {
                 class: "badge bg-danger",
             };
 
-            if (esContratoValido || esConvenioValido) {
+            if (evento.estado == 2) {
                 estadoBadge = {
-                    text: "Confirmado",
-                    class: "badge bg-success",
+                    text: "Caducado",
+                    class: "badge bg-danger",
                 };
-
+            }
+            else if (incompleto) {
+                estadoBadge = {
+                    text: "Incompleto",
+                    class: "badge bg-danger",
+                };
             } else if (evento.estado == 3) {
                 estadoBadge = {
                     text: "Cancelado",
                     class: "badge bg-danger",
                 };
-            } else if (evento.estado == 2) {
-                estadoBadge = {
-                    text: "Caducado",
-                    class: "badge bg-danger",
-                };
+            } else {
+                if (esContratoValido || esConvenioValido) {
+                    estadoBadge = {
+                        text: "Confirmado",
+                        class: "badge bg-success",
+                    };
+                }
             }
 
             // Ahora podemos esperar la obtención del filmmaker
@@ -650,7 +727,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                           <button class="btn btn-primary" id="btnVerViatico" style="flex: 1;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}" data-idusuarioFilmmaker="${arg.event.extendedProps.idusuariofilmmaker}" data-iddp="${arg.event.extendedProps?.iddetalle_presentacion}" data-idviatico="${arg.event.extendedProps?.idviatico}">Ver Viatico</button>
                         ` : ``}
                 
-                        ${nivelacceso == "Filmmaker" ? `
+                        ${arg.event.extendedProps.estadoBadge.text == "Incompleto" || arg.event.extendedProps.estadoBadge.text == "No Confirmado" ? '' : nivelacceso == "Filmmaker" ? `
                           <button class="btn btn-primary" id="btnViatico" style="flex: 1;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}" data-idviatico="${arg.event.extendedProps.idviatico}" data-iddepartamento="${arg.event.extendedProps.iddepartamento}">Reportar Viático</button>
                         ` : ''}
                 

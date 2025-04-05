@@ -128,6 +128,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data;
   }
 
+  async function obtenerCajaChicaPorDP(iddetallepresentacion) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerCajaChicaPorDP");
+    params.append("iddetallepresentacion", iddetallepresentacion);
+    const data = await getDatos(`${host}cajachica.controller.php`, params);
+    return data;
+  }
+
+
 
 
   // *********************************************** OBTENCION DE UBIGEOS ******************************************
@@ -182,6 +191,50 @@ document.addEventListener("DOMContentLoaded", async () => {
       const data = await getDatos(`${host}maps.controller.php`, params);
       return data
     } */
+
+  async function registrarCajaChica(
+    iddetallepresentacion,
+    idmonto,
+    ccinicial,
+    incremento,
+    decremento,
+    ccfinal
+  ) {
+    const cajachica = new FormData();
+    cajachica.append("operation", "registrarCajaChica");
+    cajachica.append(
+      "iddetallepresentacion",
+      iddetallepresentacion ? iddetallepresentacion : ""
+    );
+    cajachica.append("idmonto", idmonto);
+    cajachica.append("ccinicial", ccinicial);
+    cajachica.append("incremento", incremento); // id artista
+    cajachica.append("decremento", decremento); // id artista
+    cajachica.append("ccfinal", ccfinal);
+
+    const fcajachica = await fetch(`${host}cajachica.controller.php`, {
+      method: "POST",
+      body: cajachica,
+    });
+    const rcajachica = await fcajachica.json();
+    return rcajachica;
+  }
+
+  async function registrarGasto(idcajachica) {
+    const gasto = new FormData();
+    gasto.append("operation", "registrarGasto");
+    gasto.append("idcajachica", idcajachica);
+    gasto.append("concepto", $q("#concepto").value); // id artista
+    gasto.append("monto", $q("#monto").value);
+
+    const fgasto = await fetch(`${host}cajachica.controller.php`, {
+      method: "POST",
+      body: gasto,
+    });
+    const rgasto = await fgasto.json();
+    return rgasto;
+  }
+
   async function obtenerLongLatPorCiudad(provincia) {
     const Fdata = await fetch(`https://nominatim.openstreetmap.org/search?q=${provincia}&format=json`)
     const data = await Fdata.json()
@@ -629,8 +682,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                         </button>
                     ` : ``}
 
-                      ${x.tienecaja == 1 ? '' : x.modalidad == 2 ? '' : `<button type="button" class="btn btn-sm btn-warning btn-caja" data-id=${x.iddetalle_presentacion} title="Generar Caja Chica">
-                          Generar Caja Chica  
+                      ${x.tienecaja == 1 ? '' : x.modalidad == 2 ? '' : `<button type="button" class="btn btn-sm btn-warning btn-caja" data-id=${x.iddetalle_presentacion} title="Caja Chica">
+                          Caja Chica  
                       </button> `
           }
                     <button type="button" class="btn btn-sm btn-primary btn-actualizar" data-id=${x.iddetalle_presentacion} title="Actualizar Evento">
@@ -775,12 +828,35 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function buttonCaja(e) {
     iddp = e.target.getAttribute("data-id")
-    const dpActualizado = await actualizarCajaDP(iddp, 1)
-    console.log("dpActualizado -> ", dpActualizado);
-    window.localStorage.clear()
-    window.localStorage.setItem("iddp", iddp)
-    window.location.href = `${hostOnly}/views/contabilidad/caja-chica/registrar-caja`
-    return
+    /* const dpActualizado = await actualizarCajaDP(iddp, 1)
+    console.log("dpActualizado -> ", dpActualizado); */
+    const cajaChicaExistente = await obtenerCajaChicaPorDP(iddp)
+    console.log("caja chica existente -> ", cajaChicaExistente);
+    if (cajaChicaExistente.length > 0) {
+
+      if (cajaChicaExistente[0].idcajachica) {
+        /* console.log("Caja chica registrada correctamente.");
+        const viaticoGasto = await registrarGasto(cajaChicaExistente[0]?.idcajachica, descripcionGasto, totalViatico)
+        console.log("viatico gasto -> ", viaticoGasto); */
+        window.localStorage.clear()
+        window.localStorage.setItem("idcajachica", cajaChicaExistente[0].idcajachica)
+        window.location.href = `${hostOnly}/views/contabilidad/caja-chica/registrar-caja`
+        return
+      }
+    } else {
+      window.localStorage.clear()
+      window.localStorage.setItem("iddp", iddp)
+      window.location.href = `${hostOnly}/views/contabilidad/caja-chica/registrar-caja`
+      return
+      /* const viaticoCaja = await registrarCajaChica(iddp, 1, 0, 0, 0, 0)
+      console.log("viaticoCaja -> ", viaticoCaja);
+      if (viaticoCaja.idcajachica) {
+        console.log("Caja chica registrada correctamente.");
+        const viaticoGasto = await registrarGasto(viaticoCaja.idcajachica, descripcionGasto, totalViatico)
+        console.log("viatico gasto -> ", viaticoGasto);
+      } */
+    }
+
   }
 
   async function buttonActualizar(e) {
