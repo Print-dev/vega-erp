@@ -24,9 +24,29 @@ VALUES
 (3, 'ventas', 'registrar-atencion-cliente', '', false, NULL),
 (3, 'ventas', 'update-atencion-cliente', NULL, false, NULL);
 
-INSERT INTO usuarios (idnivelacceso, idpersona, nom_usuario, claveacceso, color, porcentaje) values
-	(3, 1, 'royer', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC', null, null);
+INSERT INTO sucursales (
+    iddistrito,
+    idresponsable,
+    nombre,
+    ruc,
+    telefono,
+    direccion,
+    web,
+    email
+) VALUES (
+    1,                          -- iddistrito (debe existir en la tabla distritos)
+    5,                          -- idresponsable (puede ser null si no hay responsable)
+    'Sucursal Central',         -- nombre
+    '20123456789',              -- ruc
+    '012345678',                -- telefono
+    'Av. Siempre Viva 742',     -- direccion
+    'https://sucursalcentral.com', -- web
+    'contacto@sucursalcentral.com' -- email
+);
 
+INSERT INTO usuarios (idsucursal, idnivelacceso, idpersona, nom_usuario, claveacceso, color, porcentaje) values
+	(1, 3, 1, 'royer', '$2y$10$dd0F7Ch7mNrkw2EIZAh9FurwSYjpQ3C9dA6wySo5MG75MzPT1IyUC', null, null);
+-- select * from sucursales;
 -- INSERT INTO clientes (tipodoc, iddistrito, ndocumento, razonsocial, telefono, correo, direccion) values (2 ,74, '10727547521', 'AVALOS ROMERO ROYER ALEXIS', '973189350', 'alexisjkg@gmail.com', 'Asent. FALSA 123');
     
 
@@ -34,6 +54,7 @@ INSERT INTO usuarios (idnivelacceso, idpersona, nom_usuario, claveacceso, color,
 -- INSERT INTO tarifario (idusuario, idprovincia, precio) VALUES (2, 100, 3000.00);
 
 INSERT INTO montoCajaChica (monto) values (0.00);
+select * from montoCajaChica;
 -- INSERT INTO cajachica (idmonto ,ccinicial, incremento, ccfinal) VALUES (1, 200.00, 50.00, 258.00);
 
  -- INSERT INTO gastos_cajachica (idcajachica, concepto, monto) values (1, "compra de 2 audifonos", 5.00); 

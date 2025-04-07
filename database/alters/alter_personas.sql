@@ -60,3 +60,4 @@ ALTER TABLE viaticos DROP COLUMN viaje;
 ALTER TABLE usuarios ADD COLUMN firma varchar(40) null;
 ALTER TABLE usuarios ADD COLUMN esRepresentante tinyint null;
 ALTER TABLE usuarios DROP COLUMN esRepresentante;
+ALTER TABLE usuarios ADD COLUMN idsucursal 	int not null;

@@ -6,5 +6,6 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'RobRichards\\XMLSecLibs\\' => array($vendorDir . '/robrichards/xmlseclibs/src'),
+    'RobRichards\\XMLSecLibs\\' => array($vendorDir . '/robrichards/xmlseclibs/src', $vendorDir . '/ninosimeon/xmlseclibs_sunat/src'),
+    'Greenter\\' => array($vendorDir . '/greenter/core/src/Core'),
 );

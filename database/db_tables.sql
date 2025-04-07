@@ -94,6 +94,7 @@ CREATE TABLE usuarios
     constraint ck_estado_usuario check(estado IN (1,2)),
     constraint fk_idsucursal foreign key (idsucursal) references sucursales (idsucursal)
 )ENGINE=INNODB;
+
 -- ALTER TABLE usuarios ADD COLUMN idsucursal int not null;
 CREATE TABLE tarifario (
 	idtarifario int auto_increment primary key,

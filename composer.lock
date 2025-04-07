@@ -4,8 +4,103 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f4c09c08d772b37bac393f99ce083061",
+    "content-hash": "ee2ef80586cc14b57d929266258c1955",
     "packages": [
+        {
+            "name": "greenter/core",
+            "version": "v5.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thegreenter/core.git",
+                "reference": "5a13c1c7627f95c93c909531f5ed9f0b6b64a459"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thegreenter/core/zipball/5a13c1c7627f95c93c909531f5ed9f0b6b64a459",
+                "reference": "5a13c1c7627f95c93c909531f5ed9f0b6b64a459",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Greenter\\": "src/Core/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Giancarlos Salas",
+                    "email": "giansalex@gmail.com"
+                }
+            ],
+            "description": "Greenter Core",
+            "homepage": "https://greenter.dev/",
+            "keywords": [
+                "facturacion-electronica",
+                "greenter",
+                "sunat"
+            ],
+            "support": {
+                "forum": "https://community.greenter.dev/",
+                "source": "https://github.com/thegreenter/core/tree/v5.1.1"
+            },
+            "time": "2023-01-11T17:16:15+00:00"
+        },
+        {
+            "name": "ninosimeon/xmlseclibs_sunat",
+            "version": "3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ninosimeon/xmlseclibs_sunat.git",
+                "reference": "6411cb29ba8371217224f591e51c2df944e421e9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ninosimeon/xmlseclibs_sunat/zipball/6411cb29ba8371217224f591e51c2df944e421e9",
+                "reference": "6411cb29ba8371217224f591e51c2df944e421e9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">= 5.3"
+            },
+            "suggest": {
+                "ext-mcrypt": "MCrypt extension",
+                "ext-openssl": "OpenSSL extension"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "RobRichards\\XMLSecLibs\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "A PHP library for XML Security",
+            "homepage": "https://github.com/ninosimeon/xmlseclibs_sunat",
+            "keywords": [
+                "security",
+                "signature",
+                "xml",
+                "xmldsig"
+            ],
+            "support": {
+                "source": "https://github.com/ninosimeon/xmlseclibs_sunat/tree/3.0.1"
+            },
+            "time": "2017-03-22T05:38:13+00:00"
+        },
         {
             "name": "robrichards/xmlseclibs",
             "version": "3.1.3",

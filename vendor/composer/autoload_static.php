@@ -11,12 +11,21 @@ class ComposerStaticInit40c6eca273d719e2eb8de80306448b02
         array (
             'RobRichards\\XMLSecLibs\\' => 23,
         ),
+        'G' => 
+        array (
+            'Greenter\\' => 9,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
         'RobRichards\\XMLSecLibs\\' => 
         array (
             0 => __DIR__ . '/..' . '/robrichards/xmlseclibs/src',
+            1 => __DIR__ . '/..' . '/ninosimeon/xmlseclibs_sunat/src',
+        ),
+        'Greenter\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/greenter/core/src/Core',
         ),
     );
 

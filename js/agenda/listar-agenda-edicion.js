@@ -348,7 +348,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const idagendaeditor = btnSubirTarea.getAttribute("data-idagendaeditor");
                 window.localStorage.clear()
                 window.localStorage.setItem("idagendaeditor", idagendaeditor)
-                window.location.href = `${host}/views/agenda/subir-contenido-edicion` //me quede acaaaa
+                window.location.href = `${hostOnly}/views/agenda/subir-contenido-edicion` //me quede acaaaa
                 return
             }
             const btnVerProgresoIndividual = evento.jsEvent.target.closest("#btnVerProgresoIndividual")
@@ -772,7 +772,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     console.log("id agenda edicion -> ", idagendaeditor);
                     window.localStorage.clear()
                     window.localStorage.setItem("idagendaeditor", idagendaeditor)
-                    window.location.href = `${host}/views/agenda/subir-contenido-edicion`
+                    window.location.href = `${hostOnly}/views/agenda/subir-contenido-edicion`
                     return
                 })
             })

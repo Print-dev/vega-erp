@@ -13,11 +13,14 @@ CREATE PROCEDURE sp_filtrar_cajachica(
 BEGIN
     SELECT 
     CA.idcajachica, CA.idmonto, CA.ccinicial, CA.incremento, CA.decremento, CA.ccfinal, CA.estado, CA.fecha_cierre, CA.fecha_apertura,
-    DP.iddetalle_presentacion, DP.fecha_presentacion, DP.establecimiento,
+    DP.iddetalle_presentacion, DP.fecha_presentacion, DP.establecimiento, DIS.distrito, PRO.provincia, DE.departamento,
 	USU.nom_usuario
     FROM cajachica CA
     LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = CA.iddetalle_presentacion
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+	LEFT JOIN distritos DIS ON DIS.iddistrito = DP.iddistrito
+    LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
+    LEFT JOIN departamentos DE ON DE.iddepartamento = PRO.iddepartamento
     WHERE 
         -- Filtrar por fecha de apertura
         (_fecha_apertura IS NULL OR CA.fecha_apertura >= _fecha_apertura)

@@ -29,10 +29,10 @@
         <cbc:ID>IDSignKG</cbc:ID>
         <cac:SignatoryParty>
             <cac:PartyIdentification>
-                <cbc:ID>20123456789</cbc:ID>
+                <cbc:ID>20608627422</cbc:ID>
             </cac:PartyIdentification>
             <cac:PartyName>
-                <cbc:Name><![CDATA[MI EMPRESA SAC]]></cbc:Name>
+                <cbc:Name><![CDATA[NEGOCIACIONES Y PRODUCCIONES VEGA S.A.C]]></cbc:Name>
             </cac:PartyName>
         </cac:SignatoryParty>
         <cac:DigitalSignatureAttachment>
@@ -44,32 +44,32 @@
 
     <!-- Emisor -->
     <cac:AccountingSupplierParty>
-        <cbc:CustomerAssignedAccountID>20123456789</cbc:CustomerAssignedAccountID>
+        <cbc:CustomerAssignedAccountID>20608627422</cbc:CustomerAssignedAccountID>
         <cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>
         <cac:Party>
             <cac:PartyLegalEntity>
-                <cbc:RegistrationName><![CDATA[MI EMPRESA SAC]]></cbc:RegistrationName>
+                <cbc:RegistrationName><![CDATA[NEGOCIACIONES Y PRODUCCIONES VEGA S.A.C]]></cbc:RegistrationName>
             </cac:PartyLegalEntity>
         </cac:Party>
     </cac:AccountingSupplierParty>
 
     <!-- Cliente -->
     <cac:AccountingCustomerParty>
-        <cbc:CustomerAssignedAccountID>12345678</cbc:CustomerAssignedAccountID>
+        <cbc:CustomerAssignedAccountID>10727547521</cbc:CustomerAssignedAccountID>
         <cbc:AdditionalAccountID>1</cbc:AdditionalAccountID>
         <cac:Party>
             <cac:PartyLegalEntity>
-                <cbc:RegistrationName><![CDATA[CLIENTE DE PRUEBA]]></cbc:RegistrationName>
+                <cbc:RegistrationName><![CDATA[AVALOS ROMERO ROYER ALEXIS]]></cbc:RegistrationName>
             </cac:PartyLegalEntity>
         </cac:Party>
     </cac:AccountingCustomerParty>
 
     <!-- Totales -->
     <cac:TaxTotal>
-        <cbc:TaxAmount currencyID="PEN">18.00</cbc:TaxAmount>
+        <cbc:TaxAmount currencyID="PEN">1.00</cbc:TaxAmount>
         <cac:TaxSubtotal>
-            <cbc:TaxableAmount currencyID="PEN">100.00</cbc:TaxableAmount>
-            <cbc:TaxAmount currencyID="PEN">18.00</cbc:TaxAmount>
+            <cbc:TaxableAmount currencyID="PEN">1.00</cbc:TaxableAmount>
+            <cbc:TaxAmount currencyID="PEN">1.00</cbc:TaxAmount>
             <cac:TaxCategory>
                 <cac:TaxScheme>
                     <cbc:ID>1000</cbc:ID>
@@ -81,25 +81,25 @@
     </cac:TaxTotal>
 
     <cac:LegalMonetaryTotal>
-        <cbc:PayableAmount currencyID="PEN">118.00</cbc:PayableAmount>
+        <cbc:PayableAmount currencyID="PEN">1.00</cbc:PayableAmount>
     </cac:LegalMonetaryTotal>
 
     <!-- Detalle de ítems -->
     <cac:InvoiceLine>
         <cbc:ID>1</cbc:ID>
         <cbc:InvoicedQuantity unitCode="NIU">1</cbc:InvoicedQuantity>
-        <cbc:LineExtensionAmount currencyID="PEN">100.00</cbc:LineExtensionAmount>
+        <cbc:LineExtensionAmount currencyID="PEN">1.00</cbc:LineExtensionAmount>
         <cac:PricingReference>
             <cac:AlternativeConditionPrice>
-                <cbc:PriceAmount currencyID="PEN">100.00</cbc:PriceAmount>
+                <cbc:PriceAmount currencyID="PEN">1.00</cbc:PriceAmount>
                 <cbc:PriceTypeCode>01</cbc:PriceTypeCode>
             </cac:AlternativeConditionPrice>
         </cac:PricingReference>
         <cac:TaxTotal>
-            <cbc:TaxAmount currencyID="PEN">18.00</cbc:TaxAmount>
+            <cbc:TaxAmount currencyID="PEN">1.00</cbc:TaxAmount>
             <cac:TaxSubtotal>
-                <cbc:TaxableAmount currencyID="PEN">100.00</cbc:TaxableAmount>
-                <cbc:TaxAmount currencyID="PEN">18.00</cbc:TaxAmount>
+                <cbc:TaxableAmount currencyID="PEN">1.00</cbc:TaxableAmount>
+                <cbc:TaxAmount currencyID="PEN">1.00</cbc:TaxAmount>
                 <cac:TaxCategory>
                     <cbc:TaxExemptionReasonCode>10</cbc:TaxExemptionReasonCode>
                     <cac:TaxScheme>
@@ -114,7 +114,7 @@
             <cbc:Description><![CDATA[Servicio de prueba]]></cbc:Description>
         </cac:Item>
         <cac:Price>
-            <cbc:PriceAmount currencyID="PEN">100.00</cbc:PriceAmount>
+            <cbc:PriceAmount currencyID="PEN">1.00</cbc:PriceAmount>
         </cac:Price>
     </cac:InvoiceLine>
 

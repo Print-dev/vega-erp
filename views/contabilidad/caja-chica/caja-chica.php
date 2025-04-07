@@ -78,6 +78,7 @@
                                                 <th>Fecha Apertura</th>
                                                 <th>Fecha Cierre</th>
                                                 <th>Evento</th>
+                                                <th>Ubigeo</th>
                                                 <th>Monto Inicial</th>
                                                 <th>Incremento</th>
                                                 <th>Decremento</th>

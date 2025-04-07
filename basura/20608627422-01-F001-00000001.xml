@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+  xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+  xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
+  xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2"
+  xmlns:sac="urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1"
+  xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><!-- Firma digital -->
+  <ext:UBLExtensions>
+    <ext:UBLExtension>
+      <ext:ExtensionContent>
+        <ds:Signature>
+          <ds:SignedInfo>
+            <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+            <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
+            <ds:Reference>
+              <ds:Transforms>
+                <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+              </ds:Transforms>
+              <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+              <ds:DigestValue>rRck1IFXWM1sJsMrjdY0vkQT4sbSaKaJPtUSY0KGM5s=</ds:DigestValue>
+            </ds:Reference>
+          </ds:SignedInfo>
+          <ds:SignatureValue>
+            VyxhmErvp7RZc3m+S6E13kenp8xCmr1ByWq8HOw0yQjQj7iJu3CxTFOTnDqbrIdk541XF6X8EakQ/lGt5ebMCO9L+Rn5yaaTCGfXzSMwu2762FfenVIPYjDzaqPs7bK4xSoMDlyy9gCGAweoT05WsRSk+nWMTJkoemqErdAHKZ+YcmUJU9V7ujZIjbk2/HjMRV9GWdtXqul0XLSGiiO5//gMdK2gLQRLqA0ih9sP3kJS2CECXIC93X/DEgw4XYHsy69vh1d0GH9EPGJzGPhr3i5cL8N9GmDdKOTa1C2KQ28HNDSs8THHKYwOMxwXA6PpmWSNTORYz23gRamPRAZK8g==</ds:SignatureValue>
+          <ds:KeyInfo>
+            <ds:X509Data>
+              <ds:X509SubjectName>CN=||USO TRIBUTARIO|| NEGOCIACIONES Y PRODUCCIONES VEGA S.A.C. CDT
+                20608627422,OU=20608627422,OU=EREP_SUNAT_2025000668482,organizationIdentifier=NTRPE-20608627422,O=NEGOCIACIONES
+                Y PRODUCCIONES VEGA S.A.C.,L=CARABAYLLO,ST=LIMA-LIMA,C=PE</ds:X509SubjectName>
+              <ds:X509Certificate>
+                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</ds:X509Certificate>
+            </ds:X509Data>
+          </ds:KeyInfo>
+        </ds:Signature>
+      </ext:ExtensionContent>
+    </ext:UBLExtension>
+  </ext:UBLExtensions>
+  <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+  <cbc:CustomizationID>2.0</cbc:CustomizationID>
+  <cbc:ID>F001-00000001</cbc:ID>
+  <cbc:IssueDate>2024-04-07</cbc:IssueDate>
+  <cbc:InvoiceTypeCode listID="0101" listAgencyName="PE:SUNAT" listName="Tipo de Documento">01</cbc:InvoiceTypeCode>
+  <cbc:DocumentCurrencyCode>PEN</cbc:DocumentCurrencyCode><!-- Firma del proveedor -->
+  <cac:Signature>
+    <cbc:ID>IDSignKG</cbc:ID>
+    <cac:SignatoryParty>
+      <cac:PartyIdentification>
+        <cbc:ID>20608627422</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name><![CDATA[NEGOCIACIONES Y PRODUCCIONES VEGA S.A.C]]></cbc:Name>
+      </cac:PartyName>
+    </cac:SignatoryParty>
+    <cac:DigitalSignatureAttachment>
+      <cac:ExternalReference>
+        <cbc:URI>#SignatureKG</cbc:URI>
+      </cac:ExternalReference>
+    </cac:DigitalSignatureAttachment>
+  </cac:Signature><!--
+  Emisor -->
+  <cac:AccountingSupplierParty>
+    <cbc:CustomerAssignedAccountID>20608627422</cbc:CustomerAssignedAccountID>
+    <cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>
+    <cac:Party>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName><![CDATA[NEGOCIACIONES Y PRODUCCIONES VEGA S.A.C]]></cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingSupplierParty><!--
+  Cliente -->
+  <cac:AccountingCustomerParty>
+    <cbc:CustomerAssignedAccountID>10727547521</cbc:CustomerAssignedAccountID>
+    <cbc:AdditionalAccountID>1</cbc:AdditionalAccountID>
+    <cac:Party>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName><![CDATA[AVALOS ROMERO ROYER ALEXIS]]></cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingCustomerParty><!--
+  Totales -->
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="PEN">1.00</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="PEN">1.00</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="PEN">1.00</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cac:TaxScheme>
+          <cbc:ID>1000</cbc:ID>
+          <cbc:Name>IGV</cbc:Name>
+          <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:PayableAmount currencyID="PEN">1.00</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal><!--
+  Detalle de ítems -->
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="NIU">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="PEN">1.00</cbc:LineExtensionAmount>
+    <cac:PricingReference>
+      <cac:AlternativeConditionPrice>
+        <cbc:PriceAmount currencyID="PEN">1.00</cbc:PriceAmount>
+        <cbc:PriceTypeCode>01</cbc:PriceTypeCode>
+      </cac:AlternativeConditionPrice>
+    </cac:PricingReference>
+    <cac:TaxTotal>
+      <cbc:TaxAmount currencyID="PEN">1.00</cbc:TaxAmount>
+      <cac:TaxSubtotal>
+        <cbc:TaxableAmount currencyID="PEN">1.00</cbc:TaxableAmount>
+        <cbc:TaxAmount currencyID="PEN">1.00</cbc:TaxAmount>
+        <cac:TaxCategory>
+          <cbc:TaxExemptionReasonCode>10</cbc:TaxExemptionReasonCode>
+          <cac:TaxScheme>
+            <cbc:ID>1000</cbc:ID>
+            <cbc:Name>IGV</cbc:Name>
+            <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+          </cac:TaxScheme>
+        </cac:TaxCategory>
+      </cac:TaxSubtotal>
+    </cac:TaxTotal>
+    <cac:Item>
+      <cbc:Description><![CDATA[Servicio de prueba]]></cbc:Description>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="PEN">1.00</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+</Invoice>
