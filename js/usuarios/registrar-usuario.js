@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let imagen_public_id = "";
   let imagen_public_id_firma = "";
   const BASE_CLOUDINARY_URL = "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742792207/";
+  let sucursal = $q("#sucursal")
 
   function $q(object = null) {
     return document.querySelector(object);
@@ -81,6 +82,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   /* ************************************* OBTENER RECURSOS ******************************************************* */
 
+  await obtenerSucursales()
+
+  async function obtenerSucursales() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerSucursales");
+    const data = await getDatos(`${host}sucursal.controller.php`, params);
+    console.log("data de succursales -> ", data);
+    $q("#sucursal").innerHTML = "<option value=''>Seleccione</option>"
+    data.forEach((sucursal) => {
+      $q("#sucursal").innerHTML += `<option value="${sucursal.idsucursal}">${sucursal.nombre}</option>`;
+    });
+    //return data;
+  }
+
+
+
   async function obtenerNiveles() {
     const data = await getDatos(`${host}recurso.controller.php`, "operation=obtenerNiveles");
     console.log(data);
@@ -134,10 +151,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ME QUEDE ACA, FALTA IMPLEMENTAR EL USUARIO, SOLO LO COPIE DE OTRO CODIGO por el momento
-  async function registrarUsuario(idpersona) {
+  async function registrarUsuario(idsucursal, idpersona) {
     //const perfilData = await getPerfil(parseInt(selector("perfil").value));
     const params = new FormData();
     params.append("operation", "registrarUsuario");
+    params.append("idsucursal", idsucursal);
     params.append("idpersona", idpersona);
     params.append("nom_usuario", $q("#nom_usuario").value.trim());
     params.append("claveacceso", $q("#claveacceso").value);
@@ -203,6 +221,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#provincia").disabled = isblock;
     $q("#distrito").disabled = isblock;
     $q("#nom_usuario").disabled = isblock;
+    $q("#sucursal").disabled = isblock;
     $q("#claveacceso").disabled = isblock;
     $q("#upload_widget_firma").disabled = isblock;
     $q("#idnivelacceso").disabled = isblock;
@@ -225,6 +244,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#provincia").value = data.idprovincia;
     $q("#distrito").value = data.iddistrito;
     $q("#nom_usuario").value = data.nom_usuario;
+    $q("#sucursal").value = data.idsucursal;
     $q("#claveacceso").value = 'no visible';
     $q("#idnivelacceso").value = data.idnivelacceso;
   }
@@ -242,6 +262,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#departamento").value = '';
     $q("#provincia").value = '';
     $q("#distrito").value = '';
+    $q("#sucursal").value = '';
     $q("#nom_usuario").value = '';
     $q("#claveacceso").value = '';
     $q("#idnivelacceso").value = '';
@@ -399,7 +420,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       $q(".contenedor-marcaagua").hidden = true
     }
     else {
-     // $q(".contenedor-representante").hidden = true
+      // $q(".contenedor-representante").hidden = true
       $q(".contenedor-color").hidden = true
       $q(".contenedor-porcentaje").hidden = true
       //$q(".contenedor-representante").hidden = true
@@ -470,7 +491,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log(data);
         //alert("registrando persona")
         if (data.idpersona > 0) {
-          const usuario = await registrarUsuario(data.idpersona);
+          const usuario = await registrarUsuario($q("#sucursal").value, data.idpersona);
           console.log(usuario);
 
           if (usuario.idusuario > 0) {

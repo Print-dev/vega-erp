@@ -153,6 +153,14 @@
               </select>
             </div>
           </div>
+          <div class="row g-2 mt-3">
+            <label for="sucursal" class="col-sm-1 form-label size-label mt-3">Sucursal</label>
+            <div class="col-sm-5">
+              <select name="sucursal" id="sucursal" class="form-select" required>
+                <option value="">Selecciona</option>
+              </select>
+            </div>
+          </div>
           <div class="row g-2 mt-3 contenedor-color" hidden>
             <label for="color" class="col-sm-1 form-label size-label mt-3">Color:</label>
             <div class="col-sm-5">

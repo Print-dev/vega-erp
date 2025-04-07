@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let imagenUrlMarcaAgua = ""
   let imagenUrlFirma = ""
 
-  if(nivelacceso !== "Administrador"){
+  if (nivelacceso !== "Administrador") {
     $q("#btnRegresarActualizarUsuario").remove()
   }
 
@@ -25,6 +25,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     let data = await fetch(`${link}?${params}`);
     return data.json();
   }
+
+  await obtenerSucursales()
+
+
+  async function obtenerSucursales() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerSucursales");
+    const data = await getDatos(`${host}sucursal.controller.php`, params);
+    console.log("data de succursales -> ", data);
+    $q("#sucursal").innerHTML = "<option value=''>Seleccione</option>"
+    data.forEach((sucursal) => {
+      $q("#sucursal").innerHTML += `<option value="${sucursal.idsucursal}">${sucursal.nombre}</option>`;
+    });
+    //return data;
+  }
+
 
   async function obtenerDepartamentos() {
     const params = new URLSearchParams();
@@ -106,10 +122,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q(".contenedor-marcaagua").hidden = true
   }
   else {
-   // $q(".contenedor-representante").hidden = true
+    // $q(".contenedor-representante").hidden = true
     $q(".contenedor-color").hidden = true
     $q(".contenedor-porcentaje").hidden = true
-   // $q(".contenedor-representante").hidden = true
+    // $q(".contenedor-representante").hidden = true
     $q(".contenedor-marcaagua").hidden = true
   }
 
@@ -194,15 +210,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#nom_usuario").value = usuario.nom_usuario
     $q("#claveacceso").value = ""
     $q("#color").value = usuario.color
-   // $q("#esrepresentante").checked = usuario.esRepresentante == 1 ? true : false
+    // $q("#esrepresentante").checked = usuario.esRepresentante == 1 ? true : false
     $q("#porcentaje").value = usuario.porcentaje
+    $q("#sucursal").value = usuario.idsucursal
     $q("#previewImagen").src = `https://res.cloudinary.com/dynpy0r4v/image/upload/v1742792207/${usuario?.marcaagua}`
     $q("#previewImagenFirma").src = `https://res.cloudinary.com/dynpy0r4v/image/upload/v1742792207/${usuario?.firma}`
   }
 
-  async function actualizarUsuario(idusuario, marcaagua, firma) {
+  async function actualizarUsuario(idsucursal, idusuario, marcaagua, firma) {
     const body = new FormData();
     body.append("operation", "actualizarUsuario");
+    body.append("idsucursal", idsucursal);
     body.append("idusuario", idusuario);
     body.append("nomusuario", $q("#nom_usuario").value ? $q("#nom_usuario").value : '');
     body.append("claveacceso", $q("#claveacceso").value ? $q("#claveacceso").value : '');
@@ -210,7 +228,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     body.append("porcentaje", $q("#porcentaje").value ? $q("#porcentaje").value : '');
     body.append("marcaagua", marcaagua ? marcaagua : imagenUrlMarcaAgua);
     body.append("firma", firma ? firma : imagenUrlFirma);
-   // body.append("esRepresentante", $q("#esrepresentante").checked ? 1 : 0);
+    // body.append("esRepresentante", $q("#esrepresentante").checked ? 1 : 0);
 
     const fbody = await fetch(`${host}usuario.controller.php`, {
       method: "POST",
@@ -261,7 +279,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       //const nuevaUrlMarca = urlMarca + imagen_public_id
       //console.log("nueva url marca -> ", nuevaUrlMarca);
-      const usuario = await actualizarUsuario(idusuario, imagen_public_id, imagen_public_id_firma)
+      const usuario = await actualizarUsuario($q("#sucursal").value, idusuario, imagen_public_id, imagen_public_id_firma)
       console.log("usuario actualizad? ", usuario);
       if (usuario) {
         showToast("Datos del usuario actualizadas.", "SUCCESS")
@@ -273,7 +291,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   })
 
-  $q("#btnRegresarActualizarUsuario").addEventListener("click", ()=> {
+  $q("#btnRegresarActualizarUsuario").addEventListener("click", () => {
     window.location.href = `${hostOnly}/views/utilitario/usuarios/listar-usuarios`
   })
 

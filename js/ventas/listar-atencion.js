@@ -24,12 +24,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   let idconvenio
   let idusuarioArtDest
   let fechapresentacion
+  //let selectSucursales = $q("#sucursal")
+  let idsucursal
 
   //MODALES
   let modalDatosContrato
   let modalDatosClienteIncompleto
   let modalReserva
   let modalPropuestaCliente
+  let modalpreviageneracion
 
   // LISTAS
   let pagosExistentes = []
@@ -48,6 +51,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ***************************************** OBTENER DATOS ********************************
+
+  async function obtenerSucursales() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerSucursales");
+    const data = await getDatos(`${host}sucursal.controller.php`, params);
+    console.log("data de succursales -> ", data);
+
+    return data;
+  }
+
+
+
 
   async function obtenerArtistas() {
     const params = new URLSearchParams();
@@ -943,10 +958,27 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
         }
         // ACA SALE ERROR AUNQWEU YA LLENE TODOS LOS DATOS AUN SIGUE SALIENDO EL MODAL PARA LLENAR LOS DATOS IN OMPLETOS
-        window.open(
-          `${hostOnly}/generators/generadores_pdf/contrato_convenio/contratoconvenio.php?idconvenio=${convenio[0]?.idconvenio}`
-        );
-        return
+        const dataSucursales = await obtenerSucursales()
+
+        $q("#sucursalDocumento").innerHTML = "<option value=''>Seleccione</option>"
+        dataSucursales.forEach((sucursal) => {
+          $q("#sucursalDocumento").innerHTML += `<option value="${sucursal.idsucursal}">${sucursal.nombre}</option>`;
+
+        });
+        modalpreviageneracion = new bootstrap.Modal($q("#modal-previageneracion"));
+        modalpreviageneracion.show();
+        $q("#sucursalDocumento").addEventListener("change", async (e) => {
+          idsucursal = e.target.value
+
+        })
+
+        $q("#btnGenerarDocumento").addEventListener("click", async () => {
+          window.open(
+            `${hostOnly}/generators/generadores_pdf/contrato_convenio/contratoconvenio.php?idconvenio=${convenio[0]?.idconvenio}&idsucursal=${idsucursal}`
+          );
+          return
+        })
+
       } else {
         showToast("Aun no ha sido aprobada la propuesta del cliente", "ERROR");
         return
@@ -1008,6 +1040,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     await renderizarUbigeoPresentacion(idcotizar);
     const modalImg = new bootstrap.Modal($q("#modal-previacotizacion"));
     modalImg.show();
+    const dataSucursales = await obtenerSucursales()
+
+    $q("#sucursal").innerHTML = "<option value=''>Seleccione</option>"
+    dataSucursales.forEach((sucursal) => {
+      $q("#sucursal").innerHTML += `<option value="${sucursal.idsucursal}">${sucursal.nombre}</option>`;
+
+    });
+
+    $q("#sucursal").addEventListener("change", async (e) => {
+      idsucursal = e.target.value
+    })
   }
 
   async function buttonContrato(e) {
@@ -1117,12 +1160,27 @@ document.addEventListener("DOMContentLoaded", async () => {
               }
             }
 
-            window.open(
-              `${hostOnly}/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0]?.idcontrato
-              }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${calcularDificultadPrecio?.costoDificultad}`
-            );
-            return
+            const dataSucursales = await obtenerSucursales()
 
+            $q("#sucursalDocumento").innerHTML = "<option value=''>Seleccione</option>"
+            dataSucursales.forEach((sucursal) => {
+              $q("#sucursalDocumento").innerHTML += `<option value="${sucursal.idsucursal}">${sucursal.nombre}</option>`;
+
+            });
+            modalpreviageneracion = new bootstrap.Modal($q("#modal-previageneracion"));
+            modalpreviageneracion.show();
+            $q("#sucursalDocumento").addEventListener("change", async (e) => {
+              idsucursal = e.target.value
+
+            })
+            $q("#btnGenerarDocumento").addEventListener("click", async () => {
+              window.open(
+                `${hostOnly}/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0]?.idcontrato
+                }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${calcularDificultadPrecio?.costoDificultad}&idsucursal=${idsucursal}`
+              );
+              return
+            })
+            return
           }
         }
 
@@ -1214,10 +1272,26 @@ document.addEventListener("DOMContentLoaded", async () => {
               return;
             }
           }
-          window.open(
-            `${hostOnly}/generators/generadores_pdf/constancia_reserva/constanciareserva.php?iddetallepresentacion=${idcontrato}&idpagocontrato=${pagosContrato[0]?.idpagocontrato}` // esto en realida es el iddetalle_presentacion
-          );
-          console.log("Si existe la reserva")
+          const dataSucursales = await obtenerSucursales()
+
+          $q("#sucursalDocumento").innerHTML = "<option value=''>Seleccione</option>"
+          dataSucursales.forEach((sucursal) => {
+            $q("#sucursalDocumento").innerHTML += `<option value="${sucursal.idsucursal}">${sucursal.nombre}</option>`;
+
+          });
+          modalpreviageneracion = new bootstrap.Modal($q("#modal-previageneracion"));
+          modalpreviageneracion.show();
+          $q("#sucursalDocumento").addEventListener("change", async (e) => {
+            idsucursal = e.target.value
+
+          })
+          $q("#btnGenerarDocumento").addEventListener("click", async () => {
+            window.open(
+              `${hostOnly}/generators/generadores_pdf/constancia_reserva/constanciareserva.php?iddetallepresentacion=${idcontrato}&idpagocontrato=${pagosContrato[0]?.idpagocontrato}&idsucursal=${idsucursal}` // esto en realida es el iddetalle_presentacion
+            );
+            console.log("Si existe la reserva")
+            return
+          })
           return
         } else {
           // abrir modal
@@ -1549,9 +1623,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   })
 
   $q("#btnGenerarCotizacion").addEventListener("click", async (e) => {
+
     console.log("clickeando");
     window.open(
-      `${hostOnly}/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${calcularDificultadPrecio?.costoDificultad}`
+      `${hostOnly}/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${calcularDificultadPrecio?.costoDificultad}&idsucursal=${idsucursal}`
     );
     return;
   });

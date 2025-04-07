@@ -22,6 +22,14 @@
                                     <div class="row">
                                         <div class="col-md-2">
                                             <div class="form-floating">
+                                                <select name="sucursal" id="sucursal" class="form-select filter">
+
+                                                </select>
+                                                <label for="sucursal" class="form-label">Sucursal</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-floating">
                                                 <select name="nivelacceso" id="nivelacceso" class="form-select filter">
 
                                                 </select>

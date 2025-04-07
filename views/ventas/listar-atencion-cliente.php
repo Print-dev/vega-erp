@@ -102,7 +102,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalPreviaCotizacion">Tarifario</h1>
+                <h1 class="modal-title fs-5" id="modalPreviaCotizacion">Previa cotizacion</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -119,7 +119,16 @@
                     <tbody id="tInfoCotizacion">
 
                     </tbody>
-
+                    <tfoot>
+                        <div class="d-flex justify-content-center mb-3">
+                            <div class="form-floating col-md-8">
+                                <select name="sucursal" id="sucursal" class="form-select">
+                                    <option value="">Selecciona</option>
+                                </select>
+                                <label for="sucursal" class="form-label">Sucursal</label>
+                            </div>
+                        </div>
+                    </tfoot>
                 </table>
             </div>
             <div class="modal-footer">
@@ -130,6 +139,33 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal-previageneracion" tabindex="-1" aria-labelledby="modalPreviaGeneracion" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalPreviaGeneracion">Seleccionar Sucursal</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-center mb-3">
+                    <div class="form-floating col-md-8">
+                        <select name="sucursalDocumento" id="sucursalDocumento" class="form-select">
+                            <option value="">Selecciona</option>
+                        </select>
+                        <label for="sucursalDocumento" class="form-label">Sucursal</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnGenerarDocumento">Generar Documento</button>
+                <!--                 <button type="button" class="btn btn-primary btnGuardarContrato" id="close-mdl-cotizacion">Guardar y cerrar</button>
+ -->
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="modal fade" id="modal-datosclienteincompletos" tabindex="-1" aria-labelledby="modalDatosClienteIncompletos" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg">

@@ -27,7 +27,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="form-floating">
-                                <input type="tel" id="telefono" name="telefono" maxlength="20" class="form-control" placeholder="Teléfono" required>
+                                <input type="tel" id="telefono" name="telefono" maxlength="20" class="form-control" placeholder="Teléfono">
                                 <label for="telefono">Teléfono</label>
                             </div>
                         </div>
@@ -42,7 +42,7 @@
                     <div class="row g-2 mb-3">
                         <div class="col-md-4">
                             <div class="form-floating">
-                                <input type="email" id="email" name="email" class="form-control" placeholder="Correo Electrónico" required>
+                                <input type="email" id="email" name="email" class="form-control" placeholder="Correo Electrónico">
                                 <label for="email">Correo Electrónico</label>
                             </div>
                         </div>
@@ -89,7 +89,7 @@
                     <div class="row g-2 mb-3">
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <select name="idresponsable" id="idresponsable" class="form-select" required>
+                                <select name="idresponsable" id="idresponsable" class="form-select">
                                     <option value="">Selecciona Responsable</option>
                                     <!-- Opciones cargadas desde DB -->
                                 </select>

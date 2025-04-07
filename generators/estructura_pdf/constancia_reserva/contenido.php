@@ -1,8 +1,8 @@
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Constancia Reserva <?= $cotizacion[0]['nom_usuario'] ?></title>
-  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constancia Reserva <?= $cotizacion[0]['nom_usuario'] ?></title>
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png">
 </head>
 <style>
     html,
@@ -288,13 +288,19 @@ $monto_texto = numeroATexto($monto_numerico);
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="5">Negociaciones y producciones Vega S.A.C</td>
+                        <td colspan="5"><?= $representante[0]['nombre'] ?></td>
                     </tr>
                     <tr>
                         <td colspan="5">Representado por</td>
                     </tr>
                     <tr>
-                        <td colspan="5">Nayade Liz Vega Pascual</td>
+                        <td colspan="5"><?php
+                                        if (isset($representante[0])) {
+                                            echo $representante[0]['nombres']  . ' '.  $representante[0]['apellidos'];
+                                        } else {
+                                            echo "No hay representante asignado aun.";
+                                        }
+                                        ?></td>
                     </tr>
                     <tr>
                         <td colspan="5">EL REPRESENTANTE</td>

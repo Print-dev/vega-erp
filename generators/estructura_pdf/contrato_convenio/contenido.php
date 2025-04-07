@@ -303,7 +303,7 @@ $monto_texto = numeroATexto($monto_numerico);
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="5">Negociaciones y producciones Vega S.A.C</td>
+                        <td colspan="5"><?= $representante[0]['nombre'] ?></td>
                     </tr>
                     <tr>
                         <td colspan="5">Representado por</td>
@@ -311,7 +311,7 @@ $monto_texto = numeroATexto($monto_numerico);
                     <tr>
                         <td colspan="5"><?php 
                         if(isset($representante[0])){
-                            echo $representante[0]['nombres'] . $representante[0]['apellidos'];
+                            echo $representante[0]['nombres'] . ' '. $representante[0]['apellidos'];
                         }else{
                             echo "No hay representante asignado aun.";
                         }

@@ -27,6 +27,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($sucursal->obtenerSucursalPorId($cleanData));
       break;
 
+    case 'obtenerSucursales':
+      echo json_encode($sucursal->obtenerSucursales());
+      break;
+
     case 'obtenerRepresentanteEmpresa':
       $cleanData = [
         'idsucursal' => $_GET['idsucursal'] === "" ? null : $sucursal->limpiarCadena($_GET['idsucursal']),

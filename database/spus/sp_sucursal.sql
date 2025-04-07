@@ -23,9 +23,7 @@ BEGIN
     AND (DEP.iddepartamento LIKE CONCAT('%', COALESCE(_iddepartamento, ''), '%') OR _iddepartamento IS NULL);
 -- insert into sucursales (iddistrito, idresponsable, nombre, ruc, telefono, direccion) values (959, 'NEGOCIACIONES Y PRODUCCIONES VEGA S.A.C.', '20608627422', '')
 END //
-call sp_listar_sucursales (null, 11, null, null);
-select * from distritos
-select * from departamentos;
+
 DROP PROCEDURE IF EXISTS `sp_registrar_sucursal`;
 DELIMITER $$
 CREATE PROCEDURE sp_registrar_sucursal(
@@ -42,9 +40,8 @@ BEGIN
     INSERT INTO sucursales (iddistrito, idresponsable, nombre, ruc, telefono, direccion, web, email)
     VALUES (_iddistrito, nullif(_idresponsable, ''), nullif(_nombre, ''), _ruc, nullif(_telefono, ''), _direccion, nullif(_web,''), nullif(_email, ''));
 END $$
-
-USE vega_producciones_erp;
-
+-- call sp_registrar_sucursal (959, 1, 'Vega', '20608627422', '999333212', 'av polla', null, null)
+-- select * from sucursales;
 DROP PROCEDURE if exists sp_actualizar_sucursal;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_sucursal (
@@ -78,7 +75,7 @@ CREATE PROCEDURE `sp_obtener_representante`(
 )
 BEGIN
     SELECT 
-	SUC.idsucursal, DEP.departamento, PRO.provincia, DIS.distrito, SUC.nombre, SUC.ruc, SUC.telefono, SUC.direccion, PER.nombres, PER.apellidos
+	SUC.idsucursal, DEP.departamento, PRO.provincia, DIS.distrito, SUC.nombre, SUC.ruc, SUC.telefono, SUC.direccion, PER.nombres, PER.apellidos, USU.firma, PER.num_doc 
     FROM sucursales SUC
     LEFT JOIN distritos DIS ON DIS.iddistrito = SUC.iddistrito
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
@@ -87,6 +84,3 @@ BEGIN
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
     WHERE SUC.idsucursal = _idsucursal;
 END //
-
-SELECT * FROM nivelaccesos;
-select * from sucursales;

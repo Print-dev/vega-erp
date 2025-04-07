@@ -1,8 +1,8 @@
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contrato presentacion <?= $contratoPresentacion[0]['nom_usuario'] ?></title>
-  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrato presentacion <?= $contratoPresentacion[0]['nom_usuario'] ?></title>
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png">
 </head>
 <style>
     html,
@@ -209,9 +209,9 @@ $monto_texto = numeroATexto($monto_numerico); */
         </tr>
         <tr>
             <td class="label" colspan="5" style="border: none;">
-                <strong>Negociaciones y producciones Vega S.A.C</strong>, con RUC N° 20608627422, debidamente
-                representado por su gerente general Nayade Liz Vega Pascual identificada con DNI. N.º
-                47842296, según el registro de personas jurídicas de Lima, a quién en adelante se le
+                <strong><?= $representante[0]['nombre'] ?></strong>, con RUC N° <?= $representante[0]['ruc'] ?>, debidamente
+                representado por su gerente general <?= $representante[0]['nombres'] ?> <?= $representante[0]['apellidos'] ?> identificada con DNI. N.º
+                <?= $representante[0]['num_doc'] ?>, según el registro de personas jurídicas de Lima, a quién en adelante se le
                 denominará EL REPRESENTANTE de <strong>“<?= $contratoPresentacion[0]['nom_usuario'] ?>”</strong>;
                 y de la otra parte:
             </td>
@@ -406,13 +406,19 @@ $monto_texto = numeroATexto($monto_numerico); */
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="5">Negociaciones y producciones Vega S.A.C</td>
+                        <td colspan="5"><?= $representante[0]['nombre'] ?></td>
                     </tr>
                     <tr>
                         <td colspan="5">Representado por</td>
                     </tr>
                     <tr>
-                        <td colspan="5">Nayade Liz Vega Pascual</td>
+                        <td colspan="5"><?php
+                                        if (isset($representante[0])) {
+                                            echo $representante[0]['nombres'] . ' '. $representante[0]['apellidos'];
+                                        } else {
+                                            echo "No hay representante asignado aun.";
+                                        }
+                                        ?></td>
                     </tr>
                     <tr>
                         <td colspan="5">EL REPRESENTANTE</td>

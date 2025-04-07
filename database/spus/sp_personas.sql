@@ -44,7 +44,7 @@ BEGIN
 	SELECT 
     P.idpersona, P.apellidos, P.nombres, P.genero, P.direccion,P.telefono, P.telefono2, P.correo, 
     NA.idnacionalidad,  D.iddepartamento, PR.idprovincia, DI.iddistrito,
-    U.nom_usuario, U.idnivelacceso
+    U.nom_usuario, U.idnivelacceso, U.idsucursal
     FROM usuarios U
     LEFT JOIN personas P ON U.idpersona = P.idpersona
     LEFT JOIN distritos DI ON DI.iddistrito = P.iddistrito

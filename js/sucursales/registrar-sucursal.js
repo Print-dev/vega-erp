@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    alert("gaaaa")
     // VARIABLES 
     let selectResponsables = $q("#idresponsable")
 
@@ -94,14 +93,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const body = new FormData();
         body.append("operation", "registrarSucursal");
-        body.append("iddistrito", $q("#iddistrito").value);
-        body.append("idresponsable", $q("#idresponsable").value);
-        body.append("nombre", $q("#nombre").value);
-        body.append("ruc", $q("#ruc").value);
-        body.append("telefono", $q("#telefono").value);
-        body.append("direccion", $q("#direccion").value);
-        body.append("web", $q("#web").value);
-        body.append("email", $q("#email").value);
+        body.append("iddistrito", $q("#iddistrito").value ? $q("#iddistrito").value.trim() : '');
+        body.append("idresponsable", $q("#idresponsable").value ? $q("#idresponsable").value.trim() : '');
+        body.append("nombre", $q("#nombre").value ? $q("#nombre").value.trim() : '');
+        body.append("ruc", $q("#ruc").value ? $q("#ruc").value.trim() : '');
+        body.append("telefono", $q("#telefono").value ? $q("#telefono").value.trim() : '');
+        body.append("direccion", $q("#direccion").value     ? $q("#direccion").value.trim() : '');
+        body.append("web", $q("#web").value ? $q("#web").value.trim() : '');
+        body.append("email", $q("#email").value ? $q("#email").value.trim() : '');
 
         const fbody = await fetch(`${host}sucursal.controller.php`, {
             method: "POST",
@@ -116,8 +115,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const data = await registrarSucursal();
         console.log(data);
         if (data) {
-            showToast("Sucursal registrada correctamente", "SUCCESS");
-            window.location.href = `${hostOnly}/views/utilitario/sucursales/listar-sucursales`
+            showToast("Sucursal registrado correctamente", "SUCCESS", 2500, `${hostOnly}/views/utilitario/sucursales/listar-sucursales`);	
+
         } else {
             alert("Error al registrar la sucursal");
         }

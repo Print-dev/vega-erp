@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+         xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+         xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+         xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
+         xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+   
+   <!-- ========== EXTENSIONES UBL (Opcional pero recomendado para Perú) ========== -->
+   <ext:UBLExtensions>
+      <ext:UBLExtension>
+         <ext:ExtensionContent>
+            <!-- Información adicional para SUNAT -->
+            <sac:AdditionalInformation xmlns:sac="urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1">
+               <sac:AdditionalMonetaryTotal>
+                  <cbc:ID>1001</cbc:ID> <!-- Total valor de venta - operaciones gravadas -->
+                  <cbc:PayableAmount currencyID="PEN">100.00</cbc:PayableAmount>
+               </sac:AdditionalMonetaryTotal>
+               <sac:AdditionalMonetaryTotal>
+                  <cbc:ID>1002</cbc:ID> <!-- Total valor de venta - operaciones inafectas -->
+                  <cbc:PayableAmount currencyID="PEN">0.00</cbc:PayableAmount>
+               </sac:AdditionalMonetaryTotal>
+               <sac:AdditionalMonetaryTotal>
+                  <cbc:ID>1003</cbc:ID> <!-- Total valor de venta - operaciones exoneradas -->
+                  <cbc:PayableAmount currencyID="PEN">0.00</cbc:PayableAmount>
+               </sac:AdditionalMonetaryTotal>
+               <sac:AdditionalMonetaryTotal>
+                  <cbc:ID>1004</cbc:ID> <!-- Total valor de venta - operaciones gratuitas -->
+                  <cbc:PayableAmount currencyID="PEN">0.00</cbc:PayableAmount>
+               </sac:AdditionalMonetaryTotal>
+               <sac:AdditionalMonetaryTotal>
+                  <cbc:ID>2005</cbc:ID> <!-- Total descuentos -->
+                  <cbc:PayableAmount currencyID="PEN">0.00</cbc:PayableAmount>
+               </sac:AdditionalMonetaryTotal>
+               <sac:AdditionalProperty>
+                  <cbc:ID>1000</cbc:ID> <!-- Código de leyenda -->
+                  <cbc:Value>SON CIENTO DIECIOCHO CON 00/100 SOLES</cbc:Value>
+               </sac:AdditionalProperty>
+            </sac:AdditionalInformation>
+         </ext:ExtensionContent>
+      </ext:UBLExtension>
+   </ext:UBLExtensions>
+
+   <!-- ========== INFORMACIÓN BÁSICA DEL DOCUMENTO ========== -->
+   <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+   <cbc:CustomizationID>2.0</cbc:CustomizationID> <!-- Versión del formato UBL -->
+   <cbc:ID>F001-1</cbc:ID> <!-- Serie y número de factura -->
+   <cbc:IssueDate>2023-11-15</cbc:IssueDate> <!-- Fecha de emisión -->
+   <cbc:IssueTime>10:30:00</cbc:IssueTime> <!-- Hora de emisión -->
+   <cbc:DueDate>2023-11-30</cbc:DueDate> <!-- Fecha de vencimiento -->
+   <cbc:InvoiceTypeCode listID="0101" listAgencyName="PE:SUNAT" listName="SUNAT:Identificador de Tipo de Documento">01</cbc:InvoiceTypeCode> <!-- 01=Factura -->
+   <cbc:Note>Venta realizada por sistema electrónico</cbc:Note> <!-- Leyenda opcional -->
+   <cbc:DocumentCurrencyCode listID="ISO 4217 Alpha" listName="Currency">PEN</cbc:DocumentCurrencyCode> <!-- Moneda del documento -->
+   <cbc:LineCountNumeric>1</cbc:LineCountNumeric> <!-- Número de líneas de detalle -->
+
+   <!-- ========== FIRMA DIGITAL (Opcional pero requerido para Perú) ========== -->
+   <cac:Signature>
+      <cbc:ID>IDSignKM</cbc:ID>
+      <cac:SignatoryParty>
+         <cac:PartyIdentification>
+            <cbc:ID>20600055519</cbc:ID>
+         </cac:PartyIdentification>
+         <cac:PartyName>
+            <cbc:Name>MI EMPRESA SAC</cbc:Name>
+         </cac:PartyName>
+      </cac:SignatoryParty>
+      <cac:DigitalSignatureAttachment>
+         <cac:ExternalReference>
+            <cbc:URI>#SignatureKM</cbc:URI>
+         </cac:ExternalReference>
+      </cac:DigitalSignatureAttachment>
+   </cac:Signature>
+
+   <!-- ========== EMISOR ========== -->
+   <cac:AccountingSupplierParty>
+      <cbc:CustomerAssignedAccountID>20600055519</cbc:CustomerAssignedAccountID>
+      <cbc:AdditionalAccountID>6</cbc:AdditionalAccountID> <!-- Tipo de documento (6=RUC) -->
+      <cac:Party>
+         <cac:PartyIdentification>
+            <cbc:ID schemeID="6" schemeName="SUNAT:Identificador de Documento de Identidad" schemeAgencyName="PE:SUNAT">20600055519</cbc:ID>
+         </cac:PartyIdentification>
+         <cac:PartyName>
+            <cbc:Name><![CDATA[MI EMPRESA SAC]]></cbc:Name>
+         </cac:PartyName>
+         <cac:PostalAddress>
+            <cbc:ID>150101</cbc:ID> <!-- Ubigeo -->
+            <cbc:StreetName><![CDATA[AV. LOS OLIVOS 123]]></cbc:StreetName>
+            <cbc:CitySubdivisionName><![CDATA[LOS OLIVOS]]></cbc:CitySubdivisionName>
+            <cbc:CityName><![CDATA[LIMA]]></cbc:CityName>
+            <cbc:CountrySubentity><![CDATA[LIMA]]></cbc:CountrySubentity>
+            <cbc:District><![CDATA[LIMA]]></cbc:District>
+            <cac:Country>
+               <cbc:IdentificationCode listID="ISO 3166-1" listName="Country">PE</cbc:IdentificationCode>
+            </cac:Country>
+         </cac:PostalAddress>
+         <cac:PartyTaxScheme>
+            <cbc:RegistrationName><![CDATA[MI EMPRESA SAC]]></cbc:RegistrationName>
+            <cbc:CompanyID schemeID="6" schemeName="SUNAT:Identificador de Documento de Identidad" schemeAgencyName="PE:SUNAT">20600055519</cbc:CompanyID>
+            <cac:TaxScheme>
+               <cbc:ID>VAT</cbc:ID>
+               <cbc:Name>IGV</cbc:Name>
+            </cac:TaxScheme>
+         </cac:PartyTaxScheme>
+         <cac:PartyLegalEntity>
+            <cbc:RegistrationName><![CDATA[MI EMPRESA SAC]]></cbc:RegistrationName>
+         </cac:PartyLegalEntity>
+      </cac:Party>
+   </cac:AccountingSupplierParty>
+
+   <!-- ========== CLIENTE ========== -->
+   <cac:AccountingCustomerParty>
+      <cbc:CustomerAssignedAccountID>10467793549</cbc:CustomerAssignedAccountID>
+      <cbc:AdditionalAccountID>1</cbc:AdditionalAccountID> <!-- Tipo de documento (1=DNI) -->
+      <cac:Party>
+         <cac:PartyIdentification>
+            <cbc:ID schemeID="1" schemeName="SUNAT:Identificador de Documento de Identidad" schemeAgencyName="PE:SUNAT">10467793549</cbc:ID>
+         </cac:PartyIdentification>
+         <cac:PartyName>
+            <cbc:Name><![CDATA[CLIENTE PRUEBA]]></cbc:Name>
+         </cac:PartyName>
+         <cac:PostalAddress>
+            <cbc:ID>150101</cbc:ID> <!-- Ubigeo -->
+            <cbc:StreetName><![CDATA[JR. LAS CAMELIAS 123]]></cbc:StreetName>
+            <cbc:CitySubdivisionName><![CDATA[LIMA]]></cbc:CitySubdivisionName>
+            <cbc:CityName><![CDATA[LIMA]]></cbc:CityName>
+            <cbc:CountrySubentity><![CDATA[LIMA]]></cbc:CountrySubentity>
+            <cbc:District><![CDATA[LIMA]]></cbc:District>
+            <cac:Country>
+               <cbc:IdentificationCode listID="ISO 3166-1" listName="Country">PE</cbc:IdentificationCode>
+            </cac:Country>
+         </cac:PostalAddress>
+         <cac:PartyTaxScheme>
+            <cbc:RegistrationName><![CDATA[CLIENTE PRUEBA]]></cbc:RegistrationName>
+            <cbc:CompanyID schemeID="1" schemeName="SUNAT:Identificador de Documento de Identidad" schemeAgencyName="PE:SUNAT">10467793549</cbc:CompanyID>
+            <cac:TaxScheme>
+               <cbc:ID>VAT</cbc:ID>
+               <cbc:Name>IGV</cbc:Name>
+            </cac:TaxScheme>
+         </cac:PartyTaxScheme>
+      </cac:Party>
+   </cac:AccountingCustomerParty>
+
+   <!-- ========== TÉRMINOS DE PAGO ========== -->
+   <cac:PaymentTerms>
+      <cbc:ID>FormaPago</cbc:ID>
+      <cbc:PaymentMeansID>Contado</cbc:PaymentMeansID>
+      <cbc:Amount currencyID="PEN">118.00</cbc:Amount>
+      <cbc:PaymentDueDate>2023-11-30</cbc:PaymentDueDate>
+   </cac:PaymentTerms>
+
+   <!-- ========== MÉTODO DE PAGO ========== -->
+   <cac:PaymentMeans>
+      <cbc:ID>Contado</cbc:ID>
+      <cbc:PaymentMeansCode listID="UN/ECE 4461" listName="Medio de Pago">1</cbc:PaymentMeansCode> <!-- 1=Efectivo -->
+      <cbc:PaymentDueDate>2023-11-30</cbc:PaymentDueDate>
+      <cbc:PaymentChannelCode>01</cbc:PaymentChannelCode>
+      <cac:PayeeFinancialAccount>
+         <cbc:ID>19100000001</cbc:ID> <!-- Número de cuenta -->
+         <cac:FinancialInstitutionBranch>
+            <cbc:ID>002</cbc:ID> <!-- Código de agencia -->
+            <cac:FinancialInstitution>
+               <cbc:ID>03</cbc:ID> <!-- Código de entidad financiera -->
+            </cac:FinancialInstitution>
+         </cac:FinancialInstitutionBranch>
+      </cac:PayeeFinancialAccount>
+   </cac:PaymentMeans>
+
+   <!-- ========== IMPUESTOS ========== -->
+   <cac:TaxTotal>
+      <cbc:TaxAmount currencyID="PEN">18.00</cbc:TaxAmount>
+      <cac:TaxSubtotal>
+         <cbc:TaxableAmount currencyID="PEN">100.00</cbc:TaxableAmount>
+         <cbc:TaxAmount currencyID="PEN">18.00</cbc:TaxAmount>
+         <cac:TaxCategory>
+            <cbc:ID schemeAgencyName="United Nations Economic Commission for Europe" schemeID="UN/ECE 5305">S</cbc:ID> <!-- S=Gravado -->
+            <cbc:Percent>18.00</cbc:Percent>
+            <cbc:TaxExemptionReasonCode listAgencyName="PE:SUNAT" listName="Afectacion del IGV">10</cbc:TaxExemptionReasonCode>
+            <cac:TaxScheme>
+               <cbc:ID>VAT</cbc:ID>
+               <cbc:Name>IGV</cbc:Name>
+            </cac:TaxScheme>
+         </cac:TaxCategory>
+      </cac:TaxSubtotal>
+   </cac:TaxTotal>
+
+   <!-- ========== TOTALES ========== -->
+   <cac:LegalMonetaryTotal>
+      <cbc:LineExtensionAmount currencyID="PEN">100.00</cbc:LineExtensionAmount>
+      <cbc:TaxInclusiveAmount currencyID="PEN">118.00</cbc:TaxInclusiveAmount>
+      <cbc:AllowanceTotalAmount currencyID="PEN">0.00</cbc:AllowanceTotalAmount>
+      <cbc:ChargeTotalAmount currencyID="PEN">0.00</cbc:ChargeTotalAmount>
+      <cbc:PrepaidAmount currencyID="PEN">0.00</cbc:PrepaidAmount>
+      <cbc:PayableAmount currencyID="PEN">118.00</cbc:PayableAmount>
+   </cac:LegalMonetaryTotal>
+
+   <!-- ========== DETALLE DE ITEMS ========== -->
+   <cac:InvoiceLine>
+      <cbc:ID>1</cbc:ID>
+      <cbc:InvoicedQuantity unitCode="NIU" unitCodeListID="UN/ECE rec 20" unitCodeListAgencyName="United Nations Economic Commission for Europe">1</cbc:InvoicedQuantity>
+      <cbc:LineExtensionAmount currencyID="PEN">100.00</cbc:LineExtensionAmount>
+      
+      <!-- Precios de referencia -->
+      <cac:PricingReference>
+         <cac:AlternativeConditionPrice>
+            <cbc:PriceAmount currencyID="PEN">100.00</cbc:PriceAmount>
+            <cbc:PriceTypeCode listAgencyName="PE:SUNAT" listName="Tipo de Precio">01</cbc:PriceTypeCode> <!-- 01=Precio unitario -->
+         </cac:AlternativeConditionPrice>
+      </cac:PricingReference>
+      
+      <!-- Impuestos del item -->
+      <cac:TaxTotal>
+         <cbc:TaxAmount currencyID="PEN">18.00</cbc:TaxAmount>
+         <cac:TaxSubtotal>
+            <cbc:TaxableAmount currencyID="PEN">100.00</cbc:TaxableAmount>
+            <cbc:TaxAmount currencyID="PEN">18.00</cbc:TaxAmount>
+            <cac:TaxCategory>
+               <cbc:ID schemeAgencyName="United Nations Economic Commission for Europe" schemeID="UN/ECE 5305">S</cbc:ID> <!-- S=Gravado -->
+               <cbc:Percent>18.00</cbc:Percent>
+               <cbc:TaxExemptionReasonCode listAgencyName="PE:SUNAT" listName="Afectacion del IGV">10</cbc:TaxExemptionReasonCode>
+               <cac:TaxScheme>
+                  <cbc:ID>VAT</cbc:ID>
+                  <cbc:Name>IGV</cbc:Name>
+               </cac:TaxScheme>
+            </cac:TaxCategory>
+         </cac:TaxSubtotal>
+      </cac:TaxTotal>
+      
+      <!-- Descripción del item -->
+      <cac:Item>
+         <cbc:Description><![CDATA[PRODUCTO DE PRUEBA]]></cbc:Description>
+         <cac:SellersItemIdentification>
+            <cbc:ID>PROD01</cbc:ID>
+         </cac:SellersItemIdentification>
+         <cac:CommodityClassification>
+            <cbc:ItemClassificationCode listID="UNSPSC" listAgencyName="GS1 US" listVersionID="10.0901">52101500</cbc:ItemClassificationCode>
+         </cac:CommodityClassification>
+      </cac:Item>
+      
+      <!-- Precio unitario -->
+      <cac:Price>
+         <cbc:PriceAmount currencyID="PEN">100.00</cbc:PriceAmount>
+      </cac:Price>
+   </cac:InvoiceLine>
+</Invoice>

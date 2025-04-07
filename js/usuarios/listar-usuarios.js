@@ -25,6 +25,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   })()
 
+  await obtenerSucursales()
+
+  async function obtenerSucursales() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerSucursales");
+    const data = await getDatos(`${host}sucursal.controller.php`, params);
+    console.log("data de succursales -> ", data);
+    $q("#sucursal").innerHTML = "<option value=''>Todos</option>"
+    data.forEach((sucursal) => {
+      $q("#sucursal").innerHTML += `<option value="${sucursal.idsucursal}">${sucursal.nombre}</option>`;
+    });
+    //return data;
+  }
+
+
   async function obtenerNiveles() {
     const data = await getDatos(`${host}recurso.controller.php`, "operation=obtenerNiveles");
     console.log(data);
@@ -46,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rbody;
   }
 
-  
+
   function createTable(data) {
     let rows = $("#tb-body-usuario").find("tr");
     ////console.log(rows.length);
@@ -122,6 +137,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           await dataFilters();
         });
       }
+      if (x.id === "sucursal") {
+        x.addEventListener("change", async () => {
+          await dataFilters();
+        });
+      }
     });
   }
 
@@ -136,6 +156,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     params.append("apellidos", $q("#apellidos").value ? $q("#apellidos").value : '');
     params.append("telefono", $q("#telefono").value ? $q("#telefono").value : '');
     params.append("nomusuario", $q("#nomusuario").value ? $q("#nomusuario").value : '');
+    params.append("idsucursal", $q("#sucursal").value ? $q("#sucursal").value : '');
     //alert("asdasdd")
     const data = await getDatos(`${host}usuario.controller.php`, params);
     //console.log(data);
@@ -160,9 +181,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             <td>${x.apellidos}</td>
             <td>${x.nom_usuario}</td>  
             <td>${x.telefono}</td>
-            <td>${x.estado==1?"Activo":
-              x.estado==2?"Inhabilitado":
-              ``}</td>
+            <td>${x.estado == 1 ? "Activo" :
+          x.estado == 2 ? "Inhabilitado" :
+            ``}</td>
                                                          
             <td>
               <button type="button" class="btn btn-sm btn-success btn-editar" data-id=${x.idusuario} title="Editar usuario">
@@ -216,7 +237,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
   }
-  
+
   /**
 * Carga los botones que estan en la tabla
 */
@@ -230,7 +251,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (e.target.classList.contains("btn-deshabilitar")) {
           buttonDeshabilitar(e);
         }
-        
+
         if (e.target.classList.contains("btn-habilitar")) {
           buttonHabilitar(e);
         }

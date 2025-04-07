@@ -9,7 +9,7 @@ class Usuario extends ExecQuery
   public function filtrarUsuarios($params = []): array
   {
     try {
-      $sp = parent::execQ("CALL sp_obtener_usuarios(?,?,?,?,?,?)");
+      $sp = parent::execQ("CALL sp_obtener_usuarios(?,?,?,?,?,?,?)");
       $sp->execute(
         array(
           $params['nivelacceso'],
@@ -18,6 +18,7 @@ class Usuario extends ExecQuery
           $params['apellidos'],
           $params['telefono'],
           $params['nomusuario'],
+          $params['idsucursal'],
         )
 
       );
@@ -53,9 +54,10 @@ class Usuario extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_usuario(@idusuario,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_usuario(@idusuario,?,?,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
+          $params['idsucursal'],
           $params['idpersona'],
           $params['nom_usuario'],
           $params['claveacceso'],
@@ -155,9 +157,10 @@ class Usuario extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare("CALL sp_actualizar_usuario(?,?,?,?,?,?,?)");
+      $cmd = $pdo->prepare("CALL sp_actualizar_usuario(?,?,?,?,?,?,?,?)");
       $act = $cmd->execute(
         array(
+          $params['idsucursal'],
           $params['idusuario'],
           $params['nomusuario'],
           $params['claveacceso'],

@@ -283,16 +283,16 @@ echo $hora_final_formateada;
             <td class="header-left">
                 <table class="header-table">
                     <tr>
-                        <td><strong>NEGOCIACIONES Y PRODUCCIONES VEGA S.A.C.</strong></td>
+                        <td><strong><?= $representante[0]['nombre'] ?></strong></td>
                     </tr>
                     <tr>
-                        <td>RUC N° 20608627422 / Cel. 970666528</td>
+                        <td>RUC N° <?= $representante[0]['ruc'] ?> / Cel. <?= $representante[0]['telefono'] ?></td>
                     </tr>
                     <tr>
-                        <td>Direc: Av. Alfredo Mendiola N° 2139</td>
+                        <td>Direc: <?= $representante[0]['direccion'] ?></td>
                     </tr>
                     <tr>
-                        <td>San Martín de Porres – Lima</td>
+                        <td><?= $representante[0]['distrito'] ?> – <?= $representante[0]['departamento'] ?></td>
                     </tr>
                 </table>
             </td>
@@ -485,10 +485,10 @@ echo $hora_final_formateada;
             </td>
         </tr>
         <tr>
-            <td colspan="5">V° B° Vega Producciones S.A.C</td>
+            <td colspan="5"><?= $representante[0]['nombre'] ?></td>
         </tr>
         <tr>
-            <td colspan="5">RUC N° 20608627422</td>
+            <td colspan="5">RUC N° <?= $representante[0]['ruc'] ?></td>
         </tr>
     </table>
 </div>

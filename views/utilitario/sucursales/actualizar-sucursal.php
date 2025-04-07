@@ -15,25 +15,25 @@
                     <div class="row g-2 mb-3">
                         <div class="col-md-4">
                             <div class="form-floating">
-                                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre de la Sucursal" required>
+                                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre de la Sucursal" autocomplete="off">
                                 <label for="nombre">Nombre de la Sucursal</label>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-floating">
-                                <input type="text" id="ruc" name="ruc" maxlength="11" class="form-control" placeholder="RUC" required>
+                                <input type="text" id="ruc" name="ruc" maxlength="11" class="form-control" placeholder="RUC" required autocomplete="off">
                                 <label for="ruc">RUC</label>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-floating">
-                                <input type="tel" id="telefono" name="telefono" maxlength="20" class="form-control" placeholder="Teléfono" required>
+                                <input type="tel" id="telefono" name="telefono" maxlength="20" class="form-control" placeholder="Teléfono" autocomplete="off">
                                 <label for="telefono">Teléfono</label>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-floating">
-                                <input type="text" id="web" name="web" class="form-control" placeholder="Sitio Web">
+                                <input type="text" id="web" name="web" class="form-control" placeholder="Sitio Web" autocomplete="off">
                                 <label for="web">Sitio Web</label>
                             </div>
                         </div>
@@ -42,13 +42,13 @@
                     <div class="row g-2 mb-3">
                         <div class="col-md-4">
                             <div class="form-floating">
-                                <input type="email" id="email" name="email" class="form-control" placeholder="Correo Electrónico" required>
+                                <input type="email" id="email" name="email" class="form-control" placeholder="Correo Electrónico" autocomplete="off">
                                 <label for="email">Correo Electrónico</label>
                             </div>
                         </div>
                         <div class="col-md-8">
                             <div class="form-floating">
-                                <input type="text" id="direccion" name="direccion" class="form-control" placeholder="Dirección" required>
+                                <input type="text" id="direccion" name="direccion" class="form-control" placeholder="Dirección" autocomplete="off">
                                 <label for="direccion">Dirección</label>
                             </div>
                         </div>
@@ -58,7 +58,7 @@
                     <div class="row g-2 mb-3">
                         <div class="col-md-3">
                             <div class="form-floating">
-                                <select name="nacionalidad" id="nacionalidad" class="form-select" required>
+                                <select name="nacionalidad" id="nacionalidad" class="form-select" required autocomplete="off">
                                     <option value="">Selecciona</option>
                                     <option value="31">Perú</option>
                                 </select>
@@ -67,19 +67,19 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-floating">
-                                <select name="departamento" id="departamento" class="form-select" required></select>
+                                <select name="departamento" id="departamento" class="form-select" required autocomplete="off"></select>
                                 <label for="departamento">Departamento</label>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-floating">
-                                <select name="provincia" id="provincia" class="form-select" required></select>
+                                <select name="provincia" id="provincia" class="form-select" required autocomplete="off"></select>
                                 <label for="provincia">Provincia</label>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-floating">
-                                <select name="iddistrito" id="iddistrito" class="form-select" required></select>
+                                <select name="iddistrito" id="iddistrito" class="form-select" required autocomplete="off"></select>
                                 <label for="iddistrito">Distrito</label>
                             </div>
                         </div>
@@ -89,7 +89,7 @@
                     <div class="row g-2 mb-3">
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <select name="idresponsable" id="idresponsable" class="form-select" required>
+                                <select name="idresponsable" id="idresponsable" class="form-select" autocomplete="off">
                                     <option value="">Selecciona Responsable</option>
                                     <!-- Opciones cargadas desde DB -->
                                 </select>

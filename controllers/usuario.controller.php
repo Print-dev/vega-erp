@@ -165,6 +165,7 @@ if (isset($_GET['operation'])) {
         'apellidos' => $_GET['apellidos'] === "" ? null : $usuario->limpiarCadena($_GET['apellidos']),
         'telefono' => $_GET['telefono'] === "" ? null : $usuario->limpiarCadena($_GET['telefono']),
         'nomusuario' => $_GET['nomusuario'] === "" ? null : $usuario->limpiarCadena($_GET['nomusuario']),
+        'idsucursal' => $_GET['idsucursal'] === "" ? null : $usuario->limpiarCadena($_GET['idsucursal']),
       ];
       echo json_encode($usuario->filtrarUsuarios($cleanData));
       break;
@@ -233,6 +234,7 @@ if (isset($_POST['operation'])) {
     case 'registrarUsuario':
       $clave = $usuario->limpiarCadena($_POST['claveacceso']);
       $cleanData = [
+        'idsucursal' => $usuario->limpiarCadena($_POST['idsucursal']),
         'idpersona' => $usuario->limpiarCadena($_POST['idpersona']),
         'nom_usuario' => $usuario->limpiarCadena($_POST['nom_usuario']),
         'claveacceso' => password_hash($clave, PASSWORD_BCRYPT),
@@ -257,6 +259,7 @@ if (isset($_POST['operation'])) {
     case 'actualizarUsuario':
       $clave = $usuario->limpiarCadena($_POST['claveacceso']);
       $cleanData = [
+        'idsucursal' => $usuario->limpiarCadena($_POST['idsucursal']) ?  $usuario->limpiarCadena($_POST['idsucursal']) : '',
         'idusuario' => $usuario->limpiarCadena($_POST['idusuario']) ?  $usuario->limpiarCadena($_POST['idusuario']) : '',
         'nomusuario' => $usuario->limpiarCadena($_POST['nomusuario']) ? $usuario->limpiarCadena($_POST['nomusuario']) : '',
         'claveacceso' => $clave ? password_hash($clave, PASSWORD_BCRYPT) : '',

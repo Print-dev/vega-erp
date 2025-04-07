@@ -5,6 +5,7 @@ DELIMITER $$
 CREATE PROCEDURE sp_registrar_usuario
 (
 	OUT _idusuario INT,
+    IN _idsucursal INT,
     IN _idpersona INT,
     IN _nom_usuario VARCHAR(120),
     IN _claveacceso VARBINARY(255),
@@ -22,8 +23,8 @@ BEGIN
         SET existe_error = 1;
 	END;
     
-    INSERT INTO usuarios (idpersona, nom_usuario, claveacceso, color, porcentaje, marcaagua ,firma, idnivelacceso)VALUES 
-		(_idpersona, _nom_usuario, _claveacceso, nullif(_color, ''), nullif(_porcentaje, ''), nullif(_marcaagua, ''), nullif(_firma, ''),_idnivelacceso);
+    INSERT INTO usuarios (idsucursal, idpersona, nom_usuario, claveacceso, color, porcentaje, marcaagua ,firma, idnivelacceso)VALUES 
+		(_idsucursal, _idpersona, _nom_usuario, _claveacceso, nullif(_color, ''), nullif(_porcentaje, ''), nullif(_marcaagua, ''), nullif(_firma, ''),_idnivelacceso);
         
 	IF existe_error= 1 THEN
 		SET _idusuario = -1;
@@ -104,7 +105,8 @@ CREATE PROCEDURE sp_obtener_usuarios
 	IN _nombres VARCHAR(100),
     IN _apellidos VARCHAR(100),
     IN _telefono CHAR(15),
-    IN _nom_usuario VARCHAR(30)
+    IN _nom_usuario VARCHAR(30),
+    IN _idsucursal INT
 )
 BEGIN
 	SELECT
@@ -117,7 +119,8 @@ BEGIN
   AND (PE.nombres LIKE CONCAT('%', COALESCE(_nombres, ''), '%') OR PE.nombres IS NULL)
   AND (PE.apellidos LIKE CONCAT('%', COALESCE(_apellidos, ''), '%') OR PE.apellidos IS NULL)
   AND (PE.telefono LIKE CONCAT('%', COALESCE(_telefono, ''), '%') OR PE.telefono IS NULL)
-  AND (US.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%') OR US.nom_usuario IS NULL);
+  AND (US.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%') OR US.nom_usuario IS NULL)
+  AND (US.idsucursal LIKE CONCAT('%', COALESCE(_idsucursal, ''), '%') OR US.idsucursal IS NULL);
 
 END $$
 DELIMITER ;
@@ -126,6 +129,7 @@ DELIMITER ;
 DROP PROCEDURE if exists sp_actualizar_usuario;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_usuario (
+	IN _idsucursal INT,
 	IN _idusuario INT,
     IN _nom_usuario VARCHAR(30),
     IN _claveacceso VARBINARY(255),
@@ -137,6 +141,7 @@ CREATE PROCEDURE sp_actualizar_usuario (
 BEGIN
 		UPDATE usuarios 
     SET 
+		idsucursal = NULLIF(_idsucursal, ''),
         nom_usuario = NULLIF(_nom_usuario, ''),
         color = NULLIF(_color, ''),
         porcentaje = NULLIF(_porcentaje, ''),

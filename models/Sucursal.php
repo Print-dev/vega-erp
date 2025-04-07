@@ -25,14 +25,24 @@ class Sucursal extends ExecQuery
     }
   }
 
+  public function obtenerSucursales(): array
+  {
+    try {
+      $sp = parent::execQ("SELECT * FROM sucursales ");
+      $sp->execute();
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function registrarSucursal($params = []): bool
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_sucursal(?,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_sucursal(?,?,?,?,?,?,?,?)');
       $rpt = $cmd->execute(
         array(
-          $params['idsucursal'],
           $params['iddistrito'],
           $params['idresponsable'],
           $params['nombre'],

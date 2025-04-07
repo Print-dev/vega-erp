@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '../../../../models/DetalleEvento.php';
 require_once __DIR__ . '../../../../models/Tarifario.php';
+require_once __DIR__ .'../../../../models/Sucursal.php';
+
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -18,6 +20,7 @@ ob_start();
 
 $detalleevento = new DetalleEvento();
 $tarifario = new Tarifario();
+$sucursal = new Sucursal();
 
 
 //PROCESAR LLEGADA DE DATOS
@@ -31,6 +34,8 @@ $precio = isset($_GET['precio']) && $_GET['precio'] !== "" ? $detalleevento->lim
 $cotizacion = $detalleevento->obtenerCotizacion(['iddetallepresentacion' => $iddetallepresentacion]);
 $tarifaArtista = $tarifario->obtenerTarifaArtistaPorProvincia(['idprovincia' => $idprovincia, 'idusuario' => $idusuario]);
 $igv = ($tarifaArtista[0]['precio'] + $precio) * 0.18;
+$representante = $sucursal->obtenerRepresentanteEmpresa(['idsucursal' => $sucursal->limpiarCadena($_GET['idsucursal'])]); // OBTENER EL REPRESENTANTES DESDE LA TABLA SUCURSALES
+
 
 //die(var_dump($cotizacion[0]['igv']));
 

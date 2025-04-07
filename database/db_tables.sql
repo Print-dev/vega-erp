@@ -33,13 +33,13 @@ CREATE TABLE distritos
 CREATE TABLE sucursales (
 	idsucursal		int auto_increment primary key,
     iddistrito		int not null,
-    idresponsable	int not null, -- idusuario
-	nombre			varchar(120) not null,
+    idresponsable	int null, -- idusuario
+	nombre			varchar(120) null,
 	ruc				char(11) not null,
-    telefono		char(20) not null,
-    direccion		varchar(120) not null,
-    web				varchar(120) not null,
-    email			varchar(120) not null,
+    telefono		char(20)  null,
+    direccion		varchar(120)  not null,
+    web				varchar(120)  null,
+    email			varchar(120)  null,
     constraint fk_iddistrito_suc foreign key (iddistrito) references distritos (iddistrito)
 )  ENGINE=INNODB;
 
@@ -75,6 +75,7 @@ CREATE TABLE nivelaccesos
 CREATE TABLE usuarios
 (
 	idusuario	INT AUTO_INCREMENT PRIMARY KEY,
+    idsucursal 	int not null,
     idnivelacceso INT NOT NULL,
     idpersona	INT NOT NULL,
     nom_usuario VARCHAR(30) NOT NULL,
@@ -90,9 +91,10 @@ CREATE TABLE usuarios
     CONSTRAINT fk_idpersona FOREIGN KEY (idpersona) REFERENCES personas(idpersona),
     CONSTRAINT fk_idnivelacceso FOREIGN KEY(idnivelacceso) REFERENCES nivelaccesos(idnivelacceso),
     CONSTRAINT uk_nom_usuario UNIQUE(nom_usuario),
-    constraint ck_estado_usuario check(estado IN (1,2))
+    constraint ck_estado_usuario check(estado IN (1,2)),
+    constraint fk_idsucursal foreign key (idsucursal) references sucursales (idsucursal)
 )ENGINE=INNODB;
-select * from usuarios;
+-- ALTER TABLE usuarios ADD COLUMN idsucursal int not null;
 CREATE TABLE tarifario (
 	idtarifario int auto_increment primary key,
     idusuario		int not null,
