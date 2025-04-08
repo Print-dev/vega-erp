@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${x.fecha_apertura}</td>
                 <td>${x.fecha_cierre || "Aún no cerrado"}</td>
                 <td>${x.nom_usuario ? `${x.nom_usuario} - ${x.establecimiento}` : "No aplica"}</td>
-                <td>${`${x.departamento}/${x.provincia}/${x.distrito}`}</td>
+                <td>${(x.departamento && x.provincia && x.distrito) ? `${x.departamento}/${x.provincia}/${x.distrito}` : 'No aplica'}</td>
                 <td>${x.ccinicial}</td>
                 <td>${x.incremento}</td>
                 <td>${x.decremento}</td>

@@ -16,6 +16,14 @@ $accesos = [
     ['modulo' => 'ventas', 'ruta' => 'actualizar-atencion-cliente', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'ventas', 'ruta' => 'registrar-atencion-cliente', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''],
 
+    // COMPROBANTES 
+    ['modulo' => 'comprobantes', 'ruta' => '', 'texto' => 'Comprobantes', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-chart-simple'],
+
+    ['modulo' => 'comprobantes', 'ruta' => 'listar-facturas', 'subruta' => 'facturas', 'texto' => 'Facturas', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'comprobantes', 'ruta' => 'registrar-factura', 'subruta' => 'facturas', 'texto' => '', 'visible' => false, 'icono' => ''],
+    ['modulo' => 'comprobantes', 'ruta' => 'listar-boletas', 'subruta' => 'boletas', 'texto' => 'Boletas', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'comprobantes', 'ruta' => 'registrar-boleta', 'subruta' => 'boletas', 'texto' => '', 'visible' => false, 'icono' => ''],
+
 
 
     ['modulo' => 'utilitario', 'ruta' => '', 'texto' => 'Utilitario', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-folder'],
@@ -62,6 +70,8 @@ $accesos = [
     ['modulo' => 'agenda', 'ruta' => 'subir-contenido-edicion', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'agenda', 'ruta' => 'listar-agenda-cmanager', 'subruta' => '', 'texto' => 'Com. Manager', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
 
+    // DATOS DE EMPRESA
+    ['modulo' => 'empresa', 'ruta' => 'actualizar-empresa', 'subruta' => '', 'texto' => 'Datos de empresa', 'visible' => true, 'icono' => 'fa-solid fa-building'],
 
   ],
   "Artista" => [
@@ -126,7 +136,7 @@ if (isset($_GET['operation'])) {
     case 'destroy':
       session_destroy();
       session_unset();
-      header("location:".$hostOnly);
+      header("location:" . $hostOnly);
       break;
 
     case 'obtenerUsuarioPorId':
@@ -149,7 +159,7 @@ if (isset($_GET['operation'])) {
       echo json_encode($usuario->obtenerUsuarioPorNivel(['idnivelacceso' => $_GET['idnivelacceso']]));
       break;
 
-/*     case 'obtenerRepresentanteEmpresa':
+    /*     case 'obtenerRepresentanteEmpresa':
       echo json_encode($usuario->obtenerRepresentanteEmpresa());
       break; */
 

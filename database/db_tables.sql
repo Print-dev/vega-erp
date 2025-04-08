@@ -30,6 +30,19 @@ CREATE TABLE distritos
     CONSTRAINT fk_idprovincia FOREIGN KEY(idprovincia) REFERENCES provincias(idprovincia)
 )ENGINE=INNODB;
 
+CREATE TABLE empresa (
+	idempresa		INT auto_increment PRIMARY KEY,
+    ruc				char(11) not null,
+    razonsocial		varchar(120) not null,
+	nombrecomercial	varchar(120) null, -- este nombre aparecera en la sidebar como nombre de la aplicacion
+    direccion		varchar(120) not null,
+    iddistrito		int not null,
+    usuariosol		char(8) null,
+    clavesol		char(12) null,
+    certificado		text null,
+	CONSTRAINT fk_iddistrito_empresa FOREIGN KEY(iddistrito) REFERENCES distritos (iddistrito)
+) ENGINE = INNODB;
+
 CREATE TABLE sucursales (
 	idsucursal		int auto_increment primary key,
     iddistrito		int not null,

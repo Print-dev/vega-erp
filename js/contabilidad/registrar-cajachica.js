@@ -25,7 +25,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     return data.json();
   }
 
-  $q("#btnRegistrarNuevoGasto").addEventListener("click", function () {
+  $q("#btnRegistrarNuevoGasto").addEventListener("click", async function () {
+    const montoCaja = await obtenerMontoCajaChica();
+    console.log("obtenerMontoCajaChica -> ", montoCaja);
+    if(parseFloat(montoCaja[0]?.monto) < 10.00){
+      showToast("Se recomienda aumentar el monto de la caja chica", "INFO") 
+    }
     $q("#concepto").value = "";
     $q("#monto").value = "";
     modalRegistrarCaja = new bootstrap.Modal($q("#modal-registrarcaja"));

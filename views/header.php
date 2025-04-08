@@ -2,7 +2,7 @@
 $hostOnlyHeader = "http://localhost/vega-erp";
 session_start();
 if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {
-  header('location:'.$hostOnlyHeader);
+  header('location:' . $hostOnlyHeader);
 } else {
   //El usuario logeado, solo se le permitira acceso a las vistas indicadores por su PERFIL
   $url = $_SERVER['REQUEST_URI']; //obtener url
@@ -31,8 +31,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {
   //  die(print_r($listaAcceso));
 
   if (!$encontrado) {
-    header('location:'.$hostOnlyHeader);
-
+    header('location:' . $hostOnlyHeader);
   }
 }
 $usuario = $_SESSION['login']['nom_usuario'];
@@ -288,7 +287,7 @@ switch ($_SESSION['login']['nivelacceso']) {
         </li>
         <?php
         foreach ($listaAcceso as $access) {
-          if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario" && $access['modulo'] !== "pyp" && $access['modulo'] !== "contabilidad" && $access['modulo'] !== "agenda") {
+          if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario" && $access['modulo'] !== "pyp" && $access['modulo'] !== "contabilidad" && $access['modulo'] !== "agenda" && $access['modulo'] !== "comprobantes") {
 
             echo "
               <li class='nav-item' >
@@ -444,6 +443,35 @@ switch ($_SESSION['login']['nivelacceso']) {
               }
             }
             echo "</ul>";
+          } else if ($access['modulo'] === "comprobantes" && $access['visible']) {
+            echo "
+              <li class='sidebar-item nav-item'>
+                <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#comprobantes'
+                  aria-expanded='false' aria-controls='comprobantes'>
+                  <i class='{$access['icono']}'></i>
+                  <span class='sidebar-text mx-2'>{$access['texto']}</span>
+                  <i class='fa-solid fa-angle-down ms-auto mt-2 toggle-icon'></i>
+                </a>              
+              </li> 
+              <ul id='comprobantes' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#comprobantes'>";
+
+            foreach ($listaAcceso as $subAccess) {
+              $rutaCompleta = "{$hostOnlyHeader}/views/{$subAccess['modulo']}/";
+              if (!empty($subAccess['subruta'])) {
+                $rutaCompleta .= "{$subAccess['subruta']}/";
+              }
+              $rutaCompleta .= "{$subAccess['ruta']}";
+              if (!$subAccess['visible'] && $subAccess['modulo'] === "comprobantes" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
+                echo "
+                <li class='sidebar-item nav-item list-comprobantes'>
+                  <a href='{$rutaCompleta}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                    <i class='{$subAccess['icono']}'></i>
+                    <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
+                  </a>
+                </li>";
+              }
+            }
+            echo "</ul>";
           }
         }
         ?>
@@ -582,9 +610,9 @@ switch ($_SESSION['login']['nivelacceso']) {
 
     <!-- /NAVBAR-HEADER -->
     <script>
-    const idusuarioLogeado = "<?php echo $_SESSION['login']['idusuario']; ?>"
-    const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
-</script>
+      const idusuarioLogeado = "<?php echo $_SESSION['login']['idusuario']; ?>"
+      const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
+    </script>
     <script>
       document.querySelectorAll('.sidebar-item').forEach(item => {
         item.addEventListener('click', function() {
