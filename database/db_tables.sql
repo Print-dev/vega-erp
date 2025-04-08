@@ -33,6 +33,7 @@ CREATE TABLE distritos
 CREATE TABLE empresa (
 	idempresa		INT auto_increment PRIMARY KEY,
     ruc				char(11) not null,
+    logoempresa		varchar(40) null,
     razonsocial		varchar(120) not null,
 	nombrecomercial	varchar(120) null, -- este nombre aparecera en la sidebar como nombre de la aplicacion
     direccion		varchar(120) not null,

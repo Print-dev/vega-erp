@@ -291,7 +291,7 @@ switch ($_SESSION['login']['nivelacceso']) {
 
             echo "
               <li class='nav-item' >
-                <a href='{$hostOnlyHeader}/views/{$access['modulo']}/{$access['subruta']}/{$access['ruta']}' class='nav-link' id='links'>
+                <a href='{$hostOnlyHeader}/views/{$access['modulo']}/{$access['ruta']}' class='nav-link' id='links'>
                   <i class='{$access['icono']}'></i>
                   <span class='sidebar-text mx-2'>{$access['texto']}</span>
                 </a>

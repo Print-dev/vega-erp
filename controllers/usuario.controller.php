@@ -71,7 +71,7 @@ $accesos = [
     ['modulo' => 'agenda', 'ruta' => 'listar-agenda-cmanager', 'subruta' => '', 'texto' => 'Com. Manager', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
 
     // DATOS DE EMPRESA
-    ['modulo' => 'empresa', 'ruta' => 'actualizar-empresa', 'subruta' => '', 'texto' => 'Datos de empresa', 'visible' => true, 'icono' => 'fa-solid fa-building'],
+    ['modulo' => 'empresa', 'ruta' => 'datos-empresa', 'subruta' => '', 'texto' => 'Datos de empresa', 'visible' => true, 'icono' => 'fa-solid fa-building'],
 
   ],
   "Artista" => [
