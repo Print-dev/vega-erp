@@ -35,24 +35,7 @@ $company = (new Company())
     ->setNombreComercial('')
     ->setAddress($address);
 
-// Comprobante (Factura gratuita)
-$invoice = (new Invoice())
-    ->setUblVersion('2.1')
-    ->setTipoOperacion('0101') // Venta interna
-    ->setTipoDoc('01') // Factura
-    ->setSerie('F001')
-    ->setCorrelativo('00000124') // Puedes generar uno dinámico
-    ->setFechaEmision(new DateTime())
-    ->setFormaPago(new FormaPagoContado())
-    ->setTipoMoneda('PEN')
-    ->setClient($client)
-    ->setCompany($company)
-    ->setMtoOperGratuitas(200.00)
-    ->setMtoIGVGratuitas(36.00)
-    ->setTotalImpuestos(0.00)
-    ->setValorVenta(0.00)
-    ->setSubTotal(0.00)
-    ->setMtoImpVenta(0.00);
+
 
 // Producto gratuito
 $item = (new SaleDetail())
@@ -70,13 +53,48 @@ $item = (new SaleDetail())
     ->setTotalImpuestos(36.00)
     ->setMtoPrecioUnitario(0.00);
 
+
+$item2 = (new SaleDetail())
+    ->setCodProducto('P002')
+    ->setUnidad('NIU')
+    ->setCantidad(1)
+    ->setDescripcion('PRODUCTO GRATUITO 2')
+    ->setMtoValorUnitario(0.00)
+    ->setMtoValorGratuito(50.00)
+    ->setMtoValorVenta(50.00)
+    ->setMtoBaseIgv(50.00)
+    ->setPorcentajeIgv(18.00)
+    ->setIgv(9.00)
+    ->setTipAfeIgv('11')
+    ->setTotalImpuestos(9.00)
+    ->setMtoPrecioUnitario(0.00);
+
+// Comprobante (Factura gratuita)
+$invoice = (new Invoice())
+    ->setUblVersion('2.1')
+    ->setTipoOperacion('0101') // Venta interna
+    ->setTipoDoc('01') // Factura
+    ->setSerie('F001')
+    ->setCorrelativo('00000124') // Puedes generar uno dinámico
+    ->setFechaEmision(new DateTime())
+    ->setFormaPago(new FormaPagoContado())
+    ->setTipoMoneda('PEN')
+    ->setClient($client)
+    ->setCompany($company)
+    ->setMtoOperGratuitas(250.00) // 200 + 50
+    ->setMtoIGVGratuitas(45.00)   // 36 + 9
+    ->setTotalImpuestos(0.00)
+    ->setValorVenta(0.00)
+    ->setSubTotal(0.00)
+    ->setMtoImpVenta(0.00);
+
 // Leyenda requerida
 $legend = (new Legend())
     ->setCode('1002')
     ->setValue('TRANSFERENCIA GRATUITA DE UN BIEN Y/O SERVICIO PRESTADO GRATUITAMENTE');
 
-$invoice->setDetails([$item])
-        ->setLegends([$legend]);
+$invoice->setDetails([$item, $item2])
+    ->setLegends([$legend]);
 
 // Enviar a SUNAT
 $result = $see->send($invoice);

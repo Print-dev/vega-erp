@@ -51,26 +51,39 @@ $invoice = (new Invoice())
     ->setTipoMoneda('PEN')
     ->setCompany($company)
     ->setClient($client)
-    ->setMtoOperGravadas(0.85) // Monto base sin IGV
-    ->setMtoIGV(0.15) // IGV 18%
-    ->setTotalImpuestos(0.15)
-    ->setValorVenta(0.85)
-    ->setSubTotal(1.00)
-    ->setMtoImpVenta(1.00);
+    ->setMtoOperGravadas(75.00)  // 50 + 25
+    ->setMtoIGV(13.50)           // 9 + 4.5
+    ->setTotalImpuestos(13.50)
+    ->setValorVenta(75.00)
+    ->setSubTotal(88.50)         // Con IGV
+    ->setMtoImpVenta(88.50);     // Importe total
 
-$item = (new SaleDetail())
+
+$item1 = (new SaleDetail())
     ->setCodProducto('P001')
     ->setUnidad('NIU')
     ->setCantidad(1)
-    ->setDescripcion('Producto de prueba')
-    ->setMtoValorUnitario(0.85) // Precio sin IGV
-    ->setMtoBaseIgv(0.85)
-    ->setPorcentajeIgv(18.00)
-    ->setIgv(0.15)
-    ->setTipAfeIgv('10') // Gravado - Oneroso
-    ->setTotalImpuestos(0.15)
-    ->setMtoValorVenta(0.85)
-    ->setMtoPrecioUnitario(1.00); // Precio con IGV
+    ->setDescripcion('PRODUCTO GRAVADO 1')
+    ->setMtoValorUnitario(50.00)   // sin IGV
+    ->setIgv(9.00)
+    ->setTipAfeIgv('10')
+    ->setTotalImpuestos(9.00)
+    ->setMtoPrecioUnitario(59.00)  // con IGV
+    ->setMtoValorVenta(50.00)
+    ->setMtoBaseIgv(50.00);
+
+$item2 = (new SaleDetail())
+    ->setCodProducto('P002')
+    ->setUnidad('NIU')
+    ->setCantidad(1)
+    ->setDescripcion('PRODUCTO GRAVADO 2')
+    ->setMtoValorUnitario(25.00)
+    ->setIgv(4.50)
+    ->setTipAfeIgv('10')
+    ->setTotalImpuestos(4.50)
+    ->setMtoPrecioUnitario(29.50)
+    ->setMtoValorVenta(25.00)
+    ->setMtoBaseIgv(25.00);
 
 $invoice->setDetails([$item]);
 
@@ -80,6 +93,7 @@ $invoice->setLegends([
         ->setCode('1000')
         ->setValue('SON UN SOL CON 00/100 SOLES')
 ]);
+
 // Enviar a SUNAT
 $result = $see->send($invoice);
 

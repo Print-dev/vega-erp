@@ -1,3 +1,3 @@
 <?php
 
-require_once 'factura_gratuita.php';
+require_once 'factura.php';

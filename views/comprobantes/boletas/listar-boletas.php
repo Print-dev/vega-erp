@@ -1,6 +1,13 @@
 <?php require_once '../../header.php' ?>
-
-<div class="container-fluid">
+<style>
+    .contenedor-general {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+</style>
+<div class="container-fluid contenedor-general">
     <div class="card" style="border-color: #f2f4f7; box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);
     -webkit-box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);
     -moz-box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);">

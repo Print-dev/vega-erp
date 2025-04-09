@@ -1,7 +1,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contizacion <?= $cotizacion[0]['nom_usuario'] ?></title>
+  <title>Cotización <?= $cotizacion[0]['nom_usuario'] ?></title>
   <link rel="icon" type="image/png" href="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png">
 </head>
 <style>
