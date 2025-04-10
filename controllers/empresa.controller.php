@@ -20,27 +20,7 @@ if(isset($_GET['operation'])){
 
 if (isset($_POST['operation'])) {
     switch ($_POST['operation']) {
-        /* case 'registrarTarifa':
-            $cleanData = [
-                'idsucursal'   => $comprobante->limpiarCadena($_POST['idsucursal']),
-                'idcliente' => $comprobante->limpiarCadena($_POST['idcliente']),
-                'idtipodoc'   => $comprobante->limpiarCadena($_POST['idtipodoc']),
-                'nserie'   => $comprobante->limpiarCadena($_POST['nserie']),
-                'correlativo'   => $comprobante->limpiarCadena($_POST['correlativo']),
-                'tipomoneda'   => $comprobante->limpiarCadena($_POST['tipomoneda']),
-                'monto'   => $comprobante->limpiarCadena($_POST['monto']),
-            ];
-
-            $respuesta = ['idcomprobante' => -1];
-
-            $idcomprobante = $comprobante->registrarComprobante($cleanData);
-
-            if ($idcomprobante > 0) {
-                $respuesta['idcomprobante'] = $idcomprobante;
-            }
-
-            echo json_encode($respuesta);
-            break; */
+        
 
         case 'actualizarDatosEmpresa':
             $cleanData = [

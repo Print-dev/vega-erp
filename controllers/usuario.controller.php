@@ -217,6 +217,8 @@ if (isset($_POST['operation'])) {
           $session['nivelacceso'] = $registro[0]['nivelacceso'];
           $session['idnivelacceso'] = $registro[0]['idnivelacceso'];
           $session['nombreapp'] = $empresaDato[0]['nombreapp'];
+          $session['razonsocial'] = $empresaDato[0]['razonsocial'];
+          $session['ruc'] = $empresaDato[0]['ruc'];
           $session['logoempresa'] = $empresaDato[0]['logoempresa'];
 
           //die(json_encode($accesos[$registro[0]['nivelacceso']]));

@@ -4,7 +4,22 @@ require_once 'ExecQuery.php';
 
 class Comprobante extends ExecQuery
 {
-/*   public function obtenerFactura($params = []): array
+  public function obtenerSeriePorTipoDoc($params = []): array
+  {
+    try {
+      $sp = parent::execQ("select * from comprobantes where idtipodoc = ? ");
+      $sp->execute(
+        array(
+          $params['idtipodoc']
+        )
+
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+  /*   public function obtenerFactura($params = []): array
   {
     try {
       $sp = parent::execQ("CALL sp_obtener_tarifario_por_provincia(?,?) ");
@@ -53,7 +68,7 @@ class Comprobante extends ExecQuery
       die($e->getMessage());
     }
   } */
-  
+
   public function registrarComprobante($params = []): int
   {
     try {
@@ -119,7 +134,7 @@ class Comprobante extends ExecQuery
     }
   }
 
-/*   public function actualizarTarifa($params = []): bool
+  /*   public function actualizarTarifa($params = []): bool
   {
     try {
       $pdo = parent::getConexion();
@@ -136,5 +151,4 @@ class Comprobante extends ExecQuery
       return false;
     }
   } */
-
 }

@@ -613,6 +613,8 @@ switch ($_SESSION['login']['nivelacceso']) {
     <script>
       const idusuarioLogeado = "<?php echo $_SESSION['login']['idusuario']; ?>"
       const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
+      const rucEmpresa = "<?php echo $_SESSION['login']['ruc']; ?>"
+      const razonsocialEmpresa = "<?php echo $_SESSION['login']['razonsocial']; ?>"
     </script>
     <script>
       document.querySelectorAll('.sidebar-item').forEach(item => {

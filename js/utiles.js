@@ -9,6 +9,54 @@ const obtenerFechaHoraPeru = () => {
   return soloFecha;
 };
 
+
+function generarCorrelativo(serie, correlativo) {
+  // Convertir el correlativo a un número y añadir ceros si es necesario
+  let correlativoNum = parseInt(correlativo, 10);
+
+  // Comprobar si el correlativo ha llegado al máximo (99999999)
+  if (correlativoNum >= 99999999) {
+    // Cambiar a la siguiente serie
+    let nuevaSerie = incrementarSerie(serie);
+    return { nuevaSerie, nuevoCorrelativo: '00000001' };  // Resetear correlativo a 00000001
+  }
+
+  // Si no ha llegado al máximo, simplemente incrementar el correlativo
+  correlativoNum++;
+
+  // Asegurarse de que el correlativo tenga 8 dígitos
+  let nuevoCorrelativo = correlativoNum.toString().padStart(8, '0');
+
+  return { serie, nuevoCorrelativo };
+}
+
+// Función para incrementar la serie (F001 -> F002, etc.)
+function incrementarSerie(serie) {
+  // Extraer el número de la serie (e.g., "F001" -> "001")
+  let numeroSerie = serie.slice(1); // Obtener la parte numérica de la serie (001 de F001)
+
+  // Convertir a número e incrementar
+  let nuevaSerieNum = parseInt(numeroSerie, 10) + 1;
+
+  // Si el número de serie es mayor que 999, reseteamos o generamos una nueva letra para la serie.
+  if (nuevaSerieNum > 999) {
+    nuevaSerieNum = 1;  // Cambiar la serie a 1
+  }
+
+  // Devolver la nueva serie, formateada con ceros a la izquierda
+  return serie[0] + nuevaSerieNum.toString().padStart(3, '0');
+}
+
+// Ejemplo de uso:
+let serie = 'F001';
+let correlativo = '99999999'; // Simulamos el correlativo al máximo
+
+let { nuevaSerie, nuevoCorrelativo } = generarCorrelativo(serie, correlativo);
+
+console.log(`Nueva Serie: ${nuevaSerie}`);
+console.log(`Nuevo Correlativo: ${nuevoCorrelativo}`);
+
+
 function generarNuevoNCotizacion(ultimaCotizacion) {
   const añoActual = new Date().getFullYear(); // Obtiene el año actual
 
@@ -105,30 +153,30 @@ function convertirTiempo(segundos) {
 function calcularPrecioCostoBaseDuracion(duracionSegundos, costoBase) {
   // Convertir duración a horas
   let horas = duracionSegundos / 3600;
-  
+
   let dificultad = "";
   let costoDificultad = 0;
 
   if (horas >= 3 && horas <= 5) {
-      dificultad = "Baja";
-      costoDificultad = 1000;
+    dificultad = "Baja";
+    costoDificultad = 1000;
   } else if (horas >= 6 && horas <= 9) {
-      dificultad = "Media";
-      costoDificultad = 1700;
+    dificultad = "Media";
+    costoDificultad = 1700;
   } else if (horas >= 10 && horas <= 15) {
-      dificultad = "Alta";
-      costoDificultad = 2300;
+    dificultad = "Alta";
+    costoDificultad = 2300;
   } else {
-      dificultad = "Fuera de rango"; // Si no entra en ninguna categoría
+    dificultad = "Fuera de rango"; // Si no entra en ninguna categoría
   }
 
   let precioFinal = costoBase + costoDificultad;
 
   return {
-      horasEstimadas: horas.toFixed(2), // Redondear a 2 decimales
-      dificultad: dificultad,
-      costoDificultad: costoDificultad,
-      precioTotal: precioFinal
+    horasEstimadas: horas.toFixed(2), // Redondear a 2 decimales
+    dificultad: dificultad,
+    costoDificultad: costoDificultad,
+    precioTotal: precioFinal
   };
 }
 
@@ -136,27 +184,27 @@ function calcularPrecio(duracionSegundos) {
   // Convertir duración a horas y minutos
   let horas = Math.floor(duracionSegundos / 3600);
   let minutos = Math.round((duracionSegundos % 3600) / 60);
-  
+
   let dificultad = "";
   let costoDificultad = 0;
 
   if (horas >= 3 && horas <= 5) {
-      dificultad = "Baja";
-      costoDificultad = 1000;
+    dificultad = "Baja";
+    costoDificultad = 1000;
   } else if (horas >= 6 && horas <= 9) {
-      dificultad = "Media";
-      costoDificultad = 1700;
+    dificultad = "Media";
+    costoDificultad = 1700;
   } else if (horas >= 10 && horas <= 15) {
-      dificultad = "Alta";
-      costoDificultad = 2300;
+    dificultad = "Alta";
+    costoDificultad = 2300;
   } else {
-      dificultad = "Fuera de rango"; // Si no entra en ninguna categoría
+    dificultad = "Fuera de rango"; // Si no entra en ninguna categoría
   }
 
   return {
-      horasEstimadas: `${horas} horas y ${minutos} minutos`,
-      dificultad: dificultad,
-      costoDificultad: costoDificultad,
+    horasEstimadas: `${horas} horas y ${minutos} minutos`,
+    dificultad: dificultad,
+    costoDificultad: costoDificultad,
   };
 }
 
@@ -175,16 +223,16 @@ function calcularTiempoTranscurrido(fechaString) {
   const diferencia = Math.floor((ahora - fecha) / 1000); // Diferencia en segundos
 
   if (diferencia < 60) {
-      return `hace ${diferencia} segundos`;
+    return `hace ${diferencia} segundos`;
   } else if (diferencia < 3600) {
-      const minutos = Math.floor(diferencia / 60);
-      return `hace ${minutos} ${minutos === 1 ? "minuto" : "minutos"}`;
+    const minutos = Math.floor(diferencia / 60);
+    return `hace ${minutos} ${minutos === 1 ? "minuto" : "minutos"}`;
   } else if (diferencia < 86400) {
-      const horas = Math.floor(diferencia / 3600);
-      return `hace ${horas} ${horas === 1 ? "hora" : "horas"}`;
+    const horas = Math.floor(diferencia / 3600);
+    return `hace ${horas} ${horas === 1 ? "hora" : "horas"}`;
   } else {
-      const dias = Math.floor(diferencia / 86400);
-      return `hace ${dias} ${dias === 1 ? "día" : "días"}`;
+    const dias = Math.floor(diferencia / 86400);
+    return `hace ${dias} ${dias === 1 ? "día" : "días"}`;
   }
 }
 

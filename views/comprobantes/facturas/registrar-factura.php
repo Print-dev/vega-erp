@@ -76,7 +76,7 @@
                         </div>
                         <div class="col-md-1 d-flex justify-content-center align-items-center">
                             <div class="form-floating w-100">
-                                <button class="btn btn-danger btn btn-danger w-100" title="Deseleccionar Evento">
+                                <button class="btn btn-danger btn btn-danger w-100" id="btnDeseleccionarEvento" title="Deseleccionar Evento">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
@@ -141,14 +141,15 @@
                     </div>
 
                     <!-- Totales -->
-                    <div class="col-md-4 mt-4">
-                        <label for="leyenda" class="form-label">Monto en Letras</label>
-                        <input type="text" class="form-control" id="leyenda" name="leyenda" readonly>
+                    <div class="col-md-10 mt-4">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text fw-bolder" id="basic-addon3">IMPORTE EN LETRAS</span>
+                            <input type="text" class="form-control" id="importeletra" aria-describedby="basic-addon3" readonly>
+                        </div>
 
                     </div>
-                    <div class="col-md-8 mt-4">
-                        <label for="montoTotal" class="form-label"></label> ME QUEDE ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-                        <input type="number" class="form-control" id="montoTotal" name="montoTotal" readonly>
+                    <div class="col-md-2 mt-4">
+                        <button type="button" class="btn btn-primary " id="btnEmitirComprobante">Emitir Comprobante</button>
                     </div>
                 </div>
 
@@ -156,13 +157,17 @@
 
         </div>
 
-        
+
     </div>
 </div>
 </div>
 </div>
 <?php require_once '../../footer.php' ?>
+<script>
+
+</script>
 <script src="<?= $hostOnlyHeader ?>/js/facturas/registrar-factura.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/n2words@1.21.0/dist/n2words.min.js"></script>
 </body>
 
 </html>

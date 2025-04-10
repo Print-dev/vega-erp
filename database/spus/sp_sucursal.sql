@@ -98,3 +98,19 @@ BEGIN
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
     WHERE SUC.idempresa = _idempresa;
 END //
+
+
+drop procedure if exists obtenerSucursalPorId;
+DELIMITER //
+CREATE PROCEDURE `obtenerSucursalPorId`(
+	IN _idsucursal INT
+)
+BEGIN
+    SELECT 
+*
+    FROM sucursales SUC
+    LEFT JOIN distritos DIS ON DIS.iddistrito = SUC.iddistrito
+    LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
+    LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
+    WHERE SUC.idsucursal = _idsucursal;
+END //

@@ -1,44 +1,27 @@
-
-
 <?php
 require_once '../models/Comprobante.php';
+require_once '../factura.php';
+
 header("Access-Control-Allow-Origin: *");
 header("Content-type: application/json; charset=utf-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Métodos permitidos
 header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Encabezados permitidos
 $comprobante = new Comprobante();
-// ag order by
-/* if(isset($_GET['operation'])){
-  switch($_GET['operation']){
-    case 'filtrarTarifas':
-        $cleanData = [
-          'nomusuario' => $_GET['nomusuario'] === "" ? null : $tarifa->limpiarCadena($_GET['nomusuario'])
-        ];
-        echo json_encode($tarifa->filtrarTarifas($cleanData));
-        break;
 
-    case 'obtenerTarifasPorProvincia':
-        $cleanData = [
-          'iddepartamento' => $tarifa->limpiarCadena($_GET['iddepartamento']), 
-          'idusuario' => $tarifa->limpiarCadena($_GET['idusuario']) 
-        ];
-        echo json_encode($tarifa->obtenerTarifasPorProvincia($cleanData));
-        break;
-        
-    case 'obtenerTarifaArtistaPorProvincia':
-        $cleanData = [
-          'idprovincia' => $tarifa->limpiarCadena($_GET['idprovincia']),
-          'idusuario' => $tarifa->limpiarCadena($_GET['idusuario']),
-        ];
-        echo json_encode($tarifa->obtenerTarifaArtistaPorProvincia($cleanData));
-        break;
-    
-  }
-} */
+
+
+if (isset($_GET['operation'])) {
+    switch ($_GET['operation']) {
+        case 'obtenerSeriePorTipoDoc':
+            echo json_encode($comprobante->obtenerSeriePorTipoDoc(['idtipodoc' => $_GET['idtipodoc']]));
+            break;
+       
+    }
+}
 
 if (isset($_POST['operation'])) {
     switch ($_POST['operation']) {
-        case 'registrarTarifa':
+        case 'registrarComprobante':
             $cleanData = [
                 'idsucursal'   => $comprobante->limpiarCadena($_POST['idsucursal']),
                 'idcliente' => $comprobante->limpiarCadena($_POST['idcliente']),
@@ -83,6 +66,33 @@ if (isset($_POST['operation'])) {
 
             $rpt = $comprobante->registrarItemComprobante($cleanData);
 
+            echo json_encode($rpt);
+            break;
+
+        case 'emitirFactura':
+            // Recolectar y limpiar los datos POST
+            $data = [
+                'ruc_emisor' => $comprobante->limpiarCadena($_POST['ruc_emisor']),
+                'razon_social_emisor' => $comprobante->limpiarCadena($_POST['razon_social_emisor']),
+                'direccion_emisor' => $comprobante->limpiarCadena($_POST['direccion_emisor']),
+                'departamento' => $comprobante->limpiarCadena($_POST['departamento']),
+                'provincia' => $comprobante->limpiarCadena($_POST['provincia']),
+                'distrito' => $comprobante->limpiarCadena($_POST['distrito']),
+
+                'ndocumento' => $comprobante->limpiarCadena($_POST['ndocumento']),
+                'razon_social_cliente' => $comprobante->limpiarCadena($_POST['razon_social_cliente']),
+
+                'serie' => $comprobante->limpiarCadena($_POST['serie']),
+                'correlativo' => $comprobante->limpiarCadena($_POST['correlativo']),
+                'moneda' => $comprobante->limpiarCadena($_POST['moneda']),
+                'monto_gravado' => (float)$_POST['monto_gravado'],
+                'igv' => (float)$_POST['igv'],
+                'total' => (float)$_POST['total'],
+                'detalle' => json_decode($_POST['detalle'], true), // Recibe lista de ítems
+                'monto_letras' => $comprobante->limpiarCadena($_POST['monto_letras'])
+            ];
+
+            $rpt = generarFactura($data);
             echo json_encode($rpt);
             break;
     }

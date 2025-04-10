@@ -41,6 +41,17 @@ class Cliente extends ExecQuery
     }
   }
 
+  public function obtenerClientePorId($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("select * from clientes where idcliente = ?");
+      $cmd->execute(array($params['idcliente']));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function obtenerClientes(): array
   {
     try {

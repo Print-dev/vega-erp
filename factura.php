@@ -11,108 +11,88 @@ use Greenter\Model\Sale\SaleDetail;
 use Greenter\Model\Sale\Legend;
 
 
-$see = require __DIR__ . '/config.php';
 
 // Cliente
-$client = (new Client())
-    ->setTipoDoc('6') // RUC
-    ->setNumDoc('10727547521')
-    ->setRznSocial('AVALOS ROMERO ROYER ALEXIS');
+function generarFactura($data)
+{
+    $see = require __DIR__ . '/config.php';
 
+    $client = (new Client())
+        ->setTipoDoc('6')
+        ->setNumDoc($data['ndocumento'])
+        ->setRznSocial($data['razon_social_cliente']);
 
-// Dirección del emisor
-$address = (new Address())
-    ->setUbigueo('150135')
-    ->setDepartamento('LIMA')
-    ->setProvincia('LIMA')
-    ->setDistrito('SAN MARTIN DE PORRES')
-    ->setUrbanizacion('-')
-    ->setDireccion('Av. Alfredo Mendiola N° 2139')
-    ->setCodLocal('0000');
+    $address = (new Address())
+        ->setDepartamento($data['departamento'])
+        ->setProvincia($data['provincia'])
+        ->setDistrito($data['distrito'])
+        ->setDireccion($data['direccion_emisor']);
 
+    $company = (new Company())
+        ->setRuc($data['ruc_emisor'])
+        ->setRazonSocial($data['razon_social_emisor'])
+        ->setAddress($address);
 
-// Emisor (empresa)
-$company = (new Company())
-    ->setRuc('20608627422')
-    ->setRazonSocial('NEGOCIACIONES Y PRODUCCIONES VEGA S.A.C.')
-    ->setNombreComercial('')
-    ->setAddress($address);
+    $invoice = (new Invoice())
+        ->setUblVersion('2.1')
+        ->setTipoOperacion('0101')
+        ->setTipoDoc('01') // FACTURA
+        ->setSerie($data['serie'])
+        ->setCorrelativo($data['correlativo'])
+        ->setFechaEmision(new DateTime('now', new DateTimeZone('America/Lima')))
+        ->setFormaPago(new FormaPagoContado())
+        ->setTipoMoneda($data['moneda'])
+        ->setCompany($company)
+        ->setClient($client)
+        ->setMtoOperGravadas($data['monto_gravado'])//calculable desde javascript // total de monto gravado de cada producto sin incluir si igv (crudo)
+        ->setMtoIGV($data['igv'])//calculable desde javascript // sumar cada igv de cada producto
+        ->setTotalImpuestos($data['igv']) // lo mismo que el campo de arriba (Se repite)
+        ->setValorVenta($data['monto_gravado']) // mismo valor que setMtoOperGravadas
+        ->setSubTotal($data['total']) // suma de todos los igvs (de cada producto) + monto gravado total (en este caso de dos productos sin igv), calculadble desde javascirpt
+        ->setMtoImpVenta($data['total']); // lo mismo que el campo de arriba
 
-// Venta
-// Instancia principal del comprobante
-$invoice = (new Invoice())
-    ->setUblVersion('2.1')
-    ->setTipoOperacion('0101') // Venta interna
-    ->setTipoDoc('01') // Factura
-    ->setSerie('F001')
-    ->setCorrelativo('00000999')
-    ->setFechaEmision(new DateTime('now', new DateTimeZone('America/Lima')))
-    ->setFormaPago(new FormaPagoContado())
-    ->setTipoMoneda('PEN')
-    ->setCompany($company)
-    ->setClient($client)
-    ->setMtoOperGravadas(75.00)  // 50 + 25
-    ->setMtoIGV(13.50)           // 9 + 4.5
-    ->setTotalImpuestos(13.50)
-    ->setValorVenta(75.00)
-    ->setSubTotal(88.50)         // Con IGV
-    ->setMtoImpVenta(88.50);     // Importe total
+    $items = [];
+    foreach ($data['detalle'] as $item) {
+        $detalle = (new SaleDetail())
+            ->setUnidad('NIU')
+            ->setCantidad(1)
+            ->setDescripcion($item['descripcion'])
+            ->setMtoValorUnitario((float)$item['valorunitario']) // monto gravado sin igv (impuesto)
+            ->setIgv((float)$item['igvproducto'] ) // el igv del producto gravado
+            ->setTipAfeIgv('10')
+            ->setTotalImpuestos((float)$item['igvproducto'])
+            ->setMtoPrecioUnitario((float)$item['preciounitario']) // valor unitario + igv , //calculable desde javascript
+            ->setMtoValorVenta((float)$item['valorunitario'])
+            ->setMtoBaseIgv((float)$item['valorunitario'])
+            ->setPorcentajeIgv(18.00) // 18%
+            ;
+        $items[] = $detalle;
+    }
 
+    $invoice->setDetails($items);
+    $invoice->setLegends([
+        (new Legend())
+            ->setCode('1000')
+            ->setValue('SON ' . strtoupper($_POST['monto_letras']))
+    ]);
 
-$item1 = (new SaleDetail())
-    ->setUnidad('NIU')
-    ->setCantidad(1)
-    ->setDescripcion('PRODUCTO GRAVADO 1')
-    ->setMtoValorUnitario(50.00)   // sin IGV
-    ->setIgv(9.00)
-    ->setTipAfeIgv('10')
-    ->setTotalImpuestos(9.00)
-    ->setMtoPrecioUnitario(59.00)  // con IGV
-    ->setMtoValorVenta(50.00)
-    ->setMtoBaseIgv(50.00);
+    $result = $see->send($invoice);
+    file_put_contents($invoice->getName() . '.xml', $see->getFactory()->getLastXml());
 
-$item2 = (new SaleDetail())
-    ->setUnidad('NIU')
-    ->setCantidad(1)
-    ->setDescripcion('PRODUCTO GRAVADO 2')
-    ->setMtoValorUnitario(25.00)
-    ->setIgv(4.50)
-    ->setTipAfeIgv('10')
-    ->setTotalImpuestos(4.50)
-    ->setMtoPrecioUnitario(29.50)
-    ->setMtoValorVenta(25.00)
-    ->setMtoBaseIgv(25.00);
+    if (!$result->isSuccess()) {
+        return [
+            'success' => false,
+            'error' => $result->getError()->getMessage(),
+        ];
+    }
 
-$invoice->setDetails([$item]);
+    file_put_contents('R-' . $invoice->getName() . '.zip', $result->getCdrZip());
 
-// Leyenda del monto en letras (opcional)
-$invoice->setLegends([
-    (new Legend())
-        ->setCode('1000')
-        ->setValue('SON UN SOL CON 00/100 SOLES')
-]);
-
-// Enviar a SUNAT
-$result = $see->send($invoice);
-
-// Guardar XML
-file_put_contents($invoice->getName() . '.xml', $see->getFactory()->getLastXml());
-
-if (!$result->isSuccess()) {
-    echo 'Codigo Error: ' . $result->getError()->getCode() . PHP_EOL;
-    echo 'Mensaje Error: ' . $result->getError()->getMessage() . PHP_EOL;
-    exit();
-}
-
-// Guardar CDR
-file_put_contents('R-' . $invoice->getName() . '.zip', $result->getCdrZip());
-
-$cdr = $result->getCdrResponse();
-
-echo 'ESTADO: ' . ($cdr->isAccepted() ? 'ACEPTADA' : 'RECHAZADA') . PHP_EOL;
-echo $cdr->getDescription() . PHP_EOL;
-
-if (count($cdr->getNotes()) > 0) {
-    echo 'OBSERVACIONES:' . PHP_EOL;
-    var_dump($cdr->getNotes());
+    $cdr = $result->getCdrResponse();
+    return [
+        'success' => true,
+        'estado' => $cdr->isAccepted() ? 'ACEPTADA' : 'RECHAZADA',
+        'descripcion' => $cdr->getDescription(),
+        'observaciones' => $cdr->getNotes(),
+    ];
 }

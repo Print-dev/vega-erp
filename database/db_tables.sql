@@ -418,7 +418,7 @@ CREATE TABLE comprobantes (
 	idcomprobante		INT auto_increment PRIMARY KEY,
     idsucursal		int not null,
 	idcliente		int not null,
-    idtipodoc		char(2) not null,
+    idtipodoc		char(2) not null, -- esto en realidad no es un id 
 	fechaemision	datetime null default now(),
     nserie			char(4) not null,
     correlativo		char(8) not null,
@@ -427,6 +427,8 @@ CREATE TABLE comprobantes (
 	constraint fk_idcliente_comp	foreign key (idcliente) references clientes (idcliente),
     constraint fk_idsucursal_comp foreign key (idsucursal) references sucursales (idsucursal)
 ) ENGINE = INNODB;
+
+select * from comprobantes where nserie = 'B001';
 
 CREATE TABLE items_factura (
 	iditemfactura	int not null,

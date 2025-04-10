@@ -91,7 +91,7 @@ class Sucursal extends ExecQuery
   public function obtenerSucursalPorId($params = []): array
   {
     try {
-      $sp = parent::execQ("select * from sucursales where idsucursal = ?");
+      $sp = parent::execQ("call obtenerSucursalPorId(?)");
       $sp->execute(
         array(
           $params['idsucursal']
