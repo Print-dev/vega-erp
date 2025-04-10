@@ -39,7 +39,6 @@ $company = (new Company())
 
 // Producto gratuito
 $item = (new SaleDetail())
-    ->setCodProducto('P001')
     ->setUnidad('NIU')
     ->setCantidad(2)
     ->setDescripcion('PRODUCTO GRATUITO')
@@ -55,7 +54,6 @@ $item = (new SaleDetail())
 
 
 $item2 = (new SaleDetail())
-    ->setCodProducto('P002')
     ->setUnidad('NIU')
     ->setCantidad(1)
     ->setDescripcion('PRODUCTO GRATUITO 2')

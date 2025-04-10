@@ -60,7 +60,6 @@ $invoice = (new Invoice())
 
 
 $item1 = (new SaleDetail())
-    ->setCodProducto('P001')
     ->setUnidad('NIU')
     ->setCantidad(1)
     ->setDescripcion('PRODUCTO GRAVADO 1')
@@ -73,7 +72,6 @@ $item1 = (new SaleDetail())
     ->setMtoBaseIgv(50.00);
 
 $item2 = (new SaleDetail())
-    ->setCodProducto('P002')
     ->setUnidad('NIU')
     ->setCantidad(1)
     ->setDescripcion('PRODUCTO GRAVADO 2')

@@ -128,8 +128,10 @@ if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {
 }
 
 require_once '../models/Usuario.php';
+require_once '../models/Empresa.php';
 
 $usuario = new Usuario();
+$empresa = new Empresa();
 
 if (isset($_GET['operation'])) {
   switch ($_GET['operation']) {
@@ -185,6 +187,7 @@ if (isset($_GET['operation'])) {
 if (isset($_POST['operation'])) {
   switch ($_POST['operation']) {
     case 'login':
+      $empresaDato = $empresa->obtenerDatosEmpresa();
       $nomUser = $usuario->limpiarCadena($_POST['nom_usuario']);
       $registro = $usuario->login(['nom_usuario' => $nomUser]);
 
@@ -213,6 +216,8 @@ if (isset($_POST['operation'])) {
           $session['claveacceso'] = $registro[0]['claveacceso'];
           $session['nivelacceso'] = $registro[0]['nivelacceso'];
           $session['idnivelacceso'] = $registro[0]['idnivelacceso'];
+          $session['nombreapp'] = $empresaDato[0]['nombreapp'];
+          $session['logoempresa'] = $empresaDato[0]['logoempresa'];
 
           //die(json_encode($accesos[$registro[0]['nivelacceso']]));
           //$accesos = $usuario->getPermisos(['idperfil' => $registro[0]['idperfil']]);

@@ -24,23 +24,48 @@ VALUES
 (3, 'ventas', 'registrar-atencion-cliente', '', false, NULL),
 (3, 'ventas', 'update-atencion-cliente', NULL, false, NULL);
 
+INSERT INTO empresa (
+    iddistrito, 
+    ruc, 
+    logoempresa, 
+    razonsocial, 
+    nombrecomercial, 
+    direccion, 
+    web, 
+    usuariosol, 
+    clavesol, 
+    certificado
+) VALUES (
+    1,                           -- iddistrito (debe ser un valor válido que exista en la tabla 'distritos')
+    '12345678901',               -- ruc (código único de empresa)
+    'logo.png',                  -- logoempresa (nombre del archivo de logo o NULL si no se tiene)
+    'Razón Social Ejemplo S.A.', -- razonsocial (nombre completo de la empresa)
+    'Nombre Comercial S.A.',     -- nombrecomercial (nombre para la barra lateral de la aplicación)
+    'Av. Ejemplo 123',           -- direccion (dirección física de la empresa)
+    'https://www.ejemplo.com',   -- web (sitio web de la empresa, puede ser NULL)
+    'SOL12345',                  -- usuariosol (usuario del sistema SUNAT, si aplica)
+    'Clave1234',                 -- clavesol (clave del sistema SUNAT, si aplica)
+    'CertificadoEmpresa'         -- certificado (campo de certificado, puede ser NULL)
+);
+
+
 INSERT INTO sucursales (
+	idempresa,
     iddistrito,
     idresponsable,
     nombre,
     ruc,
     telefono,
     direccion,
-    web,
     email
 ) VALUES (
+	1,	
     1,                          -- iddistrito (debe existir en la tabla distritos)
     5,                          -- idresponsable (puede ser null si no hay responsable)
     'Sucursal Central',         -- nombre
     '20123456789',              -- ruc
     '012345678',                -- telefono
     'Av. Siempre Viva 742',     -- direccion
-    'https://sucursalcentral.com', -- web
     'contacto@sucursalcentral.com' -- email
 );
 

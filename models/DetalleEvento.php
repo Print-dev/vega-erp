@@ -88,6 +88,23 @@ class DetalleEvento extends ExecQuery
     }
   }
 
+  public function obtenerEventos($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("SELECT * FROM eventos");
+      $cmd->execute(array(
+        $params['ncotizacion'],
+        $params['ndocumento'],
+        $params['nomusuario'],
+        $params['establecimiento'],
+        $params['fechapresentacion'],
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function obtenerCotizacionPorNcot($params = []): array
   {
     try {

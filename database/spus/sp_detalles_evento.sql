@@ -86,7 +86,7 @@ CREATE PROCEDURE `sp_obtener_dp_porid`(
 )
 BEGIN
 	SELECT 		
-		DP.iddetalle_presentacion, DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50
+		DP.iddetalle_presentacion, USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50
 	FROM detalles_presentacion DP
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
@@ -160,6 +160,38 @@ BEGIN
         CO.estado as estado_contrato,
         DP.tienecaja,
         DEDP.departamento, PRODP.provincia, DISDP.distrito
+    FROM detalles_presentacion DP
+    LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+    LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
+    LEFT JOIN contratos CO ON CO.iddetalle_presentacion = DP.iddetalle_presentacion
+    LEFT JOIN convenios CON ON CON.iddetalle_presentacion = DP.iddetalle_presentacion
+    LEFT JOIN pagos_contrato PC ON PC.idcontrato = CO.idcontrato
+    LEFT JOIN reservas RE ON RE.idpagocontrato = PC.idpagocontrato
+    LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito
+    LEFT JOIN provincias PRODP ON PRODP.idprovincia = DISDP.idprovincia
+    LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
+    WHERE 
+    (DP.ncotizacion IS NULL OR DP.ncotizacion LIKE CONCAT('%', COALESCE(_ncotizacion, ''), '%'))
+    AND (CLI.ndocumento LIKE CONCAT('%', COALESCE(_ndocumento, ''), '%') OR _ndocumento IS NULL)
+    AND (USU.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%') OR _nom_usuario IS NULL)
+    AND (DP.establecimiento LIKE CONCAT('%', COALESCE(_establecimiento, ''), '%') OR _establecimiento IS NULL)
+    AND (DP.fecha_presentacion LIKE CONCAT('%', COALESCE(_fecha_presentacion, ''), '%') OR _fecha_presentacion IS NULL)
+    GROUP BY DP.iddetalle_presentacion, CO.idcontrato;
+
+END //
+
+drop procedure if exists sp_obtener_detalles_evento;
+DELIMITER //
+CREATE PROCEDURE `sp_obtener_detalles_evento`(
+    IN _ncotizacion CHAR(9),
+    IN _ndocumento CHAR(9),
+    IN _nom_usuario CHAR(30),
+    IN _establecimiento VARCHAR(80),
+    IN _fecha_presentacion DATE
+)
+BEGIN
+    SELECT 
+	*
     FROM detalles_presentacion DP
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente

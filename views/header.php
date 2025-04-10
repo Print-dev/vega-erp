@@ -49,14 +49,15 @@ switch ($_SESSION['login']['nivelacceso']) {
     break;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title></title>
-  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png">
+  <title><?= $_SESSION['login']['nombreapp'] ?></title>
+  <link rel="icon" id="link-meta" type="image/png" href="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/<?= $_SESSION['login']['logoempresa'] ?>">
 
   <!-- Bootstrap -->
   <link
@@ -277,12 +278,12 @@ switch ($_SESSION['login']['nivelacceso']) {
           <a class="nav-link bg-white d-flex align-items-center" href="<?= $hostOnlyHeader ?>/views/ventas/listar-atencion-cliente">
             <span class="sidebar-icon me-2">
               <img
-                src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png"
+                src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/<?= $_SESSION['login']['logoempresa'] ?>"
                 alt="Logo"
                 class="rounded"
                 style="width: 40px; object-fit: cover;">
             </span>
-            <span class="sidebar-text text-dark" id="encabezado-titulo">Vega Producciones</span>
+            <span class="sidebar-text text-dark" id="encabezado-titulo"><?= $_SESSION['login']['nombreapp'] ?></span>
           </a>
         </li>
         <?php
@@ -658,4 +659,5 @@ switch ($_SESSION['login']['nivelacceso']) {
       /* document.querySelector("#show-all-notificaciones").addEventListener("click", ()=>{
 
       }) */
+
     </script>

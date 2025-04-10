@@ -43,13 +43,13 @@ class Sucursal extends ExecQuery
       $cmd = $pdo->prepare('CALL sp_registrar_sucursal(?,?,?,?,?,?,?,?)');
       $rpt = $cmd->execute(
         array(
+          $params['idempresa'],
           $params['iddistrito'],
           $params['idresponsable'],
           $params['nombre'],
           $params['ruc'],
           $params['telefono'],
           $params['direccion'],
-          $params['web'],
           $params['email']
         )
       );
@@ -69,14 +69,14 @@ class Sucursal extends ExecQuery
       $rpt = $cmd->execute(
         array(
           $params['idsucursal'],
+          $params['idempresa'],
           $params['iddistrito'],
           $params['idresponsable'],
           $params['nombre'],
           $params['ruc'],
           $params['telefono'],
           $params['direccion'],
-          $params['web'],
-          $params['email']
+         $params['email']
         )
       );
 
@@ -95,6 +95,22 @@ class Sucursal extends ExecQuery
       $sp->execute(
         array(
           $params['idsucursal']
+        )
+
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+  
+  public function obtenerSucursalesPorEmpresa($params = []): array
+  {
+    try {
+      $sp = parent::execQ("call sp_obtener_sucursales_por_empresa (?)");
+      $sp->execute(
+        array(
+          $params['idempresa']
         )
 
       );

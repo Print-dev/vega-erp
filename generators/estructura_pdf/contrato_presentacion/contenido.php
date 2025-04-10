@@ -395,7 +395,7 @@ $monto_texto = numeroATexto($monto_numerico); */
 
                     <tr>
                         <td colspan="5" style="position: relative; text-align: center;">
-                            <img src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818433/vegaimagenes/zfe8hbczrfj649fvbtoq.png" style="
+                            <img src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742792207/<?= $representante[0]['firma'] ?>" style="
         position: absolute;
         top: -70px; /* Ajusta según sea necesario */
         left: 50%;

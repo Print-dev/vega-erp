@@ -61,3 +61,7 @@ ALTER TABLE usuarios ADD COLUMN firma varchar(40) null;
 ALTER TABLE usuarios ADD COLUMN esRepresentante tinyint null;
 ALTER TABLE usuarios DROP COLUMN esRepresentante;
 ALTER TABLE usuarios ADD COLUMN idsucursal 	int not null;
+
+ALTER TABLE empresa DROP COLUMN iddistrito;
+ALTER TABLE empresa DROP CONSTRAINT fk_iddistrito_empresa;
+ALTER TABLE empresa ADD COLUMN nombreapp varchar(120) null;

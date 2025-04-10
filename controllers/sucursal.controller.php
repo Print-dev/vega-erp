@@ -37,6 +37,13 @@ if (isset($_GET['operation'])) {
       ];
       echo json_encode($sucursal->obtenerRepresentanteEmpresa($cleanData));
       break;
+
+    case 'obtenerSucursalesPorEmpresa':
+      $cleanData = [
+        'idempresa' => $_GET['idempresa'] === "" ? null : $sucursal->limpiarCadena($_GET['idempresa']),
+      ];
+      echo json_encode($sucursal->obtenerSucursalesPorEmpresa($cleanData));
+      break;
   }
 }
 
@@ -44,13 +51,13 @@ if (isset($_POST['operation'])) {
   switch ($_POST['operation']) {
     case 'registrarSucursal':
       $cleanData = [
+        'idempresa'   => $sucursal->limpiarCadena($_POST['idempresa']) ?  $sucursal->limpiarCadena($_POST['idempresa']) : '',
         'iddistrito'   => $sucursal->limpiarCadena($_POST['iddistrito']) ?  $sucursal->limpiarCadena($_POST['iddistrito']) : '',
         'idresponsable'   => $sucursal->limpiarCadena($_POST['idresponsable']) ?  $sucursal->limpiarCadena($_POST['idresponsable']) : '',
         'nombre'   => $sucursal->limpiarCadena($_POST['nombre']) ?  $sucursal->limpiarCadena($_POST['nombre']) : '',
         'ruc'   => $sucursal->limpiarCadena($_POST['ruc']) ?  $sucursal->limpiarCadena($_POST['ruc']) : '',
         'telefono'   => $sucursal->limpiarCadena($_POST['telefono']) ?  $sucursal->limpiarCadena($_POST['telefono']) : '',
         'direccion'   => $sucursal->limpiarCadena($_POST['direccion']) ?  $sucursal->limpiarCadena($_POST['direccion']) : '',
-        'web'   => $sucursal->limpiarCadena($_POST['web']) ?  $sucursal->limpiarCadena($_POST['web']) : '',
         'email'   => $sucursal->limpiarCadena($_POST['email']) ?  $sucursal->limpiarCadena($_POST['email']) : '',
       ];
 
@@ -62,13 +69,13 @@ if (isset($_POST['operation'])) {
     case 'actualizarSucursal':
       $cleanData = [
         'idsucursal'   => $sucursal->limpiarCadena($_POST['idsucursal']) ?  $sucursal->limpiarCadena($_POST['idsucursal']) : '',
+        'idempresa'   => $sucursal->limpiarCadena($_POST['idempresa']) ?  $sucursal->limpiarCadena($_POST['idempresa']) : '',
         'iddistrito'   => $sucursal->limpiarCadena($_POST['iddistrito']) ?  $sucursal->limpiarCadena($_POST['iddistrito']) : '',
         'idresponsable'   => $sucursal->limpiarCadena($_POST['idresponsable']) ?  $sucursal->limpiarCadena($_POST['idresponsable']) : '',
         'nombre'   => $sucursal->limpiarCadena($_POST['nombre']) ?  $sucursal->limpiarCadena($_POST['nombre']) : '',
         'ruc'   => $sucursal->limpiarCadena($_POST['ruc']) ?  $sucursal->limpiarCadena($_POST['ruc']) : '',
         'telefono'   => $sucursal->limpiarCadena($_POST['telefono']) ?  $sucursal->limpiarCadena($_POST['telefono']) : '',
         'direccion'   => $sucursal->limpiarCadena($_POST['direccion']) ?  $sucursal->limpiarCadena($_POST['direccion']) : '',
-        'web'   => $sucursal->limpiarCadena($_POST['web']) ?  $sucursal->limpiarCadena($_POST['web']) : '',
         'email'   => $sucursal->limpiarCadena($_POST['email']) ?  $sucursal->limpiarCadena($_POST['email']) : '',
       ];
 

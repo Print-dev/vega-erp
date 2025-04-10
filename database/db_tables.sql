@@ -32,12 +32,13 @@ CREATE TABLE distritos
 
 CREATE TABLE empresa (
 	idempresa		INT auto_increment PRIMARY KEY,
-    ruc				char(11) not null,
+    ruc				char(11)  null,
     logoempresa		varchar(40) null,
-    razonsocial		varchar(120) not null,
+    razonsocial		varchar(120)  null,
 	nombrecomercial	varchar(120) null, -- este nombre aparecera en la sidebar como nombre de la aplicacion
-    direccion		varchar(120) not null,
-    iddistrito		int not null,
+    nombreapp 		varchar(120) null,
+    direccion		varchar(120)  null,
+    web				varchar(120)  null,
     usuariosol		char(8) null,
     clavesol		char(12) null,
     certificado		text null,
@@ -46,15 +47,16 @@ CREATE TABLE empresa (
 
 CREATE TABLE sucursales (
 	idsucursal		int auto_increment primary key,
+    idempresa		int not null,
     iddistrito		int not null,
     idresponsable	int null, -- idusuario
 	nombre			varchar(120) null,
 	ruc				char(11) not null,
     telefono		char(20)  null,
     direccion		varchar(120)  not null,
-    web				varchar(120)  null,
     email			varchar(120)  null,
-    constraint fk_iddistrito_suc foreign key (iddistrito) references distritos (iddistrito)
+    constraint fk_iddistrito_sucu foreign key (iddistrito) references distritos (iddistrito),
+    constraint fk_idempresa_sucu foreign key (idempresa) references empresa (idempresa)
 )  ENGINE=INNODB;
 
 CREATE TABLE personas
@@ -409,3 +411,37 @@ CREATE TABLE tareas_diaria_asignacion (
     constraint fk_idusuario	foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idtareadiaria_asig foreign key (idtareadiaria) references tareas_diarias (idtareadiaria)
 ) engine = innodb;
+
+-- --------------------------------------------- TABLAS FACTURA Y BOLETA -----------------------------------------------
+
+CREATE TABLE comprobantes (
+	idcomprobante		INT auto_increment PRIMARY KEY,
+    idsucursal		int not null,
+	idcliente		int not null,
+    idtipodoc		char(2) not null,
+	fechaemision	datetime null default now(),
+    nserie			char(4) not null,
+    correlativo		char(8) not null,
+    tipomoneda		varchar(40) not null,
+    monto			decimal(10,2) not null,
+	constraint fk_idcliente_comp	foreign key (idcliente) references clientes (idcliente),
+    constraint fk_idsucursal_comp foreign key (idsucursal) references sucursales (idsucursal)
+) ENGINE = INNODB;
+
+CREATE TABLE items_factura (
+	iditemfactura	int not null,
+    idcomprobante	int not null,
+    cantidad		int not null,
+    descripcion		text not null,
+    valorunitario	decimal(10,2) not null,
+    valortotal		decimal(10,2) not null,
+	constraint fk_items_factura	foreign key (idcomprobante) references comprobantes (idcomprobante)
+) ENGINE = INNODB;
+
+CREATE TABLE detalles_factura (
+	iddetallefactura int auto_increment primary key,
+    idcomprobante		int not null,
+    estado				varchar(10) not null,
+    info				varchar(60) not null,
+	constraint fk_iddetallefactura	foreign key (idcomprobante) references comprobantes (idcomprobante)
+) ENGINE = INNODB;

@@ -113,6 +113,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const body = new FormData();
         body.append("operation", "actualizarSucursal");
         body.append("idsucursal", idsucursal);
+        body.append("idempresa", 1);
         body.append("iddistrito", $q("#iddistrito").value ? $q("#iddistrito").value.trim() : '');
         body.append("idresponsable", $q("#idresponsable").value ? $q("#idresponsable").value.trim() : '');
         body.append("nombre", $q("#nombre").value ? $q("#nombre").value.trim() : '');

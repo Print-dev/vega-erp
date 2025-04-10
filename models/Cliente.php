@@ -40,6 +40,17 @@ class Cliente extends ExecQuery
       die($e->getMessage());
     }
   }
+
+  public function obtenerClientes(): array
+  {
+    try {
+      $cmd = parent::execQ("SELECT * FROM clientes");
+      $cmd->execute();
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
   
   public function buscarCliente($params = []): array
   {

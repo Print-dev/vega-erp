@@ -19,8 +19,10 @@
                         <!-- Vista previa del logo + botón subir -->
                         <div class="col-md-4 d-flex flex-column align-items-center">
                             <img id="logo-preview" src="ruta/logo-por-defecto.png" class="img-fluid mb-2 border rounded" style="max-height: 180px; object-fit: contain;">
-                            <input type="file" name="logoempresa" id="logoempresa" class="form-control mt-2">
-                            <label for="logoempresa" class="form-text text-muted mt-1">Subir imagen</label>
+                            <button id="upload_widget" type="button" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Logo (app)
+                            </button>
+
                         </div>
 
                         <!-- Inputs: ruc, razonsocial, nombrecomercial, direccion -->
@@ -41,10 +43,19 @@
                                     <input type="text" name="nombrecomercial" id="nombrecomercial" class="form-control">
                                 </div>
                                 <div class="col-md-6">
+                                    <label for="nombreapp" class="form-label">Nombre de aplicación</label>
+                                    <input type="text" name="nombreapp" id="nombreapp" class="form-control">
+                                </div>
+                                <div class="col-md-6">
                                     <label for="direccion" class="form-label">Dirección</label>
                                     <input type="text" name="direccion" id="direccion" class="form-control">
                                 </div>
+                                <div class="col-md-6">
+                                    <label for="web" class="form-label">Web</label>
+                                    <input type="text" name="web" id="web" class="form-control">
+                                </div>
                             </div>
+
                         </div>
                     </div>
 
@@ -102,6 +113,7 @@
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script src="<?= $hostOnlyHeader ?>/js/empresa/actualizar-empresa.js"></script>
+<script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
 
 </body>
 
