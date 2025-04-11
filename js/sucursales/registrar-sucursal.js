@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const data = await registrarSucursal();
         console.log(data);
         if (data) {
-            showToast("Sucursal registrado correctamente", "SUCCESS", 2500, `${hostOnly}/views/utilitario/sucursales/listar-sucursales`);	
+            showToast("Sucursal registrado correctamente", "SUCCESS", 2500, `${hostOnly}/views/comprobantes/facturas/listar-facturas`);	
 
         } else {
             alert("Error al registrar la sucursal");

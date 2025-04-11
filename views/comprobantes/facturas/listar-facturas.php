@@ -28,19 +28,25 @@
                                 <div class="card-body border-0">
 
                                     <div class="row">
-                                        <div class="col-md-2">
+                                        <div class="col-md-4">
                                             <div class="form-floating">
-                                                <input type="date" id="fechaapertura" class="form-control filter">
-                                                <label for="fechaapertura">Filtro Fecha de apertura</label>
+                                                <input type="date" id="fechaemision" class="form-control filter">
+                                                <label for="fechaemision">Fecha de emisión</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-4">
                                             <div class="form-floating">
-                                                <input type="date" id="fechacierre" class="form-control filter">
-                                                <label for="fechacierre">Filtro Fecha de cierre</label>
+                                                <input type="time" id="horaemision" class="form-control filter">
+                                                <label for="horaemision">Hora de emisión</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-4">
+                                            <div class="form-floating">
+                                                <input type="text" id="numerocomprobante" class="form-control filter" placeholder="N° de Comprobante">
+                                                <label for="numerocomprobante">N° de Comprobante</label>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="col-md-2">
                                             <div class="form-floating">
                                                 <select id="mes" class="form-control filter">
                                                     <option value="">Seleccionar Mes</option>
@@ -71,30 +77,25 @@
                                                 <input type="text" id="busqueda_general" class="form-control filter">
                                                 <label for="busqueda_general">Evento</label>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
 
                                 </div>
                             </div>
-                            <hr>
+                            
                             <div class="row g-1">
                                 <div class="table-responsive">
-                                    <table class="table" id="table-cajaschicas">
+                                    <table class="table" id="table-facturas">
                                         <thead class="text-center">
                                             <tr>
-                                                <th>Fecha Apertura</th>
-                                                <th>Fecha Cierre</th>
-                                                <th>Evento</th>
-                                                <th>Ubigeo</th>
-                                                <th>Monto Inicial</th>
-                                                <th>Incremento</th>
-                                                <th>Decremento</th>
-                                                <th>Registro de pagos</th>
-                                                <th>Monto Final</th>
+                                                <th>Fecha Emitido</th>
+                                                <th>Comprobante</th>
+                                                <th>Cliente</th>
+                                                <th>Monto</th>
                                                 <th>Opciones</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="tb-body-cajachica">
+                                        <tbody id="tb-body-factura">
                                         </tbody>
 
                                     </table>

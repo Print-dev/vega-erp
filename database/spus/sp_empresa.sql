@@ -44,18 +44,3 @@ BEGIN
     certificado = nullif(_certificado , '')
     WHERE idempresa = _idempresa; 
 END //
-
-CALL sp_actualizar_empresa(
-    1,                         -- _idempresa
-    '12345678901',             -- _ruc
-    'nuevo_logo.png',          -- _logoempresa
-    'Nueva Razón Social S.A.', -- _razonsocial
-    'Comercial S.A.',          -- _nombrecomercial
-    'Nueva Dirección 456',     -- _direccion
-    'https://www.nuevaweb.com',-- _web
-    'USRSOL01',                -- _usuariosol
-    'ClaveNueva1',             -- _clavesol
-    'CertificadoNuevoTexto'    -- _certificado
-);
-
-select * from empresa;

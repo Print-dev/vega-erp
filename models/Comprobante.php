@@ -19,6 +19,21 @@ class Comprobante extends ExecQuery
       die($e->getMessage());
     }
   }
+
+  public function filtrarFacturas($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_facturas (?,?,?)");
+      $cmd->execute(array(
+        $params['fechaemision'],
+        $params['horaemision'],
+        $params['numerocomprobante']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
   /*   public function obtenerFactura($params = []): array
   {
     try {

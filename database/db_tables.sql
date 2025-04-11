@@ -41,10 +41,8 @@ CREATE TABLE empresa (
     web				varchar(120)  null,
     usuariosol		char(8) null,
     clavesol		char(12) null,
-    certificado		text null,
-	CONSTRAINT fk_iddistrito_empresa FOREIGN KEY(iddistrito) REFERENCES distritos (iddistrito)
+    certificado		text null
 ) ENGINE = INNODB;
-
 CREATE TABLE sucursales (
 	idsucursal		int auto_increment primary key,
     idempresa		int not null,
@@ -419,7 +417,8 @@ CREATE TABLE comprobantes (
     idsucursal		int not null,
 	idcliente		int not null,
     idtipodoc		char(2) not null, -- esto en realidad no es un id 
-	fechaemision	datetime null default now(),
+	fechaemision	DATE null default now(),
+    horaemision     time null default now(),
     nserie			char(4) not null,
     correlativo		char(8) not null,
     tipomoneda		varchar(40) not null,
@@ -428,10 +427,13 @@ CREATE TABLE comprobantes (
     constraint fk_idsucursal_comp foreign key (idsucursal) references sucursales (idsucursal)
 ) ENGINE = INNODB;
 
+select * from comprobantes;
+select * from items_factura;
+select * from detalles_factura;
 select * from comprobantes where nserie = 'B001';
 
 CREATE TABLE items_factura (
-	iditemfactura	int not null,
+	iditemfactura	int auto_increment primary key,
     idcomprobante	int not null,
     cantidad		int not null,
     descripcion		text not null,

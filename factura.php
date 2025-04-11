@@ -23,6 +23,7 @@ function generarFactura($data)
         ->setRznSocial($data['razon_social_cliente']);
 
     $address = (new Address())
+        ->setUbigueo($data['ubigeo'])
         ->setDepartamento($data['departamento'])
         ->setProvincia($data['provincia'])
         ->setDistrito($data['distrito'])

@@ -15,7 +15,16 @@ if (isset($_GET['operation'])) {
         case 'obtenerSeriePorTipoDoc':
             echo json_encode($comprobante->obtenerSeriePorTipoDoc(['idtipodoc' => $_GET['idtipodoc']]));
             break;
-       
+
+
+        case 'filtrarFacturas':
+            $cleanData = [
+                'fechaemision' => $_GET['fechaemision'] === "" ? null : $comprobante->limpiarCadena($_GET['fechaemision']),
+                'horaemision' => $_GET['horaemision'] === "" ? null : $comprobante->limpiarCadena($_GET['horaemision']),
+                'numerocomprobante' => $_GET['numerocomprobante'] === "" ? null : $comprobante->limpiarCadena($_GET['numerocomprobante'])
+            ];
+            echo json_encode($comprobante->filtrarFacturas($cleanData));
+            break;
     }
 }
 
@@ -46,7 +55,7 @@ if (isset($_POST['operation'])) {
         case 'registrarItemComprobante':
             $cleanData = [
                 'idcomprobante'   => $comprobante->limpiarCadena($_POST['idcomprobante']),
-                'cantidad ' => $comprobante->limpiarCadena($_POST['cantidad ']),
+                'cantidad' => $comprobante->limpiarCadena($_POST['cantidad']),
                 'descripcion'   => $comprobante->limpiarCadena($_POST['descripcion']),
                 'valorunitario'   => $comprobante->limpiarCadena($_POST['valorunitario']),
                 'valortotal'   => $comprobante->limpiarCadena($_POST['valortotal'])
@@ -60,11 +69,11 @@ if (isset($_POST['operation'])) {
         case 'registrarDetalleComprobante':
             $cleanData = [
                 'idcomprobante'   => $comprobante->limpiarCadena($_POST['idcomprobante']),
-                'estado ' => $comprobante->limpiarCadena($_POST['estado ']),
+                'estado' => $comprobante->limpiarCadena($_POST['estado']),
                 'info'   => $comprobante->limpiarCadena($_POST['info'])
             ];
 
-            $rpt = $comprobante->registrarItemComprobante($cleanData);
+            $rpt = $comprobante->registrarDetalleComprobante($cleanData);
 
             echo json_encode($rpt);
             break;
@@ -78,6 +87,8 @@ if (isset($_POST['operation'])) {
                 'departamento' => $comprobante->limpiarCadena($_POST['departamento']),
                 'provincia' => $comprobante->limpiarCadena($_POST['provincia']),
                 'distrito' => $comprobante->limpiarCadena($_POST['distrito']),
+                'ubigeo' => $comprobante->limpiarCadena($_POST['ubigeo']),
+
 
                 'ndocumento' => $comprobante->limpiarCadena($_POST['ndocumento']),
                 'razon_social_cliente' => $comprobante->limpiarCadena($_POST['razon_social_cliente']),

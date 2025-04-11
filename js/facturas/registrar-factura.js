@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // ************************************************** REGISTRO DE DATA *******************************************************
 
-    async function emitirFactura(direccion_emisor, departamento, provincia, distrito, ndocumento, razon_social_cliente, serie, correlativo, monto_gravado, igv, total, detalle, monto_letras) {
+    async function emitirFactura(direccion_emisor, departamento, provincia, distrito, ubigeo, ndocumento, razon_social_cliente, serie, correlativo, monto_gravado, igv, total, detalle, monto_letras) {
         const comprobante = new FormData();
         comprobante.append("operation", "emitirFactura");
         // DATOS DE EMPRESA
@@ -212,6 +212,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         comprobante.append("departamento", departamento);
         comprobante.append("provincia", provincia);
         comprobante.append("distrito", distrito);
+        comprobante.append("ubigeo", ubigeo);
         //DATOS DE CLIENTE
         comprobante.append("ndocumento", ndocumento);
         comprobante.append("razon_social_cliente", razon_social_cliente);
@@ -245,6 +246,40 @@ document.addEventListener("DOMContentLoaded", async () => {
         comprobante.append("correlativo", correlativo);
         comprobante.append("tipomoneda", tipomoneda);
         comprobante.append("monto", monto);
+
+        const fcomprobante = await fetch(`${host}comprobante.controller.php`, {
+            method: "POST",
+            body: comprobante,
+        });
+        const rcomprobante = await fcomprobante.json();
+        //console.log("rivatico . ", rcomprobante)
+        return rcomprobante;
+    }
+
+    async function registrarItemComprobante(idcomprobante, descripcion, valorunitario, valortotal) {
+        const comprobante = new FormData();
+        comprobante.append("operation", "registrarItemComprobante");
+        comprobante.append("idcomprobante", idcomprobante); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
+        comprobante.append("cantidad", 1); // id usuario envia la notificacion
+        comprobante.append("descripcion", descripcion);
+        comprobante.append("valorunitario", valorunitario);
+        comprobante.append("valortotal", valortotal);
+
+        const fcomprobante = await fetch(`${host}comprobante.controller.php`, {
+            method: "POST",
+            body: comprobante,
+        });
+        const rcomprobante = await fcomprobante.json();
+        //console.log("rivatico . ", rcomprobante)
+        return rcomprobante;
+    }
+
+    async function registrarDetalleComprobante(idcomprobante, estado, info) {
+        const comprobante = new FormData();
+        comprobante.append("operation", "registrarDetalleComprobante");
+        comprobante.append("idcomprobante", idcomprobante); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
+        comprobante.append("estado", estado);
+        comprobante.append("info", info);
 
         const fcomprobante = await fetch(`${host}comprobante.controller.php`, {
             method: "POST",
@@ -369,17 +404,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
 
     $q("#btnEmitirComprobante").addEventListener("click", async () => {
-        const serie = await obtenerSeriePorTipoDoc('01')
+        const serie = await obtenerSeriePorTipoDoc('01') // cambiarlo luego a boleta en el otro archivo papra boletas
         console.log("serie -> ", serie);
         if (serie.length == 0) {
             //generarCorrelativo('01', '00000000')
-            const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', 'F001', '00000001', $q("#tipomoneda").value, totalConIgv)
-            console.log("nuevo comprobante -> ", nuevoComprobante);
+
             const rptFactura = await emitirFactura(
                 direccionEmisorObtenido,
                 departamentoEmisorObtenido,
                 provinciaEmisorObtenido,
                 distritoEmisorObtenido,
+                $q("#ubigeo").value,
                 ndocumentoClienteObtenido,
                 razonsocialClienteObtenido,
                 'F001',
@@ -395,12 +430,62 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return
             }
             else if (rptFactura?.success == true) {
-                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000)
-                await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01',)
+                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
+                const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', 'F001', '00000001', $q("#tipomoneda").value, totalConIgv)
+                console.log("nuevo comprobante -> ", nuevoComprobante);
+                console.log("detalle > ", detalle);
+                if (nuevoComprobante?.idcomprobante) {
+                    detalle.forEach(async item => {
+                        const itemRegistrado = await registrarItemComprobante(nuevoComprobante?.idcomprobante, item?.descripcion, item?.valorunitario, item?.preciounitario)
+                        console.log("item registrado -> ", itemRegistrado);
+
+                    });
+                    const detalleRegistado = await registrarDetalleComprobante(nuevoComprobante?.idcomprobante, rptFactura?.estado, rptFactura?.descripcion)
+                    console.log("detalle registdaod -> ", detalleRegistado);
+                }
                 return
             }
         }
+        else {
+            const nuevoCorrelativo = generarCorrelativo(serie[0]?.nserie, serie[0]?.correlativo)
+            console.log("nuevo correlativo -> ", nuevoCorrelativo);
+            const rptFactura = await emitirFactura(
+                direccionEmisorObtenido,
+                departamentoEmisorObtenido,
+                provinciaEmisorObtenido,
+                distritoEmisorObtenido,
+                $q("#ubigeo").value,
+                ndocumentoClienteObtenido,
+                razonsocialClienteObtenido,
+                nuevoCorrelativo.serie,
+                nuevoCorrelativo.nuevoCorrelativo,
+                totalGravado,
+                igvTotal,
+                totalConIgv,
+                detalle,
+                montoLetra)
+            console.log("rpt factura -> ", rptFactura);
+            if (rptFactura?.success == false) {
+                showToast(rptFactura.error, "ERROR")
+                return
+            }
+            else if (rptFactura?.success == true) {
+                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
+                const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', nuevoCorrelativo.serie,nuevoCorrelativo.nuevoCorrelativo, $q("#tipomoneda").value, totalConIgv)
+                console.log("nuevo comprobante -> ", nuevoComprobante);
+                console.log("detalle > ", detalle);
+                if (nuevoComprobante?.idcomprobante) {
+                    detalle.forEach(async item => {
+                        const itemRegistrado = await registrarItemComprobante(nuevoComprobante?.idcomprobante, item?.descripcion, item?.valorunitario, item?.preciounitario)
+                        console.log("item registrado -> ", itemRegistrado);
 
+                    });
+                    const detalleRegistado = await registrarDetalleComprobante(nuevoComprobante?.idcomprobante, rptFactura?.estado, rptFactura?.descripcion)
+                    console.log("detalle registdaod -> ", detalleRegistado);
+                }
+                return
+            }
+        }
 
     })
     // *****************************************************************************************************************************

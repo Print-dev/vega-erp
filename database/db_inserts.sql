@@ -25,22 +25,22 @@ VALUES
 (3, 'ventas', 'update-atencion-cliente', NULL, false, NULL);
 
 INSERT INTO empresa (
-    iddistrito, 
     ruc, 
     logoempresa, 
     razonsocial, 
-    nombrecomercial, 
+    nombrecomercial,
+    nombreapp,
     direccion, 
     web, 
     usuariosol, 
     clavesol, 
     certificado
 ) VALUES (
-    1,                           -- iddistrito (debe ser un valor válido que exista en la tabla 'distritos')
     '12345678901',               -- ruc (código único de empresa)
     'logo.png',                  -- logoempresa (nombre del archivo de logo o NULL si no se tiene)
     'Razón Social Ejemplo S.A.', -- razonsocial (nombre completo de la empresa)
-    'Nombre Comercial S.A.',     -- nombrecomercial (nombre para la barra lateral de la aplicación)
+    'Nombre Comercial S.A.',     -- nombrecomercial 
+    'Vega Producciones',			-- (nombre para la barra lateral de la aplicación)
     'Av. Ejemplo 123',           -- direccion (dirección física de la empresa)
     'https://www.ejemplo.com',   -- web (sitio web de la empresa, puede ser NULL)
     'SOL12345',                  -- usuariosol (usuario del sistema SUNAT, si aplica)
