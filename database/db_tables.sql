@@ -447,4 +447,13 @@ CREATE TABLE detalles_comprobante (
 	constraint fk_iddetallefactura	foreign key (idcomprobante) references comprobantes (idcomprobante)
 ) ENGINE = INNODB;
 
-
+CREATE TABLE cuotas_comprobante (
+	idcuotacomprobante	int auto_increment primary key,
+    idcomprobante		int		not null,
+	fecha				date	not null,
+	monto				decimal(10,2) not null,
+    fechapagado			date null,
+    horapagado			date null,
+    pagado				tinyint null default 0, -- 0:pendiente, 1: pagado, 2: atrasado, 3: pagado con atraso
+    constraint 	fk_idcuotacomprobante	foreign key (idcuotacomprobante) references cuotas_comprobante (idcuotacomprobante)
+) ENGINE = INNODB;
