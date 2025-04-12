@@ -450,10 +450,25 @@ CREATE TABLE detalles_comprobante (
 CREATE TABLE cuotas_comprobante (
 	idcuotacomprobante	int auto_increment primary key,
     idcomprobante		int		not null,
-	fecha				date	not null,
+	fecha				date	not null, -- fecha de vencimiento
 	monto				decimal(10,2) not null,
     fechapagado			date null,
-    horapagado			date null,
-    pagado				tinyint null default 0, -- 0:pendiente, 1: pagado, 2: atrasado, 3: pagado con atraso
-    constraint 	fk_idcuotacomprobante	foreign key (idcuotacomprobante) references cuotas_comprobante (idcuotacomprobante)
+    horapagado			time null,
+    estado				tinyint null default 0, -- 0:pendiente, 1: pagado, 2: atrasado, 3: pagado con atraso, 4: parcial
+    constraint 	fk_idcuotacomprobante	foreign key (idcomprobante) references comprobantes (idcomprobante)
 ) ENGINE = INNODB;
+
+INSERT INTO cuotas_comprobante (idcomprobante, fecha, monto) values (3, '2025-04-11', 400.00);
+
+CREATE TABLE pagos_cuota (
+	idpagocuota			int auto_increment primary key,
+    idcuotacomprobante 	int		not null,
+    fechapagado			date  null default now(),
+    horapagado			time null default now(),
+	montopagado			decimal(10,2) not null,
+    tipo_pago	tinyint	not null, -- 1: transferencia, 2: contado
+    noperacion	varchar(20) null,
+    constraint 	fk_idcuotacomprobante_pago	foreign key (idcuotacomprobante) references cuotas_comprobante (idcuotacomprobante)
+) ENGINE = INNODB;
+select * from pagos_cuota;
+select * from cuotas_comprobante;

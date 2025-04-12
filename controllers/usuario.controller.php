@@ -57,6 +57,8 @@ $accesos = [
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-ingresos', 'subruta' => 'reparticion', 'texto' => '',  'visible' => false, 'icono' => ''],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-egresos', 'subruta' => 'reparticion', 'texto' => '', 'visible' => false, 'icono' => ''],
 
+    ['modulo' => 'contabilidad', 'ruta' => 'listar-cuotas', 'subruta' => 'cuotas', 'texto' => 'Cuotas', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+
     /* ['modulo' => 'contabilidad', 'ruta' => 'listar-ingresos', 'subruta' => 'ingresos', 'texto' => 'Ingresos', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-ingreso', 'subruta' => 'ingresos', 'visible' => false], */
 
@@ -205,6 +207,8 @@ if (isset($_POST['operation'])) {
           $resultados['mensaje'] = "Bienvenido";
           $resultados['rol'] = $registro[0]['nivelacceso'];
           $resultados['estado'] = $registro[0]['estado'];
+          $resultados['nombreapp'] = $empresaDato[0]['nombreapp']; // ESTO PARA MOSTRARLO EN LASN OTIFICACIONES
+          $resultados['logoempresa'] = $empresaDato[0]['logoempresa']; // ESTO PARA MOSTRARLO EN LOGO DE LA EMPRESA
 
           //Ya esta validado
           $session['estado'] = true;

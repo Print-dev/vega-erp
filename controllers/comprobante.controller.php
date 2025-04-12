@@ -28,6 +28,14 @@ if (isset($_GET['operation'])) {
             echo json_encode($comprobante->obtenerComprobantePorTipoDoc(['idcomprobante' => $_GET['idcomprobante'], 'idtipodoc' => $_GET['idtipodoc']]));
             break;
 
+        case 'obtenerPagosCuotasPorIdCuota':
+            echo json_encode($comprobante->obtenerPagosCuotasPorIdCuota(['idcuotacomprobante' => $_GET['idcuotacomprobante']]));
+            break;
+
+        case 'obtenerCuotasFacturaPorIdComprobante':
+            echo json_encode($comprobante->obtenerCuotasFacturaPorIdComprobante(['idcomprobante' => $_GET['idcomprobante']]));
+            break;
+
         case 'filtrarFacturas':
             $cleanData = [
                 'fechaemision' => $_GET['fechaemision'] === "" ? null : $comprobante->limpiarCadena($_GET['fechaemision']),
@@ -35,6 +43,15 @@ if (isset($_GET['operation'])) {
                 'numerocomprobante' => $_GET['numerocomprobante'] === "" ? null : $comprobante->limpiarCadena($_GET['numerocomprobante'])
             ];
             echo json_encode($comprobante->filtrarFacturas($cleanData));
+            break;
+
+        case 'filtrarCuotas':
+            $cleanData = [
+                'fecha' => $_GET['fecha'] === "" ? null : $comprobante->limpiarCadena($_GET['fecha']),
+                'numerocomprobante' => $_GET['numerocomprobante'] === "" ? null : $comprobante->limpiarCadena($_GET['numerocomprobante']),
+                'idcliente' => $_GET['idcliente'] === "" ? null : $comprobante->limpiarCadena($_GET['idcliente'])
+            ];
+            echo json_encode($comprobante->filtrarCuotas($cleanData));
             break;
 
 
@@ -125,6 +142,31 @@ if (isset($_POST['operation'])) {
             echo json_encode($rpt);
             break;
 
+        case 'registrarCuotaFactura':
+            $cleanData = [
+                'idcomprobante'   => $comprobante->limpiarCadena($_POST['idcomprobante']),
+                'fecha' => $comprobante->limpiarCadena($_POST['fecha']),
+                'monto'   => $comprobante->limpiarCadena($_POST['monto'])
+            ];
+
+            $rpt = $comprobante->registrarCuotaFactura($cleanData);
+
+            echo json_encode($rpt);
+            break;
+            
+        case 'registrarPagoCuota':
+            $cleanData = [
+                'idcuotacomprobante'   => $comprobante->limpiarCadena($_POST['idcuotacomprobante']),
+                'montopagado' => $comprobante->limpiarCadena($_POST['montopagado']),
+                'tipopago'   => $comprobante->limpiarCadena($_POST['tipopago']),
+                'noperacion'   => $comprobante->limpiarCadena($_POST['noperacion']) ? $comprobante->limpiarCadena($_POST['noperacion']) : null,
+            ];
+
+            $rpt = $comprobante->registrarPagoCuota($cleanData);
+
+            echo json_encode($rpt);
+            break;
+
         case 'registrarDetalleComprobante':
             $cleanData = [
                 'idcomprobante'   => $comprobante->limpiarCadena($_POST['idcomprobante']),
@@ -133,6 +175,17 @@ if (isset($_POST['operation'])) {
             ];
 
             $rpt = $comprobante->registrarDetalleComprobante($cleanData);
+
+            echo json_encode($rpt);
+            break;
+
+        case 'actualizarEstadoCuotaComprobante':
+            $cleanData = [
+                'idcuotacomprobante'   => $comprobante->limpiarCadena($_POST['idcuotacomprobante']),
+                'estado'   => $comprobante->limpiarCadena($_POST['estado']),
+            ];
+
+            $rpt = $comprobante->actualizarEstadoCuotaComprobante($cleanData);
 
             echo json_encode($rpt);
             break;

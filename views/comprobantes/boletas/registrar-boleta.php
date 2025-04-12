@@ -1,45 +1,95 @@
 <?php require_once '../../header.php' ?>
 
-<div class="container-fluid">
-    <div class="card" style="border-color: #f2f4f7; box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);
-    -webkit-box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);
-    -moz-box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <h1>Boletas Emitidas</h1>
-                </div>
-                <div class="col-md-6 text-end contenedor-btn-nuevacaja">
-                    <a href="<?= $hostOnlyHeader ?> /views/comprobantes/boletas/listar-boletas" class="btn btn-primary" id="btnNuevaCaja">Emitir Boleta</a>
-                </div>
+<div class="row g-0 h-100 mb-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header border-0 d-flex justify-content-between align-items-center">
+                <h2>Registrar Boleta</h2>
+
+                <a href="<?= $hostOnlyHeader ?>/views/comprobantes/boletas/listar-boletas" class="btn btn-outline-primary btn-sm ms-auto m-0" type="button"><i class="fa-solid fa-circle-left"></i> Regresar</a>
             </div>
-            <div class="card-body">
+            <div class="card-body ">
                 <div class="row g-3">
-                    <!-- Datos del Cliente -->
-                    <h5 class="mb-3">Datos del Cliente</h5>
-                    <div class="col-md-4">
-                        <label for="tipoDocCliente" class="form-label">Tipo de Documento</label>
-                        <select class="form-select" id="tipoDocCliente" name="tipoDocCliente" required>
-                            <option value="6" selected>RUC</option>
-                            <option value="1">DNI</option>
-                        </select>
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <input type="text" id="nserie" name="nserie"
+                                class="form-control" readonly value="F001">
+                            <label for="nserie" class="form-label">Serie</label>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <label for="numDocCliente" class="form-label">Número de Documento</label>
-                        <input type="text" class="form-control" id="numDocCliente" name="numDocCliente" required>
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <input type="text" id="correlativo" name="correlativo"
+                                class="form-control" readonly value="00000123">
+                            <label for="correlativo" class="form-label">Correlativo</label>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <label for="rznSocialCliente" class="form-label">Razón Social / Nombre</label>
-                        <input type="text" class="form-control" id="rznSocialCliente" name="rznSocialCliente" required>
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <select name="tipomoneda" id="tipomoneda" class="form-select">
+                                <option value="" selected>Selecciona</option>
+                                <option value="PEN">Soles</option>
+                            </select>
+                            <label for="tipomoneda" class="form-label">Moneda</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <select name="tipooperacion" id="tipooperacion" class="form-select">
+                                <option value="" selected>Selecciona</option>
+                                <option value="0101">Venta interna</option>
+                            </select>
+                            <label for="tipooperacion" class="form-label">Tipo de operación</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <select name="cliente" id="cliente" class="form-select">
+                            </select>
+                            <label for="cliente" class="form-label">Cliente</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <select name="sucursal" id="sucursal" class="form-select">
+                                <option value="" selected>Selecciona</option>
+                            </select>
+                            <label for="sucursal" class="form-label">Sucursal</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-floating">
+                            <input type="number" id="ubigeo" name="ubigeo" class="form-control" placeholder="Ubigeo" required>
+                            <label for="ubigeo">Ubigeo</label>
+                        </div>
+                    </div>
+                    <div class="text-center my-4 position-relative">
+                        <hr>
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3">
+                            Detalle del Producto
+                        </span>
+                    </div> <!-- Datos del Producto -->
+
+                    <div class="row">
+                        <div class="col-md-11">
+                            <div class="form-floating">
+                                <select name="evento" id="evento" class="form-select">
+                                    <!-- Opciones aquí -->
+                                </select>
+                                <label for="evento" class="form-label">Eventos</label>
+                            </div>
+                        </div>
+                        <div class="col-md-1 d-flex justify-content-center align-items-center">
+                            <div class="form-floating w-100">
+                                <button class="btn btn-danger btn btn-danger w-100" id="btnDeseleccionarEvento" title="Deseleccionar Evento">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Datos del Producto -->
-                    <h5 class="mt-4 mb-3">Detalle del Producto</h5>
-                    <div class="col-md-4">
-                        <label for="codProducto" class="form-label">Código del Producto</label>
-                        <input type="text" class="form-control" id="codProducto" name="codProducto" value="P001">
-                    </div>
-                    <div class="col-md-4">
+
+                    <!-- <div class="col-md-4">
                         <label for="descripcionProducto" class="form-label">Descripción</label>
                         <input type="text" class="form-control" id="descripcionProducto" name="descripcionProducto" required>
                     </div>
@@ -50,118 +100,92 @@
                     <div class="col-md-2">
                         <label for="precioUnitario" class="form-label">Precio Unitario (con IGV)</label>
                         <input type="number" class="form-control" id="precioUnitario" name="precioUnitario" step="0.01" required>
-                    </div>
+                    </div> -->
 
-                    <!-- Datos adicionales -->
-                    <h5 class="mt-4 mb-3">Información de Factura</h5>
-                    <div class="col-md-3">
-                        <label for="serie" class="form-label">Serie</label>
-                        <input type="text" class="form-control" id="serie" name="serie" value="F001" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="correlativo" class="form-label">Correlativo</label>
-                        <input type="text" class="form-control" id="correlativo" name="correlativo" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="fechaEmision" class="form-label">Fecha de Emisión</label>
-                        <input type="date" class="form-control" id="fechaEmision" name="fechaEmision" value="<?= date('Y-m-d') ?>" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="moneda" class="form-label">Moneda</label>
-                        <select class="form-select" id="moneda" name="moneda" required>
-                            <option value="PEN" selected>Soles (PEN)</option>
-                            <option value="USD">Dólares (USD)</option>
-                        </select>
-                    </div>
-
-                    <!-- Totales -->
-                    <div class="col-md-4 mt-4">
-                        <label for="montoTotal" class="form-label">Monto Total (con IGV)</label>
-                        <input type="number" class="form-control" id="montoTotal" name="montoTotal" readonly>
-                    </div>
-                    <div class="col-md-8 mt-4">
-                        <label for="leyenda" class="form-label">Monto en Letras</label>
-                        <input type="text" class="form-control" id="leyenda" name="leyenda" readonly>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- <div class="modal fade" id="modal-gastos" tabindex="-1" aria-labelledby="modalgastos" aria-hidden="true">
-        <div class="modal-dialog modal-md">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalgastos">Registro de Gastos</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover text-center align-middle w-auto mx-auto">
-                            <thead class="table-dark">
-                                <th>Fecha</th>
-                                <th>Concepto</th>
-                                <th>Monto</th>
-                            </thead>
-                            <tbody class="tbody-reg-gastos">
-
-                            </tbody>
-                            <tfoot class="monto">
+                    <div class="table-responsive mt-4">
+                        <table class="table table-hover align-middle text-center" id="tablaProductos">
+                            <thead class="">
                                 <tr>
-                                    <td colspan="2" class="text-end">Total:</td>
-                                    <td class="text-center" id="totalGastos"></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div> -->
-
-    <div class="modal fade" id="modal-cierrecaja" tabindex="-1" aria-labelledby="modalcierrecaja" aria-hidden="true">
-        <div class="modal-dialog modal-md">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modalcierrecaja"></h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover text-center align-middle w-auto mx-auto">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Ingreso</th>
-                                    <th>Gasto</th>
+                                    <th>#</th>
+                                    <th width="50%">Descripción</th>
+                                    <th>Precio Unitario (sin IGV)</th>
                                     <th>Total</th>
                                 </tr>
                             </thead>
-                            <tbody class="tbody-reg-cierrecaja">
-                                <!-- Aquí van los datos dinámicos -->
+                            <tbody>
+
                             </tbody>
-                            <tfoot class="monto">
+                            <tfoot>
                                 <tr>
-                                    <td class="text-center fw-bold">Total Ingreso: <span id="totalIngreso">S/. 0.00</span></td>
-                                    <td class="text-center fw-bold">Total Gasto: <span id="totalGasto">S/. 0.00</span></td>
+                                    <td colspan="2" class="no-border"></td>
+                                    <td><strong>Operación Gravada</strong></td>
+                                    <td class="border-cell" id="txtOperacionGravada">S/ 0.00</td>
                                 </tr>
+                                <tr>
+                                    <td colspan="2" class="no-border"></td>
+                                    <td><strong>IGV</strong></td>
+                                    <td class="border-cell" id="txtIGV">S/ 0.00</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="no-border"></td>
+                                    <td><strong>Importe Total</strong></td>
+                                    <td class="border-cell" id="txtImporteTotal">S/ 0.00</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="no-border"></td>
+                                    <td><strong>Forma de Pago</strong></td>
+                                    <td class="border-cell">
+                                        <select name="tipopago" id="tipopago" class="form-select">
+                                            <option value="1">Contado</option>
+                                            <option value="2">Crédito</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <!-- Cuotas se insertan después de esta fila -->
+                                <tr class="contenedor-cuotas"></tr>
+
+                                <!-- Botón Agregar Cuota -->
+                                <tr id="contenedor-btn-agregar-cuota" hidden>
+                                    <td colspan="2" class="no-border"></td>
+                                    <td colspan="2" class="no-border">
+                                        <button class="btn btn-primary w-100" id="btnAgregarCuota">Agregar Cuota</button>
+                                    </td>
+                                </tr>
+
                             </tfoot>
+
                         </table>
                     </div>
 
+                    <!-- Totales -->
+                    <div class="col-md-10 mt-4">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text fw-bolder" id="basic-addon3">IMPORTE EN LETRAS</span>
+                            <input type="text" class="form-control" id="importeletra" aria-describedby="basic-addon3" readonly>
+                        </div>
+
+                    </div>
+                    <div class="col-md-2 mt-4">
+                        <button type="button" class="btn btn-primary " id="btnEmitirComprobante">Emitir Comprobante</button>
+                    </div>
                 </div>
 
             </div>
+
         </div>
+
+
     </div>
+</div>
+</div>
+</div>
 
-    <?php require_once '../../footer.php' ?>
+<?php require_once '../../footer.php' ?>
 
-    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
-    <script src="<?= $hostOnlyHeader ?> /js/boletas/listar-boletas.js"></script>
+<script src="<?= $hostOnlyHeader ?> /js/boletas/registrar-boleta.js"></script>
 
-    </body>
+</body>
 
-    </html>
+</html>

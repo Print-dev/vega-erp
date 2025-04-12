@@ -81,6 +81,14 @@ foreach ($itemsComprobante as $item) {
 $totalIgv = $oGravada * 0.18;
 $importeTotal = $oGravada + $totalIgv;
 
+$montoTotalCuotas = 0;
+$totalCuotas = 0;
+if (!empty($cuotasComprobante)) {
+    $totalCuotas = count($cuotasComprobante);
+    foreach ($cuotasComprobante as $cuota) {
+        $montoTotalCuotas += floatval($cuota['monto']);
+    }
+}
 function numeroATexto($numero)
 {
     $formatter = new NumberFormatter('es', NumberFormatter::SPELLOUT);
@@ -124,6 +132,7 @@ function numeroATexto($numero)
         <strong>RUC/DNI:</strong> <?= $infocomprobante[0]['ndocumento'] ?><br>
         <strong>Dirección:</strong> <?= $infocomprobante[0]['direccion'] ?><br>
         <strong>Tipo de moneda:</strong> <?= $nombreMoneda ?><br>
+        <strong>Forma de pago:</strong> <?= ($infocomprobante[0]['tipopago'] == 1) ? "Al contado" : (($infocomprobante[0]['tipopago'] == 2) ? "Crédito" : "Otro") ?><br>
     </div>
 
     <table class="productos" style="margin-bottom: 15px;">
@@ -172,8 +181,46 @@ function numeroATexto($numero)
 
     </table>
     <hr>
-    <p><strong>Son:</strong> <?= numeroATexto($importeTotal) ?></p>
-    <p><strong>Informacion Adicional:</strong> </p>
-    <strong>Forma de pago:</strong> <?= ($infocomprobante[0]['tipopago'] == 1) ? "Al contado" : (($infocomprobante[0]['tipopago'] == 2) ? "Crédito" : "Otro") ?><br>
-    <strong>Representación Impresa de la FACTURA ELECTRÓNICA</strong>
+    <div class="cliente">
+        <strong>Son:</strong> <?= numeroATexto($importeTotal) ?> 
+        <?php
+        if ($infocomprobante[0]['tipopago'] == 2) {
+            echo "<br><br>";
+            echo "<strong>Total de Cuotas:</strong> " . $totalCuotas . " <br>";
+            echo "<strong>Monto total de cuotas:</strong> S/ " . number_format($montoTotalCuotas, 2, '.', ',') . "<br>";
+        }
+        ?>
+    </div>
+
+
+    <?php
+    if ($infocomprobante[0]['tipopago'] == 2 && !empty($cuotasComprobante)) {
+        // Ordenar cuotas por fecha ascendente
+        usort($cuotasComprobante, function ($a, $b) {
+            return strtotime($a['fecha']) - strtotime($b['fecha']);
+        });
+    ?>
+        <br>
+        <strong>Detalle de Cuotas:</strong>
+        <table class="productos">
+            <thead>
+                <tr>
+                    <th>N° Cuota</th>
+                    <th>Fecha</th>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($cuotasComprobante as $index => $cuota): ?>
+                    <tr>
+                        <td><?= $index + 1 ?></td>
+                        <td><?= date('d/m/Y', strtotime($cuota['fecha'])) ?></td>
+                        <td>S/ <?= number_format($cuota['monto'], 2, '.', ',') ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php } ?>
+    <br>
+    <strong>Representación Impresa de la FACTURA ELECTRÓNICA*</strong>
 </body>

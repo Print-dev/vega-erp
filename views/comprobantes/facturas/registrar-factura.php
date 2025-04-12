@@ -5,7 +5,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header border-0 d-flex justify-content-between align-items-center">
-                <h2>Registrar Factura</h2>
+                <h2>Registrar Factura </h2>
 
                 <a href="<?= $hostOnlyHeader ?>/views/comprobantes/facturas/listar-facturas" class="btn btn-outline-primary btn-sm ms-auto m-0" type="button"><i class="fa-solid fa-circle-left"></i> Regresar</a>
             </div>

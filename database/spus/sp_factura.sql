@@ -90,5 +90,128 @@ BEGIN
     AND COMP.idtipodoc = _idtipodoc;
 END $$
 
+DROP PROCEDURE IF EXISTS sp_obtener_facturas;
+ DELIMITER $$
+ CREATE PROCEDURE sp_obtener_facturas
+ (
+     IN _fechaemision DATE,
+     IN _horaemision TIME,
+     IN _numero_comprobante VARCHAR(20) -- Por ejemplo: 'F001-00000001'
+ )
+ BEGIN
+ 	SELECT 
+         COMP.idcomprobante,
+         COMP.idsucursal,
+         COMP.idcliente,
+         COMP.idtipodoc,
+         COMP.fechaemision,
+         COMP.horaemision,
+         COMP.nserie,
+         COMP.correlativo,
+         COMP.tipomoneda,
+         COMP.monto,
+         CONCAT(COMP.nserie, '-', COMP.correlativo) AS numero_comprobante,
+         SUM(ITEM.valortotal) AS total_valortotal,
+         CLI.razonsocial,
+         CLI.ndocumento
+     FROM comprobantes COMP
+     LEFT JOIN items_comprobante ITEM ON ITEM.idcomprobante = COMP.idcomprobante
+     LEFT JOIN clientes CLI ON CLI.idcliente = COMP.idcliente
+     WHERE (_numero_comprobante IS NULL OR CONCAT(nserie, '-', correlativo) = _numero_comprobante)
+     AND (_fechaemision IS NULL OR COMP.fechaemision = _fechaemision OR COMP.fechaemision IS NULL)
+     AND (_horaemision IS NULL OR COMP.horaemision = _horaemision OR COMP.horaemision IS NULL)
+      GROUP BY 
+         COMP.idcomprobante,
+         COMP.idsucursal,
+         COMP.idcliente,
+         COMP.idtipodoc,
+         COMP.fechaemision,
+         COMP.horaemision,
+         COMP.nserie,
+         COMP.correlativo,
+         COMP.tipomoneda,
+         COMP.monto;
+ END $$
+ 
+DROP PROCEDURE IF EXISTS `sp_registrar_cuota_factura`;
+DELIMITER $$
+CREATE PROCEDURE `sp_registrar_cuota_factura`(
+	IN _idcomprobante INT,
+    IN _fecha	date ,
+    IN _monto decimal(10,2)
+)
+BEGIN
+    INSERT INTO cuotas_comprobante (idcomprobante, fecha, monto)
+    VALUES (_idcomprobante, _fecha, _monto);
+END $$
 
--- CALL sp_obtener_facturas ('2025-04-11', '08:20:45','F001-00000001');
+
+DROP PROCEDURE IF EXISTS sp_obtener_cuotas;
+DELIMITER $$
+
+CREATE PROCEDURE sp_obtener_cuotas
+(
+    IN _fecha DATE,
+    IN _numero_comprobante VARCHAR(20),
+    IN _idcliente INT
+)
+BEGIN
+    SELECT 
+        CCMP.idcuotacomprobante, 
+        CLI.idcliente,
+        CLI.razonsocial,
+        CLI.ndocumento,
+        CCMP.idcomprobante, 
+        COMP.nserie, 
+        COMP.correlativo, 
+        CONCAT(COMP.nserie, '-', COMP.correlativo) AS numero_comprobante,
+        CCMP.fecha, 
+        CCMP.monto AS monto_a_pagar, 
+        CCMP.estado,
+        IFNULL(SUM(PC.montopagado), 0) AS total_pagado
+
+    FROM cuotas_comprobante CCMP
+    LEFT JOIN comprobantes COMP ON COMP.idcomprobante = CCMP.idcomprobante
+    LEFT JOIN clientes CLI ON CLI.idcliente = COMP.idcliente
+    LEFT JOIN pagos_cuota PC ON PC.idcuotacomprobante = CCMP.idcuotacomprobante
+
+    WHERE 
+        (_fecha IS NULL OR CCMP.fecha = _fecha OR CCMP.fecha IS NULL)
+        AND (_numero_comprobante IS NULL 
+             OR CONCAT(COMP.nserie, '-', COMP.correlativo) LIKE CONCAT('%', COALESCE(_numero_comprobante, ''), '%'))
+        AND (_idcliente IS NULL OR COMP.idcliente = _idcliente OR COMP.idcliente IS NULL)
+
+    GROUP BY CCMP.idcuotacomprobante;
+END $$
+DELIMITER ;
+
+select * from cuotas_comprobante;
+
+DROP PROCEDURE IF EXISTS `sp_registrar_pago_cuota`;
+DELIMITER $$
+CREATE PROCEDURE sp_registrar_pago_cuota(
+	IN _idcuotacomprobante INT,
+    IN _montopagado decimal(10,2),
+    IN _tipo_pago 	TINYINT, 
+    IN _noperacion	VARCHAR(20)
+)
+BEGIN
+    
+    INSERT INTO pagos_cuota (idcuotacomprobante, montopagado, tipo_pago, noperacion)
+    VALUES (_idcuotacomprobante, _montopagado, _tipo_pago, NULLIF(_noperacion, ''));
+END $$
+
+DROP PROCEDURE IF EXISTS `sp_actualizar_estado_cuota_comprobante`;
+DELIMITER $$
+CREATE PROCEDURE sp_actualizar_estado_cuota_comprobante(
+	IN _idcuotacomprobante INT,
+    IN _estado TINYINT
+)
+BEGIN
+    		UPDATE cuotas_comprobante SET
+	estado = _estado
+    WHERE idcuotacomprobante = _idcuotacomprobante; 
+END $$
+
+
+-- CALL sp_obtener_cuotas (null, 'F001-00000003', null);

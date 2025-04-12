@@ -105,7 +105,7 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
   <script src="<?= $hostOnly ?>/js/swalcustom.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-    function mostrarNotificacionVentana(nivelacceso) {
+    function mostrarNotificacionVentana(nivelacceso, logoempresa, nombreapp) {
         if (Notification.permission !== "granted") {
             Notification.requestPermission().then(permission => {
                 if (permission === "granted") {
@@ -113,28 +113,28 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
                 }
             });
         } else {
-            enviarNotificacion(nivelacceso);
+            enviarNotificacion(nivelacceso, logoempresa, nombreapp);
         }
     }
 
-    function enviarNotificacion(nivelacceso) {
+    function enviarNotificacion(nivelacceso, logoempresa, nombreapp) {
         console.log("nivelacceso -> ", nivelacceso);
         if (["Filmmaker", "Artista", "Edicion y Produccion"].includes(nivelacceso)) {
-            new Notification(`Vega Producciones`, {
+            new Notification(`${nombreapp}`, {
                 body: "¡Bienvenido de nuevo, recuerda revisar tu agenda y tareas diarias!",
-                icon: "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png",
+                icon: `https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/${logoempresa}`,
             });
         } else if (["Community Manager"].includes(nivelacceso)){
-          new Notification(`Vega Producciones`, {
+          new Notification(`${nombreapp}`, {
                 body: "¡Bienvenido de nuevo, recuerda revisar los contenidos a publicar!",
-                icon: "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png",
+                icon: `https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/${logoempresa}`,
             });
         } 
         else if (nivelacceso === "Administrador") {
             console.log("soltando la notificacion");
-            new Notification(`Vega Producciones`, {
+            new Notification(`${nombreapp}`, {
                 body: "¡Bienvenido de nuevo!",
-                icon: "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png",
+                icon: `https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/${logoempresa}`,
             });
         }
     }
@@ -163,19 +163,19 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
                         break;
                     case "Filmmaker":
                         window.location.href = `${hostOnly}/views/agenda/listar-agenda-filmmaker`;
-                        mostrarNotificacionVentana(data.rol);
+                        mostrarNotificacionVentana(data.rol, data.logoempresa, data.nombreapp);
                         break;
                     case "Administrador":
                         window.location.href = `${hostOnly}/views/ventas/listar-atencion-cliente`;
-                        mostrarNotificacionVentana(data.rol);
+                        mostrarNotificacionVentana(data.rol, data.logoempresa, data.nombreapp);
                         break;
                     case "Edicion y Produccion":
                         window.location.href = `${hostOnly}/views/agenda/listar-agenda-edicion`;
-                        mostrarNotificacionVentana(data.rol);
+                        mostrarNotificacionVentana(data.rol, data.logoempresa, data.nombreapp);
                         break;
                     case "Community Manager":
                         window.location.href = `${hostOnly}/views/agenda/listar-agenda-cmanager`;
-                        mostrarNotificacionVentana(data.rol);
+                        mostrarNotificacionVentana(data.rol, data.logoempresa, data.nombreapp);
                         break;
                     default:
                         console.warn("Rol no reconocido:", data.rol);

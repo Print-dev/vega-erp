@@ -4,6 +4,41 @@ require_once 'ExecQuery.php';
 
 class Comprobante extends ExecQuery
 {
+  public function filtrarCuotas($params = []): array
+  {
+    try {
+      $sp = parent::execQ("CALL sp_obtener_cuotas (?,?,?)");
+      $sp->execute(
+        array(
+          $params['fecha'],
+          $params['numerocomprobante'],
+          $params['idcliente'],
+        )
+
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerCuotasFacturaPorIdComprobante($params = []): array
+  {
+    try {
+      $sp = parent::execQ("SELECT * FROM cuotas_comprobante WHERE idcomprobante = ? ");
+      $sp->execute(
+        array(
+          $params['idcomprobante']
+        )
+
+      );
+      
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function obtenerSeriePorTipoDoc($params = []): array
   {
     try {
@@ -44,6 +79,19 @@ class Comprobante extends ExecQuery
         $params['fechaemision'],
         $params['horaemision'],
         $params['numerocomprobante']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerPagosCuotasPorIdCuota($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("SELECT * FROM pagos_cuota WHERE idcuotacomprobante = ? ");
+      $cmd->execute(array(
+        $params['idcuotacomprobante']
       ));
       return $cmd->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
@@ -171,7 +219,46 @@ class Comprobante extends ExecQuery
       return $rpt;
     } catch (Exception $e) {
       error_log("Error: " . $e->getMessage());
-      return -1;
+      return false;
+    }
+  }
+
+  public function registrarCuotaFactura($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('CALL sp_registrar_cuota_factura(?,?,?)');
+      $rpt = $cmd->execute(
+        array(
+          $params['idcomprobante'],
+          $params['fecha'],
+          $params['monto']
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+
+  public function registrarPagoCuota($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('CALL sp_registrar_pago_cuota(?,?,?,?)');
+      $rpt = $cmd->execute(
+        array(
+          $params['idcuotacomprobante'],
+          $params['montopagado'],
+          $params['tipopago'],
+          $params['noperacion'],
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
     }
   }
 
@@ -185,6 +272,24 @@ class Comprobante extends ExecQuery
           $params['idcomprobante'],
           $params['estado'],
           $params['info']
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return -1;
+    }
+  }
+
+  public function actualizarEstadoCuotaComprobante($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('CALL sp_actualizar_estado_cuota_comprobante(?,?)');
+      $rpt = $cmd->execute(
+        array(
+          $params['idcuotacomprobante'],
+          $params['estado'],
         )
       );
       return $rpt;

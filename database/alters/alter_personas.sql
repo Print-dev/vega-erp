@@ -66,3 +66,5 @@ ALTER TABLE empresa DROP COLUMN iddistrito;
 ALTER TABLE empresa DROP CONSTRAINT fk_iddistrito_empresa;
 ALTER TABLE empresa ADD COLUMN nombreapp varchar(120) null;
 ALTER TABLE comprobantes ADD COLUMN     tipopago		int not null;
+ALTER TABLE cuotas_comprobante
+CHANGE COLUMN pagado estado TINYINT NULL DEFAULT 0;

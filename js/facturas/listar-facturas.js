@@ -165,6 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <button class=" btn-cdr-comprobante border-0 bg-white" style="cursor: pointer;" data-idcomprobante=${x.idcomprobante} data-serie=${x.nserie} data-correlativo=${x.correlativo} title="Descargar CDR Comprobante">
                         <img class="hidden-event-icon" src="https://apisunat.codersfree.com/img/icons/get_cdr.svg" style="width: 24px; height: 24px;">
                     </button>
+                    
                 </td>
               </tr>
               `;
@@ -229,7 +230,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (e.target.classList.contains("btn-cdr-comprobante")) {
                     buttonCDRComprobante(e);
                 }
-
+                /* if (e.target.classList.contains("btn-cuotas-comprobante")) {
+                    buttonCuotaComprobante(e);
+                }
+ */
                 /* if (e.target.classList.contains("btn-habilitar")) {
                     buttonHabilitar(e);
                 } */
@@ -319,4 +323,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Redirecciona al script PHP que hace la descarga
         window.open(`${hostOnly}/controllers/comprobante.controller.php?operation=descargarCDR&archivo=${encodeURIComponent(nombreArchivo)}`, '_blank');
     }
+
+    /*     async function buttonCuotaComprobante(e) {
+            idcomprobante = e.target.getAttribute("data-idcomprobante");
+            window.location.clear()
+            window.localStorage.setItem("idcomprobante", idcomprobante);
+            window.location.href = `${hostOnly}/views/contabilidad/cuotas`;	
+        } */
 })

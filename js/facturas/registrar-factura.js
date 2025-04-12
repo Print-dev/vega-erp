@@ -300,6 +300,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         return rcomprobante;
     }
 
+    async function registrarCuotaFactura(idcomprobante, fecha, monto) {
+        const comprobante = new FormData();
+        comprobante.append("operation", "registrarCuotaFactura");
+        comprobante.append("idcomprobante", idcomprobante); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
+        comprobante.append("fecha", fecha);
+        comprobante.append("monto", monto);
+
+        const fcomprobante = await fetch(`${host}comprobante.controller.php`, {
+            method: "POST",
+            body: comprobante,
+        });
+        const rcomprobante = await fcomprobante.json();
+        //console.log("rivatico . ", rcomprobante)
+        return rcomprobante;
+    }
+
 
     // *************************************************** EVENTOS ****************************************************************
 
@@ -499,6 +515,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                     });
                     const detalleRegistado = await registrarDetalleComprobante(nuevoComprobante?.idcomprobante, rptFactura?.estado, rptFactura?.descripcion)
                     console.log("detalle registdaod -> ", detalleRegistado);
+
+                    if ($q("#tipopago").value == 2) {
+                        cuotasFormateadas.forEach(async cuota => {
+                            const cuotaRegistrada = await registrarCuotaFactura(nuevoComprobante?.idcomprobante, cuota.fecha, cuota.monto)
+                            console.log("cuota registrada -> ", cuotaRegistrada);
+                        })
+                    }
                 }
                 return
             }
@@ -545,6 +568,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                     });
                     const detalleRegistado = await registrarDetalleComprobante(nuevoComprobante?.idcomprobante, rptFactura?.estado, rptFactura?.descripcion)
                     console.log("detalle registdaod -> ", detalleRegistado);
+
+                    if ($q("#tipopago").value == 2) {
+                        cuotasFormateadas.forEach(async cuota => {
+                            const cuotaRegistrada = await registrarCuotaFactura(nuevoComprobante?.idcomprobante, cuota.fecha, cuota.monto)
+                            console.log("cuota registrada -> ", cuotaRegistrada);
+                        })
+                    }
                 }
                 return
             }
