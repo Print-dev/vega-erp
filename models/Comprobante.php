@@ -20,6 +20,22 @@ class Comprobante extends ExecQuery
     }
   }
 
+  public function obtenerItemsPorIdComprobante($params = []): array
+  {
+    try {
+      $sp = parent::execQ("select * from items_comprobante where idcomprobante = ? ");
+      $sp->execute(
+        array(
+          $params['idcomprobante']
+        )
+
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function filtrarFacturas($params = []): array
   {
     try {
@@ -34,6 +50,34 @@ class Comprobante extends ExecQuery
       die($e->getMessage());
     }
   }
+  
+  public function obtenerComprobantePorTipoDoc($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_comprobante_por_tipodoc (?,?)");
+      $cmd->execute(array(
+        $params['idcomprobante'],
+        $params['idtipodoc']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerDetallesComprobante($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("SELECT * FROM detalles_comprobante where idcomprobante = ?");
+      $cmd->execute(array(
+        $params['idcomprobante']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+  
   /*   public function obtenerFactura($params = []): array
   {
     try {
@@ -88,12 +132,13 @@ class Comprobante extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_comprobante(@idcomprobante,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_comprobante(@idcomprobante,?,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idsucursal'],
           $params['idcliente'],
           $params['idtipodoc'],
+          $params['tipopago'],
           $params['nserie'],
           $params['correlativo'],
           $params['tipomoneda'],

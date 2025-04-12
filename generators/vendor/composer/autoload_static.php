@@ -6,9 +6,14 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit00da199c24f69d4e39903c3676bfe248
 {
+    public static $files = array (
+        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
+            'Symfony\\Component\\Intl\\' => 23,
             'Svg\\' => 4,
             'Sabberworm\\CSS\\' => 15,
         ),
@@ -27,6 +32,10 @@ class ComposerStaticInit00da199c24f69d4e39903c3676bfe248
     );
 
     public static $prefixDirsPsr4 = array (
+        'Symfony\\Component\\Intl\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/intl',
+        ),
         'Svg\\' => 
         array (
             0 => __DIR__ . '/..' . '/dompdf/php-svg-lib/src/Svg',

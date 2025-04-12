@@ -4,6 +4,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("rucEmpresa -> ", rucEmpresa);
     console.log("razonsocialEmpresa -> ", razonsocialEmpresa);
     // variables glob
+    const contenedorCuotas = $q("#contenedor-cuotas");
+    let contadorCuotas = 1;
+    let cuotas = []
+    let nuevaCuota
+    //let totalMontoCuotasCalculado
+
     let costoDificultad
     let provinciaDestino
     let montoLetra
@@ -202,7 +208,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // ************************************************** REGISTRO DE DATA *******************************************************
 
-    async function emitirFactura(direccion_emisor, departamento, provincia, distrito, ubigeo, ndocumento, razon_social_cliente, serie, correlativo, monto_gravado, igv, total, detalle, monto_letras) {
+    async function emitirFactura(direccion_emisor, departamento, provincia, distrito, ubigeo, ndocumento, razon_social_cliente, serie, correlativo, monto_gravado, igv, total, detalle, monto_letras, tipo_pago, cuotas) {
         const comprobante = new FormData();
         comprobante.append("operation", "emitirFactura");
         // DATOS DE EMPRESA
@@ -226,6 +232,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         comprobante.append("total", total);
         comprobante.append("detalle", JSON.stringify(detalle));
         comprobante.append("monto_letras", monto_letras);
+        comprobante.append("tipo_pago", tipo_pago);
+        comprobante.append("cuotas", JSON.stringify(cuotas));
+        //comprobante.append("totalMontoCuotas", totalMontoCuotas);
 
         const fcomprobante = await fetch(`${host}comprobante.controller.php`, {
             method: "POST",
@@ -236,12 +245,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         return rcomprobante;
     }
 
-    async function registrarComprobante(idsucursal, idcliente, idtipodoc, nserie, correlativo, tipomoneda, monto) {
+    async function registrarComprobante(idsucursal, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda, monto) {
         const comprobante = new FormData();
         comprobante.append("operation", "registrarComprobante");
         comprobante.append("idsucursal", idsucursal); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
         comprobante.append("idcliente", idcliente); // id usuario envia la notificacion
         comprobante.append("idtipodoc", idtipodoc);
+        comprobante.append("tipopago", tipopago);
         comprobante.append("nserie", nserie);
         comprobante.append("correlativo", correlativo);
         comprobante.append("tipomoneda", tipomoneda);
@@ -404,6 +414,49 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
 
     $q("#btnEmitirComprobante").addEventListener("click", async () => {
+        let cuotasFormateadas = []
+        //totalMontoCuotasCalculado = 0
+        if ($q("#tipopago").value == 2) {
+            cuotasFormateadas = cuotas.map(({ inputMonto, inputFecha }) => {
+                return {
+                    monto: inputMonto.value,
+                    fecha: inputFecha.value
+                };
+            });
+
+            // Validación: si algún campo está vacío
+            const algunaIncompleta = cuotasFormateadas.some(cuota => !cuota.monto || !cuota.fecha);
+
+            if (algunaIncompleta) {
+                showToast("Por favor, completa todos los campos de monto y fecha en las cuotas.", "ERROR");
+                return;
+            }
+
+            if (cuotasFormateadas.length == 0) {
+                showToast("Por favor, agregue cuotas.", "ERROR");
+                return;
+            }
+
+            /* totalMontoCuotasCalculado = cuotasFormateadas.reduce((total, cuota) => {
+                return total + parseFloat(cuota.monto || 0);
+            }, 0); */
+
+            //console.log("totalMontoCuotas _> ", totalMontoCuotasCalculado);
+            // Si todo está bien
+            const sumaCuotas = cuotasFormateadas.reduce((acum, cuota) => {
+                return acum + parseFloat(cuota.monto || 0);
+            }, 0);
+
+            // Verificar igualdad con totalConIgv (usás ese como total final, ¿no?)
+            if (parseFloat(sumaCuotas.toFixed(2)) !== parseFloat(totalConIgv.toFixed(2))) {
+                alert(`La suma de las cuotas (${sumaCuotas.toFixed(2)}) no coincide con el total a pagar (${totalConIgv.toFixed(2)}).`);
+                return;
+            }
+
+            console.log("cuotas -> ", cuotasFormateadas);
+        }
+
+
         const serie = await obtenerSeriePorTipoDoc('01') // cambiarlo luego a boleta en el otro archivo papra boletas
         console.log("serie -> ", serie);
         if (serie.length == 0) {
@@ -423,15 +476,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                 igvTotal,
                 totalConIgv,
                 detalle,
-                montoLetra)
+                montoLetra,
+                $q("#tipopago").value,
+                cuotasFormateadas ? cuotasFormateadas : [],
+                //totalMontoCuotasCalculado
+            )
             console.log("rpt factura -> ", rptFactura);
             if (rptFactura?.success == false) {
                 showToast(rptFactura.error, "ERROR")
                 return
             }
             else if (rptFactura?.success == true) {
-                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
-                const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', 'F001', '00000001', $q("#tipomoneda").value, totalConIgv)
+                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000)
+                const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, 'F001', '00000001', $q("#tipomoneda").value, totalConIgv)
                 console.log("nuevo comprobante -> ", nuevoComprobante);
                 console.log("detalle > ", detalle);
                 if (nuevoComprobante?.idcomprobante) {
@@ -447,8 +504,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         }
         else {
-            const nuevoCorrelativo = generarCorrelativo(serie[0]?.nserie, serie[0]?.correlativo)
+            const nuevoCorrelativo = generarCorrelativo(serie.at(-1).nserie, serie.at(-1).correlativo)
             console.log("nuevo correlativo -> ", nuevoCorrelativo);
+            console.log("Tipo de pago:", $q("#tipopago").value);
+            console.log("Cuotas formateadas:", cuotasFormateadas);
             const rptFactura = await emitirFactura(
                 direccionEmisorObtenido,
                 departamentoEmisorObtenido,
@@ -463,15 +522,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                 igvTotal,
                 totalConIgv,
                 detalle,
-                montoLetra)
+                montoLetra,
+                $q("#tipopago").value,
+                cuotasFormateadas ? cuotasFormateadas : [],
+                //totalMontoCuotasCalculado
+            )
             console.log("rpt factura -> ", rptFactura);
             if (rptFactura?.success == false) {
                 showToast(rptFactura.error, "ERROR")
                 return
             }
             else if (rptFactura?.success == true) {
-                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
-                const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', nuevoCorrelativo.serie,nuevoCorrelativo.nuevoCorrelativo, $q("#tipomoneda").value, totalConIgv)
+                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000)
+                const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, nuevoCorrelativo.serie, nuevoCorrelativo.nuevoCorrelativo, $q("#tipomoneda").value, totalConIgv)
                 console.log("nuevo comprobante -> ", nuevoComprobante);
                 console.log("detalle > ", detalle);
                 if (nuevoComprobante?.idcomprobante) {
@@ -488,5 +551,51 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
     })
+
+
+    $q("#tipopago").addEventListener("change", async (e) => {
+        const tipo = e.target.value
+        console.log(tipo);
+        if (parseInt(tipo) == 2) {
+            $q("#contenedor-btn-agregar-cuota").hidden = false
+            $q(".contenedor-cuotas").innerHTML = ''
+        } else if (parseInt(tipo) == 1) {
+            $q("#contenedor-btn-agregar-cuota").hidden = true
+            $q(".contenedor-cuotas").innerHTML = ''
+        }
+        document.querySelectorAll(".cuota-dinamica").forEach(tr => tr.remove());
+        cuotas = [];
+        contadorCuotas = 1;
+    })
+
+    $q("#btnAgregarCuota").addEventListener("click", () => {
+        nuevaCuota = document.createElement("tr");
+        nuevaCuota.classList.add("cuota-dinamica");
+
+        nuevaCuota.innerHTML = `
+            <td colspan="2" class="no-border"></td>
+            <td class="no-border">
+                <input type="text" class="form-control input-monto" placeholder="0.00 (Cuota ${contadorCuotas})">
+            </td>
+            <td class="no-border">
+                <div class="d-flex gap-2 align-items-center">
+                    <input type="date" class="form-control form-control-sm input-fecha" style="min-width: 120px;">
+                    <button class="btn btn-danger btn-sm btnQuitarCuota">X</button>
+                </div>
+            </td>
+        `;
+
+
+        // Inserta la nueva cuota justo antes del botón
+        const botonAgregar = $q("#contenedor-btn-agregar-cuota");
+        botonAgregar.parentNode.insertBefore(nuevaCuota, botonAgregar);
+
+        contadorCuotas++;
+        // Guardamos una referencia a los inputs para leerlos luego
+        const inputMonto = nuevaCuota.querySelector(".input-monto");
+        const inputFecha = nuevaCuota.querySelector(".input-fecha");
+
+        cuotas.push({ inputMonto, inputFecha }); // guardamos los elementos DOM
+    });
     // *****************************************************************************************************************************
 })

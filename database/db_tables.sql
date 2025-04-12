@@ -417,6 +417,7 @@ CREATE TABLE comprobantes (
     idsucursal		int not null,
 	idcliente		int not null,
     idtipodoc		char(2) not null, -- esto en realidad no es un id 
+	tipopago		INT not null,
 	fechaemision	DATE null default now(),
     horaemision     time null default now(),
     nserie			char(4) not null,
@@ -426,14 +427,10 @@ CREATE TABLE comprobantes (
 	constraint fk_idcliente_comp	foreign key (idcliente) references clientes (idcliente),
     constraint fk_idsucursal_comp foreign key (idsucursal) references sucursales (idsucursal)
 ) ENGINE = INNODB;
-
 select * from comprobantes;
-select * from items_factura;
-select * from detalles_factura;
-select * from comprobantes where nserie = 'B001';
-
-CREATE TABLE items_factura (
-	iditemfactura	int auto_increment primary key,
+-- ALTER TABLE comprobantes DROP COLUMN tipopago;
+CREATE TABLE items_comprobante (
+	iditemcomprobante	int auto_increment primary key,
     idcomprobante	int not null,
     cantidad		int not null,
     descripcion		text not null,
@@ -442,10 +439,12 @@ CREATE TABLE items_factura (
 	constraint fk_items_factura	foreign key (idcomprobante) references comprobantes (idcomprobante)
 ) ENGINE = INNODB;
 
-CREATE TABLE detalles_factura (
-	iddetallefactura int auto_increment primary key,
+CREATE TABLE detalles_comprobante (
+	iddetallecomprobante int auto_increment primary key,
     idcomprobante		int not null,
     estado				varchar(10) not null,
     info				varchar(60) not null,
 	constraint fk_iddetallefactura	foreign key (idcomprobante) references comprobantes (idcomprobante)
 ) ENGINE = INNODB;
+
+

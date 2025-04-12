@@ -16,6 +16,17 @@ if (isset($_GET['operation'])) {
             echo json_encode($comprobante->obtenerSeriePorTipoDoc(['idtipodoc' => $_GET['idtipodoc']]));
             break;
 
+        case 'obtenerItemsPorIdComprobante':
+            echo json_encode($comprobante->obtenerItemsPorIdComprobante(['idcomprobante' => $_GET['idcomprobante']]));
+            break;
+
+        case 'obtenerDetallesComprobante':
+            echo json_encode($comprobante->obtenerDetallesComprobante(['idcomprobante' => $_GET['idcomprobante']]));
+            break;
+
+        case 'obtenerComprobantePorTipoDoc':
+            echo json_encode($comprobante->obtenerComprobantePorTipoDoc(['idcomprobante' => $_GET['idcomprobante'], 'idtipodoc' => $_GET['idtipodoc']]));
+            break;
 
         case 'filtrarFacturas':
             $cleanData = [
@@ -24,6 +35,53 @@ if (isset($_GET['operation'])) {
                 'numerocomprobante' => $_GET['numerocomprobante'] === "" ? null : $comprobante->limpiarCadena($_GET['numerocomprobante'])
             ];
             echo json_encode($comprobante->filtrarFacturas($cleanData));
+            break;
+
+
+        case 'descargarXML':
+            $basePath = __DIR__ . '/../sunat/cpe/xml/'; // Ruta real en el servidor (no URL)
+
+            if (!isset($_GET['archivo'])) {
+                http_response_code(400);
+                exit('Archivo no especificado.');
+            }
+
+            $archivo = basename($_GET['archivo']);
+            $ruta = $basePath . $archivo . '.xml';
+
+            if (!file_exists($ruta)) {
+                http_response_code(404);
+                exit('Archivo no encontrado.');
+            }
+
+            // Forzar descarga
+            header('Content-Type: application/xml');
+            header('Content-Disposition: attachment; filename="' . $archivo . '.xml"');
+            header('Content-Length: ' . filesize($ruta));
+            readfile($ruta);
+            break;
+
+        case 'descargarCDR':
+            $basePath = __DIR__ . '/../sunat/cpe/cdr/'; // Ruta real en el servidor (no URL)
+
+            if (!isset($_GET['archivo'])) {
+                http_response_code(400);
+                exit('Archivo no especificado.');
+            }
+
+            $archivo = basename($_GET['archivo']);
+            $ruta = $basePath . $archivo . '.zip';
+
+            if (!file_exists($ruta)) {
+                http_response_code(404);
+                exit('Archivo no encontrado.');
+            }
+
+            // Forzar descarga
+            header('Content-Type: application/xml');
+            header('Content-Disposition: attachment; filename="' . $archivo . '.zip"');
+            header('Content-Length: ' . filesize($ruta));
+            readfile($ruta);
             break;
     }
 }
@@ -35,6 +93,7 @@ if (isset($_POST['operation'])) {
                 'idsucursal'   => $comprobante->limpiarCadena($_POST['idsucursal']),
                 'idcliente' => $comprobante->limpiarCadena($_POST['idcliente']),
                 'idtipodoc'   => $comprobante->limpiarCadena($_POST['idtipodoc']),
+                'tipopago'   => $comprobante->limpiarCadena($_POST['tipopago']),
                 'nserie'   => $comprobante->limpiarCadena($_POST['nserie']),
                 'correlativo'   => $comprobante->limpiarCadena($_POST['correlativo']),
                 'tipomoneda'   => $comprobante->limpiarCadena($_POST['tipomoneda']),
@@ -100,7 +159,10 @@ if (isset($_POST['operation'])) {
                 'igv' => (float)$_POST['igv'],
                 'total' => (float)$_POST['total'],
                 'detalle' => json_decode($_POST['detalle'], true), // Recibe lista de ítems
-                'monto_letras' => $comprobante->limpiarCadena($_POST['monto_letras'])
+                'monto_letras' => $comprobante->limpiarCadena($_POST['monto_letras']),
+                'tipo_pago' => $comprobante->limpiarCadena($_POST['tipo_pago']),
+                'cuotas' => json_decode($_POST['cuotas'], true),
+                //'totalMontoCuotas' => $comprobante->limpiarCadena($_POST['totalMontoCuotas']),
             ];
 
             $rpt = generarFactura($data);

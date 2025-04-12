@@ -136,13 +136,25 @@
                                     <td colspan="2" class="no-border"></td>
                                     <td><strong>Forma de Pago</strong></td>
                                     <td class="border-cell">
-                                        <select name="evento" id="evento" class="form-select">
+                                        <select name="tipopago" id="tipopago" class="form-select">
                                             <option value="1">Contado</option>
                                             <option value="2">Crédito</option>
                                         </select>
                                     </td>
                                 </tr>
+                                <!-- Cuotas se insertan después de esta fila -->
+                                <tr class="contenedor-cuotas"></tr>
+
+                                <!-- Botón Agregar Cuota -->
+                                <tr id="contenedor-btn-agregar-cuota" hidden>
+                                    <td colspan="2" class="no-border"></td>
+                                    <td colspan="2" class="no-border">
+                                        <button class="btn btn-primary w-100" id="btnAgregarCuota">Agregar Cuota</button>
+                                    </td>
+                                </tr>
+
                             </tfoot>
+
                         </table>
                     </div>
 
