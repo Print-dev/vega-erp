@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
             $q("#table-clientes tbody").innerHTML += `
             <tr>
                 <td>${x.ndocumento}</td>
-                <td>${x.tipodoc}</td>
+                <td>${x.tipodoc == 1 ? "DNI" : x.tipodoc == 2 ? "RUC" : ''}</td>
                 <td>${x.razonsocial}</td>
                 <td>${x.representantelegal ?? "no aplica"}</td>
                 <td>${x.telefono}</td>

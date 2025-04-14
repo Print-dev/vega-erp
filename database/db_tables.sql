@@ -423,11 +423,12 @@ CREATE TABLE comprobantes (
     correlativo		char(8) not null,
     tipomoneda		varchar(40) not null,
     monto			decimal(10,2) not null,
+    tieneigv 		tinyint not null,
 	constraint fk_idcliente_comp	foreign key (idcliente) references clientes (idcliente),
     constraint fk_idsucursal_comp foreign key (idsucursal) references sucursales (idsucursal)
 ) ENGINE = INNODB;
 select * from comprobantes;
--- ALTER TABLE comprobantes DROP COLUMN tipopago;
+-- ALTER TABLE comprobantes ADD COLUMN tieneigv tinyint not null;
 CREATE TABLE items_comprobante (
 	iditemcomprobante	int auto_increment primary key,
     idcomprobante	int not null,

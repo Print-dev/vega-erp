@@ -78,7 +78,11 @@ foreach ($itemsComprobante as $item) {
     $oGravada += floatval($item['valorunitario']);
 }
 
-$totalIgv = $oGravada * 0.18;
+if ($infocomprobante[0]['tieneigv'] == 1) {
+    $totalIgv = $oGravada * 0.18;
+} else {
+    $totalIgv = 0;
+}
 $importeTotal = $oGravada + $totalIgv;
 
 $montoTotalCuotas = 0;
@@ -169,7 +173,11 @@ function numeroATexto($numero)
             <tr>
                 <td colspan="3" style="text-align: right; border: none;"></td>
                 <td><strong>I.G.V.</strong></td>
-                <td>S/ <?= number_format($totalIgv, 2, '.', ',') ?></td>
+                <td><?php if($totalIgv == 0){
+                    echo "No incluye";
+                } else {
+                    echo "S/ " . number_format($totalIgv, 2, '.', ',');
+                } ?></td>
             </tr>
             <tr>
                 <td colspan="3" style="text-align: right; border: none;"></td>
@@ -182,7 +190,7 @@ function numeroATexto($numero)
     </table>
     <hr>
     <div class="cliente">
-        <strong>Son:</strong> <?= numeroATexto($importeTotal) ?> 
+        <strong>Son:</strong> <?= numeroATexto($importeTotal) ?>
         <?php
         if ($infocomprobante[0]['tipopago'] == 2) {
             echo "<br><br>";

@@ -1,3 +1,3 @@
 <?php
 
-require_once 'boleta.php';
+require_once 'facturaexonerada.php';

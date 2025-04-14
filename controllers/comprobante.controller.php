@@ -115,6 +115,7 @@ if (isset($_POST['operation'])) {
                 'correlativo'   => $comprobante->limpiarCadena($_POST['correlativo']),
                 'tipomoneda'   => $comprobante->limpiarCadena($_POST['tipomoneda']),
                 'monto'   => $comprobante->limpiarCadena($_POST['monto']),
+                'tieneigv'   => $comprobante->limpiarCadena($_POST['tieneigv']),
             ];
 
             $respuesta = ['idcomprobante' => -1];
@@ -216,7 +217,6 @@ if (isset($_POST['operation'])) {
                 'tipo_pago' => $comprobante->limpiarCadena($_POST['tipo_pago']),
                 'cuotas' => json_decode($_POST['cuotas'], true),
                 'tieneigv' => $comprobante->limpiarCadena($_POST['tieneigv']),
-                //'totalMontoCuotas' => $comprobante->limpiarCadena($_POST['totalMontoCuotas']),
             ];
 
             $rpt = generarFactura($data);

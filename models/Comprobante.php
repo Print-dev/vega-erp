@@ -180,7 +180,7 @@ class Comprobante extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_comprobante(@idcomprobante,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_comprobante(@idcomprobante,?,?,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idsucursal'],
@@ -191,6 +191,7 @@ class Comprobante extends ExecQuery
           $params['correlativo'],
           $params['tipomoneda'],
           $params['monto'],
+          $params['tieneigv'],
         )
       );
 

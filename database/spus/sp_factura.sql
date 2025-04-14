@@ -11,7 +11,8 @@ CREATE PROCEDURE sp_registrar_comprobante(
     IN _nserie char(4),
     IN _correlativo char(8),
     IN _tipomoneda varchar(40),
-    IN _monto 	decimal(10,2)
+    IN _monto 	decimal(10,2),
+    IN _tieneigv	tinyint
 )
 BEGIN
 	    DECLARE existe_error INT DEFAULT 0;
@@ -22,8 +23,8 @@ BEGIN
     END;
     
     -- Insertar la notificación
-    INSERT INTO comprobantes (idsucursal, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda , monto)
-    VALUES (_idsucursal , _idcliente, _idtipodoc, _tipopago, _nserie, _correlativo, _tipomoneda, _monto);
+    INSERT INTO comprobantes (idsucursal, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda , monto, tieneigv)
+    VALUES (_idsucursal , _idcliente, _idtipodoc, _tipopago, _nserie, _correlativo, _tipomoneda, _monto, _tieneigv);
 
     IF existe_error = 1 THEN
         SET _idcomprobante = -1;
@@ -79,7 +80,8 @@ BEGIN
         CLI.direccion,
         DIS.distrito,
         PRO.provincia,
-        DEP.departamento
+        DEP.departamento,
+        COMP.tieneigv
     FROM comprobantes COMP
 	LEFT JOIN clientes CLI ON CLI.idcliente = COMP.idcliente
     LEFT JOIN sucursales SUC ON SUC.idsucursal = COMP.idsucursal

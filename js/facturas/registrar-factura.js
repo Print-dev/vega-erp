@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let contadorCuotas = 1;
     let cuotas = []
     let nuevaCuota
+    let igvObtenido
     //let totalMontoCuotasCalculado
 
     let costoDificultad
@@ -246,7 +247,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return rcomprobante;
     }
 
-    async function registrarComprobante(idsucursal, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda, monto) {
+    async function registrarComprobante(idsucursal, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda, monto, tieneigv) {
         const comprobante = new FormData();
         comprobante.append("operation", "registrarComprobante");
         comprobante.append("idsucursal", idsucursal); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
@@ -257,6 +258,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         comprobante.append("correlativo", correlativo);
         comprobante.append("tipomoneda", tipomoneda);
         comprobante.append("monto", monto);
+        comprobante.append("tieneigv", tieneigv);
 
         const fcomprobante = await fetch(`${host}comprobante.controller.php`, {
             method: "POST",
@@ -358,7 +360,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Calcular el total con IGV
         if (dp[0]?.igv == 1) {
             igvTotal = totalGravado * 0.18; // ESTO SOLO SERA EL TOTAL DE AMBOS IGV PERO ESTA MAS RESUMIDO
- me quede aca
             totalConIgv = totalGravado + igvTotal;
             // Calcular el IGV (18%)
         } else if (dp[0]?.igv == 0) {
@@ -384,25 +385,43 @@ document.addEventListener("DOMContentLoaded", async () => {
         // ****************************** PARA LA TARIFA DE ARTISTA **************************
         const valorUnitarioTarifa = parseFloat(tarifaArtista[0]?.precio); // sin IGV
         const igvTarifa = parseFloat((valorUnitarioTarifa * 0.18).toFixed(2));  // IGV 18%
-        const precioUnitarioTarifa = parseFloat((valorUnitarioTarifa + igvTarifa).toFixed(2)); // con IGV
 
+        igvObtenido = dp[0]?.igv
+        const incluyeIGV = igvObtenido == 1; // o según el campo real que uses
+
+
+        // Presentación artística
         detalle.push({
             descripcion: `Presentación artística de ${dp[0]?.nom_usuario}`,
             valorunitario: valorUnitarioTarifa,
             igvproducto: igvTarifa,
-            preciounitario: precioUnitarioTarifa
+            preciounitario: incluyeIGV
+                ? parseFloat((valorUnitarioTarifa + igvTarifa).toFixed(2))
+                : valorUnitarioTarifa
         });
 
         // -> precio por viaje
         const valorUnitarioViaje = parseFloat(costoDificultad);
         const igvViaje = parseFloat((valorUnitarioViaje * 0.18).toFixed(2));
-        const precioUnitarioViaje = parseFloat((valorUnitarioViaje + igvViaje).toFixed(2));
 
+        /*         const detalleViaje = {
+                    descripcion: `Puesto en la locación de ${provinciaDestino}`,
+                    valorunitario: valorUnitarioViaje,
+                    igvproducto: igvViaje
+                };
+        
+                if (incluyeIGV) {
+                    detalleViaje.preciounitario = parseFloat((valorUnitarioViaje + igvViaje).toFixed(2));
+                }
+        
+                detalle.push(detalleViaje); */
         detalle.push({
-            descripcion: `Puesto en la locación de ${provinciaDestino}`,
+            descripcion: `Puesto en la locación de ${dp[0]?.provincia}`,
             valorunitario: valorUnitarioViaje,
             igvproducto: igvViaje,
-            preciounitario: precioUnitarioViaje
+            preciounitario: incluyeIGV
+                ? parseFloat((valorUnitarioViaje + igvViaje).toFixed(2))
+                : valorUnitarioViaje
         });
     })
 
@@ -497,6 +516,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("serie -> ", serie);
         if (serie.length == 0) {
             //generarCorrelativo('01', '00000000')
+            console.log("detalles array-> ", detalle);
+            console.log("tiene igv -> ", igvObtenido);
 
             const rptFactura = await emitirFactura(
                 direccionEmisorObtenido,
@@ -515,6 +536,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 montoLetra,
                 $q("#tipopago").value,
                 cuotasFormateadas ? cuotasFormateadas : [],
+                igvObtenido
                 //totalMontoCuotasCalculado
             )
             console.log("rpt factura -> ", rptFactura);
@@ -524,7 +546,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
             else if (rptFactura?.success == true) {
                 showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
-                const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, 'F001', '00000001', $q("#tipomoneda").value, totalConIgv)
+                const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, 'F001', '00000001', $q("#tipomoneda").value, totalConIgv, igvObtenido)
                 console.log("nuevo comprobante -> ", nuevoComprobante);
                 console.log("detalle > ", detalle);
                 if (nuevoComprobante?.idcomprobante) {
@@ -551,6 +573,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log("nuevo correlativo -> ", nuevoCorrelativo);
             console.log("Tipo de pago:", $q("#tipopago").value);
             console.log("Cuotas formateadas:", cuotasFormateadas);
+            console.log("detalles array-> ", detalle);
+            console.log("igvTotal -> ", igvTotal);
+            console.log("tiene igv -> ", igvObtenido);
             const rptFactura = await emitirFactura(
                 direccionEmisorObtenido,
                 departamentoEmisorObtenido,
@@ -568,6 +593,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 montoLetra,
                 $q("#tipopago").value,
                 cuotasFormateadas ? cuotasFormateadas : [],
+                igvObtenido
                 //totalMontoCuotasCalculado
             )
             console.log("rpt factura -> ", rptFactura);
@@ -577,7 +603,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
             else if (rptFactura?.success == true) {
                 showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
-                const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, nuevoCorrelativo.serie, nuevoCorrelativo.nuevoCorrelativo, $q("#tipomoneda").value, totalConIgv)
+                const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, nuevoCorrelativo.serie, nuevoCorrelativo.nuevoCorrelativo, $q("#tipomoneda").value, totalConIgv, igvObtenido)
                 console.log("nuevo comprobante -> ", nuevoComprobante);
                 console.log("detalle > ", detalle);
                 if (nuevoComprobante?.idcomprobante) {
