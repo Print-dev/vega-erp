@@ -50,12 +50,26 @@ function generarFactura($data)
         ->setTipoMoneda($data['moneda'])
         ->setCompany($company)
         ->setClient($client)
-        ->setMtoOperGravadas($data['monto_gravado']) //calculable desde javascript // total de monto gravado de cada producto sin incluir si igv (crudo)
+        /* ->setMtoOperGravadas($data['monto_gravado']) //calculable desde javascript // total de monto gravado de cada producto sin incluir si igv (crudo)
         ->setMtoIGV($data['igv']) //calculable desde javascript // sumar cada igv de cada producto
         ->setTotalImpuestos($data['igv']) // lo mismo que el campo de arriba (Se repite)
-        ->setValorVenta($data['monto_gravado']) // mismo valor que setMtoOperGravadas
+        ->setValorVenta($data['monto_gravado']) // mismo valor que setMtoOperGravadas */
         ->setSubTotal($data['total']) // suma de todos los igvs (de cada producto) + monto gravado total (en este caso de dos productos sin igv), calculadble desde javascirpt
         ->setMtoImpVenta($data['total']); // lo mismo que el campo de arriba
+
+    // ✅ Condicional: Si tiene IGV, se configura como gravada
+    if ($data['tieneigv'] == 1) {
+        $invoice->setMtoOperGravadas($data['monto_gravado']) // base imponible
+            ->setMtoIGV($data['igv']) // IGV total
+            ->setTotalImpuestos($data['igv'])
+            ->setValorVenta($data['monto_gravado']); // base sin IGV
+    } else if ($data['tieneigv'] == 0) {
+        // ✅ Si no tiene IGV (exonerado), se ajustan los campos
+        $invoice->setMtoOperExoneradas($data['monto_gravado']) // monto exonerado
+            ->setMtoIGV(0)
+            ->setTotalImpuestos(0)
+            ->setValorVenta($data['monto_gravado']); // también puede ir acá sin IGV
+    }
 
     $items = [];
     foreach ($data['detalle'] as $item) {
@@ -64,14 +78,20 @@ function generarFactura($data)
             ->setCantidad(1)
             ->setDescripcion($item['descripcion'])
             ->setMtoValorUnitario((float)$item['valorunitario']) // monto gravado sin igv (impuesto)
-            ->setIgv((float)$item['igvproducto']) // el igv del producto gravado
-            ->setTipAfeIgv('10')
+            ->setIgv((float)$item['igvproducto']) // el igv del producto gravado            
             ->setTotalImpuestos((float)$item['igvproducto'])
             ->setMtoPrecioUnitario((float)$item['preciounitario']) // valor unitario + igv , //calculable desde javascript
             ->setMtoValorVenta((float)$item['valorunitario'])
             ->setMtoBaseIgv((float)$item['valorunitario'])
             ->setPorcentajeIgv(18.00) // 18%
         ;
+        // ✅ Asignar tipo de afectación al IGV según tenga IGV o no
+        if ($data['tieneigv'] == 1) {
+            $detalle->setTipAfeIgv('10'); // Gravado
+        } else if ($data['tieneigv'] == 0) {
+            $detalle->setTipAfeIgv('20'); // Exonerado
+        }
+
         $items[] = $detalle;
     }
 
@@ -80,7 +100,7 @@ function generarFactura($data)
 
         $cuotas = [];
         foreach ($data['cuotas'] as $cuota) {
-            $cuotas[] = (new Cuota())  
+            $cuotas[] = (new Cuota())
                 ->setMonto((float)$cuota['monto'])
                 ->setFechaPago(new DateTime($cuota['fecha']));
         }

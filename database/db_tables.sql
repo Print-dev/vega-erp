@@ -144,11 +144,11 @@ create table clientes (
     direccion	varchar(130) null,
     constraint fk_iddistrito_cli foreign key (iddistrito) references distritos (iddistrito),
     constraint    uk_telefono         UNIQUE(telefono),
-    constraint 	chk_telefono		CHECK(telefono LIKE '9%'),
     constraint 	uk_numdocumento_cli	unique(ndocumento),
     constraint chk_tipodoc		check(tipodoc IN (1,2))
 )engine=innodb;
--- SELECT*FROM detalles_presentacion
+-- ALTER TABLE clientes ADD constraint chk_telefono CHECK(telefono LIKE '9%')
+-- SELECT*FROM clientes
 
 create table detalles_presentacion (
 	iddetalle_presentacion	int auto_increment primary key,
@@ -180,7 +180,6 @@ create table detalles_presentacion (
     constraint	uk_ncotizacion 			UNIQUE(ncotizacion),
     constraint uk_idp 					UNIQUE(iddetalle_presentacion)
 )engine=innodb;
-
 CREATE TABLE reportes_artista_evento (
 	idreporte	int auto_increment primary key,
     iddetalle_presentacion int not null,
@@ -458,8 +457,6 @@ CREATE TABLE cuotas_comprobante (
     constraint 	fk_idcuotacomprobante	foreign key (idcomprobante) references comprobantes (idcomprobante)
 ) ENGINE = INNODB;
 
-INSERT INTO cuotas_comprobante (idcomprobante, fecha, monto) values (3, '2025-04-11', 400.00);
-
 CREATE TABLE pagos_cuota (
 	idpagocuota			int auto_increment primary key,
     idcuotacomprobante 	int		not null,
@@ -470,5 +467,3 @@ CREATE TABLE pagos_cuota (
     noperacion	varchar(20) null,
     constraint 	fk_idcuotacomprobante_pago	foreign key (idcuotacomprobante) references cuotas_comprobante (idcuotacomprobante)
 ) ENGINE = INNODB;
-select * from pagos_cuota;
-select * from cuotas_comprobante;

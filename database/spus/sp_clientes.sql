@@ -64,7 +64,8 @@ BEGIN
     SELECT 
         C.idcliente, C.tipodoc, C.ndocumento, C.razonsocial, C.representantelegal, 
         C.telefono, C.correo, C.direccion, 
-        NA.idnacionalidad, D.iddepartamento, PR.idprovincia, DI.iddistrito
+        NA.idnacionalidad, D.iddepartamento, PR.idprovincia, DI.iddistrito,
+        D.departamento, PR.provincia, DI.distrito
     FROM clientes C
     LEFT JOIN distritos DI ON DI.iddistrito = C.iddistrito
     LEFT JOIN provincias PR ON PR.idprovincia = DI.idprovincia

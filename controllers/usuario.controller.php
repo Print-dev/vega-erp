@@ -39,6 +39,9 @@ $accesos = [
     ['modulo' => 'utilitario', 'ruta' => 'listar-sucursales', 'subruta' => 'sucursales', 'texto' => 'Sucursales', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'utilitario', 'ruta' => 'registrar-sucursal', 'subruta' => 'sucursales', 'texto' => '', 'visible' => false, 'icono' => ''],
     ['modulo' => 'utilitario', 'ruta' => 'actualizar-sucursal', 'subruta' => 'sucursales', 'texto' => '', 'visible' => false, 'icono' => ''],
+    ['modulo' => 'utilitario', 'ruta' => 'listar-clientes', 'subruta' => 'clientes', 'texto' => 'Clientes', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'utilitario', 'ruta' => 'registrar-cliente', 'subruta' => 'clientes', 'texto' => '', 'visible' => false, 'icono' => ''],
+    ['modulo' => 'utilitario', 'ruta' => 'actualizar-cliente', 'subruta' => 'clientes', 'texto' => '', 'visible' => false, 'icono' => ''],
 
     /* ['modulo' => 'pyp', 'ruta' => '', 'texto' => 'Planeamiento', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-lightbulb'],
 

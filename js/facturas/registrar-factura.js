@@ -208,7 +208,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // ************************************************** REGISTRO DE DATA *******************************************************
 
-    async function emitirFactura(direccion_emisor, departamento, provincia, distrito, ubigeo, ndocumento, razon_social_cliente, serie, correlativo, monto_gravado, igv, total, detalle, monto_letras, tipo_pago, cuotas) {
+    async function emitirFactura(direccion_emisor, departamento, provincia, distrito, ubigeo, ndocumento, razon_social_cliente, serie, correlativo, monto_gravado, igv, total, detalle, monto_letras, tipo_pago, cuotas, tieneigv) {
         const comprobante = new FormData();
         comprobante.append("operation", "emitirFactura");
         // DATOS DE EMPRESA
@@ -234,6 +234,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         comprobante.append("monto_letras", monto_letras);
         comprobante.append("tipo_pago", tipo_pago);
         comprobante.append("cuotas", JSON.stringify(cuotas));
+        comprobante.append("tieneigv", tieneigv);
         //comprobante.append("totalMontoCuotas", totalMontoCuotas);
 
         const fcomprobante = await fetch(`${host}comprobante.controller.php`, {
@@ -352,14 +353,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Calcular el total gravado (sin IGV)
         totalGravado = parseFloat(precioTarifa) + parseFloat(precioViaje);
 
-        // Calcular el IGV (18%)
-        igvTotal = totalGravado * 0.18; // ESTO SOLO SERA EL TOTAL DE AMBOS IGV PERO ESTA MAS RESUMIDO
+        console.log("totalGravado -> antes de pintar lo de pintar -> ", totalGravado);
 
         // Calcular el total con IGV
-        totalConIgv = totalGravado + igvTotal;
+        if (dp[0]?.igv == 1) {
+            igvTotal = totalGravado * 0.18; // ESTO SOLO SERA EL TOTAL DE AMBOS IGV PERO ESTA MAS RESUMIDO
+ me quede aca
+            totalConIgv = totalGravado + igvTotal;
+            // Calcular el IGV (18%)
+        } else if (dp[0]?.igv == 0) {
+            totalConIgv = totalGravado
+            igvTotal = 0;
+        }
 
+        console.log("totalConIgv antes de pintar -> ", totalConIgv);
         $q("#txtOperacionGravada").innerHTML = `S/ ${totalGravado.toFixed(2)}`
-        $q("#txtIGV").innerHTML = `S/ ${igvTotal.toFixed(2)}`
+        $q("#txtIGV").innerHTML = `S/ ${igvTotal == 0 ? 'No incluye' : igvTotal.toFixed(2)}`
         $q("#txtImporteTotal").innerHTML = `S/ ${totalConIgv.toFixed(2)}`
 
         $q("#importeletra").value = n2words(totalConIgv, {
@@ -430,6 +439,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
 
     $q("#btnEmitirComprobante").addEventListener("click", async () => {
+        if (
+            $q("#sucursal").value == "" ||
+            $q("#cliente").value == "" ||
+            $q("#tipooperacion").value == "" ||
+            $q("#tipomoneda").value == "" ||
+            $q("#ubigeo").value == "" ||
+            $q("#evento").value == ""
+        ) {
+            showToast("Por favor, completa todos los campos obligatorios.", "ERROR")
+            return
+        }
         let cuotasFormateadas = []
         //totalMontoCuotasCalculado = 0
         if ($q("#tipopago").value == 2) {
@@ -503,7 +523,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return
             }
             else if (rptFactura?.success == true) {
-                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000)
+                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
                 const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, 'F001', '00000001', $q("#tipomoneda").value, totalConIgv)
                 console.log("nuevo comprobante -> ", nuevoComprobante);
                 console.log("detalle > ", detalle);
@@ -556,7 +576,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return
             }
             else if (rptFactura?.success == true) {
-                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000)
+                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
                 const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, nuevoCorrelativo.serie, nuevoCorrelativo.nuevoCorrelativo, $q("#tipomoneda").value, totalConIgv)
                 console.log("nuevo comprobante -> ", nuevoComprobante);
                 console.log("detalle > ", detalle);

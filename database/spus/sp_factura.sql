@@ -117,7 +117,7 @@ DROP PROCEDURE IF EXISTS sp_obtener_facturas;
      FROM comprobantes COMP
      LEFT JOIN items_comprobante ITEM ON ITEM.idcomprobante = COMP.idcomprobante
      LEFT JOIN clientes CLI ON CLI.idcliente = COMP.idcliente
-     WHERE (_numero_comprobante IS NULL OR CONCAT(nserie, '-', correlativo) = _numero_comprobante)
+     WHERE CONCAT(COMP.nserie, '-', COMP.correlativo) LIKE CONCAT('%', COALESCE(_numero_comprobante, ''), '%')
      AND (_fechaemision IS NULL OR COMP.fechaemision = _fechaemision OR COMP.fechaemision IS NULL)
      AND (_horaemision IS NULL OR COMP.horaemision = _horaemision OR COMP.horaemision IS NULL)
       GROUP BY 

@@ -27,7 +27,7 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-floating">
-                            <select name="tipomoneda" id="tipomoneda" class="form-select">
+                            <select name="tipomoneda" id="tipomoneda" class="form-select" required>
                                 <option value="" selected>Selecciona</option>
                                 <option value="PEN">Soles</option>
                             </select>
@@ -36,7 +36,7 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-floating">
-                            <select name="tipooperacion" id="tipooperacion" class="form-select">
+                            <select name="tipooperacion" id="tipooperacion" class="form-select" required>
                                 <option value="" selected>Selecciona</option>
                                 <option value="0101">Venta interna</option>
                             </select>
@@ -45,14 +45,14 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <select name="cliente" id="cliente" class="form-select">
+                            <select name="cliente" id="cliente" class="form-select" required>
                             </select>
                             <label for="cliente" class="form-label">Cliente</label>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-floating">
-                            <select name="sucursal" id="sucursal" class="form-select">
+                            <select name="sucursal" id="sucursal" class="form-select" required>
                                 <option value="" selected>Selecciona</option>
                             </select>
                             <label for="sucursal" class="form-label">Sucursal</label>

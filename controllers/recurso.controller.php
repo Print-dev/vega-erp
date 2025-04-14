@@ -40,6 +40,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($recurso->buscarCorreo(["correo" => $recurso->limpiarCadena($_GET['correo'])]));
       break;
 
+    case 'buscarCorreoCliente':
+      echo json_encode($recurso->buscarCorreoCliente(["correo" => $recurso->limpiarCadena($_GET['correo'])]));
+      break;
+
     case 'obtenerFilmmakers':
       echo json_encode($recurso->obtenerFilmmakers());
       break;

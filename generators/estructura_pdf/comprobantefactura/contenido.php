@@ -206,7 +206,7 @@ function numeroATexto($numero)
             <thead>
                 <tr>
                     <th>N° Cuota</th>
-                    <th>Fecha</th>
+                    <th>Fecha de vencimiento</th>
                     <th>Monto</th>
                 </tr>
             </thead>

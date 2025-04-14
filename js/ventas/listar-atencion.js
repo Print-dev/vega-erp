@@ -683,9 +683,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     ` : ``}
 
                     ${x.estado == 2 ? '' : parseInt(x.modalidad) === 2 ? `
-                        <button type="button" class="btn btn-sm btn-secondary btn-pagar" data-id=${x.iddetalle_presentacion} title="Pagar">
-                            Pagar
-                        </button>
+                        
                         <button type="button" class="btn btn-sm btn-secondary btn-contrato" data-id=${x.iddetalle_presentacion} title="Generar contrato">
                             Generar Contrato
                         </button>
@@ -806,7 +804,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             await buttonCotizar(e);
           }
           if (e.target.classList.contains("btn-pagar")) {
-            ME QUEDE ACAAAAAAAAAAAAAA GAAAAAAAAAAAAAAAAAAAAAAAA
+            //ME QUEDE ACAAAAAAAAAAAAAA GAAAAAAAAAAAAAAAAAAAAAAAA
             //await buttonPagar(e); DESCOMENTAR LUEGO PRIMERO HACER DE QUE AL PAGAR EL 25% DEL MONTO TOTAL DE LA FACTURA EN SI OSEA EL TOTAL CON IGV INCLUIDO (SI ES QUE LO TIENE), ENTONCES SE DEBA PONER EL BOTON DE GENERAR RESERVA, Y LUEGO SI SE PAGA EL 50% DEL TOTAL DE LA FACTURA ENTONCES QUE YA SE PUEDA GENERAR EL CONTRATO
           }
           if (e.target.classList.contains("btn-contrato")) {

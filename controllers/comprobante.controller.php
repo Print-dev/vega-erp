@@ -215,6 +215,7 @@ if (isset($_POST['operation'])) {
                 'monto_letras' => $comprobante->limpiarCadena($_POST['monto_letras']),
                 'tipo_pago' => $comprobante->limpiarCadena($_POST['tipo_pago']),
                 'cuotas' => json_decode($_POST['cuotas'], true),
+                'tieneigv' => $comprobante->limpiarCadena($_POST['tieneigv']),
                 //'totalMontoCuotas' => $comprobante->limpiarCadena($_POST['totalMontoCuotas']),
             ];
 

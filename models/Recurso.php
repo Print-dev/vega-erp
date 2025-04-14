@@ -138,6 +138,17 @@ class Recurso extends ExecQuery
       }
     }
 
+    public function buscarCorreoCliente($params = []): array
+    {
+      try {
+        $cmd = parent::execQ("SELECT * FROM clientes WHERE correo = ?");
+        $cmd->execute(array($params['correo']));
+        return $cmd->fetchAll(PDO::FETCH_ASSOC);
+      } catch (Exception $e) {
+        die($e->getMessage());
+      }
+    }
+
     public function obtenerFilmmakers(): array
     {
       try {
