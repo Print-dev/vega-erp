@@ -430,6 +430,44 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal-responsables" tabindex="-1" aria-labelledby="modalresponsables" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalresponsables">Seleccionar Respnsables</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="row g-2 d-flex justify-content-center">
+                            <div class="col-md-6 ">
+                                <div class="form-floating mt-3">
+                                    <select name="boleteria" id="boleteria" class="form-select">
+
+                                    </select>
+                                    <label for="boleteria" class="form-label">De boletería</label>
+                                </div>
+                                <div class="form-floating mt-3">
+                                    <select name="contrato" id="contrato" class="form-select">
+
+                                    </select>
+                                    <label for="contrato" class="form-label">De cerrar contrato</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id="contenedor-botones">
+                <button type="button" class="btn btn-secondary" id="btnGuardarResponsables">Guardar</button>
+                <!-- <button type="button" class="btn btn-secondary" id="btnGenerarReserva" hidden>Generar Reserva</button> -->
+<!--                 <button type="button" class="btn btn-primary" id="close-mdl-convenio" data-bs-dismiss="modal">Cerrar</button>
+ -->            </div>
+        </div>
+    </div>
+</div>
+
 <?php require_once '../footer.php' ?>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>

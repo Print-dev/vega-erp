@@ -12,6 +12,7 @@ CREATE PROCEDURE sp_actualizar_detalle_presentacion (
     IN _establecimiento VARCHAR(80),
     IN _referencia VARCHAR(200),
     IN _tipoevento int,
+    IN _modotransporte	int,
 	IN _validez int,
     IN _iddistrito int,
     IN _igv TINYINT
@@ -24,6 +25,7 @@ BEGIN
 	establecimiento = _establecimiento,
 	referencia = nullif(_referencia, ''),
 	tipo_evento = _tipoevento,
+    modotransporte = nullif(_modotransporte, ''),
 	validez = nullif(_validez, ''),
 	iddistrito = _iddistrito,
 	igv = _igv
@@ -45,6 +47,7 @@ CREATE PROCEDURE sp_registrar_detalle_presentacion (
     IN _referencia VARCHAR(200),
     IN _acuerdo TEXT,
     IN _tipoevento int,
+	IN _modotransporte	int,
     IN _modalidad int,
     IN _validez int,
     IN _igv tinyint
@@ -68,11 +71,11 @@ BEGIN
     INSERT INTO detalles_presentacion (
         idusuario, idcliente, iddistrito, ncotizacion, 
         fecha_presentacion, horainicio, horafinal, establecimiento, 
-        referencia, acuerdo, tipo_evento, modalidad, validez, igv
+        referencia, acuerdo, tipo_evento, modotransporte,modalidad, validez, igv
     ) VALUES (
         _idusuario, _idcliente, _iddistrito, NULLIF(_ncotizacion, ''), 
         _fechapresentacion, _horainicio, _horafinal, NULLIF(_establecimiento, ''), 
-        NULLIF(_referencia, ''), NULLIF(_acuerdo, ''), nullif(_tipoevento,''), nullif(_modalidad,''), _validez, _igv
+        NULLIF(_referencia, ''), NULLIF(_acuerdo, ''), nullif(_tipoevento,''), nullif(_modotransporte,''), nullif(_modalidad,''), _validez, _igv
     );
 
     SET _iddetalle_presentacion = LAST_INSERT_ID();
@@ -659,5 +662,19 @@ BEGIN
         SET _idreporte = LAST_INSERT_ID();
     END IF;
 END $$
+select * from responsables_boleteria_contratoreservasreservas
+DROP PROCEDURE if exists sp_actualizar_responsables_boleteria_contrato_evento;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_responsables_boleteria_contrato_evento (
+	IN _idresponsablecontrato INT,
+    IN _idusuarioBoleteria INT,
+    IN _idusuarioContrato INT
+)
+BEGIN
+		UPDATE responsables_boleteria_contratoreservasreservas SET
+    idusuarioBoleteria = nullif(_idusuarioBoleteria, ''),
+    idusuarioContrato = nullif(_idusuarioContrato, '')
+    WHERE idresponsablecontrato = _idresponsablecontrato; 
+END //
 
-select * from notificaciones;
+-- call sp_actualizar_responsables_boleteria_contrato_evento (1, 3, 3);

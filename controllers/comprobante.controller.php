@@ -107,6 +107,7 @@ if (isset($_POST['operation'])) {
     switch ($_POST['operation']) {
         case 'registrarComprobante':
             $cleanData = [
+                'iddetallepresentacion'   => $comprobante->limpiarCadena($_POST['iddetallepresentacion']),
                 'idsucursal'   => $comprobante->limpiarCadena($_POST['idsucursal']),
                 'idcliente' => $comprobante->limpiarCadena($_POST['idcliente']),
                 'idtipodoc'   => $comprobante->limpiarCadena($_POST['idtipodoc']),
@@ -211,6 +212,38 @@ if (isset($_POST['operation'])) {
                 'moneda' => $comprobante->limpiarCadena($_POST['moneda']),
                 'monto_gravado' => (float)$_POST['monto_gravado'],
                 'igv' => (float)$_POST['igv'],
+                'total' => (float)$_POST['total'],
+                'detalle' => json_decode($_POST['detalle'], true), // Recibe lista de ítems
+                'monto_letras' => $comprobante->limpiarCadena($_POST['monto_letras']),
+                'tipo_pago' => $comprobante->limpiarCadena($_POST['tipo_pago']),
+                'cuotas' => json_decode($_POST['cuotas'], true),
+                'tieneigv' => $comprobante->limpiarCadena($_POST['tieneigv']),
+            ];
+
+            $rpt = generarFactura($data);
+            echo json_encode($rpt);
+            break;
+            
+        case 'emitirBoleta':
+            // Recolectar y limpiar los datos POST
+            $data = [
+                'ruc_emisor' => $comprobante->limpiarCadena($_POST['ruc_emisor']),
+                'razon_social_emisor' => $comprobante->limpiarCadena($_POST['razon_social_emisor']),
+                'direccion_emisor' => $comprobante->limpiarCadena($_POST['direccion_emisor']),
+                'departamento' => $comprobante->limpiarCadena($_POST['departamento']),
+                'provincia' => $comprobante->limpiarCadena($_POST['provincia']),
+                'distrito' => $comprobante->limpiarCadena($_POST['distrito']),
+                'ubigeo' => $comprobante->limpiarCadena($_POST['ubigeo']),
+
+
+                'ndocumento' => $comprobante->limpiarCadena($_POST['ndocumento']),
+                'razon_social_cliente' => $comprobante->limpiarCadena($_POST['razon_social_cliente']),
+
+                'serie' => $comprobante->limpiarCadena($_POST['serie']),
+                'correlativo' => $comprobante->limpiarCadena($_POST['correlativo']),
+                'moneda' => $comprobante->limpiarCadena($_POST['moneda']),
+                'monto_gravado' => (float)$_POST['monto_gravado'],
+                //'igv' => (float)$_POST['igv'],
                 'total' => (float)$_POST['total'],
                 'detalle' => json_decode($_POST['detalle'], true), // Recibe lista de ítems
                 'monto_letras' => $comprobante->limpiarCadena($_POST['monto_letras']),

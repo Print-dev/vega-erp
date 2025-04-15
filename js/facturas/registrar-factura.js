@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let cuotas = []
     let nuevaCuota
     let igvObtenido
+    let iddp
     //let totalMontoCuotasCalculado
 
     let costoDificultad
@@ -247,9 +248,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         return rcomprobante;
     }
 
-    async function registrarComprobante(idsucursal, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda, monto, tieneigv) {
+    async function registrarComprobante(iddetallepresentacion,idsucursal, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda, monto, tieneigv) {
         const comprobante = new FormData();
         comprobante.append("operation", "registrarComprobante");
+        comprobante.append("iddetallepresentacion", iddetallepresentacion);
         comprobante.append("idsucursal", idsucursal); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
         comprobante.append("idcliente", idcliente); // id usuario envia la notificacion
         comprobante.append("idtipodoc", idtipodoc);
@@ -333,7 +335,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             `
 
         eventosSelect.disabled = true
-        const iddp = e.target.value
+        iddp = e.target.value
         const dp = await obtenerDPporId(iddp)
         await renderizarUbigeoPresentacion(iddp)
         const tarifaArtista = await obtenerTarifaArtistaPorProvincia(dp[0]?.idprovincia, dp[0]?.idusuario)
@@ -546,7 +548,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
             else if (rptFactura?.success == true) {
                 showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
-                const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, 'F001', '00000001', $q("#tipomoneda").value, totalConIgv, igvObtenido)
+                const nuevoComprobante = await registrarComprobante(iddp, idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, 'F001', '00000001', $q("#tipomoneda").value, totalConIgv, igvObtenido)
                 console.log("nuevo comprobante -> ", nuevoComprobante);
                 console.log("detalle > ", detalle);
                 if (nuevoComprobante?.idcomprobante) {
@@ -603,7 +605,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
             else if (rptFactura?.success == true) {
                 showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
-                const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, nuevoCorrelativo.serie, nuevoCorrelativo.nuevoCorrelativo, $q("#tipomoneda").value, totalConIgv, igvObtenido)
+                const nuevoComprobante = await registrarComprobante(iddp,idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, nuevoCorrelativo.serie, nuevoCorrelativo.nuevoCorrelativo, $q("#tipomoneda").value, totalConIgv, igvObtenido)
                 console.log("nuevo comprobante -> ", nuevoComprobante);
                 console.log("detalle > ", detalle);
                 if (nuevoComprobante?.idcomprobante) {

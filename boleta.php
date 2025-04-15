@@ -1,5 +1,7 @@
 <?php
 
+require __DIR__ . '/vendor/autoload.php';
+
 use Greenter\Model\Client\Client;
 use Greenter\Model\Company\Company;
 use Greenter\Model\Company\Address;
@@ -7,93 +9,103 @@ use Greenter\Model\Sale\Invoice;
 use Greenter\Model\Sale\SaleDetail;
 use Greenter\Model\Sale\Legend;
 
-require __DIR__ . '/vendor/autoload.php';
+function generarBoleta($data)
+{
 
-$see = require __DIR__ . '/config.php';
+    $directorioDestinoXML = __DIR__ . '/sunat/cpe/xml/';
+    $directorioDestinoCDR = __DIR__ . '/sunat/cpe/cdr/';
 
-// Cliente
-$client = new Client();
-$client->setTipoDoc('1')
-    ->setNumDoc('46712369')
-    ->setRznSocial('MARIA RAMOS ARTEAGA');
+    $see = require __DIR__ . '/config.php';
 
-// Emisor
-$address = new Address();
-$address->setUbigueo('150101')
-    ->setDepartamento('LIMA')
-    ->setProvincia('LIMA')
-    ->setDistrito('LIMA')
-    ->setUrbanizacion('-')
-    ->setDireccion('AV LOS GERUNDIOS');
+    // Cliente
+    $client = (new Client())
+        ->setTipoDoc('6')
+        ->setNumDoc($data['ndocumento'])
+        ->setRznSocial($data['razon_social_cliente']);
 
-$company = new Company();
-$company->setRuc('20000000001')
-    ->setRazonSocial('EMPRESA SAC')
-    ->setNombreComercial('EMPRESA')
-    ->setAddress($address);
+    $address = (new Address())
+        ->setUbigueo($data['ubigeo'])
+        ->setDepartamento($data['departamento'])
+        ->setProvincia($data['provincia'])
+        ->setDistrito($data['distrito'])
+        ->setDireccion($data['direccion_emisor']);
 
-// Venta
-$invoice = (new Invoice())
-    ->setUblVersion('2.1')
-    ->setTipoOperacion('0101') // Catalog. 51
-    ->setTipoDoc('03')
-    ->setSerie('B001')
-    ->setCorrelativo('1')
-    ->setFechaEmision(new DateTime())
-    ->setTipoMoneda('PEN')
-    ->setClient($client)
-    ->setMtoOperGravadas(100.00)
-    ->setMtoIGV(18.00)
-    ->setTotalImpuestos(18.00)
-    ->setValorVenta(100.00)
-    ->setSubTotal(118.00)
-    ->setMtoImpVenta(118.00)
-    ->setCompany($company);
+    $company = (new Company())
+        ->setRuc($data['ruc_emisor'])
+        ->setRazonSocial($data['razon_social_emisor'])
+        ->setAddress($address);
 
-$item = (new SaleDetail())
-    ->setCodProducto('P001')
-    ->setUnidad('NIU')
-    ->setCantidad(2)
-    ->setDescripcion('PRODUCTO 1')
-    ->setMtoBaseIgv(100)
-    ->setPorcentajeIgv(18.00) // 18%
-    ->setIgv(18.00)
-    ->setTipAfeIgv('10')
-    ->setTotalImpuestos(18.00)
-    ->setMtoValorVenta(100.00)
-    ->setMtoValorUnitario(50.00)
-    ->setMtoPrecioUnitario(59.00);
+    // Venta
+    $invoice = (new Invoice())
+        ->setUblVersion('2.1')
+        ->setTipoOperacion('0101') // Catalog. 51
+        ->setTipoDoc('03')
+        ->setSerie($data['serie'])
+        ->setCorrelativo($data['correlativo'])
+        ->setFechaEmision(new DateTime('now', new DateTimeZone('America/Lima')))
+        ->setTipoMoneda($data['moneda'])
+        ->setCompany($company)
+        ->setClient($client)
+        ->setMtoOperGravadas($data['monto_gravado'])
+        ->setMtoIGV(0)
+        ->setTotalImpuestos(0)
+        ->setValorVenta($data['monto_gravado'])
+        ->setSubTotal($data['total'])
+        ->setMtoImpVenta($data['total']);
 
-$legend = (new Legend())
-    ->setCode('1000')
-    ->setValue('SON CIENTO DIECIOCHO CON 00/100 SOLES');
+    $items = [];
 
-$invoice->setDetails([$item])
-    ->setLegends([$legend]);
+    foreach ($data['detalle'] as $item) {
+        $valorUnitario = (float)$item['valorunitario']; // Valor sin IGV
+        //$igvItem = (float)$item['igvproducto']; // Usar el IGV que viene en el request
+        //$precioUnitario = (float)$item['preciounitario']; // Usar el precio que viene en el request
 
-$xml = $see->getXmlSigned($invoice);
+        $item = (new SaleDetail())
+            ->setUnidad('NIU')
+            ->setCantidad(1)
+            ->setDescripcion($item['descripcion'])
+            ->setMtoBaseIgv($valorUnitario)
+            ->setPorcentajeIgv(18) // 18%
+            ->setIgv(0)
+            ->setTipAfeIgv('20') // EXONERADO
+            ->setTotalImpuestos(0)
+            ->setMtoValorVenta($valorUnitario)
+            ->setMtoValorUnitario($valorUnitario)
+            ->setMtoPrecioUnitario($valorUnitario);
+        $items[] = $detalle;
+    }
 
-// Guardar XML
-file_put_contents($invoice->getName() . '.xml', $xml);
+    $invoice->setDetails($items);
+    $invoice->setLegends([
+        (new Legend())
+            ->setCode('1000')
+            ->setValue('SON ' . strtoupper($_POST['monto_letras']))
+    ]);
 
-// Enviar boleta a SUNAT (esto es lo que te falta)
-$result = $see->send($invoice);
+    $result = $see->send($invoice);
 
-if (!$result->isSuccess()) {
-    echo 'Codigo Error: ' . $result->getError()->getCode() . PHP_EOL;
-    echo 'Mensaje Error: ' . $result->getError()->getMessage() . PHP_EOL;
-    exit();
-}
+    // Guardar XML
+    file_put_contents($directorioDestinoXML . $invoice->getName() . '.xml', $see->getFactory()->getLastXml());
 
-// Guardar CDR
-file_put_contents('R-' . $invoice->getName() . '.zip', $result->getCdrZip());
+    // Enviar boleta a SUNAT (esto es lo que te falta)
+    $result = $see->send($invoice);
 
-$cdr = $result->getCdrResponse();
+    if (!$result->isSuccess()) {
+        return [
+            'success' => false,
+            'error' => $result->getError()->getMessage(),
+        ];
+    }
 
-echo 'ESTADO: ' . ($cdr->isAccepted() ? 'ACEPTADA' : 'RECHAZADA') . PHP_EOL;
-echo $cdr->getDescription() . PHP_EOL;
 
-if (count($cdr->getNotes()) > 0) {
-    echo 'OBSERVACIONES:' . PHP_EOL;
-    var_dump($cdr->getNotes());
+    // Guardar CDR
+    file_put_contents($directorioDestinoCDR . 'R-' . $invoice->getName() . '.zip', $result->getCdrZip());
+
+    $cdr = $result->getCdrResponse();
+    return [
+        'success' => true,
+        'estado' => $cdr->isAccepted() ? 'ACEPTADA' : 'RECHAZADA',
+        'descripcion' => $cdr->getDescription(),
+        'observaciones' => $cdr->getNotes(),
+    ];
 }

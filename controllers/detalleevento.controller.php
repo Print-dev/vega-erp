@@ -39,6 +39,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($detalleevento->obtenerFilmmakerAsociadoEvento(['idusuario' => $_GET['idusuario']]));
       break;
 
+    case 'obtenerResponsableBoleteriaContrato':
+      echo json_encode($detalleevento->obtenerResponsableBoleteriaContrato(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
+      break;
+
     case 'filtrarAtenciones':
       $cleanData = [
         'ncotizacion' => $_GET['ncotizacion'] === "" ? null : $detalleevento->limpiarCadena($_GET['ncotizacion']),
@@ -73,6 +77,7 @@ if (isset($_POST['operation'])) {
         'referencia'  => $detalleevento->limpiarCadena($_POST['referencia']) ? $detalleevento->limpiarCadena($_POST['referencia']) : '',
         'acuerdo'  => $detalleevento->limpiarCadena($_POST['acuerdo']) ? $detalleevento->limpiarCadena($_POST['acuerdo']) : '',
         'tipoevento'  => $detalleevento->limpiarCadena($_POST['tipoevento']) ? $detalleevento->limpiarCadena($_POST['tipoevento']) : '',
+        'modotransporte'  => $detalleevento->limpiarCadena($_POST['modotransporte']) ? $detalleevento->limpiarCadena($_POST['modotransporte']) : '',
         'modalidad'  => $detalleevento->limpiarCadena($_POST['modalidad']) ? $detalleevento->limpiarCadena($_POST['modalidad']) : '',
         'validez'  => $detalleevento->limpiarCadena($_POST['validez']) ? $detalleevento->limpiarCadena($_POST['validez']) : '',
         'igv'  => $detalleevento->limpiarCadena($_POST['igv']),
@@ -98,6 +103,7 @@ if (isset($_POST['operation'])) {
         'establecimiento'   => $detalleevento->limpiarCadena($_POST['establecimiento']) ? $detalleevento->limpiarCadena($_POST['establecimiento']) : '',
         'referencia'   => $detalleevento->limpiarCadena($_POST['referencia']) ? $detalleevento->limpiarCadena($_POST['referencia']) : '',
         'tipoevento'   => $detalleevento->limpiarCadena($_POST['tipoevento']) ? $detalleevento->limpiarCadena($_POST['tipoevento']) : '',
+        'modotransporte'   => $detalleevento->limpiarCadena($_POST['modotransporte']) ? $detalleevento->limpiarCadena($_POST['modotransporte']) : '',
         'validez'   => $detalleevento->limpiarCadena($_POST['validez']) ? $detalleevento->limpiarCadena($_POST['validez']) : '',
         'iddistrito'   => $detalleevento->limpiarCadena($_POST['iddistrito']) ? $detalleevento->limpiarCadena($_POST['iddistrito']) : '',
         'igv'   => $detalleevento->limpiarCadena($_POST['igv']) ? $detalleevento->limpiarCadena($_POST['igv']) : '',
@@ -126,6 +132,42 @@ if (isset($_POST['operation'])) {
       ];
 
       $rpt = $detalleevento->editarAcuerdoEvento($cleanData);
+
+      echo json_encode($rpt);
+      break;
+
+    case 'registrarResponsableBoleteriaContrato':
+      $cleanData = [
+        'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']) ? $detalleevento->limpiarCadena($_POST['iddetallepresentacion']) : null,
+        'idusuarioboleteria'   => $detalleevento->limpiarCadena($_POST['idusuarioboleteria']) ? $detalleevento->limpiarCadena($_POST['idusuarioboleteria']) : null,
+        'idusuariocontrato'   => $detalleevento->limpiarCadena($_POST['idusuariocontrato']) ? $detalleevento->limpiarCadena($_POST['idusuariocontrato']) : null,
+      ];
+
+      $rpt = $detalleevento->registrarResponsableBoleteriaContrato($cleanData);
+
+      echo json_encode($rpt);
+      break;
+
+    case 'registrarResponsableBoleteriaContrato':
+      $cleanData = [
+        'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']) ? $detalleevento->limpiarCadena($_POST['iddetallepresentacion']) : null,
+        'idusuarioboleteria'   => $detalleevento->limpiarCadena($_POST['idusuarioboleteria']) ? $detalleevento->limpiarCadena($_POST['idusuarioboleteria']) : null,
+        'idusuariocontrato'   => $detalleevento->limpiarCadena($_POST['idusuariocontrato']) ? $detalleevento->limpiarCadena($_POST['idusuariocontrato']) : null,
+      ];
+
+      $rpt = $detalleevento->registrarResponsableBoleteriaContrato($cleanData);
+
+      echo json_encode($rpt);
+      break;
+
+    case 'actualizarResponsableBoleteriaContrato':
+      $cleanData = [
+        'idresponsablecontrato'   => $detalleevento->limpiarCadena($_POST['idresponsablecontrato']) ? $detalleevento->limpiarCadena($_POST['idresponsablecontrato']) : null,
+        'idusuarioboleteria'   => $detalleevento->limpiarCadena($_POST['idusuarioboleteria']) ? $detalleevento->limpiarCadena($_POST['idusuarioboleteria']) : null,
+        'idusuariocontrato'   => $detalleevento->limpiarCadena($_POST['idusuariocontrato']) ? $detalleevento->limpiarCadena($_POST['idusuariocontrato']) : null,
+      ];
+
+      $rpt = $detalleevento->actualizarResponsableBoleteriaContrato($cleanData);
 
       echo json_encode($rpt);
       break;

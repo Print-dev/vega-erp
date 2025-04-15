@@ -147,10 +147,10 @@ create table clientes (
     constraint 	uk_numdocumento_cli	unique(ndocumento),
     constraint chk_tipodoc		check(tipodoc IN (1,2))
 )engine=innodb;
--- ALTER TABLE clientes ADD constraint chk_telefono CHECK(telefono LIKE '9%')
--- SELECT*FROM clientes
-
-create table detalles_presentacion (
+-- ALTER TABLE detalles_presentacion
+-- ADD COLUMN modotransporte INT NULL AFTER modalidad;
+select * from detalles_presentacion; 
+CREATE table detalles_presentacion (
 	iddetalle_presentacion	int auto_increment primary key,
     idusuario			int not null,
     idcliente			int not null,
@@ -164,6 +164,7 @@ create table detalles_presentacion (
     acuerdo			TEXT null,
     tipo_evento		int null, -- 1= publico, 2= privado
     modalidad		int null, -- 1= convenio, 2= contrato	
+	modotransporte	int null,
 	validez			int		null,
     igv				tinyint	not null,
     reserva			tinyint null default 0,
@@ -180,6 +181,16 @@ create table detalles_presentacion (
     constraint	uk_ncotizacion 			UNIQUE(ncotizacion),
     constraint uk_idp 					UNIQUE(iddetalle_presentacion)
 )engine=innodb;
+
+CREATE TABLE responsables_boleteria_contratoreservasreservas (
+	idresponsablecontrato	int auto_increment primary key,
+    iddetalle_presentacion 	int not null,
+    idusuarioBoleteria		int null,
+    idusuarioContrato		int null,
+    constraint fk_idusuario_boleteria foreign key (idusuarioBoleteria) references usuarios (idusuario),
+    constraint fk_idusuario_contrato foreign key (idusuarioContrato) references usuarios (idusuario)
+) ENGINE = INNODB;
+
 CREATE TABLE reportes_artista_evento (
 	idreporte	int auto_increment primary key,
     iddetalle_presentacion int not null,
@@ -197,7 +208,7 @@ CREATE TABLE agenda_asignaciones ( -- tabla que asigna la agenda a un filmmaker
     FOREIGN KEY (iddetalle_presentacion) REFERENCES detalles_presentacion(iddetalle_presentacion) ON DELETE CASCADE,
     FOREIGN KEY (idusuario) REFERENCES usuarios(idusuario) ON DELETE CASCADE
 );
-select * from agenda_asignaciones;
+
 create table convenios (
 	idconvenio	int auto_increment primary key,
     iddetalle_presentacion int not null,
@@ -222,7 +233,8 @@ create table contratos (
     constraint fk_dp_cs foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
     constraint ck_estado	check(estado IN (1,2,3))
 ) engine = innodb;
-
+-- select * from pagos_contrato (idcontrato, monto, tipopago, noperacion) values ();
+-- select * from pagos_contrato;
 create table pagos_contrato (
 	idpagocontrato		int auto_increment primary key,
     idcontrato	int not null,
@@ -237,6 +249,7 @@ create table pagos_contrato (
     constraint ck_estado_pc	check (estado IN (1, 3))
 ) engine = innodb;
 
+-- cambiar este camp
 create table reservas (
 	idreserva		int auto_increment primary key,
     idpagocontrato	int not null,
@@ -314,7 +327,6 @@ CREATE TABLE notificaciones (
 );
 -- ALTER TABLE notificaciones DROP CONSTRAINT chk_tipo;
 
-select * from notificaciones;
 CREATE TABLE reparticion_ingresos (
 	idreparticion	int auto_increment primary key,
     iddetalle_presentacion int not null,    
@@ -349,12 +361,12 @@ CREATE TABLE agenda_edicion ( -- tabla que envuelve la tabla agenda editores
     iddetalle_presentacion INT NOT NULL,  -- Relación con la agenda del evento
     constraint fk_iddp_ag_edicion foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 );
--- select * from agenda_edicion ;
+
 CREATE TABLE tipotarea (
 	idtipotarea	int auto_increment primary key,
     tipotarea varchar(30) not null
 ) engine = innodb;
- -- referencia: modal asignar editor
+ 
 CREATE TABLE agenda_editores (
 	idagendaeditor	int auto_increment primary key,
     idagendaedicion int not null,
@@ -410,9 +422,12 @@ CREATE TABLE tareas_diaria_asignacion (
 ) engine = innodb;
 
 -- --------------------------------------------- TABLAS FACTURA Y BOLETA -----------------------------------------------
-
+-- ALTER TABLE comprobantes
+-- ADD COLUMN iddetallepresentacion INT not NULL AFTER idcomprobante;
+-- ALTER TABLE comprobantes ADD CONSTRAINT fk_iddp_compr foreign key (iddetallepresentacion) references detalles_presentacion (iddetalle_presentacion)
 CREATE TABLE comprobantes (
 	idcomprobante		INT auto_increment PRIMARY KEY,
+    iddetallepresentacion	int not null,
     idsucursal		int not null,
 	idcliente		int not null,
     idtipodoc		char(2) not null, -- esto en realidad no es un id 
@@ -425,7 +440,8 @@ CREATE TABLE comprobantes (
     monto			decimal(10,2) not null,
     tieneigv 		tinyint not null,
 	constraint fk_idcliente_comp	foreign key (idcliente) references clientes (idcliente),
-    constraint fk_idsucursal_comp foreign key (idsucursal) references sucursales (idsucursal)
+    constraint fk_idsucursal_comp foreign key (idsucursal) references sucursales (idsucursal),
+	constraint fk_iddp_comp foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 ) ENGINE = INNODB;
 select * from comprobantes;
 -- ALTER TABLE comprobantes ADD COLUMN tieneigv tinyint not null;
@@ -446,7 +462,7 @@ CREATE TABLE detalles_comprobante (
     info				varchar(60) not null,
 	constraint fk_iddetallefactura	foreign key (idcomprobante) references comprobantes (idcomprobante)
 ) ENGINE = INNODB;
-
+select * from cuotas_comprobante;
 CREATE TABLE cuotas_comprobante (
 	idcuotacomprobante	int auto_increment primary key,
     idcomprobante		int		not null,
@@ -468,3 +484,4 @@ CREATE TABLE pagos_cuota (
     noperacion	varchar(20) null,
     constraint 	fk_idcuotacomprobante_pago	foreign key (idcuotacomprobante) references cuotas_comprobante (idcuotacomprobante)
 ) ENGINE = INNODB;
+select * from detalles_presentacion;

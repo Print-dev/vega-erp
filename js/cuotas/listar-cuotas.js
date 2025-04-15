@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let myTable = null;
     let clienteSelect = $q("#idcliente");
     let idcuotacomprobante
+    let idcomprobante
     let pagosCuotas = []
     let montoapagar
 
@@ -46,6 +47,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("data .> ", data);
         return data
     }
+    async function obtenerComprobantePorTipoDoc(idcomprobante) {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerComprobantePorTipoDoc");
+        params.append("idcomprobante", idcomprobante);
+        params.append("idtipodoc", '01');
+        const data = await getDatos(`${host}comprobante.controller.php`, params);
+        console.log("data .> ", data);
+        return data
+    }
+
 
 
     async function registrarPagoCuota(idcuotacomprobante, montopagado, tipopago, noperacion) {
@@ -79,6 +90,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         //console.log("rivatico . ", rcomprobante)
         return rcomprobante;
     }
+
+    async function actualizarPagado50DP(iddetallepresentacion) {
+        const pagado50 = new FormData();
+        pagado50.append("operation", "actualizarPagado50DP");
+        pagado50.append("iddetallepresentacion", iddetallepresentacion);
+        pagado50.append("pagado50", 1);
+
+        const fpagado50 = await fetch(`${host}detalleevento.controller.php`, {
+            method: "POST",
+            body: pagado50,
+        });
+        const rpagado50 = await fpagado50.json();
+        return rpagado50;
+    }
+
+    async function actualizarEstadoReservaDp(iddetallepresentacion, estreserva) {
+        const reserva = new FormData();
+        reserva.append("operation", "actualizarEstadoReservaDp");
+        reserva.append("iddetallepresentacion", iddetallepresentacion);
+        reserva.append("reserva", estreserva);
+
+        const freserva = await fetch(`${host}detalleevento.controller.php`, {
+            method: "POST",
+            body: reserva,
+        });
+        const rreserva = await freserva.json();
+        return rreserva;
+    }
+
 
     // ******************************* CONFIGURACION DE TABLA *******************************************************
 
@@ -189,7 +229,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </button>                                                          
                 </td>
                 <td>
-                    <button class="btn btn-primary btn-abonar" data-idcuotacomprobante=${x.idcuotacomprobante} data-montoapagar=${x.monto_a_pagar} data-estado=${x.estado} ${x.estado == 1 ? 'disabled' : x.estado == 2 ? 'disabled' : ''} title="Abonar">
+                    <button class="btn btn-primary btn-abonar" data-idcuotacomprobante=${x.idcuotacomprobante} data-idcomprobante=${x.idcomprobante} data-montoapagar=${x.monto_a_pagar} data-estado=${x.estado} ${x.estado == 1 ? 'disabled' : x.estado == 2 ? 'disabled' : ''} title="Abonar">
                     Abonar
                     </button>                                                          
                 </td>
@@ -314,6 +354,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function btnAbonar(e) {
         pagosCuotas = []
         idcuotacomprobante = e.target.getAttribute("data-idcuotacomprobante");
+        idcomprobante = e.target.getAttribute("data-idcomprobante");
         montoapagar = e.target.getAttribute("data-montoapagar");
         estado = e.target.getAttribute("data-estado");
 
@@ -329,6 +370,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     $q("#btnAbonar").addEventListener("click", async () => {
+        const comprobantes = await obtenerComprobantePorTipoDoc(idcomprobante)
+        console.log("comprobantes -<", comprobantes);
+        const monto = parseFloat(comprobantes[0].monto); // por ejemplo 71.700
+        const iddp = comprobantes[0].iddetallepresentacion
+        const porcentaje25 = monto * 0.25;
+        const porcentaje50 = monto * 0.50;
+
+        console.log("monto total del comprobante --> ", monto);
         const cuotaPagada = await registrarPagoCuota(idcuotacomprobante, $q("#montopagado").value, $q("#tipopago").value, $q("#noperacion").value)
         console.log("cuota pagada -> ", cuotaPagada);
         if (cuotaPagada) {
@@ -342,18 +391,29 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log("sumaCuotasActuales -> ", sumaCuotasActuales);
             const sumaTotal = sumaCuotasActuales + parseFloat($q("#montopagado").value)
             console.log("sumaCuotas + el actual -> ", sumaTotal);
+            const esEntre25y50 = sumaTotal >= porcentaje25 && sumaTotal < porcentaje50;
+
             $q("#montopagado").value = ''
             $q("#tipopago").value = ''
             $q("#noperacion").value = ''
             if (sumaTotal >= parseFloat(montoapagar)) {
+                console.log("es igual al 50%");
+
                 showToast("Cuota pagada correctamente", "SUCCESS")
                 modalAbonar.hide()
                 const cuotaPagada = await actualizarEstadoCuotaComprobante(idcuotacomprobante, 1)
                 console.log("cuota pagada -> ", cuotaPagada);
                 await dataFilters()
+                const pagado50 = await actualizarPagado50DP(iddp)
+                console.log("pagado 50% -> ", pagado50);
+                return
+            } else if (esEntre25y50) {
+                console.log("es igual al 25%");
+                const reservaGenerada = await actualizarEstadoReservaDp(iddp, 1)
+                console.log("reservaGenerada -> ", reservaGenerada);
             }
 
-            return
+
         } else {
             alert("Error al pagar la cuota")
         }

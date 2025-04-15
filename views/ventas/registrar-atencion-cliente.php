@@ -185,6 +185,15 @@
                                     <label for="modalidad" class="form-label">Modalidad</label>
                                 </div>
                             </div>
+                            <div class="col-md-2">
+                                <div class="form-floating">
+                                    <select name="modotransporte" id="modotransporte" class="form-select">
+                                        <option value="1">Tierra</option>
+                                        <option value="2">Vuelo</option>
+                                    </select>
+                                    <label for="modotransporte" class="form-label">Modo Transporte</label>
+                                </div>
+                            </div>
                             <div class="col-md-2" id="container-validez">
                                 <div class="form-floating">
                                     <input type="number" id="validez" name="validez"

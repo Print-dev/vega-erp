@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         dp.append("establecimiento", $q("#establecimiento").value ? $q("#establecimiento").value : '');
         dp.append("referencia", $q("#referencia").value ? $q("#referencia").value : '');
         dp.append("tipoevento", $q("#tipoevento").value ? $q("#tipoevento").value : '');
+        dp.append("modotransporte", $q("#modotransporte").value ? $q("#modotransporte").value : '');
         dp.append("validez", $q("#validez").value ? $q("#validez").value : '');
         dp.append("igv", $q("#igv").checked ? 1 : 0);
         dp.append("iddistrito", $q("#distrito2").value ? $q("#distrito2").value : '');
@@ -68,6 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         $q("#establecimiento").value = infoDp[0]?.establecimiento
         $q("#referencia").value = infoDp[0]?.referencia
         $q("#tipoevento").value = infoDp[0]?.tipo_evento
+        $q("#modotransporte").value = infoDp[0]?.modotransporte
         $q("#validez").value = infoDp[0]?.validez
         $q("#igv").checked = infoDp[0]?.igv == 1 ? true : 0
         if (infoDp[0]?.modalidad == 1) {

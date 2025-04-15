@@ -4,6 +4,7 @@ DROP PROCEDURE IF EXISTS `sp_registrar_comprobante`;
 DELIMITER $$
 CREATE PROCEDURE sp_registrar_comprobante(
     OUT _idcomprobante	INT ,
+    IN _iddetallepresentacion INT,
     IN _idsucursal int,
     IN _idcliente INT, 
     IN _idtipodoc char(2),
@@ -23,8 +24,8 @@ BEGIN
     END;
     
     -- Insertar la notificación
-    INSERT INTO comprobantes (idsucursal, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda , monto, tieneigv)
-    VALUES (_idsucursal , _idcliente, _idtipodoc, _tipopago, _nserie, _correlativo, _tipomoneda, _monto, _tieneigv);
+    INSERT INTO comprobantes (idsucursal, iddetallepresentacion, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda , monto, tieneigv)
+    VALUES (_idsucursal , _iddetallepresentacion,_idcliente, _idtipodoc, _tipopago, _nserie, _correlativo, _tipomoneda, _monto, _tieneigv);
 
     IF existe_error = 1 THEN
         SET _idcomprobante = -1;
@@ -68,6 +69,9 @@ CREATE PROCEDURE sp_obtener_comprobante_por_tipodoc
 )
 BEGIN
 	SELECT 
+    COMP.iddetallepresentacion,
+		COMP.idcomprobante,
+        COMP.monto,
 		COMP.idcomprobante,
         COMP.nserie,
         COMP.correlativo,
@@ -102,6 +106,7 @@ DROP PROCEDURE IF EXISTS sp_obtener_facturas;
  )
  BEGIN
  	SELECT 
+		DP.iddetalle_presentacion,
          COMP.idcomprobante,
          COMP.idsucursal,
          COMP.idcliente,
@@ -119,6 +124,7 @@ DROP PROCEDURE IF EXISTS sp_obtener_facturas;
      FROM comprobantes COMP
      LEFT JOIN items_comprobante ITEM ON ITEM.idcomprobante = COMP.idcomprobante
      LEFT JOIN clientes CLI ON CLI.idcliente = COMP.idcliente
+     LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = iddetallepresentacion
      WHERE CONCAT(COMP.nserie, '-', COMP.correlativo) LIKE CONCAT('%', COALESCE(_numero_comprobante, ''), '%')
      AND (_fechaemision IS NULL OR COMP.fechaemision = _fechaemision OR COMP.fechaemision IS NULL)
      AND (_horaemision IS NULL OR COMP.horaemision = _horaemision OR COMP.horaemision IS NULL)

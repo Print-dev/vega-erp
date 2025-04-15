@@ -56,10 +56,10 @@ class Contrato extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('INSERT INTO reservas (idpagocontrato, vigencia, fechacreada) VALUES (?,?,?)');
+      $cmd = $pdo->prepare('INSERT INTO reservas (idcontrato, vigencia, fechacreada) VALUES (?,?,?)');
       $rpt = $cmd->execute(
         array(
-          $params['idpagocontrato'],
+          $params['idcontrato'],
           $params['vigencia'],
           $params['fechacreada']
         )

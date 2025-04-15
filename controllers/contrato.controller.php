@@ -69,7 +69,7 @@ if (isset($_POST['operation'])) {
 
     case 'registrarReserva':
       $cleanData = [
-        'idpagocontrato'   => $contrato->limpiarCadena($_POST['idpagocontrato']),
+        'idcontrato'   => $contrato->limpiarCadena($_POST['idcontrato']),
         'vigencia' => $contrato->limpiarCadena($_POST['vigencia']),
         'fechacreada' => $contrato->limpiarCadena($_POST['fechacreada'])
       ];

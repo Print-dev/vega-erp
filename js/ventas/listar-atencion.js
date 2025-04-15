@@ -10,6 +10,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log(`Tu ubicación: ${latOrigen},${lonOrigen}`);
   });
 
+  // SELECTs
+  let responsablesBoleteria = $q("#boleteria")
+  let responsablesContrato = $q("#contrato")
 
   let myTable = null;
   let idprovincia = -1;
@@ -26,6 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let fechapresentacion
   //let selectSucursales = $q("#sucursal")
   let idsucursal
+  let iddp
 
   //MODALES
   let modalDatosContrato
@@ -262,6 +266,46 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data
   }
 
+  async function obtenerUsuariosBoleteria() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerUsuarioPorNivel");
+    params.append("idnivelacceso", 3);
+    const data = await getDatos(`${host}usuario.controller.php`, params);
+    console.log(data);
+    responsablesBoleteria.innerHTML = "";
+    data.forEach((artista) => {
+      responsablesBoleteria.innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
+    });
+    return data
+
+  }
+
+  async function obtenerUsuariosCerrarContrato() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerUsuarioPorNivel");
+    params.append("idnivelacceso", 3);
+    const data = await getDatos(`${host}usuario.controller.php`, params);
+    console.log(data);
+    responsablesContrato.innerHTML = "";
+    data.forEach((artista) => {
+      responsablesContrato.innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
+    });
+    return data
+
+  }
+
+  async function obtenerResponsableBoleteriaContrato(iddetallepresentacion) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerResponsableBoleteriaContrato");
+    params.append("iddetallepresentacion", iddetallepresentacion);
+    const data = await getDatos(`${host}detalleevento.controller.php`, params);
+    console.log(data);
+    return data
+
+  }
+
+
+
 
   // ******************************************** REGISTRAR DATOS ************************************************
 
@@ -466,6 +510,38 @@ document.addEventListener("DOMContentLoaded", async () => {
     reserva.append("fechacreada", fechaHoraPeru[0]);
 
     const freserva = await fetch(`${host}contrato.controller.php`, {
+      method: "POST",
+      body: reserva,
+    });
+    const rreserva = await freserva.json();
+    return rreserva;
+  }
+
+  async function registrarResponsableBoleteriaContrato(iddetallepresentacion, idusuarioboleteria, idusuariocontrato) {
+
+    const reserva = new FormData();
+    reserva.append("operation", "registrarResponsableBoleteriaContrato");
+    reserva.append("iddetallepresentacion", iddetallepresentacion);
+    reserva.append("idusuarioboleteria", idusuarioboleteria ? idusuarioboleteria : null);
+    reserva.append("idusuariocontrato", idusuariocontrato ? idusuariocontrato : null);
+
+    const freserva = await fetch(`${host}detalleevento.controller.php`, {
+      method: "POST",
+      body: reserva,
+    });
+    const rreserva = await freserva.json();
+    return rreserva;
+  }
+
+  async function actualizarResponsableBoleteriaContrato(idresponsablecontrato, idusuarioboleteria, idusuariocontrato) {
+
+    const reserva = new FormData();
+    reserva.append("operation", "actualizarResponsableBoleteriaContrato");
+    reserva.append("idresponsablecontrato", idresponsablecontrato)
+    reserva.append("idusuarioboleteria", idusuarioboleteria ? idusuarioboleteria : null);
+    reserva.append("idusuariocontrato", idusuariocontrato ? idusuariocontrato : null);
+
+    const freserva = await fetch(`${host}detalleevento.controller.php`, {
       method: "POST",
       body: reserva,
     });
@@ -683,7 +759,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     ` : ``}
 
                     ${x.estado == 2 ? '' : parseInt(x.modalidad) === 2 ? `
-                        
+                        <button type="button" class="btn btn-sm btn-secondary btn-pagar" data-id=${x.iddetalle_presentacion} title="Pagar">
+                            Pagar
+                        </button>
                         <button type="button" class="btn btn-sm btn-secondary btn-contrato" data-id=${x.iddetalle_presentacion} title="Generar contrato">
                             Generar Contrato
                         </button>
@@ -699,6 +777,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                           Caja Chica  
                       </button> `
           }
+                      <button type="button" class="btn btn-sm btn-secondary btn-responsables" data-id=${x.iddetalle_presentacion} title="Elegir Responsables">
+                          Responsables
+                        </button>
                     <button type="button" class="btn btn-sm btn-primary btn-actualizar" data-id=${x.iddetalle_presentacion} title="Actualizar Evento">
                         Actualizar
                       </button>
@@ -805,7 +886,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
           if (e.target.classList.contains("btn-pagar")) {
             //ME QUEDE ACAAAAAAAAAAAAAA GAAAAAAAAAAAAAAAAAAAAAAAA
-            //await buttonPagar(e); DESCOMENTAR LUEGO PRIMERO HACER DE QUE AL PAGAR EL 25% DEL MONTO TOTAL DE LA FACTURA EN SI OSEA EL TOTAL CON IGV INCLUIDO (SI ES QUE LO TIENE), ENTONCES SE DEBA PONER EL BOTON DE GENERAR RESERVA, Y LUEGO SI SE PAGA EL 50% DEL TOTAL DE LA FACTURA ENTONCES QUE YA SE PUEDA GENERAR EL CONTRATO
+            await buttonPagar(e); //DESCOMENTAR LUEGO PRIMERO HACER DE QUE AL PAGAR EL 25% DEL MONTO TOTAL DE LA FACTURA EN SI OSEA EL TOTAL CON IGV INCLUIDO (SI ES QUE LO TIENE), ENTONCES SE DEBA PONER EL BOTON DE GENERAR RESERVA, Y LUEGO SI SE PAGA EL 50% DEL TOTAL DE LA FACTURA ENTONCES QUE YA SE PUEDA GENERAR EL CONTRATO
           }
           if (e.target.classList.contains("btn-contrato")) {
             await buttonContrato(e);
@@ -824,6 +905,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
           if (e.target.classList.contains("btn-cancelar")) {
             await buttonCancelar(e);
+          }
+          if (e.target.classList.contains("btn-responsables")) {
+            await buttonResponsables(e);
           }
           /* if(e.target.classList.contains("show-espec")){//abre el sidebar
           await btnSBUpdateActivo(e);
@@ -893,6 +977,48 @@ document.addEventListener("DOMContentLoaded", async () => {
     await dataFilters()
     return
   }
+
+  async function buttonResponsables(e) {
+    iddp = e.target.getAttribute("data-id")
+    /* window.localStorage.clear()
+    if (await ask("¿Estas seguro de cancelar el evento?")) {
+      if (await ask("¿Estas seguro? (Confirmacion x2)")) {
+        const cancelado = await actualizarEstadoDp(iddp, 3)
+        console.log("cancelado ?>???? ", cancelado);
+      }
+    }
+    await dataFilters() */
+    new bootstrap.Modal($q("#modal-responsables")).show()
+    await obtenerUsuariosCerrarContrato()
+    await obtenerUsuariosBoleteria()
+
+    const responsables = await obtenerResponsableBoleteriaContrato(iddp)
+    console.log("responsale -> ", responsables);
+    $q("#boleteria").value = responsables[0]?.idusuarioBoleteria
+    $q("#contrato").value = responsables[0]?.idusuarioContrato
+    return
+  }
+
+  $q("#btnGuardarResponsables").addEventListener("click", async () => {
+
+    const responsables = await obtenerResponsableBoleteriaContrato(iddp)
+    console.log("object -> ", responsables);
+    if (responsables.length > 0) {
+
+      const actualizado = await actualizarResponsableBoleteriaContrato(responsables[0]?.idresponsablecontrato, $q("#boleteria").value, $q("#contrato").value)
+      console.log("new rsponsble boleteria -> ", $q("#boleteria").value);
+      console.log("new rsponsble contrato -> ", $q("#contrato").value);
+      console.log("actualizado ? -< ", actualizado);
+      showToast("Responsable asignado correctamente", "SUCCESS")
+      return
+    } else {
+      const responsableRegistrado = await registrarResponsableBoleteriaContrato(iddp, $q("#boleteria").value, $q("#contrato").value)
+      console.log("responsableRegistrado _>", responsableRegistrado);
+      showToast("Responsable asignado correctamente", "SUCCESS")
+      return
+
+    }
+  })
 
   async function buttonConvenio(e) {
     idconvenio = e.target.getAttribute("data-id"); //esto en realidad es id detalle presentacion

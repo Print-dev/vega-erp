@@ -8,7 +8,7 @@ class DetalleEvento extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_actualizar_detalle_presentacion(?,?,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_actualizar_detalle_presentacion(?,?,?,?,?,?,?,?,?,?,?)');
       $act = $cmd->execute(
         array(
           $params['iddetallepresentacion'],
@@ -18,6 +18,7 @@ class DetalleEvento extends ExecQuery
           $params['establecimiento'],
           $params['referencia'],
           $params['tipoevento'],
+          $params['modotransporte'],
           $params['validez'],
           $params['iddistrito'],
           $params['igv'],
@@ -34,11 +35,69 @@ class DetalleEvento extends ExecQuery
     }
   }
 
+  public function registrarResponsableBoleteriaContrato($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('INSERT INTO responsables_boleteria_contratoreservasreservas (iddetalle_presentacion, idusuarioBoleteria, idusuarioContrato) VALUES (?,?,?)');
+      $rpt = $cmd->execute(
+        array(
+          $params['iddetallepresentacion'],
+          $params['idusuarioboleteria'],
+          $params['idusuariocontrato']
+        )
+      );
+
+      return $rpt;
+    } catch (PDOException $e) {
+      // Retornar detalles del error
+      die($e->getMessage());
+    }
+  }
+  
+  public function actualizarResponsableBoleteriaContrato($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('CALL sp_actualizar_responsables_boleteria_contrato_evento (?,?,?)');
+      $rpt = $cmd->execute(
+        array(
+          $params['idresponsablecontrato'],
+          $params['idusuarioboleteria'],
+          $params['idusuariocontrato'],
+        )
+      );
+
+      return $rpt;
+    } catch (PDOException $e) {
+      // Retornar detalles del error
+      die($e->getMessage());
+    }
+  }
+  
+  public function obtenerResponsableBoleteriaContrato($params = []): array
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('SELECT * FROM responsables_boleteria_contratoreservasreservas WHERE iddetalle_presentacion = ?');
+      $cmd->execute(
+        array(
+          $params['iddetallepresentacion']
+        )
+      );
+
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+      // Retornar detalles del error
+      die($e->getMessage());
+    }
+  }
+
   public function registrarDetallePresentacion($params = []): int
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_detalle_presentacion(@iddetalleevento,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_detalle_presentacion(@iddetalleevento,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idusuario'],
@@ -52,6 +111,7 @@ class DetalleEvento extends ExecQuery
           $params['referencia'],
           $params['acuerdo'],
           $params['tipoevento'],
+          $params['modotransporte'],
           $params['modalidad'],
           $params['validez'],
           $params['igv'],

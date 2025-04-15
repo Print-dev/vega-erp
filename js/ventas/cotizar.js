@@ -352,6 +352,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const establecimiento = $q("#establecimiento").value.trim();
     const referencia = $q("#referencia").value.trim();
     const tipoevento = $q("#tipoevento").value.trim();
+    const modotransporte = $q("#modotransporte").value.trim();
     const modalidad = $q("#modalidad").value.trim();
     const validez = parseInt($q("#validez").value, 10) || 0;
 
@@ -372,6 +373,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     detalle.append("referencia", referencia || '');
     detalle.append("acuerdo", $q("#acuerdo")?.value || '');
     detalle.append("tipoevento", tipoevento || '');
+    detalle.append("modotransporte", modotransporte || '');
     detalle.append("modalidad", modalidad || '');
     detalle.append("validez", validez || '');
     detalle.append("igv", $q("#igv").checked ? 1 : 0);
@@ -439,6 +441,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     $q("#establecimiento").disabled = isblock;
     $q("#tipoevento").disabled = isblock;
     $q("#modalidad").disabled = isblock;
+    $q("#modotransporte").disabled = isblock;
     $q("#validez").disabled = isblock;
     $q("#nacionalidad2").disabled = isblock;
     $q("#departamento2").disabled = isblock;

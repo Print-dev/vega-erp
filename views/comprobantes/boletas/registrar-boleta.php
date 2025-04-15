@@ -131,7 +131,7 @@
                                     <td><strong>Importe Total</strong></td>
                                     <td class="border-cell" id="txtImporteTotal">S/ 0.00</td>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <td colspan="2" class="no-border"></td>
                                     <td><strong>Forma de Pago</strong></td>
                                     <td class="border-cell">
@@ -140,7 +140,7 @@
                                             <option value="2">Crédito</option>
                                         </select>
                                     </td>
-                                </tr>
+                                </tr> -->
                                 <!-- Cuotas se insertan después de esta fila -->
                                 <tr class="contenedor-cuotas"></tr>
 
@@ -185,6 +185,7 @@
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
 <script src="<?= $hostOnlyHeader ?> /js/boletas/registrar-boleta.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/n2words@1.21.0/dist/n2words.min.js"></script>
 
 </body>
 
