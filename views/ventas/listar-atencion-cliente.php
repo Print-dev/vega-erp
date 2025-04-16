@@ -334,14 +334,24 @@
                     </div>
                 </div>
             </div>
+            <hr>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <p><strong>Enviar propuesta a:</strong></p>
 
+                    <div class="contenedor-admins">
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="btnActualizarPropuesta">Actualizar</button>
-                <button type="button" class="btn btn-secondary" id="btnGuardarPendiente">Guardar pendiente</button>
-                <button type="button" class="btn btn-secondary" id="btnAprobarPropuesta">Aprobar Propuesta</button>
-
+                    </div>
+                </div>
             </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" id="btnActualizarPropuesta">Actualizar</button>
+                <!-- <button type="button" class="btn btn-secondary" id="btnGuardarPendiente">Guardar pendiente</button> -->
+                <!-- <button type="button" class="btn btn-secondary" id="btnAprobarPropuesta">Aprobar Propuesta</button> -->
+                <button type="button" class="btn btn-secondary" id="btnEnviarPropuesta">Enviar la Propuesta</button>
+            </div>
+
         </div>
     </div>
 </div>
@@ -435,7 +445,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="modalresponsables">Seleccionar Respnsables</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
@@ -462,8 +472,9 @@
             <div class="modal-footer" id="contenedor-botones">
                 <button type="button" class="btn btn-secondary" id="btnGuardarResponsables">Guardar</button>
                 <!-- <button type="button" class="btn btn-secondary" id="btnGenerarReserva" hidden>Generar Reserva</button> -->
-<!--                 <button type="button" class="btn btn-primary" id="close-mdl-convenio" data-bs-dismiss="modal">Cerrar</button>
- -->            </div>
+                <!--                 <button type="button" class="btn btn-primary" id="close-mdl-convenio" data-bs-dismiss="modal">Cerrar</button>
+ -->
+            </div>
         </div>
     </div>
 </div>

@@ -54,6 +54,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data.json();
   }
 
+
+  (async () => {
+    ws = new WebSocket("ws://localhost:8000");
+
+    ws.onopen = () => {
+      wsReady = true;
+      console.log("WebSocket abierto pe");
+    };
+
+    ws.onclose = () => {
+      wsReady = false;
+      console.log("WebSocket cerrado pe");
+    };
+  })();
+
+  function enviarWebsocket(type, mensaje) {
+    if (wsReady) {
+      ws.send(JSON.stringify({
+        type: type, // Tipo de mensaje WebSocket
+        /* idusuariodest: idusuariodest, // Usuario destinatario
+        idusuariorem: idusuariorem, // Usuario remitente
+        tipo: tipo,
+        idreferencia: idviatico, // ID del viático */
+        mensaje: mensaje
+      }));
+
+      console.log("Notificación enviada por WebSocket.");
+    } else {
+      console.warn("WebSocket no está listo para enviar notificaciones.");
+    }
+  }
+
+
   // ***************************************** OBTENER DATOS ********************************
 
   async function obtenerSucursales() {
@@ -304,6 +337,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   }
 
+  async function obtenerUsuariosPorNivel(idnivelacceso) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerUsuarioPorNivel");
+    params.append("idnivelacceso", idnivelacceso);
+
+    try {
+      const data = await getDatos(`${host}usuario.controller.php`, params);
+
+      console.log(data);
+      return data // Verifica la estructura de los datos en la consola
+    } catch (error) {
+      console.error("Error al obtener los usuarios:", error);
+    }
+  }
 
 
 
@@ -500,6 +547,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rconvenioupdate;
   }
 
+
   async function registrarReserva(idpagocontrato, vigencia) {
     const fechaHoraPeru = obtenerFechaHoraPeru();
 
@@ -575,6 +623,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     const rcontrato = await fcontrato.json();
     return rcontrato;
+  }
+
+  async function registrarNotificacion(idusuariodest, idusuariorem, tipo, idreferencia, mensaje) {
+    const viatico = new FormData();
+    viatico.append("operation", "registrarNotificacion");
+    viatico.append("idusuariodest", idusuariodest); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
+    viatico.append("idusuariorem", idusuariorem); // id usuario envia la notificacion
+    viatico.append("tipo", tipo);
+    viatico.append("idreferencia", idreferencia);
+    viatico.append("mensaje", mensaje);
+
+    const fviatico = await fetch(`${host}notificacion.controller.php`, {
+      method: "POST",
+      body: viatico,
+    });
+    const rviatico = await fviatico.json();
+    console.log("rivatico . ", rviatico)
+    return rviatico;
   }
 
   // ******************************************** DATATABLE ************************************************
@@ -791,7 +857,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             </tr>
         `;
 
-      if (x.estado !== 3) {
+      /* if (x.estado !== 3) {
         if (x.modalidad == 2) {
           if (x.validez !== null) {
             console.log("x.validez -> ", x.validez);
@@ -828,7 +894,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
           }
         }
-      }
+      } */
     }
     createTable(data);
   }
@@ -1136,6 +1202,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("convenio esxite? -> ", convenioExiste)
     const convenio = await obtenerConvenioPorId(convenioExiste[0]?.idconvenio)
     console.log("CONVEIO OBTENIDO: ", convenio)
+    const admins = await obtenerUsuariosPorNivel(3)
+    console.log("admins -> ", admins);
     if (convenio.length > 0) {
       idconvenio = convenio[0]?.idconvenio
       $q("#abonogarantia").value = convenio[0]?.abono_garantia
@@ -1143,7 +1211,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       $q("#propuestacliente").value = convenio[0]?.propuesta_cliente
       $q("#porcentajevega").value = convenio[0]?.porcentaje_vega
       $q("#porcentajepromotor").value = convenio[0]?.porcentaje_promotor
-      $q("#btnGuardarPendiente").hidden = true
+      //$q("#btnGuardarPendiente")?.hidden = true
       $q("#btnActualizarPropuesta").hidden = false
       iddetallepresentacion = idpropuesta // esto en realidad es el iddetalle_presentacion
       modalPropuestaCliente = new bootstrap.Modal($q("#modal-convenio"));
@@ -1151,8 +1219,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       return
     } else {
 
-      $q("#btnGuardarPendiente").hidden = false
+      //$q("#btnGuardarPendiente")?.hidden = false
       $q("#btnActualizarPropuesta").hidden = true
+      $q(".contenedor-admins").innerHTML = ''
+      admins.forEach(admin => {
+        $q(".contenedor-admins").innerHTML += `
+          <div class="form-check">
+            <input class="form-check-input chkAdmin" type="radio" name="adminSeleccionado" id="admin-${admin.idusuario}" data-idusuario="${admin.idusuario}">
+            <label class="form-check-label" for="admin-${admin.idusuario}">${admin.nombres}</label>
+          </div>
+        `;
+      });
       iddetallepresentacion = idpropuesta // esto en realidad es el iddetalle_presentacion
       modalPropuestaCliente = new bootstrap.Modal($q("#modal-convenio"));
       modalPropuestaCliente.show();
@@ -1627,7 +1704,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   })
 
-  $q("#btnAprobarPropuesta").addEventListener("click", async () => {
+  /* $q("#btnAprobarPropuesta").addEventListener("click", async () => {
     if (await ask('¿Estas seguro de aprobar la propuesta?')) {
       let abonoGarantia = parseFloat($q("#abonogarantia").value.trim());
       let abonoPublicidad = parseFloat($q("#abonopublicidad").value.trim());
@@ -1655,12 +1732,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const convenioaprobado = await actualizarConvenio(idconvenio, 2)
           console.log("convenio aprobad? -> ", convenioaprobado)
           if (convenioaprobado?.update) {
-            /* const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
-            console.log("usuario obtenido para el usuario remitente -> ", usuario);
-            //const artista = idusuarioArtista
-            mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechapresentacion)}!, revisa tu agenda.`
-            const notificacionRegistrada = await registrarNotificacion(idusuarioArtDest, idusuarioLogeado , 2, null, mensaje)
-            console.log("notificacion registrada ? -> ", notificacionRegistrada) */
+
             await dataFilters()
             const agendaEdicionRegistrada = await registrarAgendaEdicion(iddetallepresentacion)
             console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
@@ -1679,13 +1751,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
           console.log("convenio registrado a aprobado:-> ", convenioRegistrado)
           if (convenioRegistrado?.idconvenio) {
-            /* const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
-            //const artista = idusuarioArtista
-            console.log("usuario -> ", usuario);
-            console.log("fechapresentacion -> ", fechapresentacion);
-            mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechapresentacion)}!, revisa tu agenda.`
-            const notificacionRegistrada = await registrarNotificacion(idusuarioArtDest, idusuarioLogeado, 2, null, mensaje)
-            console.log("notificacion registrada ? -> ", notificacionRegistrada) */
+
             modalPropuestaCliente.hide()
             await dataFilters()
             showToast("Se ha aprobado la propuesta", "SUCCESS")
@@ -1698,9 +1764,38 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       }
     }
+  }) */
+
+  $q("#btnEnviarPropuesta").addEventListener("click", async () => {
+
+    const seleccionado = document.querySelector('input[name="adminSeleccionado"]:checked');
+    const convenioRegistrado = await registrarConvenio(iddetallepresentacion, 1)
+    
+    console.log("convenio registrado a pendiente:-> ", convenioRegistrado)
+    console.log("clickeanod ");
+    if (seleccionado) {
+      if (convenioRegistrado?.idconvenio) {
+        const idUsuarioSeleccionado = seleccionado.dataset.idusuario;
+        console.log("ID del admin seleccionado:", idUsuarioSeleccionado);
+        const mensaje = "Una nueva propuesta ha llegado, haz click para revisarlo."
+        const notificacionRegistrada = await registrarNotificacion(idUsuarioSeleccionado, idusuarioLogeado, 4, iddetallepresentacion, mensaje)
+        console.log("notificacion registrada-> ", notificacionRegistrada);
+        enviarWebsocket("propuesta", mensaje)
+        modalPropuestaCliente.hide()
+        //await dataFilters()
+        showToast("Se ha enviado la propuesta", "SUCCESS")
+        return
+      } else {
+        showToast("Un error ha ocurrido", "ERROR")
+        return
+      }
+    } else {
+      console.log("Ningún admin seleccionado.");
+    }
+
   })
 
-  $q("#btnGuardarPendiente").addEventListener("click", async () => {
+  $q("#btnGuardarPendiente")?.addEventListener("click", async () => {
     let abonoGarantia = parseFloat($q("#abonogarantia").value.trim());
     let abonoPublicidad = parseFloat($q("#abonopublicidad").value.trim());
     let porcentajevega = parseFloat($q("#porcentajevega").value.trim());
@@ -2040,7 +2135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   /* $q("#btnGenerarReserva").addEventListener("click", async () => {
     alert("GENERANDO RESERVA")
   })
- */
+  */
   $q("#tipopago").addEventListener("change", async (e) => {
     const tipoPago = e.target.value;
 

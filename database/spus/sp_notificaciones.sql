@@ -87,3 +87,27 @@ BEGIN
 END $$
 
 CALL sp_obtener_notificacion_dp (27)
+DROP PROCEDURE IF EXISTS sp_obtener_notificacion_propuesta;
+DELIMITER $$
+CREATE PROCEDURE sp_obtener_notificacion_propuesta
+(
+    IN _idreferencia INT
+)
+BEGIN
+	SELECT 
+	    NOTIF.idnotificacion, CLI.razonsocial, DP.iddetalle_presentacion, USU.nom_usuario, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DIS.distrito, PRO.provincia, DEP.departamento, CON.idconvenio,CON.abono_garantia, CON.abono_publicidad, CON.porcentaje_vega, CON.porcentaje_promotor, CON.propuesta_cliente, NOTIF.fecha
+
+    FROM notificaciones NOTIF
+    LEFT JOIN convenios CON ON CON.iddetalle_presentacion = NOTIF.idreferencia
+    LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = CON.iddetalle_presentacion
+	LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
+    LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+    LEFT JOIN distritos DIS ON DIS.iddistrito = DP.iddistrito
+    LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
+    LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
+    WHERE NOTIF.idreferencia = _idreferencia AND NOTIF.tipo = 4;
+END $$
+
+select * from notificaciones;
+select * from convenios;
+select * from detalles_presentacion;

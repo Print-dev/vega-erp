@@ -222,7 +222,7 @@ create table convenios (
     constraint fk_dp_cv foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
     constraint ck_estado check(estado IN(1,2,3))
 ) engine = innodb;
-
+-- select * from convenios;
 create table contratos (
 	idcontrato	int auto_increment primary key,
     iddetalle_presentacion	int not null,
@@ -315,7 +315,7 @@ CREATE TABLE notificaciones (
     idnotificacion INT AUTO_INCREMENT PRIMARY KEY,
     idusuariodest INT NOT NULL,-- Usuario que recibe la notificación
     idusuariorem INT NOT NULL, -- usuario que envia la notificacion
-    tipo INT NOT NULL, -- 1- viatico, 2- DETLLAE PRESENTACION, 3: asignacion de filmmaker
+    tipo INT NOT NULL, -- 1- viatico, 2- DETLLAE PRESENTACION, 3: asignacion de filmmaker, 4: propuestas
     idreferencia INT NULL, -- ID del registro relacionado
     mensaje VARCHAR(200) NOT NULL,
     estado INT NULL DEFAULT 1, 
@@ -324,6 +324,8 @@ CREATE TABLE notificaciones (
     constraint fk_usuario_rem foreign key (idusuariorem) references usuarios(idusuario),
     constraint chk_estado_not check(estado IN (1,2))
 );
+select * from notificaciones;
+select * from detalles_presentacion;
 -- ALTER TABLE notificaciones DROP CONSTRAINT chk_tipo;
 
 CREATE TABLE reparticion_ingresos (

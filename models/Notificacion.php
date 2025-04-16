@@ -104,6 +104,21 @@ class Notificacion extends ExecQuery
     }
   }
 
+  public function obtenerNotificacionPropuesta($params = []): array
+  {
+    try {
+      $sp = parent::execQ("CALL sp_obtener_notificacion_propuesta(?)");
+      $sp->execute(
+        array(
+          $params["idreferencia"]
+        )
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function obtenerNotificacionPorNivel($params = []): array
   {
     try {

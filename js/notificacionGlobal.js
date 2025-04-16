@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (data.type === "notificacion") {
         console.log("antes de recibir la notificacion api");
-        recibirNotificacionAPI (data?.mensaje, data?.type)
+        recibirNotificacionAPI(data?.mensaje, data?.type)
         console.log("📢 Nueva notificación recibida:", data);
         $q(".contenedor-notificacion").innerHTML = ''
         await obtenerNotificaciones()
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       else if (data.type === "evento") {
         console.log("antes de recibir la notificacion api");
-        recibirNotificacionAPI (data?.mensaje, data?.type)
+        recibirNotificacionAPI(data?.mensaje, data?.type)
         console.log("📢 Nueva notificación recibida:", data);
         $q(".contenedor-notificacion").innerHTML = ''
         await obtenerNotificaciones()
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       else if (data.type === "asignacion filmmaker") {
         console.log("antes de recibir la notificacion api");
-        recibirNotificacionAPI (data?.mensaje, data?.type)
+        recibirNotificacionAPI(data?.mensaje, data?.type)
         console.log("📢 Nueva notificación recibida:", data);
         $q(".contenedor-notificacion").innerHTML = ''
         await obtenerNotificaciones()
@@ -95,7 +95,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       else if (data.type === "viatico") {
         console.log("antes de recibir la notificacion api");
-        recibirNotificacionAPI (data?.mensaje, data?.type)
+        recibirNotificacionAPI(data?.mensaje, data?.type)
+        console.log("📢 Nueva notificación recibida:", data);
+        $q(".contenedor-notificacion").innerHTML = ''
+        await obtenerNotificaciones()
+        // Aquí puedes mostrar la notificación en la UI
+        //alert(`🔔 Nueva notificación: ${data.mensaje}`);
+      }
+      else if (data.type === "propuesta") {
+        console.log("antes de recibir la notificacion api");
+        recibirNotificacionAPI(data?.mensaje, data?.type)
         console.log("📢 Nueva notificación recibida:", data);
         $q(".contenedor-notificacion").innerHTML = ''
         await obtenerNotificaciones()
@@ -106,6 +115,35 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("Error al procesar el mensaje WebSocket:", error);
     }
   };
+
+  // ******************************************* ACTUALIZACION DE DATO **********************************************
+
+  async function actualizarEstadoConvenio(idconvenio, estado) {
+    const convenioupdate = new FormData();
+    convenioupdate.append("operation", "actualizarEstadoConvenio");
+    convenioupdate.append("idconvenio", idconvenio);
+    convenioupdate.append("estado", estado);
+
+    const fconvenioupdate = await fetch(`${host}convenio.controller.php`, {
+      method: "POST",
+      body: convenioupdate,
+    });
+    const rconvenioupdate = await fconvenioupdate.json();
+    return rconvenioupdate;
+  }
+
+  async function registrarAgendaEdicion(iddetallepresentacion) {
+    const body = new FormData();
+    body.append("operation", "registrarAgendaEdicion");
+    body.append("iddetallepresentacion", iddetallepresentacion);
+
+    const fbody = await fetch(`${host}agenda.controller.php`, {
+      method: "POST",
+      body: body,
+    });
+    const rbody = await fbody.json();
+    return rbody;
+  }
 
   // ******************************************* OBTENER DATOS *****************************************
 
@@ -158,6 +196,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     params.append("operation", "obtenerNotificacionDP");
     params.append("idreferencia", idreferencia ? idreferencia : '');
     const fpersona = await getDatos(`${host}detalleevento.controller.php`, params)
+    console.log(fpersona);
+    return fpersona
+  }
+
+  async function obtenerNotificacionPropuesta(idreferencia) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerNotificacionPropuesta");
+    params.append("idreferencia", idreferencia ? idreferencia : '');
+    const fpersona = await getDatos(`${host}notificacion.controller.php`, params)
     console.log(fpersona);
     return fpersona
   }
@@ -224,6 +271,17 @@ document.addEventListener("DOMContentLoaded", async () => {
           const notificacionDP = await obtenerNotificacionDP(idNotificacion)
           console.log("notiifacion dp clickeada -> ", notificacionDP);
           cargarNotificacionDpEnModal(notificacionDP[0])
+
+        }
+        else if (notificacion.tipo == 4) { // esto sera para propuestas
+          console.log("mostrando modales de tipo 4");
+          console.log("id referencia .> ", idNotificacion);
+          modalNotificacion = new bootstrap.Modal($q("#modal-notificacion"))
+          modalNotificacion.show() // AQUI ABRE EL MODAL 
+
+          const notificacionPropuesta = await obtenerNotificacionPropuesta(idNotificacion)
+          console.log("notiifacion dp clickeada -> ", notificacionPropuesta);
+          cargarNotificacionPropuestaEnModal(notificacionPropuesta[0])
 
         }
         /* else if (notificacion.tipo == 2) { // esto sera para eventos / detalles_presentacion
@@ -302,5 +360,71 @@ document.addEventListener("DOMContentLoaded", async () => {
     `;
   }
 
+  function cargarNotificacionPropuestaEnModal(notificacion) {
+    console.log("notificacion -> ", notificacion);
+    const fechahoraSeparada = notificacion.fecha?.split(" ")
+    console.log("fechahoraSeparada > ", fechahoraSeparada);
+    const contenedorModal = $q(".contenedor-notificacion");
+    contenedorModal.innerHTML = `
+      <div class="card">
+        <div class="card-body">
+          <p class="text-muted mb-2"><strong>${formatDate(fechahoraSeparada[0] + " " + formatHour(fechahoraSeparada[1]))}</strong></p>
+          <p class="fw-bold">Cliente: ${notificacion?.razonsocial}</p>
+          <hr>
+          <div class="mt-3">
+            <h4 class="fw-bold">Detalles evento:</h4><br>
+            <label class="fw-bold">Artista:</label> <span id="noti-pasaje">${notificacion.nom_usuario?.toUpperCase() ? notificacion.nom_usuario?.toUpperCase() : ''}</span> <br>
+            <label class="fw-bold">Local:</label> <span id="noti-comida">${notificacion.establecimiento?.toUpperCase() ? notificacion.establecimiento?.toUpperCase() : ''}</span> <br>
+            <label class="fw-bold">Fecha:</label> <span id="noti-viaje">${formatDate(notificacion?.fecha_presentacion) ? formatDate(notificacion?.fecha_presentacion) : ''}</span> <br>
+            <label class="fw-bold">Desde - hasta:</label> <span id="noti-viaje">${formatHour(notificacion?.horainicio) ?? "0:00"} - ${formatHour(notificacion?.horafinal) ?? "0:00"}</span> <br>
+            <label class="fw-bold">Tiempo:</label> <span id="noti-viaje">${calculateDuration(notificacion?.horainicio ?? "0:00", notificacion?.horafinal ?? "0:00")}</span> <br>
+            <label class="fw-bold">Ubicacion:</label> <span id="noti-viaje">${notificacion?.departamento}'${notificacion?.provincia}/${notificacion?.distrito}</span>
+          </div>
+          <hr>
+          <div class="mt-3">
+            <h4 class="fw-bold">Detalles Propuesta:</h4><br>
+            <label class="fw-bold">Abono de garantia: </label> <span id="noti-pasaje">S/ ${notificacion?.abono_garantia ? notificacion?.abono_garantia :''}</span> <br>
+            <label class="fw-bold">Abono de publicidad:</label> <span id="noti-comida">S/ ${notificacion?.abono_publicidad ? notificacion?.abono_publicidad :''}</span> <br>
+            <h5><strong>Acuerdo (%): </strong></h5>
+            <label class="fw-bold">Vega: </label> <span id="noti-pasaje">${notificacion?.porcentaje_vega ? notificacion?.porcentaje_vega : ''}%</span> <br>
+            <label class="fw-bold">Promotor: </label> <span id="noti-pasaje">${notificacion?.porcentaje_promotor ? notificacion?.porcentaje_promotor : ''}%</span> <br>
+            <h5><strong>Detalles: </strong></h5>
+            <span>${notificacion?.propuesta_cliente ? notificacion?.propuesta_cliente : "Sin detalles."}</span>
+          </div>      
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal" id="btnDesaprobar">Desaprobar</button>
+          <button class="btn btn-secondary" data-bs-dismiss="modal" id="btnAprobar">Aprobar</button>
+        </div>
+      </div>
+      
+    `;
 
+    $q("#btnAprobar").addEventListener("click", async () => {
+      const convenioEstadoActualizado = await actualizarEstadoConvenio(notificacion.idconvenio, 2)
+      console.log("estado convenio actualizdao ? -> ", convenioEstadoActualizado);
+      const agendaEdicionRegistrada = await registrarAgendaEdicion(notificacion.iddetalle_presentacion)
+      console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
+
+      /* const params = new URLSearchParams();
+      params.append("operation", "aprobarPropuesta");
+      params.append("idreferencia", idreferencia ? idreferencia : '');
+      const fpersona = await getDatos(`${host}notificacion.controller.php`, params)
+      console.log(fpersona);
+      modalNotificacion.hide() */
+      console.log("aprobando");
+    })
+    $q("#btnDesaprobar").addEventListener("click", async () => {
+      const convenioEstadoActualizado = await actualizarEstadoConvenio(notificacion.idconvenio, 3)
+      console.log("estado convenio actualizdao ? -> ", convenioEstadoActualizado);
+      /* const params = new URLSearchParams();
+      params.append("operation", "aprobarPropuesta");
+      params.append("idreferencia", idreferencia ? idreferencia : '');
+      const fpersona = await getDatos(`${host}notificacion.controller.php`, params)
+      console.log(fpersona);
+      modalNotificacion.hide() */
+      console.log("desaprobando");
+    })
+
+  }
 });
