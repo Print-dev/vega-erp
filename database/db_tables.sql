@@ -149,7 +149,6 @@ create table clientes (
 )engine=innodb;
 -- ALTER TABLE detalles_presentacion
 -- ADD COLUMN modotransporte INT NULL AFTER modalidad;
-select * from detalles_presentacion; 
 CREATE table detalles_presentacion (
 	iddetalle_presentacion	int auto_increment primary key,
     idusuario			int not null,
@@ -441,7 +440,7 @@ CREATE TABLE comprobantes (
     tieneigv 		tinyint not null,
 	constraint fk_idcliente_comp	foreign key (idcliente) references clientes (idcliente),
     constraint fk_idsucursal_comp foreign key (idsucursal) references sucursales (idsucursal),
-	constraint fk_iddp_comp foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
+	constraint fk_iddp_comp foreign key (iddetallepresentacion) references detalles_presentacion (iddetalle_presentacion)
 ) ENGINE = INNODB;
 select * from comprobantes;
 -- ALTER TABLE comprobantes ADD COLUMN tieneigv tinyint not null;
@@ -462,7 +461,7 @@ CREATE TABLE detalles_comprobante (
     info				varchar(60) not null,
 	constraint fk_iddetallefactura	foreign key (idcomprobante) references comprobantes (idcomprobante)
 ) ENGINE = INNODB;
-select * from cuotas_comprobante;
+
 CREATE TABLE cuotas_comprobante (
 	idcuotacomprobante	int auto_increment primary key,
     idcomprobante		int		not null,
