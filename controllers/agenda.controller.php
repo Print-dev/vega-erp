@@ -225,6 +225,17 @@ if (isset($_POST['operation'])) {
       echo json_encode($update);
       break;
 
+    case 'actualizarEstadoAltoketicket':
+      $cleanData = [
+        'idagendaeditor' => $agenda->limpiarCadena($_POST['idagendaeditor']),
+        'altoketicket' => $agenda->limpiarCadena($_POST['altoketicket'])
+      ];
+
+      $update = $agenda->actualizarEstadoAltoketicket($cleanData);
+
+      echo json_encode($update);
+      break;
+
     case 'actualizarAgendaEditor':
       $cleanData = [
         'idagendaeditor' => $agenda->limpiarCadena($_POST['idagendaeditor']),

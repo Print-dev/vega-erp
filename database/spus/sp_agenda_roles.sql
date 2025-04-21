@@ -161,7 +161,7 @@ CREATE PROCEDURE sp_obtener_agenda_editores
 )
 BEGIN
 	SELECT 
-	AGE.idagendaeditor, TIPO.idtipotarea, TIPO.tipotarea, PER.nombres, USU.idusuario, AGE.fecha_entrega, AGE.estado
+	AGE.idagendaeditor, TIPO.idtipotarea, TIPO.tipotarea, PER.nombres, USU.idusuario, AGE.fecha_entrega, AGE.estado, AGE.altoketicket
     FROM agenda_editores AGE
     LEFT JOIN tipotarea TIPO ON TIPO.idtipotarea = AGE.idtipotarea
     LEFT JOIN usuarios USU ON USU.idusuario = AGE.idusuario
@@ -195,6 +195,20 @@ BEGIN
     WHERE idagendaeditor = _idagendaeditor; 
 
 END //
+
+DROP PROCEDURE if exists sp_actualizar_estado_tarea_altoketicket;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_estado_tarea_altoketicket (
+	IN _idagendaeditor INT,
+    IN _altoketicket VARCHAR(250)
+)
+BEGIN
+	UPDATE agenda_editores SET
+    altoketicket = _altoketicket
+    WHERE idagendaeditor = _idagendaeditor; 
+
+END //
+select * from agenda_editores;
 
 
 DROP PROCEDURE IF EXISTS sp_obtener_usuario_asignado_tarea;

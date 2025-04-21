@@ -336,6 +336,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data
 
   }
+  
+  async function obtenerPreciosEvento(iddetallepresentacion) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerPreciosEvento");
+    params.append("iddetallepresentacion", iddetallepresentacion);
+    const data = await getDatos(`${host}detalleevento.controller.php`, params);
+    console.log(data);
+    return data
+
+  }
 
   async function obtenerUsuariosPorNivel(idnivelacceso) {
     const params = new URLSearchParams();
@@ -580,6 +590,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     const rreserva = await freserva.json();
     return rreserva;
   }
+  async function registrarPrecioEvento(iddetallepresentacion, preciogeneral, preciovip) {
+
+    const reserva = new FormData();
+    reserva.append("operation", "registrarPrecioEvento");
+    reserva.append("iddetallepresentacion", iddetallepresentacion);
+    reserva.append("preciogeneral", preciogeneral ? preciogeneral : null);
+    reserva.append("preciovip", preciovip ? preciovip : null);
+
+    const freserva = await fetch(`${host}detalleevento.controller.php`, {
+      method: "POST",
+      body: reserva,
+    });
+    const rreserva = await freserva.json();
+    return rreserva;
+  }
 
   async function actualizarResponsableBoleteriaContrato(idresponsablecontrato, idusuarioboleteria, idusuariocontrato) {
 
@@ -588,6 +613,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     reserva.append("idresponsablecontrato", idresponsablecontrato)
     reserva.append("idusuarioboleteria", idusuarioboleteria ? idusuarioboleteria : null);
     reserva.append("idusuariocontrato", idusuariocontrato ? idusuariocontrato : null);
+
+    const freserva = await fetch(`${host}detalleevento.controller.php`, {
+      method: "POST",
+      body: reserva,
+    });
+    const rreserva = await freserva.json();
+    return rreserva;
+  }
+
+  async function actualizarPrecioEntradaEvento(idprecioentradaconvenio, preciogeneral, preciovip) {
+
+    const reserva = new FormData();
+    reserva.append("operation", "actualizarPrecioEntradaEvento");
+    reserva.append("idprecioentradaconvenio", idprecioentradaconvenio)
+    reserva.append("preciogeneral", preciogeneral ? preciogeneral : null);
+    reserva.append("preciovip", preciovip ? preciovip : null);
 
     const freserva = await fetch(`${host}detalleevento.controller.php`, {
       method: "POST",
@@ -804,8 +845,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${x.departamento}/${x.provincia}/${x.distrito}</td>
                 <td>${x.fecha_presentacion}</td>                        
                 <td>${x.estado == 1 ? 'Activo' : x.estado == 2 ? 'Caducado' : x.estado == 3 ? 'Cancelado' : ''}</td>                        
+                <td>${x.estado_convenio == 2 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/402906/white-heavy-check-mark.svg" style="width: 24px; height: 24px;" title="Aprobado">' : x.estado_convenio == 3 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/292061/multiply-cross.svg" style="width: 24px; height: 24px;" title="Desaprobado">' : x.estado == 3 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/317774/time-capsule-done.svg" style="width: 24px; height: 24px;" title="Pendiente">' : ''}</td>                        
                 <td>
-                    ${x.estado == 3 ? '' : `
+                    ${x.estado_convenio == 3 ? 'Desaprobado' : x.estado == 3 ? '' : `
                         ${x.estado == 2 ? '' : parseInt(x.estado_convenio) == 2 ? `
                         <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-idusuario="${x.idusuario}" data-fechapresentacion="${x.fecha_presentacion}" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
                             Detalles Propuesta
@@ -820,7 +862,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <button type="button" class="btn btn-sm btn-warning btn-convenio" data-id=${x.iddetalle_presentacion} title="Generar Convenio">
                             Generar Convenio
                         </button>
-                    ` : parseInt(x.modalidad) == 2 ? `
+                        `  : parseInt(x.modalidad) == 2 ? `
                         <button type="button" class="btn btn-sm btn-success btn-cotizar" data-id=${x.iddetalle_presentacion} data-estado=${x.condicion} title="Cotizar">Cotizar</button>
                     ` : ``}
 
@@ -839,13 +881,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                         </button>
                     ` : ``}
 
-                      ${x.tienecaja == 1 ? '' : x.modalidad == 2 ? '' : `<button type="button" class="btn btn-sm btn-warning btn-caja" data-id=${x.iddetalle_presentacion} title="Caja Chica">
+                      ${x.tienecaja == 1 ? '' : x.modalidad == 1 ? '' : `<button type="button" class="btn btn-sm btn-warning btn-caja" data-id=${x.iddetalle_presentacion} title="Caja Chica">
                           Caja Chica  
                       </button> `
           }
+                       ${x.modalidad == 1 ? `<button type="button" class="btn btn-sm btn-secondary btn-precioentrada" data-id=${x.iddetalle_presentacion} title="Precios de entrada">
+                          Precios de entrada
+                        </button>` : ''}
                       <button type="button" class="btn btn-sm btn-secondary btn-responsables" data-id=${x.iddetalle_presentacion} title="Elegir Responsables">
                           Responsables
                         </button>
+                      
                     <button type="button" class="btn btn-sm btn-primary btn-actualizar" data-id=${x.iddetalle_presentacion} title="Actualizar Evento">
                         Actualizar
                       </button>
@@ -975,6 +1021,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (e.target.classList.contains("btn-responsables")) {
             await buttonResponsables(e);
           }
+          if (e.target.classList.contains("btn-precioentrada")) {
+            await buttonPrecioEntrada(e);
+          }
           /* if(e.target.classList.contains("show-espec")){//abre el sidebar
           await btnSBUpdateActivo(e);
         }
@@ -1065,6 +1114,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     return
   }
 
+  async function buttonPrecioEntrada(e) {
+    iddp = e.target.getAttribute("data-id")
+    window.localStorage.clear()
+    console.log("abriendo...");
+    new bootstrap.Modal($q("#modal-precioentrada")).show()
+    const preciosevento = await obtenerPreciosEvento(iddp)
+    console.log("object -> ", preciosevento);
+    $q("#general").value = preciosevento[0]?.preciogeneral
+    $q("#vip").value = preciosevento[0]?.preciovip
+  }
+
   $q("#btnGuardarResponsables").addEventListener("click", async () => {
 
     const responsables = await obtenerResponsableBoleteriaContrato(iddp)
@@ -1081,6 +1141,27 @@ document.addEventListener("DOMContentLoaded", async () => {
       const responsableRegistrado = await registrarResponsableBoleteriaContrato(iddp, $q("#boleteria").value, $q("#contrato").value)
       console.log("responsableRegistrado _>", responsableRegistrado);
       showToast("Responsable asignado correctamente", "SUCCESS")
+      return
+
+    }
+  })
+
+  $q("#btnGuardarPrecioEntrada").addEventListener("click", async () => {
+
+    const preciosevento = await obtenerPreciosEvento(iddp)
+    console.log("object -> ", preciosevento);
+    if (preciosevento.length > 0) {
+
+      const actualizado = await actualizarPrecioEntradaEvento(preciosevento[0]?.idprecioentradaevento, $q("#general").value, $q("#vip").value)
+      console.log("input general -> ", $q("#general").value);
+      console.log("input vip -> ", $q("#vip").value);
+      console.log("actualizado ? -< ", actualizado);
+      showToast("Precio asignado correctamente", "SUCCESS")
+      return
+    } else {
+      const precioeventoregis = await registrarPrecioEvento(iddp, $q("#general").value, $q("#vip").value)
+      console.log("precioeventoregis _>", precioeventoregis);
+      showToast("Precio asignado correctamente", "SUCCESS")
       return
 
     }
@@ -1170,7 +1251,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           return
         })
 
-      } else {
+      } else if (convenio[0]?.estado == 3) {
+        showToast("La propuesta ha sido desaprobada", "ERROR");
+        return
+      }
+      else {
         showToast("Aun no ha sido aprobada la propuesta del cliente", "ERROR");
         return
       }
@@ -1770,7 +1855,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const seleccionado = document.querySelector('input[name="adminSeleccionado"]:checked');
     const convenioRegistrado = await registrarConvenio(iddetallepresentacion, 1)
-    
+
     console.log("convenio registrado a pendiente:-> ", convenioRegistrado)
     console.log("clickeanod ");
     if (seleccionado) {

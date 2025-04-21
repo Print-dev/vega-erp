@@ -190,6 +190,15 @@ CREATE TABLE responsables_boleteria_contratoreservasreservas (
     constraint fk_idusuario_contrato foreign key (idusuarioContrato) references usuarios (idusuario)
 ) ENGINE = INNODB;
 
+-- ESTA TABLA SOLO SERA PARA EVENTOS DE TIPO CONVENIO
+CREATE TABLE precios_entrada_evento ( 
+	idprecioentradaevento	int auto_increment primary key,
+    iddetalle_presentacion 	int not null,
+    preciogeneral		decimal(10,2) null,
+    preciovip		decimal(10,2) null,
+    constraint fk_iddp_entrada_convenio foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
+) ENGINE = INNODB;
+
 CREATE TABLE reportes_artista_evento (
 	idreporte	int auto_increment primary key,
     iddetalle_presentacion int not null,
@@ -207,7 +216,7 @@ CREATE TABLE agenda_asignaciones ( -- tabla que asigna la agenda a un filmmaker
     FOREIGN KEY (iddetalle_presentacion) REFERENCES detalles_presentacion(iddetalle_presentacion) ON DELETE CASCADE,
     FOREIGN KEY (idusuario) REFERENCES usuarios(idusuario) ON DELETE CASCADE
 );
-
+select * from convenios;
 create table convenios (
 	idconvenio	int auto_increment primary key,
     iddetalle_presentacion int not null,
@@ -327,7 +336,7 @@ CREATE TABLE notificaciones (
 select * from notificaciones;
 select * from detalles_presentacion;
 -- ALTER TABLE notificaciones DROP CONSTRAINT chk_tipo;
-
+select * from reparticion_ingresos;
 CREATE TABLE reparticion_ingresos (
 	idreparticion	int auto_increment primary key,
     iddetalle_presentacion int not null,    
@@ -368,12 +377,14 @@ CREATE TABLE tipotarea (
     tipotarea varchar(30) not null
 ) engine = innodb;
  
+ALTER TABLE agenda_editores ADD COLUMN altoketicket INT NULL DEFAULT 1 AFTER estado;
 CREATE TABLE agenda_editores (
 	idagendaeditor	int auto_increment primary key,
     idagendaedicion int not null,
     idusuario		int not null,
     idtipotarea 		int not null, -- 1: flayer, 2: saludos, 3: reels, 4: fotos, 5: contenido
     estado			int null default 1, -- 1: pendiente, 2- completado, 3: atrasado, 4: completado con atraso
+    altoketicket	int null default 1, -- 1: pendiente, 2: completado
 	fecha_asignacion datetime null default now(),
     fecha_entrega 	date not null,
     hora_entrega	time not null,
@@ -486,3 +497,4 @@ CREATE TABLE pagos_cuota (
     constraint 	fk_idcuotacomprobante_pago	foreign key (idcuotacomprobante) references cuotas_comprobante (idcuotacomprobante)
 ) ENGINE = INNODB;
 select * from detalles_presentacion;
+select  * from convenios;

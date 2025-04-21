@@ -79,6 +79,7 @@
                                         <th>Ubigeo</th>
                                         <th>Fecha presentacion</th>
                                         <th>Estado</th>
+                                        <th>Estado propuesta</th>
                                         <th>Opciones</th>
                                     </tr>
                                 </thead>
@@ -474,6 +475,40 @@
                 <!-- <button type="button" class="btn btn-secondary" id="btnGenerarReserva" hidden>Generar Reserva</button> -->
                 <!--                 <button type="button" class="btn btn-primary" id="close-mdl-convenio" data-bs-dismiss="modal">Cerrar</button>
  -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-precioentrada" tabindex="-1" aria-labelledby="modalprecioentrada" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalprecioentrada">Configurar precios de entrada</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="row g-3 justify-content-center">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="number" class="form-control" id="general" name="general" placeholder="General">
+                                    <label for="general">General</label>
+                                </div>
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" id="vip" name="vip" placeholder="VIP">
+                                    <label for="vip">VIP</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id="contenedor-botones">
+                <button type="button" class="btn btn-secondary" id="btnGuardarPrecioEntrada">Guardar</button>
+                <button type="button" class="btn btn-secondary" id="btnActualizarPrecioEntrada" hidden>Actualizar</button>
             </div>
         </div>
     </div>

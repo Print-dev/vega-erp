@@ -370,6 +370,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="card-body">
           <p class="text-muted mb-2"><strong>${formatDate(fechahoraSeparada[0] + " " + formatHour(fechahoraSeparada[1]))}</strong></p>
           <p class="fw-bold">Cliente: ${notificacion?.razonsocial}</p>
+          <p class="fw-bold">Telefono: ${notificacion?.telefono ? notificacion?.telefono : 'Sin telefono'}</p>
           <hr>
           <div class="mt-3">
             <h4 class="fw-bold">Detalles evento:</h4><br>
@@ -413,6 +414,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log(fpersona);
       modalNotificacion.hide() */
       console.log("aprobando");
+      showToast("Se aprobó la propuesta correctamente", "error")
+
+      return
     })
     $q("#btnDesaprobar").addEventListener("click", async () => {
       const convenioEstadoActualizado = await actualizarEstadoConvenio(notificacion.idconvenio, 3)
@@ -424,6 +428,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log(fpersona);
       modalNotificacion.hide() */
       console.log("desaprobando");
+      showToast("Se desaprobó la propuesta correctamente", "error")
+      return
     })
 
   }

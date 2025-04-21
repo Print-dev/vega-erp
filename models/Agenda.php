@@ -332,6 +332,24 @@ class Agenda extends ExecQuery
     }
   }
 
+  public function actualizarEstadoAltoketicket($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_actualizar_estado_tarea_altoketicket (?,?)");
+      $rpt = $cmd->execute(
+        array(
+          $params['idagendaeditor'],
+          $params['altoketicket'],
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+
 
 
   public function registrarNuevoTipoTarea($params = []): int

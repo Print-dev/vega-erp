@@ -365,6 +365,7 @@
                                     <th>Fecha entrega</th>
                                     <th>Usuario</th>
                                     <th>Tipo Tarea</th>
+                                    <th>Altoketicket</th>
                                     <th>Estado</th>
                                     <th>Subidas</th>
                                 </tr>
@@ -379,6 +380,8 @@
         </div>
     </div>
 </div>
+
+
 
 
 <?php require_once '../footer.php' ?>

@@ -662,7 +662,7 @@ BEGIN
         SET _idreporte = LAST_INSERT_ID();
     END IF;
 END $$
-select * from responsables_boleteria_contratoreservasreservas
+
 DROP PROCEDURE if exists sp_actualizar_responsables_boleteria_contrato_evento;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_responsables_boleteria_contrato_evento (
@@ -677,4 +677,20 @@ BEGIN
     WHERE idresponsablecontrato = _idresponsablecontrato; 
 END //
 
+DROP PROCEDURE if exists sp_actualizar_precios_entrada_evento;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_precios_entrada_evento (
+	IN _idprecioentradaevento INT,
+    IN _preciogeneral INT,
+    IN _preciovip INT
+)
+BEGIN
+		UPDATE precios_entrada_evento SET
+    preciogeneral = nullif(_preciogeneral, ''),
+    preciovip = nullif(_preciovip, '')
+    WHERE idprecioentradaevento = _idprecioentradaevento; 
+END //
+select * from precios_entrada_evento;
+select * from detalles_presentacion;
+select * from clientes;
 -- call sp_actualizar_responsables_boleteria_contrato_evento (1, 3, 3);

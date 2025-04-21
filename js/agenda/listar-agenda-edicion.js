@@ -214,6 +214,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         return rbody;
     }
 
+    async function actualizarEstadoAltoketicket(idagendaeditor, altoketicket) {
+        const body = new FormData();
+        body.append("operation", "actualizarEstadoAltoketicket");
+        body.append("idagendaeditor", idagendaeditor); // id artista
+        body.append("altoketicket", altoketicket);
+
+        const fbody = await fetch(`${host}agenda.controller.php`, {
+            method: "POST",
+            body: body,
+        });
+        const rbody = await fbody.json();
+        return rbody;
+    }
+
     async function actualizarNombreTipoTarea(idtipotarea, tipotarea) {
         const body = new FormData();
         body.append("operation", "actualizarNombreTipoTarea");
@@ -371,14 +385,23 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${editor.fecha_entrega}</td>
                 <td>${editor.nombres}</td>
                 <td>${editor.tipotarea ? editor.tipotarea : 'No especificado'}</td>
+
                 ${nivelacceso == "Administrador" ? `
+                    <td>
+                        <select name="altoketicket" class="form-select select-altoketicket" data-idagendaeditor="${editor.idagendaeditor}">
+                            <option value="1" ${editor.altoketicket == 1 ? 'selected' : ''}>Pendiente</option>
+                            <option value="2" ${editor.altoketicket == 2 ? 'selected' : ''}>Completado</option>
+                        </select>
+                    </td>
                     <td>
                         <select name="estado" class="form-select select-estado" data-idagendaeditor="${editor.idagendaeditor}">
                             <option value="1" ${editor.estado == 1 ? 'selected' : ''}>Pendiente</option>
                             <option value="2" ${editor.estado == 2 ? 'selected' : ''}>Completado</option>
                         </select>
                     </td>
-                        ` : `<td>${editor.estado == 1 ? 'Pendiente' : editor.estado == 2 ? 'Completado' : ''}</td>`}
+                        ` : `
+                        <td>${editor.altoketicket == 1 ? 'Pendiente' : editor.altoketicket == 2 ? 'Completado' : ''}</td>
+                        <td>${editor.estado == 1 ? 'Pendiente' : editor.estado == 2 ? 'Completado' : ''}</td>`}
                 <td>
                     <button type="button" class="btn btn-primary" id="btnVerContenido" data-idagendaeditor="${editor.idagendaeditor}">Ver</button>
                 </td>        
@@ -406,6 +429,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                         // Aquí puedes hacer una petición para actualizar el estado en la base de datos
                         const tareaActualizada = await actualizarEstadoTareaEdicion(idagendaeditor, nuevoEstado);
+                        console.log("tarea actualizada =_", tareaActualizada);
+                        if (tareaActualizada) {
+                            showToast("Estado cambiado correctamente", "SUCCESS")
+                            return
+                        }
+                    });
+                });
+                document.querySelectorAll(".select-altoketicket").forEach(select => {
+                    select.addEventListener("change", async (e) => {
+                        let idagendaeditor = e.target.getAttribute("data-idagendaeditor");
+                        let nuevoEstado = e.target.value;
+
+                        console.log(`altoketikcet id ${idagendaeditor} cambió a estado ${nuevoEstado}`);
+
+                        // Aquí puedes hacer una petición para actualizar el estado en la base de datos
+                        const tareaActualizada = await actualizarEstadoAltoketicket(idagendaeditor, nuevoEstado);
                         console.log("tarea actualizada =_", tareaActualizada);
                         if (tareaActualizada) {
                             showToast("Estado cambiado correctamente", "SUCCESS")
@@ -754,12 +793,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <td>${editor.tipotarea ? editor.tipotarea : 'No especificado'}</td>
                     ${nivelacceso == "Administrador" ? `
                         <td>
-                            <select name="estado" class="form-select select-estado" data-idagendaeditor="${editor.idagendaeditor}">
-                                <option value="1" ${editor.estado == 1 ? 'selected' : ''}>Pendiente</option>
-                                <option value="2" ${editor.estado == 2 ? 'selected' : ''}>Completado</option>
-                            </select>
-                        </td>
-                        ` : `<td>${editor.estado == 1 ? 'Pendiente' : editor.estado == 2 ? 'Completado' : ''}</td>`}
+                        <select name="altoketicket" class="form-select select-altoketicket" data-idagendaeditor="${editor.idagendaeditor}">
+                            <option value="1" ${editor.altoketicket == 1 ? 'selected' : ''}>Pendiente</option>
+                            <option value="2" ${editor.altoketicket == 2 ? 'selected' : ''}>Completado</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="estado" class="form-select select-estado" data-idagendaeditor="${editor.idagendaeditor}">
+                            <option value="1" ${editor.estado == 1 ? 'selected' : ''}>Pendiente</option>
+                            <option value="2" ${editor.estado == 2 ? 'selected' : ''}>Completado</option>
+                        </select>
+                    </td>
+                        ` : `
+                        <td>${editor.altoketicket == 1 ? 'Pendiente' : editor.altoketicket == 2 ? 'Completado' : ''}</td>
+                        <td>${editor.estado == 1 ? 'Pendiente' : editor.estado == 2 ? 'Completado' : ''}</td>`}
                     <td>
                         <button type="button" class="btn btn-primary" id="btnVerContenido" data-idagendaeditor="${editor.idagendaeditor}">Ver</button>
                     </td>        
@@ -792,7 +839,22 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }
                 });
             });
+            document.querySelectorAll(".select-altoketicket").forEach(select => {
+                select.addEventListener("change", async (e) => {
+                    let idagendaeditor = e.target.getAttribute("data-idagendaeditor");
+                    let nuevoEstado = e.target.value;
 
+                    console.log(`altoketikcet id ${idagendaeditor} cambió a estado ${nuevoEstado}`);
+
+                    // Aquí puedes hacer una petición para actualizar el estado en la base de datos
+                    const tareaActualizada = await actualizarEstadoAltoketicket(idagendaeditor, nuevoEstado);
+                    console.log("tarea actualizada =_", tareaActualizada);
+                    if (tareaActualizada) {
+                        showToast("Estado cambiado correctamente", "SUCCESS")
+                        return
+                    }
+                });
+            });
         }
         if (e.target && e.target.id === "btnAsignarEditor") {
             idagendaedicion = e.target.getAttribute("data-idagendaedicion");

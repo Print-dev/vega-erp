@@ -95,7 +95,7 @@ CREATE PROCEDURE sp_obtener_notificacion_propuesta
 )
 BEGIN
 	SELECT 
-	    NOTIF.idnotificacion, CLI.razonsocial, DP.iddetalle_presentacion, USU.nom_usuario, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DIS.distrito, PRO.provincia, DEP.departamento, CON.idconvenio,CON.abono_garantia, CON.abono_publicidad, CON.porcentaje_vega, CON.porcentaje_promotor, CON.propuesta_cliente, NOTIF.fecha
+	    NOTIF.idnotificacion, CLI.razonsocial, CLI.telefono,DP.iddetalle_presentacion, USU.nom_usuario, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DIS.distrito, PRO.provincia, DEP.departamento, CON.idconvenio,CON.abono_garantia, CON.abono_publicidad, CON.porcentaje_vega, CON.porcentaje_promotor, CON.propuesta_cliente, NOTIF.fecha
 
     FROM notificaciones NOTIF
     LEFT JOIN convenios CON ON CON.iddetalle_presentacion = NOTIF.idreferencia

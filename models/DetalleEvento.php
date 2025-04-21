@@ -55,6 +55,26 @@ class DetalleEvento extends ExecQuery
     }
   }
   
+  public function registrarPrecioEvento($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('INSERT INTO precios_entrada_evento (iddetalle_presentacion, preciogeneral, preciovip) VALUES (?,?,?)');
+      $rpt = $cmd->execute(
+        array(
+          $params['iddetallepresentacion'],
+          $params['preciogeneral'],
+          $params['preciovip']
+        )
+      );
+
+      return $rpt;
+    } catch (PDOException $e) {
+      // Retornar detalles del error
+      die($e->getMessage());
+    }
+  }
+  
   public function actualizarResponsableBoleteriaContrato($params = []): bool
   {
     try {
@@ -74,12 +94,50 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
+
+  public function actualizarPrecioEntradaEvento($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('CALL sp_actualizar_precios_entrada_evento (?,?,?)');
+      $rpt = $cmd->execute(
+        array(
+          $params['idprecioentradaconvenio'],
+          $params['preciogeneral'],
+          $params['preciovip'],
+        )
+      );
+
+      return $rpt;
+    } catch (PDOException $e) {
+      // Retornar detalles del error
+      die($e->getMessage());
+    }
+  }
   
   public function obtenerResponsableBoleteriaContrato($params = []): array
   {
     try {
       $pdo = parent::getConexion();
       $cmd = $pdo->prepare('SELECT * FROM responsables_boleteria_contratoreservasreservas WHERE iddetalle_presentacion = ?');
+      $cmd->execute(
+        array(
+          $params['iddetallepresentacion']
+        )
+      );
+
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+      // Retornar detalles del error
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerPreciosEvento($params = []): array
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('SELECT * FROM precios_entrada_evento WHERE iddetalle_presentacion = ?');
       $cmd->execute(
         array(
           $params['iddetallepresentacion']

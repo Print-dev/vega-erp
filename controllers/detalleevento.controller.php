@@ -43,6 +43,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($detalleevento->obtenerResponsableBoleteriaContrato(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
       break;
 
+    case 'obtenerPreciosEvento':
+      echo json_encode($detalleevento->obtenerPreciosEvento(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
+      break;
+
     case 'filtrarAtenciones':
       $cleanData = [
         'ncotizacion' => $_GET['ncotizacion'] === "" ? null : $detalleevento->limpiarCadena($_GET['ncotizacion']),
@@ -148,14 +152,14 @@ if (isset($_POST['operation'])) {
       echo json_encode($rpt);
       break;
 
-    case 'registrarResponsableBoleteriaContrato':
+    case 'registrarPrecioEvento':
       $cleanData = [
         'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']) ? $detalleevento->limpiarCadena($_POST['iddetallepresentacion']) : null,
-        'idusuarioboleteria'   => $detalleevento->limpiarCadena($_POST['idusuarioboleteria']) ? $detalleevento->limpiarCadena($_POST['idusuarioboleteria']) : null,
-        'idusuariocontrato'   => $detalleevento->limpiarCadena($_POST['idusuariocontrato']) ? $detalleevento->limpiarCadena($_POST['idusuariocontrato']) : null,
+        'preciogeneral'   => $detalleevento->limpiarCadena($_POST['preciogeneral']) ? $detalleevento->limpiarCadena($_POST['preciogeneral']) : null,
+        'preciovip'   => $detalleevento->limpiarCadena($_POST['preciovip']) ? $detalleevento->limpiarCadena($_POST['preciovip']) : null,
       ];
 
-      $rpt = $detalleevento->registrarResponsableBoleteriaContrato($cleanData);
+      $rpt = $detalleevento->registrarPrecioEvento($cleanData);
 
       echo json_encode($rpt);
       break;
@@ -168,6 +172,18 @@ if (isset($_POST['operation'])) {
       ];
 
       $rpt = $detalleevento->actualizarResponsableBoleteriaContrato($cleanData);
+
+      echo json_encode($rpt);
+      break;
+
+    case 'actualizarPrecioEntradaEvento':
+      $cleanData = [
+        'idprecioentradaconvenio'   => $detalleevento->limpiarCadena($_POST['idprecioentradaconvenio']) ? $detalleevento->limpiarCadena($_POST['idprecioentradaconvenio']) : null,
+        'preciogeneral'   => $detalleevento->limpiarCadena($_POST['preciogeneral']) ? $detalleevento->limpiarCadena($_POST['preciogeneral']) : null,
+        'preciovip'   => $detalleevento->limpiarCadena($_POST['preciovip']) ? $detalleevento->limpiarCadena($_POST['preciovip']) : null,
+      ];
+
+      $rpt = $detalleevento->actualizarPrecioEntradaEvento($cleanData);
 
       echo json_encode($rpt);
       break;
