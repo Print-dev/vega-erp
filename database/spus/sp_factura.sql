@@ -13,7 +13,8 @@ CREATE PROCEDURE sp_registrar_comprobante(
     IN _correlativo char(8),
     IN _tipomoneda varchar(40),
     IN _monto 	decimal(10,2),
-    IN _tieneigv	tinyint
+    IN _tieneigv	tinyint,
+    IN _noperacion varchar(15)
 )
 BEGIN
 	    DECLARE existe_error INT DEFAULT 0;
@@ -24,8 +25,8 @@ BEGIN
     END;
     
     -- Insertar la notificación
-    INSERT INTO comprobantes (idsucursal, iddetallepresentacion, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda , monto, tieneigv)
-    VALUES (_idsucursal , _iddetallepresentacion,_idcliente, _idtipodoc, _tipopago, _nserie, _correlativo, _tipomoneda, _monto, _tieneigv);
+    INSERT INTO comprobantes (idsucursal, iddetallepresentacion, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda , monto, tieneigv, noperacion)
+    VALUES (_idsucursal , _iddetallepresentacion,_idcliente, _idtipodoc, _tipopago, _nserie, _correlativo, _tipomoneda, _monto, _tieneigv, nullif(_noperacion,''));
 
     IF existe_error = 1 THEN
         SET _idcomprobante = -1;
@@ -80,12 +81,14 @@ BEGIN
         COMP.horaemision,
         COMP.tipomoneda,
         COMP.tipopago,
+        COMP.noperacion,
         CLI.ndocumento,
         CLI.direccion,
         DIS.distrito,
         PRO.provincia,
         DEP.departamento,
-        COMP.tieneigv
+        COMP.tieneigv,
+		SUC.telefono as telefono_sucursal
     FROM comprobantes COMP
 	LEFT JOIN clientes CLI ON CLI.idcliente = COMP.idcliente
     LEFT JOIN sucursales SUC ON SUC.idsucursal = COMP.idsucursal
@@ -95,6 +98,52 @@ BEGIN
     WHERE COMP.idcomprobante = _idcomprobante
     AND COMP.idtipodoc = _idtipodoc;
 END $$
+select * from sucursales;
+DROP PROCEDURE IF EXISTS sp_obtener_notas_de_venta;
+ DELIMITER $$
+ CREATE PROCEDURE sp_obtener_notas_de_venta
+ (
+     IN _fechaemision DATE,
+     IN _horaemision TIME,
+     IN _numero_comprobante VARCHAR(20) -- Por ejemplo: 'F001-00000001'
+ )
+ BEGIN
+ 	SELECT 
+		DP.iddetalle_presentacion,
+         COMP.idcomprobante,
+         COMP.idsucursal,
+         COMP.idcliente,
+         COMP.idtipodoc,
+         COMP.fechaemision,
+         COMP.horaemision,
+         COMP.nserie,
+         COMP.correlativo,
+         COMP.tipomoneda,
+         COMP.monto,
+         CONCAT(COMP.nserie, '-', COMP.correlativo) AS numero_comprobante,
+         SUM(ITEM.valortotal) AS total_valortotal,
+         CLI.razonsocial,
+         CLI.ndocumento
+     FROM comprobantes COMP
+     LEFT JOIN items_comprobante ITEM ON ITEM.idcomprobante = COMP.idcomprobante
+     LEFT JOIN clientes CLI ON CLI.idcliente = COMP.idcliente
+     LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = iddetallepresentacion
+     WHERE CONCAT(COMP.nserie, '-', COMP.correlativo) LIKE CONCAT('%', COALESCE(_numero_comprobante, ''), '%')
+     AND (_fechaemision IS NULL OR COMP.fechaemision = _fechaemision OR COMP.fechaemision IS NULL)
+     AND (_horaemision IS NULL OR COMP.horaemision = _horaemision OR COMP.horaemision IS NULL)
+     AND COMP.idtipodoc = '02'
+      GROUP BY 
+         COMP.idcomprobante,
+         COMP.idsucursal,
+         COMP.idcliente,
+         COMP.idtipodoc,
+         COMP.fechaemision,
+         COMP.horaemision,
+         COMP.nserie,
+         COMP.correlativo,
+         COMP.tipomoneda,
+         COMP.monto;
+ END $$
 
 DROP PROCEDURE IF EXISTS sp_obtener_facturas;
  DELIMITER $$
@@ -128,6 +177,7 @@ DROP PROCEDURE IF EXISTS sp_obtener_facturas;
      WHERE CONCAT(COMP.nserie, '-', COMP.correlativo) LIKE CONCAT('%', COALESCE(_numero_comprobante, ''), '%')
      AND (_fechaemision IS NULL OR COMP.fechaemision = _fechaemision OR COMP.fechaemision IS NULL)
      AND (_horaemision IS NULL OR COMP.horaemision = _horaemision OR COMP.horaemision IS NULL)
+     AND COMP.idtipodoc = '01'
       GROUP BY 
          COMP.idcomprobante,
          COMP.idsucursal,

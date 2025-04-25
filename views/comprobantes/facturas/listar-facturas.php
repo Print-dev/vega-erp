@@ -14,7 +14,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h1>Facturas Emitidas (MODO PRUEBA)</h1>
+                    <h1>Facturas Emitidas</h1>
                 </div>
                 <div class="col-md-6 text-end contenedor-btn-nuevacaja">
                     <a href="<?= $hostOnlyHeader ?> /views/comprobantes/facturas/registrar-factura" class="btn btn-primary" id="btnNuevaCaja">Emitir Factura</a>

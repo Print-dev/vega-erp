@@ -180,7 +180,7 @@ CREATE table detalles_presentacion (
     constraint	uk_ncotizacion 			UNIQUE(ncotizacion),
     constraint uk_idp 					UNIQUE(iddetalle_presentacion)
 )engine=innodb;
-
+select * from detalles_presentacion;
 CREATE TABLE responsables_boleteria_contratoreservasreservas (
 	idresponsablecontrato	int auto_increment primary key,
     iddetalle_presentacion 	int not null,
@@ -451,12 +451,15 @@ CREATE TABLE comprobantes (
     tipomoneda		varchar(40) not null,
     monto			decimal(10,2) not null,
     tieneigv 		tinyint not null,
+    noperacion	varchar(15) null,	
 	constraint fk_idcliente_comp	foreign key (idcliente) references clientes (idcliente),
     constraint fk_idsucursal_comp foreign key (idsucursal) references sucursales (idsucursal),
 	constraint fk_iddp_comp foreign key (iddetallepresentacion) references detalles_presentacion (iddetalle_presentacion)
 ) ENGINE = INNODB;
 select * from comprobantes;
--- ALTER TABLE comprobantes ADD COLUMN tieneigv tinyint not null;
+-- ALTER TABLE comprobantes ADD COLUMN     noperacion	varchar(15) null;
+select * from items_comprobante;
+select * from detalles_presentacion;
 CREATE TABLE items_comprobante (
 	iditemcomprobante	int auto_increment primary key,
     idcomprobante	int not null,

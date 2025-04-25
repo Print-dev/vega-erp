@@ -21,8 +21,8 @@ $accesos = [
 
     ['modulo' => 'comprobantes', 'ruta' => 'listar-facturas', 'subruta' => 'facturas', 'texto' => 'Facturas', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'comprobantes', 'ruta' => 'registrar-factura', 'subruta' => 'facturas', 'texto' => '', 'visible' => false, 'icono' => ''],
-    ['modulo' => 'comprobantes', 'ruta' => 'listar-boletas', 'subruta' => 'boletas', 'texto' => 'Boletas', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
-    ['modulo' => 'comprobantes', 'ruta' => 'registrar-boleta', 'subruta' => 'boletas', 'texto' => '', 'visible' => false, 'icono' => ''],
+    ['modulo' => 'comprobantes', 'ruta' => 'listar-notasdeventa', 'subruta' => 'notasdeventa', 'texto' => 'Notas de venta', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'comprobantes', 'ruta' => 'registrar-notadeventa', 'subruta' => 'notasdeventa', 'texto' => '', 'visible' => false, 'icono' => ''],
 
 
 

@@ -32,7 +32,7 @@ class Comprobante extends ExecQuery
         )
 
       );
-      
+
       return $sp->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
       die($e->getMessage());
@@ -86,6 +86,21 @@ class Comprobante extends ExecQuery
     }
   }
 
+  public function filtrarNotasDeVenta($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_notas_de_venta (?,?,?)");
+      $cmd->execute(array(
+        $params['fechaemision'],
+        $params['horaemision'],
+        $params['numerocomprobante']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function obtenerPagosCuotasPorIdCuota($params = []): array
   {
     try {
@@ -98,7 +113,7 @@ class Comprobante extends ExecQuery
       die($e->getMessage());
     }
   }
-  
+
   public function obtenerComprobantePorTipoDoc($params = []): array
   {
     try {
@@ -125,7 +140,7 @@ class Comprobante extends ExecQuery
       die($e->getMessage());
     }
   }
-  
+
   /*   public function obtenerFactura($params = []): array
   {
     try {
@@ -180,7 +195,7 @@ class Comprobante extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_comprobante(@idcomprobante,?,?,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_comprobante(@idcomprobante,?,?,?,?,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['iddetallepresentacion'],
@@ -193,6 +208,7 @@ class Comprobante extends ExecQuery
           $params['tipomoneda'],
           $params['monto'],
           $params['tieneigv'],
+          $params['noperacion'],
         )
       );
 

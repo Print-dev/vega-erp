@@ -65,7 +65,7 @@ function generarNuevoNCotizacion(ultimaCotizacion) {
     return `0001-${añoActual}`;
   }
 
-  const ncotizacionAnterior = ultimaCotizacion.ncotizacion; // "0002-2025"
+  const ncotizacionAnterior = ultimaCotizacion.ncotizacion || ultimaCotizacion.correlativo; // "0002-2025" || "2025-0000000001"
   const [numeroAnterior, añoAnterior] = ncotizacionAnterior.split("-");
 
   let nuevoNumero;
@@ -78,6 +78,33 @@ function generarNuevoNCotizacion(ultimaCotizacion) {
   }
 
   return `${nuevoNumero}-${añoActual}`;
+}
+
+function generarCorrelativoNotaVenta(ultimaCorrelativo, añoCorrelativo) {
+  const añoActual = new Date().getFullYear(); // Obtiene el año actual
+
+  if (!ultimaCorrelativo) {
+    // Si no hay registros previos, iniciamos con "0001"
+    return `0001-${añoActual}`;
+  }
+
+/*   const ncorrelativoAnterior = ultimaCorrelativo.correlativo; // "0002-2025" || "2025-0000000001"
+  console.log("ncorrelativoAnterior", ncorrelativoAnterior); */
+/*   const [numeroAnterior, añoAnterior] = ncorrelativoAnterior.split("-");
+ */
+  let nuevoNumero;
+  if (parseInt(añoCorrelativo) === añoActual) {
+    // Mismo año, incrementar el número
+    nuevoNumero = String(parseInt(ultimaCorrelativo) + 1).padStart(8, "0");
+  } else {
+    // Nuevo año, reiniciar a "0001"
+    nuevoNumero = "0001";
+  }
+
+  return {
+    nuevoCorrelativo: nuevoNumero,
+    nserie: añoCorrelativo,
+  }
 }
 
 function calcularFechaVencimiento(fechaCreacion, vigenciaDias) {

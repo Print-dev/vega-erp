@@ -206,6 +206,19 @@ class DetalleEvento extends ExecQuery
     }
   }
 
+  public function obtenerDetallesPresentacionPorModalidad($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_detalles_presentacion_por_modalidad (?)");
+      $cmd->execute(array(
+        $params['modalidad']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function obtenerEventos($params = []): array
   {
     try {

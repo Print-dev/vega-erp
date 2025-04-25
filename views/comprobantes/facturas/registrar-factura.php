@@ -138,7 +138,8 @@
                                     <td class="border-cell">
                                         <select name="tipopago" id="tipopago" class="form-select">
                                             <option value="1">Contado</option>
-                                            <option value="2">Crédito</option>
+                                            <option value="3">Depósito</option>
+                                            <!-- <option value="2">Crédito</option> -->
                                         </select>
                                     </td>
                                 </tr>
@@ -148,8 +149,11 @@
                                 <!-- Botón Agregar Cuota -->
                                 <tr id="contenedor-btn-agregar-cuota" hidden>
                                     <td colspan="2" class="no-border"></td>
-                                    <td colspan="2" class="no-border">
+                                    <!-- <td colspan="2" class="no-border">
                                         <button class="btn btn-primary w-100" id="btnAgregarCuota">Agregar Cuota</button>
+                                    </td> -->
+                                    <td colspan="2" class="no-border">
+                                        <input type="text" class="form-control" id="noperacion" name="noperacion" placeholder="N° de operacion" required>
                                     </td>
                                 </tr>
 

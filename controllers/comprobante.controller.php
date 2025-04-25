@@ -45,6 +45,15 @@ if (isset($_GET['operation'])) {
             echo json_encode($comprobante->filtrarFacturas($cleanData));
             break;
 
+        case 'filtrarNotasDeVenta':
+            $cleanData = [
+                'fechaemision' => $_GET['fechaemision'] === "" ? null : $comprobante->limpiarCadena($_GET['fechaemision']),
+                'horaemision' => $_GET['horaemision'] === "" ? null : $comprobante->limpiarCadena($_GET['horaemision']),
+                'numerocomprobante' => $_GET['numerocomprobante'] === "" ? null : $comprobante->limpiarCadena($_GET['numerocomprobante'])
+            ];
+            echo json_encode($comprobante->filtrarNotasDeVenta($cleanData));
+            break;
+
         case 'filtrarCuotas':
             $cleanData = [
                 'fecha' => $_GET['fecha'] === "" ? null : $comprobante->limpiarCadena($_GET['fecha']),
@@ -117,6 +126,7 @@ if (isset($_POST['operation'])) {
                 'tipomoneda'   => $comprobante->limpiarCadena($_POST['tipomoneda']),
                 'monto'   => $comprobante->limpiarCadena($_POST['monto']),
                 'tieneigv'   => $comprobante->limpiarCadena($_POST['tieneigv']),
+                'noperacion'   => $comprobante->limpiarCadena($_POST['noperacion']) ? $comprobante->limpiarCadena($_POST['noperacion']) : null,
             ];
 
             $respuesta = ['idcomprobante' => -1];

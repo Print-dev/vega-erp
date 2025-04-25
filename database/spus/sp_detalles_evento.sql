@@ -183,6 +183,49 @@ BEGIN
 
 END //
 
+drop procedure if exists sp_detalles_presentacion_por_modalidad;
+DELIMITER //
+CREATE PROCEDURE `sp_detalles_presentacion_por_modalidad`(
+	IN _modalidad INT
+)
+BEGIN
+    SELECT 
+        DP.iddetalle_presentacion, 
+        CLI.ndocumento,
+        DP.ncotizacion,
+        USU.idusuario,
+        USU.nom_usuario, 
+        CLI.razonsocial, 
+        DP.tipo_evento, 
+        DP.modalidad, 
+        DP.fecha_presentacion, 
+        DP.establecimiento,
+        CO.idcontrato, 
+        DP.validez,
+        DP.reserva,
+        DP.pagado50,
+        DP.created_at,
+        RE.vigencia as vigencia_reserva,
+        RE.fechacreada as fechacreada_reserva,
+        CO.idcontrato,
+		DP.estado,
+        CON.estado as estado_convenio,
+        CO.estado as estado_contrato,
+        DP.tienecaja,
+        DEDP.departamento, PRODP.provincia, DISDP.distrito
+    FROM detalles_presentacion DP
+    LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+    LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
+    LEFT JOIN contratos CO ON CO.iddetalle_presentacion = DP.iddetalle_presentacion
+    LEFT JOIN convenios CON ON CON.iddetalle_presentacion = DP.iddetalle_presentacion
+    LEFT JOIN pagos_contrato PC ON PC.idcontrato = CO.idcontrato
+    LEFT JOIN reservas RE ON RE.idpagocontrato = PC.idpagocontrato
+    LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito
+    LEFT JOIN provincias PRODP ON PRODP.idprovincia = DISDP.idprovincia
+    LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
+    WHERE DP.modalidad = 2
+    GROUP BY DP.iddetalle_presentacion, CO.idcontrato;
+END //
 
 -- CALL sp_obtener_detalles_evento (null, null, NULL, null, "2025-03-08")
 

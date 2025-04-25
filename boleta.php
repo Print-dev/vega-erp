@@ -39,7 +39,7 @@ function generarBoleta($data)
     $invoice = (new Invoice())
         ->setUblVersion('2.1')
         ->setTipoOperacion('0101') // Catalog. 51
-        ->setTipoDoc('03')
+        ->setTipoDoc('03') // BOLETA
         ->setSerie($data['serie'])
         ->setCorrelativo($data['correlativo'])
         ->setFechaEmision(new DateTime('now', new DateTimeZone('America/Lima')))

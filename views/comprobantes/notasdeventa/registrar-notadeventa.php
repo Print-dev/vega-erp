@@ -4,13 +4,13 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header border-0 d-flex justify-content-between align-items-center">
-                <h2>Registrar Boleta</h2>
+                <h2>Registrar nota de venta</h2>
 
-                <a href="<?= $hostOnlyHeader ?>/views/comprobantes/boletas/listar-boletas" class="btn btn-outline-primary btn-sm ms-auto m-0" type="button"><i class="fa-solid fa-circle-left"></i> Regresar</a>
+                <a href="<?= $hostOnlyHeader ?>/views/comprobantes/notasdeventa/listar-notasdeventa" class="btn btn-outline-primary btn-sm ms-auto m-0" type="button"><i class="fa-solid fa-circle-left"></i> Regresar</a>
             </div>
             <div class="card-body ">
                 <div class="row g-3">
-                    <div class="col-md-3">
+                    <!-- <div class="col-md-3">
                         <div class="form-floating">
                             <input type="text" id="nserie" name="nserie"
                                 class="form-control" readonly value="F001">
@@ -23,7 +23,7 @@
                                 class="form-control" readonly value="00000123">
                             <label for="correlativo" class="form-label">Correlativo</label>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-md-3">
                         <div class="form-floating">
                             <select name="tipomoneda" id="tipomoneda" class="form-select">
@@ -49,7 +49,7 @@
                             <label for="cliente" class="form-label">Cliente</label>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="form-floating">
                             <select name="sucursal" id="sucursal" class="form-select">
                                 <option value="" selected>Selecciona</option>
@@ -116,39 +116,43 @@
 
                             </tbody>
                             <tfoot>
-                                <tr>
+                                <!-- <tr>
                                     <td colspan="2" class="no-border"></td>
                                     <td><strong>Operación Gravada</strong></td>
                                     <td class="border-cell" id="txtOperacionGravada">S/ 0.00</td>
-                                </tr>
-                                <tr>
+                                </tr> -->
+                                <!-- <tr>
                                     <td colspan="2" class="no-border"></td>
                                     <td><strong>IGV</strong></td>
                                     <td class="border-cell" id="txtIGV">S/ 0.00</td>
-                                </tr>
+                                </tr> -->
                                 <tr>
                                     <td colspan="2" class="no-border"></td>
                                     <td><strong>Importe Total</strong></td>
                                     <td class="border-cell" id="txtImporteTotal">S/ 0.00</td>
                                 </tr>
-                                <!-- <tr>
+                                <tr>
                                     <td colspan="2" class="no-border"></td>
                                     <td><strong>Forma de Pago</strong></td>
                                     <td class="border-cell">
                                         <select name="tipopago" id="tipopago" class="form-select">
                                             <option value="1">Contado</option>
-                                            <option value="2">Crédito</option>
+                                            <!-- <option value="2">Crédito</option> -->
+                                            <option value="3">Deposito</option>
                                         </select>
                                     </td>
-                                </tr> -->
+                                </tr>
                                 <!-- Cuotas se insertan después de esta fila -->
                                 <tr class="contenedor-cuotas"></tr>
 
                                 <!-- Botón Agregar Cuota -->
                                 <tr id="contenedor-btn-agregar-cuota" hidden>
                                     <td colspan="2" class="no-border"></td>
-                                    <td colspan="2" class="no-border">
+                                    <!-- <td colspan="2" class="no-border">
                                         <button class="btn btn-primary w-100" id="btnAgregarCuota">Agregar Cuota</button>
+                                    </td> -->
+                                    <td colspan="2" class="no-border">
+                                        <input type="text" class="form-control" id="noperacion" name="noperacion" placeholder="N° de operacion" required>
                                     </td>
                                 </tr>
 
@@ -184,7 +188,7 @@
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
-<script src="<?= $hostOnlyHeader ?> /js/boletas/registrar-boleta.js"></script>
+<script src="<?= $hostOnlyHeader ?> /js/notasdeventa/registrar-notadeventa.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/n2words@1.21.0/dist/n2words.min.js"></script>
 
 </body>

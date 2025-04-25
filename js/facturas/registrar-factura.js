@@ -149,12 +149,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function dataFilters() {
         const params = new URLSearchParams();
-        params.append("operation", "filtrarAtenciones");
-        params.append("ncotizacion", '');
-        params.append("ndocumento", '');
-        params.append("nomusuario", "")
-        params.append("establecimiento", "")
-        params.append("fechapresentacion", "")
+        params.append("operation", "obtenerDetallesPresentacionPorModalidad");
+        params.append("modalidad", 2);
 
         const data = await getDatos(`${host}detalleevento.controller.php`, params);
         console.log("data -> ", data);
@@ -248,7 +244,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return rcomprobante;
     }
 
-    async function registrarComprobante(iddetallepresentacion,idsucursal, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda, monto, tieneigv) {
+    async function registrarComprobante(iddetallepresentacion, idsucursal, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda, monto, tieneigv, noperacion) {
         const comprobante = new FormData();
         comprobante.append("operation", "registrarComprobante");
         comprobante.append("iddetallepresentacion", iddetallepresentacion);
@@ -261,6 +257,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         comprobante.append("tipomoneda", tipomoneda);
         comprobante.append("monto", monto);
         comprobante.append("tieneigv", tieneigv);
+        comprobante.append("noperacion", noperacion ? noperacion : '');
 
         const fcomprobante = await fetch(`${host}comprobante.controller.php`, {
             method: "POST",
@@ -367,6 +364,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else if (dp[0]?.igv == 0) {
             totalConIgv = totalGravado
             igvTotal = 0;
+            
+            showToast("Los contratos sin IGV deben emitirse mediante una nota de venta", "INFO")
+            limpiarContenidoDetalleProducto()
+            return
         }
 
         console.log("totalConIgv antes de pintar -> ", totalConIgv);
@@ -427,7 +428,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     })
 
-    $q("#btnDeseleccionarEvento").addEventListener("click", async () => {
+    function limpiarContenidoDetalleProducto() {
         $q("#tablaProductos tbody").innerHTML = ''
         eventosSelect.disabled = false
         eventosSelect.value = ''
@@ -439,6 +440,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         igvTotal = 0
         totalConIgv = 0
         detalle = []
+    }
+
+
+    $q("#btnDeseleccionarEvento").addEventListener("click", async () => {
+        limpiarContenidoDetalleProducto()
     })
 
     $q("#sucursal").addEventListener("change", async (e) => {
@@ -548,7 +554,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
             else if (rptFactura?.success == true) {
                 showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
-                const nuevoComprobante = await registrarComprobante(iddp, idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, 'F001', '00000001', $q("#tipomoneda").value, totalConIgv, igvObtenido)
+                const nuevoComprobante = await registrarComprobante(iddp, idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, 'F001', '00000001', $q("#tipomoneda").value, totalConIgv, igvObtenido, $q("#noperacion").value)
                 console.log("nuevo comprobante -> ", nuevoComprobante);
                 console.log("detalle > ", detalle);
                 if (nuevoComprobante?.idcomprobante) {
@@ -605,7 +611,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
             else if (rptFactura?.success == true) {
                 showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
-                const nuevoComprobante = await registrarComprobante(iddp,idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, nuevoCorrelativo.serie, nuevoCorrelativo.nuevoCorrelativo, $q("#tipomoneda").value, totalConIgv, igvObtenido)
+                const nuevoComprobante = await registrarComprobante(iddp, idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, nuevoCorrelativo.serie, nuevoCorrelativo.nuevoCorrelativo, $q("#tipomoneda").value, totalConIgv, igvObtenido, $q("#noperacion").value)
                 console.log("nuevo comprobante -> ", nuevoComprobante);
                 console.log("detalle > ", detalle);
                 if (nuevoComprobante?.idcomprobante) {

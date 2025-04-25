@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     let cuotas = []
     let nuevaCuota
     let igvObtenido
+    let iddp
+
 
     let costoDificultad
     let provinciaDestino
@@ -142,12 +144,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function dataFilters() {
         const params = new URLSearchParams();
-        params.append("operation", "filtrarAtenciones");
-        params.append("ncotizacion", '');
-        params.append("ndocumento", '');
-        params.append("nomusuario", "")
-        params.append("establecimiento", "")
-        params.append("fechapresentacion", "")
+        params.append("operation", "obtenerDetallesPresentacionPorModalidad");
+        params.append("modalidad", 2);
 
         const data = await getDatos(`${host}detalleevento.controller.php`, params);
         console.log("data -> ", data);
@@ -203,49 +201,52 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // ************************************************** REGISTRO DE DATA *******************************************************
 
-    async function emitirFactura(direccion_emisor, departamento, provincia, distrito, ubigeo, ndocumento, razon_social_cliente, serie, correlativo, monto_gravado, igv, total, detalle, monto_letras, tipo_pago, cuotas, tieneigv) {
-        const comprobante = new FormData();
-        comprobante.append("operation", "emitirFactura");
-        // DATOS DE EMPRESA
-        comprobante.append("ruc_emisor", rucEmpresa); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
-        comprobante.append("razon_social_emisor", razonsocialEmpresa); // id usuario envia la notificacion
-        comprobante.append("direccion_emisor", direccion_emisor);
-        comprobante.append("departamento", departamento);
-        comprobante.append("provincia", provincia);
-        comprobante.append("distrito", distrito);
-        comprobante.append("ubigeo", ubigeo);
-        //DATOS DE CLIENTE
-        comprobante.append("ndocumento", ndocumento);
-        comprobante.append("razon_social_cliente", razon_social_cliente);
+    /*  async function emitirFactura(direccion_emisor, departamento, provincia, distrito, ubigeo, ndocumento, razon_social_cliente, serie, correlativo, monto_gravado, igv, total, detalle, monto_letras, tipo_pago, cuotas, tieneigv) {
+         const comprobante = new FormData();
+         comprobante.append("operation", "emitirFactura");
+         // DATOS DE EMPRESA
+         comprobante.append("ruc_emisor", rucEmpresa); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
+         comprobante.append("razon_social_emisor", razonsocialEmpresa); // id usuario envia la notificacion
+         comprobante.append("direccion_emisor", direccion_emisor);
+         comprobante.append("departamento", departamento);
+         comprobante.append("provincia", provincia);
+         comprobante.append("distrito", distrito);
+         comprobante.append("ubigeo", ubigeo);
+         //DATOS DE CLIENTE
+         comprobante.append("ndocumento", ndocumento);
+         comprobante.append("razon_social_cliente", razon_social_cliente);
+ 
+         // DATOS DE Invoice y PRODUCTOS (EVENTO)
+         comprobante.append("serie", serie);
+         comprobante.append("correlativo", correlativo); //generarCorrelativo()
+         comprobante.append("moneda", $q("#tipomoneda").value);
+         comprobante.append("monto_gravado", monto_gravado); // calculado 
+         comprobante.append("igv", igv) // calculado;
+         comprobante.append("total", total);
+         comprobante.append("detalle", JSON.stringify(detalle));
+         comprobante.append("monto_letras", monto_letras);
+         comprobante.append("tipo_pago", tipo_pago);
+         comprobante.append("cuotas", JSON.stringify(cuotas));
+         comprobante.append("tieneigv", tieneigv);
+         //comprobante.append("totalMontoCuotas", totalMontoCuotas);
+ 
+         const fcomprobante = await fetch(`${host}comprobante.controller.php`, {
+             method: "POST",
+             body: comprobante,
+         });
+         const rcomprobante = await fcomprobante.json();
+         //console.log("rivatico . ", rcomprobante)
+         return rcomprobante;
+     } */
 
-        // DATOS DE Invoice y PRODUCTOS (EVENTO)
-        comprobante.append("serie", serie);
-        comprobante.append("correlativo", correlativo); //generarCorrelativo()
-        comprobante.append("moneda", $q("#tipomoneda").value);
-        comprobante.append("monto_gravado", monto_gravado); // calculado 
-        comprobante.append("igv", igv) // calculado;
-        comprobante.append("total", total);
-        comprobante.append("detalle", JSON.stringify(detalle));
-        comprobante.append("monto_letras", monto_letras);
-        comprobante.append("tipo_pago", tipo_pago);
-        comprobante.append("cuotas", JSON.stringify(cuotas));
-        comprobante.append("tieneigv", tieneigv);
-        //comprobante.append("totalMontoCuotas", totalMontoCuotas);
 
-        const fcomprobante = await fetch(`${host}comprobante.controller.php`, {
-            method: "POST",
-            body: comprobante,
-        });
-        const rcomprobante = await fcomprobante.json();
-        //console.log("rivatico . ", rcomprobante)
-        return rcomprobante;
-    }
 
-    async function registrarComprobante(idsucursal, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda, monto, tieneigv) {
+    async function registrarComprobante(iddetallepresentacion, idsucursal, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda, monto, tieneigv, noperacion) {
         const comprobante = new FormData();
         comprobante.append("operation", "registrarComprobante");
-        comprobante.append("idsucursal", idsucursal); // id usuario recibe la notificacion , ahorita es uno pero luego se cambiara a que sean elegibles
-        comprobante.append("idcliente", idcliente); // id usuario envia la notificacion
+        comprobante.append("iddetallepresentacion", iddetallepresentacion);
+        comprobante.append("idsucursal", idsucursal);
+        comprobante.append("idcliente", idcliente);
         comprobante.append("idtipodoc", idtipodoc);
         comprobante.append("tipopago", tipopago);
         comprobante.append("nserie", nserie);
@@ -253,6 +254,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         comprobante.append("tipomoneda", tipomoneda);
         comprobante.append("monto", monto);
         comprobante.append("tieneigv", tieneigv);
+        comprobante.append("noperacion", noperacion ? noperacion : '');
 
         const fcomprobante = await fetch(`${host}comprobante.controller.php`, {
             method: "POST",
@@ -310,7 +312,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             `
 
         eventosSelect.disabled = true
-        const iddp = e.target.value
+        iddp = e.target.value
         const dp = await obtenerDPporId(iddp)
         await renderizarUbigeoPresentacion(iddp)
         const tarifaArtista = await obtenerTarifaArtistaPorProvincia(dp[0]?.idprovincia, dp[0]?.idusuario)
@@ -325,7 +327,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             </tr>
         `
 
-
         // CALCULOS
         let precioTarifa = tarifaArtista[0]?.precio
         let precioViaje = costoDificultad
@@ -336,17 +337,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // Calcular el total con IGV
         if (dp[0]?.igv == 1) {
-            igvTotal = totalGravado * 0.18; // ESTO SOLO SERA EL TOTAL DE AMBOS IGV PERO ESTA MAS RESUMIDO
-            totalConIgv = totalGravado + igvTotal;
+            /* igvTotal = totalGravado * 0.18; // ESTO SOLO SERA EL TOTAL DE AMBOS IGV PERO ESTA MAS RESUMIDO
+totalConIgv = totalGravado + igvTotal; */
+            /* totalConIgv = totalGravado
+            igvTotal = 0; */
+
+            showToast("Los contratos con IGV deben emitirse mediante una factura", "INFO")
+            limpiarContenidoDetalleProducto()
             // Calcular el IGV (18%)
         } else if (dp[0]?.igv == 0) {
             totalConIgv = totalGravado
             igvTotal = 0;
+            /*             alert("NO TIENE IGV")
+                        console.log("NO TIENE UIGV!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        showToast("Los contratos sin IGV deben emitirse mediante una nota de venta", "INFO")
+                        limpiarContenidoDetalleProducto() */
         }
 
         console.log("totalConIgv antes de pintar -> ", totalConIgv);
-        $q("#txtOperacionGravada").innerHTML = `S/ ${totalGravado.toFixed(2)}`
-        $q("#txtIGV").innerHTML = `S/ ${igvTotal == 0 ? 'No incluye' : igvTotal.toFixed(2)}`
+        //$q("#txtOperacionGravada").innerHTML = `S/ ${totalGravado.toFixed(2)}`
+        //$q("#txtIGV").innerHTML = `S/ ${igvTotal == 0 ? 'No incluye' : igvTotal.toFixed(2)}`
         $q("#txtImporteTotal").innerHTML = `S/ ${totalConIgv.toFixed(2)}`
 
         $q("#importeletra").value = n2words(totalConIgv, {
@@ -402,7 +412,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     })
 
-    $q("#btnDeseleccionarEvento").addEventListener("click", async () => {
+    function limpiarContenidoDetalleProducto() {
         $q("#tablaProductos tbody").innerHTML = ''
         eventosSelect.disabled = false
         eventosSelect.value = ''
@@ -414,6 +424,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         igvTotal = 0
         totalConIgv = 0
         detalle = []
+    }
+
+    $q("#btnDeseleccionarEvento").addEventListener("click", async () => {
+        limpiarContenidoDetalleProducto()
     })
 
     $q("#sucursal").addEventListener("change", async (e) => {
@@ -448,161 +462,117 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         let cuotasFormateadas = []
         //totalMontoCuotasCalculado = 0
-        if ($q("#tipopago").value == 2) {
-            cuotasFormateadas = cuotas.map(({ inputMonto, inputFecha }) => {
-                return {
-                    monto: inputMonto.value,
-                    fecha: inputFecha.value
-                };
-            });
-
-            // Validación: si algún campo está vacío
-            const algunaIncompleta = cuotasFormateadas.some(cuota => !cuota.monto || !cuota.fecha);
-
-            if (algunaIncompleta) {
-                showToast("Por favor, completa todos los campos de monto y fecha en las cuotas.", "ERROR");
-                return;
-            }
-
-            if (cuotasFormateadas.length == 0) {
-                showToast("Por favor, agregue cuotas.", "ERROR");
-                return;
-            }
-
-            /* totalMontoCuotasCalculado = cuotasFormateadas.reduce((total, cuota) => {
-                return total + parseFloat(cuota.monto || 0);
-            }, 0); */
-
-            //console.log("totalMontoCuotas _> ", totalMontoCuotasCalculado);
-            // Si todo está bien
-            const sumaCuotas = cuotasFormateadas.reduce((acum, cuota) => {
-                return acum + parseFloat(cuota.monto || 0);
-            }, 0);
-
-            // Verificar igualdad con totalConIgv (usás ese como total final, ¿no?)
-            if (parseFloat(sumaCuotas.toFixed(2)) !== parseFloat(totalConIgv.toFixed(2))) {
-                alert(`La suma de las cuotas (${sumaCuotas.toFixed(2)}) no coincide con el total a pagar (${totalConIgv.toFixed(2)}).`);
-                return;
-            }
-
-            console.log("cuotas -> ", cuotasFormateadas);
-        }
 
 
-        const serie = await obtenerSeriePorTipoDoc('01') // cambiarlo luego a boleta en el otro archivo papra boletas
+
+        const serie = await obtenerSeriePorTipoDoc('02') // cambiarlo luego a boleta en el otro archivo papra boletas
         console.log("serie -> ", serie);
         if (serie.length == 0) {
-            //generarCorrelativo('01', '00000000')
-            console.log("detalles array-> ", detalle);
-            console.log("tiene igv -> ", igvObtenido);
+            /* showToast("No hay series disponibles para el tipo de documento seleccionado.", "ERROR")
+            return */
+            const nuevoNNotaVenta = generarCorrelativoNotaVenta() // esto servira para generar el nuevo correlativo de la nota de venta
+            console.log("Nuevo número de cotización ->", nuevoNNotaVenta);
 
-            const rptFactura = await emitirFactura(
-                direccionEmisorObtenido,
-                departamentoEmisorObtenido,
-                provinciaEmisorObtenido,
-                distritoEmisorObtenido,
-                $q("#ubigeo").value,
-                ndocumentoClienteObtenido,
-                razonsocialClienteObtenido,
-                'F001',
-                '00000001',
-                totalGravado,
-                igvTotal,
-                totalConIgv,
-                detalle,
-                montoLetra,
-                $q("#tipopago").value,
-                cuotasFormateadas ? cuotasFormateadas : [],
-                igvObtenido
-                //totalMontoCuotasCalculado
-            )
-            console.log("rpt factura -> ", rptFactura);
-            if (rptFactura?.success == false) {
-                showToast(rptFactura.error, "ERROR")
-                return
+            const nuevoComprobante = await registrarComprobante(iddp, idsucursalObtenido, idclienteObtenido, '02', $q("#tipopago").value, '2025', '00000001', $q("#tipomoneda").value, totalConIgv, igvObtenido, $q("#noperacion").value)
+            console.log("nuevo comprobante -> ", nuevoComprobante);
+            console.log("detalle > ", detalle);
+            if (nuevoComprobante?.idcomprobante) {
+                detalle.forEach(async item => {
+                    const itemRegistrado = await registrarItemComprobante(nuevoComprobante?.idcomprobante, item?.descripcion, item?.valorunitario, item?.preciounitario)
+                    console.log("item registrado -> ", itemRegistrado);
+
+                });
+
             }
-            else if (rptFactura?.success == true) {
-                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
-                const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, 'F001', '00000001', $q("#tipomoneda").value, totalConIgv, igvObtenido)
-                console.log("nuevo comprobante -> ", nuevoComprobante);
-                console.log("detalle > ", detalle);
-                if (nuevoComprobante?.idcomprobante) {
-                    detalle.forEach(async item => {
-                        const itemRegistrado = await registrarItemComprobante(nuevoComprobante?.idcomprobante, item?.descripcion, item?.valorunitario, item?.preciounitario)
-                        console.log("item registrado -> ", itemRegistrado);
-
-                    });
-                    const detalleRegistado = await registrarDetalleComprobante(nuevoComprobante?.idcomprobante, rptFactura?.estado, rptFactura?.descripcion)
-                    console.log("detalle registdaod -> ", detalleRegistado);
-
-                    if ($q("#tipopago").value == 2) {
-                        cuotasFormateadas.forEach(async cuota => {
-                            const cuotaRegistrada = await registrarCuotaFactura(nuevoComprobante?.idcomprobante, cuota.fecha, cuota.monto)
-                            console.log("cuota registrada -> ", cuotaRegistrada);
-                        })
-                    }
-                }
-                return
-            }
-        }
-        else {
-            const nuevoCorrelativo = generarCorrelativo(serie.at(-1).nserie, serie.at(-1).correlativo)
+            return
+        } else {
+            console.log("ultima posicion de serie .> ", serie.at(-1));
+            const nuevoCorrelativo = generarCorrelativoNotaVenta(serie.at(-1).correlativo, serie.at(-1).nserie)
             console.log("nuevo correlativo -> ", nuevoCorrelativo);
-            console.log("Tipo de pago:", $q("#tipopago").value);
-            console.log("Cuotas formateadas:", cuotasFormateadas);
-            console.log("detalles array-> ", detalle);
-            console.log("igvTotal -> ", igvTotal);
-            console.log("tiene igv -> ", igvObtenido);
-            const rptFactura = await emitirFactura(
-                direccionEmisorObtenido,
-                departamentoEmisorObtenido,
-                provinciaEmisorObtenido,
-                distritoEmisorObtenido,
-                $q("#ubigeo").value,
-                ndocumentoClienteObtenido,
-                razonsocialClienteObtenido,
-                nuevoCorrelativo.serie,
-                nuevoCorrelativo.nuevoCorrelativo,
-                totalGravado,
-                igvTotal,
-                totalConIgv,
-                detalle,
-                montoLetra,
-                $q("#tipopago").value,
-                cuotasFormateadas ? cuotasFormateadas : [],
-                igvObtenido
-                //totalMontoCuotasCalculado
-            )
-            console.log("rpt factura -> ", rptFactura);
-            if (rptFactura?.success == false) {
-                showToast(rptFactura.error, "ERROR")
-                return
-            }
-            else if (rptFactura?.success == true) {
-                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
-                const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, nuevoCorrelativo.serie, nuevoCorrelativo.nuevoCorrelativo, $q("#tipomoneda").value, totalConIgv, igvObtenido)
-                console.log("nuevo comprobante -> ", nuevoComprobante);
-                console.log("detalle > ", detalle);
-                if (nuevoComprobante?.idcomprobante) {
-                    detalle.forEach(async item => {
-                        const itemRegistrado = await registrarItemComprobante(nuevoComprobante?.idcomprobante, item?.descripcion, item?.valorunitario, item?.preciounitario)
-                        console.log("item registrado -> ", itemRegistrado);
+            console.log("ya tiene mas e 1 serie");
+            console.log("noperacion ->", $q("#noperacion").value);
+            const nuevoComprobante = await registrarComprobante(iddp, idsucursalObtenido, idclienteObtenido, '02', $q("#tipopago").value, nuevoCorrelativo.nserie, nuevoCorrelativo.nuevoCorrelativo, $q("#tipomoneda").value, totalConIgv, igvObtenido, $q("#noperacion").value)
+            console.log("nuevo comprobante -> ", nuevoComprobante);
+            console.log("detalle > ", detalle);
+            if (nuevoComprobante?.idcomprobante) {
+                detalle.forEach(async item => {
+                    const itemRegistrado = await registrarItemComprobante(nuevoComprobante?.idcomprobante, item?.descripcion, item?.valorunitario, item?.preciounitario)
+                    console.log("item registrado -> ", itemRegistrado);
 
-                    });
-                    const detalleRegistado = await registrarDetalleComprobante(nuevoComprobante?.idcomprobante, rptFactura?.estado, rptFactura?.descripcion)
-                    console.log("detalle registdaod -> ", detalleRegistado);
+                });
 
-                    if ($q("#tipopago").value == 2) {
-                        cuotasFormateadas.forEach(async cuota => {
-                            const cuotaRegistrada = await registrarCuotaFactura(nuevoComprobante?.idcomprobante, cuota.fecha, cuota.monto)
-                            console.log("cuota registrada -> ", cuotaRegistrada);
-                        })
-                    }
-                }
-                return
             }
         }
+        /*         if (serie.length == 0) {
+                    //generarCorrelativo('01', '00000000')
+                    console.log("detalles array-> ", detalle);
+                    console.log("tiene igv -> ", igvObtenido);
+        
+        
+                        showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
+                        const nuevoComprobante = await registrarComprobante(iddp,idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, 'F001', '00000001', $q("#tipomoneda").value, totalConIgv, igvObtenido)
+                        console.log("nuevo comprobante -> ", nuevoComprobante);
+                        console.log("detalle > ", detalle);
+                        if (nuevoComprobante?.idcomprobante) {
+                            detalle.forEach(async item => {
+                                const itemRegistrado = await registrarItemComprobante(nuevoComprobante?.idcomprobante, item?.descripcion, item?.valorunitario, item?.preciounitario)
+                                console.log("item registrado -> ", itemRegistrado);
+        
+                            });
+                            
+                        }
+                        return
+                    
+                }
+                else {
+                    const nuevoCorrelativo = generarCorrelativo(serie.at(-1).nserie, serie.at(-1).correlativo)
+                    console.log("nuevo correlativo -> ", nuevoCorrelativo);
+                    console.log("Tipo de pago:", $q("#tipopago").value);
+                    console.log("Cuotas formateadas:", cuotasFormateadas);
+                    console.log("detalles array-> ", detalle);
+                    console.log("igvTotal -> ", igvTotal);
+                    console.log("tiene igv -> ", igvObtenido);
+                    
+                        //showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
+                        const nuevoComprobante = await registrarComprobante(idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, nuevoCorrelativo.serie, nuevoCorrelativo.nuevoCorrelativo, $q("#tipomoneda").value, totalConIgv, igvObtenido)
+                        console.log("nuevo comprobante -> ", nuevoComprobante);
+                        console.log("detalle > ", detalle);
+                        if (nuevoComprobante?.idcomprobante) {
+                            detalle.forEach(async item => {
+                                const itemRegistrado = await registrarItemComprobante(nuevoComprobante?.idcomprobante, item?.descripcion, item?.valorunitario, item?.preciounitario)
+                                console.log("item registrado -> ", itemRegistrado);
+        
+                            });
+                            const detalleRegistado = await registrarDetalleComprobante(nuevoComprobante?.idcomprobante, rptFactura?.estado, rptFactura?.descripcion)
+                            console.log("detalle registdaod -> ", detalleRegistado);
+        
+                            if ($q("#tipopago").value == 2) {
+                                cuotasFormateadas.forEach(async cuota => {
+                                    const cuotaRegistrada = await registrarCuotaFactura(nuevoComprobante?.idcomprobante, cuota.fecha, cuota.monto)
+                                    console.log("cuota registrada -> ", cuotaRegistrada);
+                                })
+                            }
+                        }
+                        return
+                    
+                } */
 
+    })
+
+    $q("#tipopago").addEventListener("change", async (e) => {
+        const tipo = e.target.value
+        console.log(tipo);
+        if (parseInt(tipo) == 3) {
+            $q("#contenedor-btn-agregar-cuota").hidden = false
+            $q("#noperacion").value = ''
+        } else if (parseInt(tipo) == 1) {
+            $q("#contenedor-btn-agregar-cuota").hidden = true
+            $q("#noperacion").value = ''
+            console.log("cambiando .zzzz");
+        }
+        document.querySelectorAll(".cuota-dinamica").forEach(tr => tr.remove());
+        cuotas = [];
+        contadorCuotas = 1;
     })
 })
 
