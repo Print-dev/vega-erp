@@ -380,7 +380,7 @@ CREATE TABLE tipotarea (
     tipotarea varchar(30) not null
 ) engine = innodb;
  
-ALTER TABLE agenda_editores ADD COLUMN altoketicket INT NULL DEFAULT 1 AFTER estado;
+-- ALTER TABLE agenda_editores ADD COLUMN altoketicket INT NULL DEFAULT 1 AFTER estado;
 CREATE TABLE agenda_editores (
 	idagendaeditor	int auto_increment primary key,
     idagendaedicion int not null,

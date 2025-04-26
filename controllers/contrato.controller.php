@@ -23,8 +23,16 @@ if (isset($_GET['operation'])) {
     case 'obtenerReservaPorPagoContrato':
       echo json_encode($contrato->obtenerReservaPorPagoContrato(['idpagocontrato' => $_GET['idpagocontrato']]));
       break;
+
+    case 'obtenerPagosContrato':
+      $cleanData = [
+        'idcliente' => $_GET['idcliente'] === "" ? null : $detalleevento->limpiarCadena($_GET['idcliente']),
+      ];
+      echo json_encode($contrato->obtenerPagosContrato($cleanData));
+      break;
   }
 }
+
 if (isset($_POST['operation'])) {
   switch ($_POST['operation']) {
     case 'registrarContrato':

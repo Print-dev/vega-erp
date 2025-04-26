@@ -60,7 +60,8 @@ $accesos = [
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-ingresos', 'subruta' => 'reparticion', 'texto' => '',  'visible' => false, 'icono' => ''],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-egresos', 'subruta' => 'reparticion', 'texto' => '', 'visible' => false, 'icono' => ''],
 
-    ['modulo' => 'contabilidad', 'ruta' => 'listar-cuotas', 'subruta' => 'cuotas', 'texto' => 'Cuotas', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    //['modulo' => 'contabilidad', 'ruta' => 'listar-cuotas', 'subruta' => 'cuotas', 'texto' => 'Cuotas', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'contabilidad', 'ruta' => 'listar-pagos', 'subruta' => 'pagos', 'texto' => 'Pagos', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
 
     /* ['modulo' => 'contabilidad', 'ruta' => 'listar-ingresos', 'subruta' => 'ingresos', 'texto' => 'Ingresos', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-ingreso', 'subruta' => 'ingresos', 'visible' => false], */

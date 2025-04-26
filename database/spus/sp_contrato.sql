@@ -151,3 +151,41 @@ BEGIN
     updated_at = now()
     WHERE idcontrato = _idcontrato;
 END $$
+
+
+DROP PROCEDURE IF EXISTS `sp_obtener_pagos_contrato`;
+DELIMITER $$
+
+CREATE PROCEDURE `sp_obtener_pagos_contrato`(
+    IN _idcliente INT
+)
+BEGIN
+    SELECT 		
+		PC.idpagocontrato, 
+        DP.establecimiento, 
+        USU.nom_usuario, 
+        DP.fecha_presentacion, 
+        DEDP.departamento, 
+        PRODP.provincia, 
+        DISDP.distrito, 
+        CLI.idcliente,
+        CLI.razonsocial, 
+        CLI.ndocumento, 
+        PC.monto, 
+        PC.tipo_pago, 
+        PC.noperacion, 
+        PC.fecha_pago, 
+        PC.hora_pago
+    FROM pagos_contrato PC
+    LEFT JOIN contratos CON ON CON.idcontrato = PC.idcontrato
+    LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = CON.iddetalle_presentacion
+    LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
+    LEFT JOIN distritos DISCLI ON DISCLI.iddistrito = CLI.iddistrito
+    LEFT JOIN provincias PROCLI ON PROCLI.idprovincia = DISCLI.idprovincia
+    LEFT JOIN departamentos DECLI ON DECLI.iddepartamento = PROCLI.iddepartamento
+    LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito
+    LEFT JOIN provincias PRODP ON PRODP.idprovincia = DISDP.idprovincia
+    LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
+    LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+	WHERE CLI.idcliente LIKE CONCAT('%', COALESCE(_idcliente, ''), '%');
+END $$

@@ -86,6 +86,22 @@ class Contrato extends ExecQuery
       die($e->getMessage());
     }
   }
+
+  public function obtenerPagosContrato($params = []): array
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('CALL sp_obtener_pagos_contrato (?)');
+      $cmd->execute(
+        array(
+          $params['idcliente']
+        )
+      );
+     return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+      die($e->getMessage());
+    }
+  }
   /* 
   public function obtenerUsuarioPorId($params = []): array
   {

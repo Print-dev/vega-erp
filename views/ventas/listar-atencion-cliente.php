@@ -396,6 +396,9 @@
                                         class="form-control " min="0">
                                     <label for="noperacion" class="form-label">N° Operacion</label>
                                 </div>
+                                <div id="historialpagos">
+                                    <a href="<?= $hostOnlyHeader ?>/views/contabilidad/pagos/listar-pagos"></a>
+                                </div>
                             </div>
                         </div>
                     </div>
