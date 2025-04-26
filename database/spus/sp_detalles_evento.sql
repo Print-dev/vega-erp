@@ -89,7 +89,7 @@ CREATE PROCEDURE `sp_obtener_dp_porid`(
 )
 BEGIN
 	SELECT 		
-		DP.iddetalle_presentacion, USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50
+		DP.iddetalle_presentacion, USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal
 	FROM detalles_presentacion DP
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario

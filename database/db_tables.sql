@@ -86,28 +86,29 @@ CREATE TABLE nivelaccesos
     update_at	  DATETIME			  NULL
 )ENGINE=INNODB;
 
-CREATE TABLE usuarios
-(
-	idusuario	INT AUTO_INCREMENT PRIMARY KEY,
-    idsucursal 	int not null,
+CREATE TABLE usuarios (
+    idusuario INT AUTO_INCREMENT PRIMARY KEY,
+    idsucursal INT NOT NULL,
     idnivelacceso INT NOT NULL,
-    idpersona	INT NOT NULL,
+    idpersona INT NOT NULL,
     nom_usuario VARCHAR(30) NOT NULL,
-    claveacceso VARBINARY(255) not null, 
-    color		CHAR(7) null,
-    porcentaje 	INT NULL,
-    marcaagua 	varchar(40) null,
-    firma		varchar(40) null, -- recien agregado
-    -- esRepresentante tinyint null default 0, -- recien agregado, actualizacion: quitado
-	estado 		TINYINT NOT NULL DEFAULT 1, -- 1=activo, 2=baja/inactivo/suspendido/baneado/inhabilitado
-	create_at	  DATETIME			  NOT NULL DEFAULT NOW(),
-    update_at	  DATETIME			  NULL,
-    CONSTRAINT fk_idpersona FOREIGN KEY (idpersona) REFERENCES personas(idpersona),
-    CONSTRAINT fk_idnivelacceso FOREIGN KEY(idnivelacceso) REFERENCES nivelaccesos(idnivelacceso),
-    CONSTRAINT uk_nom_usuario UNIQUE(nom_usuario),
-    constraint ck_estado_usuario check(estado IN (1,2)),
-    constraint fk_idsucursal foreign key (idsucursal) references sucursales (idsucursal)
-)ENGINE=INNODB;
+    claveacceso VARBINARY(255) NOT NULL,
+    color CHAR(7) NULL,
+    porcentaje INT NULL,
+    marcaagua VARCHAR(40) NULL,
+    firma VARCHAR(40) NULL,
+    estado TINYINT NOT NULL DEFAULT 1,
+    create_at DATETIME NOT NULL DEFAULT NOW (),
+    update_at DATETIME NULL,
+    CONSTRAINT fk_idpersona FOREIGN KEY (idpersona)
+        REFERENCES personas (idpersona),
+    CONSTRAINT fk_idnivelacceso FOREIGN KEY (idnivelacceso)
+        REFERENCES nivelaccesos (idnivelacceso),
+    CONSTRAINT uk_nom_usuario UNIQUE (nom_usuario),
+    CONSTRAINT ck_estado_usuario CHECK (estado IN (1 , 2)),
+    CONSTRAINT fk_idsucursal FOREIGN KEY (idsucursal)
+        REFERENCES sucursales (idsucursal)
+)  ENGINE=INNODB;
 
 -- ALTER TABLE usuarios ADD COLUMN idsucursal int not null;
 CREATE TABLE tarifario (
@@ -181,6 +182,7 @@ CREATE table detalles_presentacion (
     constraint uk_idp 					UNIQUE(iddetalle_presentacion)
 )engine=innodb;
 select * from detalles_presentacion;
+select * from clientes;
 CREATE TABLE responsables_boleteria_contratoreservasreservas (
 	idresponsablecontrato	int auto_increment primary key,
     iddetalle_presentacion 	int not null,
@@ -198,7 +200,8 @@ CREATE TABLE precios_entrada_evento (
     preciovip		decimal(10,2) null,
     constraint fk_iddp_entrada_convenio foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 ) ENGINE = INNODB;
-
+select * from precios_entrada_evento;
+select * from notificaciones;
 CREATE TABLE reportes_artista_evento (
 	idreporte	int auto_increment primary key,
     iddetalle_presentacion int not null,
@@ -324,7 +327,7 @@ CREATE TABLE notificaciones (
     idnotificacion INT AUTO_INCREMENT PRIMARY KEY,
     idusuariodest INT NOT NULL,-- Usuario que recibe la notificación
     idusuariorem INT NOT NULL, -- usuario que envia la notificacion
-    tipo INT NOT NULL, -- 1- viatico, 2- DETLLAE PRESENTACION, 3: asignacion de filmmaker, 4: propuestas
+    tipo INT NOT NULL, -- 1- viatico, 2- DETLLAE PRESENTACION, 3: asignacion de filmmaker, 4: propuestas, 5: precios de entrada de evento
     idreferencia INT NULL, -- ID del registro relacionado
     mensaje VARCHAR(200) NOT NULL,
     estado INT NULL DEFAULT 1, 

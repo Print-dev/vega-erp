@@ -336,7 +336,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data
 
   }
-  
+
   async function obtenerPreciosEvento(iddetallepresentacion) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerPreciosEvento");
@@ -1120,6 +1120,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("abriendo...");
     new bootstrap.Modal($q("#modal-precioentrada")).show()
     const preciosevento = await obtenerPreciosEvento(iddp)
+
+    /*     $q(".contenedor-admins-precio").innerHTML = ''
+        admins.forEach(admin => {
+          $q(".contenedor-admins-precio").innerHTML += `
+              <div class="form-check">
+                <input class="form-check-input chkAdmin" type="radio" name="adminSeleccionado" id="admin-${admin.idusuario}" data-idusuario="${admin.idusuario}">
+                <label class="form-check-label" for="admin-${admin.idusuario}">${admin.nombres}</label>
+              </div>
+            `;
+        }); */
+
     console.log("object -> ", preciosevento);
     $q("#general").value = preciosevento[0]?.preciogeneral
     $q("#vip").value = preciosevento[0]?.preciovip
@@ -1161,6 +1172,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
       const precioeventoregis = await registrarPrecioEvento(iddp, $q("#general").value, $q("#vip").value)
       console.log("precioeventoregis _>", precioeventoregis);
+      if (precioeventoregis) {
+        const dpInfo = await obtenerDPporId(iddp)
+        const mensaje = `Se ha configurado precios para el evento de ${dpInfo[0]?.nom_usuario} - ${dpInfo[0]?.establecimiento} (${formatDate(dpInfo[0]?.fecha_presentacion)})`
+
+        const admins = await obtenerUsuariosPorNivel(3)
+        console.log("admins -> ", admins);
+        admins.forEach(async admin => {
+          const notificacionRegistrada = await registrarNotificacion(admin.idusuario, idusuarioLogeado, 5, iddp, mensaje)
+          console.log("notificacion registrada-> ", notificacionRegistrada);
+          enviarWebsocket("propuesta", mensaje)
+        });
+
+      }
       showToast("Precio asignado correctamente", "SUCCESS")
       return
 
