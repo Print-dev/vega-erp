@@ -189,3 +189,5 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
 	WHERE CLI.idcliente LIKE CONCAT('%', COALESCE(_idcliente, ''), '%');
 END $$
+call sp_obtener_pagos_contrato (9);
+select * from clientes;

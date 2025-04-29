@@ -9,7 +9,7 @@
                     <h1>Reparticiones</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <!-- <a href="<?= $hostOnlyHeader ?>/views/utilitario/usuarios/registrar-usuario" class="btn btn-primary"></a> nomusuario -->
+                    <button class="btn btn-primary" id="btnAñadirEvento">Añadir</button>
                 </div>
             </div>
             <div class="row">
@@ -186,6 +186,30 @@
                 <!-- <div class="modal-footer text-end">
                     <button type="button" class="btn btn-secondary" id="btnRegistrarEgreso">Guardar</button>
                 </div> -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA COTIZAR DE MANERA CONTRATO -->
+    <div class="modal fade" id="modal-nuevareparticion" tabindex="-1" aria-labelledby="modalnuevareparticion" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalnuevareparticion">Nueva repartición</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <label for="eventos" class="form-label">Seleccionar Evento</label>
+
+                        <select name="eventos" id="eventos" class="form-select">
+                        
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnAñadirEvento">Añadir</button>
+                </div>
             </div>
         </div>
     </div>

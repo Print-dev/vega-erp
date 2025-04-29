@@ -161,7 +161,7 @@ CREATE PROCEDURE sp_obtener_agenda_editores
 )
 BEGIN
 	SELECT 
-	AGE.idagendaeditor, TIPO.idtipotarea, TIPO.tipotarea, PER.nombres, USU.idusuario, AGE.fecha_entrega, AGE.estado, AGE.altoketicket
+	AGE.idagendaeditor, TIPO.idtipotarea, TIPO.tipotarea, PER.nombres, USU.idusuario, AGE.fecha_entrega, AGE.hora_entrega, AGE.estado, AGE.altoketicket
     FROM agenda_editores AGE
     LEFT JOIN tipotarea TIPO ON TIPO.idtipotarea = AGE.idtipotarea
     LEFT JOIN usuarios USU ON USU.idusuario = AGE.idusuario
@@ -169,7 +169,7 @@ BEGIN
     WHERE AGE.idagendaedicion = _idagendaedicion;
 END $$
 
-
+select * from agenda_editores
 DROP PROCEDURE if exists sp_actualizar_observacion_subida; -- ELIMINAR ESTO (que?)
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_observacion_subida (

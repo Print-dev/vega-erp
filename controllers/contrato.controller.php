@@ -26,7 +26,7 @@ if (isset($_GET['operation'])) {
 
     case 'obtenerPagosContrato':
       $cleanData = [
-        'idcliente' => $_GET['idcliente'] === "" ? null : $detalleevento->limpiarCadena($_GET['idcliente']),
+        'idcliente' => $_GET['idcliente'] === "" ? null : $contrato->limpiarCadena($_GET['idcliente']),
       ];
       echo json_encode($contrato->obtenerPagosContrato($cleanData));
       break;

@@ -376,13 +376,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 const editoresAsignados = await obtenerEditoresAsignados(idagendaedicion)
                 console.log("editoresAsignados ->", editoresAsignados);
+
                 $q(".contenedor-tareas-edicion-pendientes").innerHTML = ``
                 editoresAsignados.forEach(editor => {
+                    const [fechaActual, horaActual] = obtenerFechaHoraPeru();
+                    const fechaHoraString = `${fechaActual} ${horaActual.trim().replace('a.m.', 'AM').replace('p.m.', 'PM')}`;
+                    const fechaHoraActual = new Date(fechaHoraString);
+                    console.log("fechaHoraActual -> ,", fechaHoraActual);
+
+                    // Crear objeto Date de la hora de entrega
+                    const fechaHoraEntrega = new Date(`${editor.fecha_entrega} ${editor.hora_entrega}`);
+                    console.log("fechaHoraEntrega -> ,", fechaHoraEntrega);
+                    // Verificar si la tarea está atrasada
+                    const tareaAtrasada = fechaHoraActual > fechaHoraEntrega;
+                    console.log("tarea atrasada -> ", tareaAtrasada);
+                    // Agregar clase de fondo rojo si está atrasada
+                    const claseAtraso = tareaAtrasada ? 'bg-danger text-white' : '';
                     if (editor.idusuario == idusuarioEdicion) {
                         console.log("tipo de tareas para los editores asignados-> ", editor.tipotarea);
                         $q(".contenedor-tareas-edicion-pendientes").innerHTML += `
-            <tr>
-                <td>${editor.fecha_entrega}</td>
+            <tr class="${claseAtraso}">
+                <td>${editor.fecha_entrega} - ${formatHour(editor.hora_entrega)}</td>
                 <td>${editor.nombres}</td>
                 <td>${editor.tipotarea ? editor.tipotarea : 'No especificado'}</td>
 
@@ -785,9 +799,21 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log("editoresAsignados ->", editoresAsignados);
             $q(".contenedor-tareas-edicion-pendientes").innerHTML = ``
             editoresAsignados.forEach(editor => {
+                const [fechaActual, horaActual] = obtenerFechaHoraPeru();
+                const fechaHoraString = `${fechaActual} ${horaActual.trim().replace('a.m.', 'AM').replace('p.m.', 'PM')}`;
+                const fechaHoraActual = new Date(fechaHoraString);
+                console.log("fechaHoraActual -> ,", fechaHoraActual);
 
+                // Crear objeto Date de la hora de entrega
+                const fechaHoraEntrega = new Date(`${editor.fecha_entrega} ${editor.hora_entrega}`);
+                console.log("fechaHoraEntrega -> ,", fechaHoraEntrega);
+                // Verificar si la tarea está atrasada
+                const tareaAtrasada = fechaHoraActual > fechaHoraEntrega;
+                console.log("tarea atrasada -> ", tareaAtrasada);
+                // Agregar clase de fondo rojo si está atrasada
+                const claseAtraso = tareaAtrasada ? 'bg-danger text-white' : '';
                 $q(".contenedor-tareas-edicion-pendientes").innerHTML += `
-                <tr>
+                <tr class="${claseAtraso}">
                     <td>${editor.fecha_entrega}</td>
                     <td>${editor.nombres}</td>
                     <td>${editor.tipotarea ? editor.tipotarea : 'No especificado'}</td>

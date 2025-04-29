@@ -47,7 +47,7 @@ function incrementarSerie(serie) {
   return serie[0] + nuevaSerieNum.toString().padStart(3, '0');
 }
 
-// Ejemplo de uso:
+/* // Ejemplo de uso:
 let serie = 'F001';
 let correlativo = '99999999'; // Simulamos el correlativo al máximo
 
@@ -55,7 +55,7 @@ let { nuevaSerie, nuevoCorrelativo } = generarCorrelativo(serie, correlativo);
 
 console.log(`Nueva Serie: ${nuevaSerie}`);
 console.log(`Nuevo Correlativo: ${nuevoCorrelativo}`);
-
+ */
 
 function generarNuevoNCotizacion(ultimaCotizacion) {
   const añoActual = new Date().getFullYear(); // Obtiene el año actual

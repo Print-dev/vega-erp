@@ -183,6 +183,7 @@ CREATE table detalles_presentacion (
 )engine=innodb;
 select * from detalles_presentacion;
 select * from clientes;
+select * from agenda_edicion
 CREATE TABLE responsables_boleteria_contratoreservasreservas (
 	idresponsablecontrato	int auto_increment primary key,
     iddetalle_presentacion 	int not null,

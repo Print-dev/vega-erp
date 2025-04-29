@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   let porcentajeCorrespondienteVega = 0
   let montoCorrespondienteArtista = 0
 
+  let eventosSelect = $q("#eventos")
+
   // montos correspondiente tanto para vega y promotor
   let montoCorrespondienteVega = 0
   let montoCorrespondientePromotor = 0
@@ -90,6 +92,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     const convenioPropuesta = await obtenerConvenioPorId(data[0]?.idconvenio)
     return convenioPropuesta;
   }
+
+  async function obtenerDPporModalidad() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerDetallesPresentacionPorModalidad");
+    params.append("modalidad", 1);
+
+    const data = await getDatos(`${host}detalleevento.controller.php`, params);
+    console.log("data -> ", data);
+    eventosSelect.innerHTML = `<option value="">Selecciona</option>`
+    data.forEach(evento => {
+      eventosSelect.innerHTML += `<option value="${evento.iddetalle_presentacion}">${evento.nom_usuario} - ${evento.establecimiento} (${evento.departamento} | ${evento.provincia} | ${evento.distrito}) [${evento.fecha_presentacion}]</option>`
+    });
+  }
+
+  await obtenerDPporModalidad()
 
   // ******************************* OBTENER TOTALES DE INGRESOS  Y EGRESOS ******************************
 
@@ -182,8 +199,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const params = new URLSearchParams();
     params.append("operation", "filtrarReparticiones");
     params.append("nomusuario", $q("#nomusuario").value ? $q("#nomusuario").value : '');
-    params.append("establecimiento", $q("#establecimiento").value ? $q("#establecimiento").value :'');
-    params.append("fechapresentacion", $q("#fechapresentacion").value ?  $q("#fechapresentacion").value : '');
+    params.append("establecimiento", $q("#establecimiento").value ? $q("#establecimiento").value : '');
+    params.append("fechapresentacion", $q("#fechapresentacion").value ? $q("#fechapresentacion").value : '');
 
     const data = await getDatos(`${host}reparticion.controller.php`, params);
     console.log("data -> ", data);
@@ -455,7 +472,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     montoCorrespondienteVegaFinal = parseFloat(ingresoTotalEvento * porcentajeCorrespondienteVega)
     console.log("montoCorrespondienteArtista -> ", montoCorrespondienteArtista);
     console.log("montoCorrespondienteVegaFinal -> ", montoCorrespondienteVegaFinal);
-    
+
     $q(".contenedor-reparticion").innerHTML = `
     <div class="col-md-6">
           <label for="" class="fw-bolder text-white">Ganancias ${nomArtista} (${porcentajeArt}%): S/. ${montoCorrespondienteArtista.toFixed(2)}</label>
@@ -465,4 +482,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       </div>
     `
   }
+
+  // **************************************** EVENTOS *************************************************
+
+  $q("#btnAñadirEvento").addEventListener("click", async () => {
+    new bootstrap.Modal($q("#modal-nuevareparticion")).show()
+  })
+
+  
 });

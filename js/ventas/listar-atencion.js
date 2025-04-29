@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let modalReserva
   let modalPropuestaCliente
   let modalpreviageneracion
+  let modalPreviaCotizacion
 
   // LISTAS
   let pagosExistentes = []
@@ -362,7 +363,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-
+  async function obtenerCotizacion(iddetallepresentacion) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerCotizacion");
+    params.append("iddetallepresentacion", iddetallepresentacion);
+    const fpersona = await getDatos(`${host}detalleevento.controller.php`, params)
+    console.log(fpersona);
+    return fpersona
+  }
 
   // ******************************************** REGISTRAR DATOS ************************************************
 
@@ -555,6 +563,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     const rconvenioupdate = await fconvenioupdate.json();
     return rconvenioupdate;
+  }
+
+  async function registrarTarifa(idartista, idprovincia, precio) {
+    const tarifa = new FormData();
+    tarifa.append("operation", "registrarTarifa");
+    tarifa.append("idusuario", idartista);
+    tarifa.append("idprovincia", idprovincia);
+    tarifa.append("precio", precio);
+
+    const ftarifa = await fetch(`${host}tarifa.controller.php`, {
+      method: "POST",
+      body: tarifa,
+    });
+    const rtarifa = await ftarifa.json();
+    return rtarifa;
   }
 
 
@@ -1349,8 +1372,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function buttonCotizar(e) {
     idcotizar = e.target.getAttribute("data-id");
     await renderizarUbigeoPresentacion(idcotizar);
-    const modalImg = new bootstrap.Modal($q("#modal-previacotizacion"));
-    modalImg.show();
+    modalPreviaCotizacion  = new bootstrap.Modal($q("#modal-previacotizacion"));
+    modalPreviaCotizacion.show();
     const dataSucursales = await obtenerSucursales()
 
     $q("#sucursal").innerHTML = "<option value=''>Seleccione</option>"
@@ -1691,6 +1714,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
     calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
 
+    const cotizacion = await obtenerCotizacion(iddetalleevento)
+    console.log("cotizacion -> ", cotizacion);
+    const tarifaArtista = await obtenerTarifaArtistaPorProvincia(idprovincia, idartista)
 
     $q("#tInfoCotizacion").innerHTML = "";
     $q("#tInfoCotizacion").innerHTML = `
@@ -1702,11 +1728,38 @@ document.addEventListener("DOMContentLoaded", async () => {
           <td>${calcularDificultadPrecio?.costoDificultad}</td>
         </tr>
       `;
+    $q("#tInfoDescripcionTarifa").innerHTML = "";
+    $q("#tInfoDescripcionTarifa").innerHTML = `
+      <tr>
+        <td colspan="3">Puesto en la locacion de ${cotizacion[0]?.provincia_evento + "/" + cotizacion[0]?.departamento_evento}</td>
+        <td>${calculateDuration(cotizacion[0]?.horainicio, cotizacion[0]?.horafinal)}</td>
+        <td>${tarifaArtista[0]?.precio ?? `
+          <div>
+          <input type="text" id="tarifaCosto" name="tarifaCosto" class="form-control">
+          <i class="fa-solid fa-floppy-disk btnGuardarTarifa" title="Guardar" style="cursor: pointer;"></i>
+          </div>
+          `}</td>
+      </tr>
+    `;
+
+    $q(".btnGuardarTarifa")?.addEventListener("click", async () => {
+      console.log("nueva tarifa->", $q("#tarifaCosto").value);
+      console.log("clickckc");
+      if ($q("#tarifaCosto").value.trim() == "") {
+        showToast("Agregue un costo!", "ERROR")
+        return
+      }
+      const nuevaTarifa = await registrarTarifa(idartista, idprovincia, $q("#tarifaCosto").value)
+      console.log("nueva tariofa rregistrada -> ", nuevaTarifa);
+      modalPreviaCotizacion.hide()
+      showToast("Tarifa agregada!", "SUCCESS")
+      return
+    })
   }
 
   async function renderizarDatosClienteIncompleto(cliente) {
     // renderiza los datos completos e incompletos a los campos del modal
-    console.log("RENDERIZANDO ESTA AAAAAAAAAAAAAAAAAAAA")
+    //console.log("RENDERIZANDO ESTA AAAAAAAAAAAAAAAAAAAA")
     $q("#ndocumentocli").value = cliente.ndocumento;
     $q("#razonsocial").value = cliente.razonsocial;
     $q("#representantelegal").value = cliente.representantelegal;

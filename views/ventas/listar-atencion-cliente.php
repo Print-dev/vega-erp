@@ -107,30 +107,45 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <table class="table rounded">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Departamento</th>
-                            <th>Provincia</th>
-                            <th>Tiempo Estimado</th>
-                            <th>Dificultad</th>
-                            <th>Precio S/.</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tInfoCotizacion">
+                <div class="row g-1">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Departamento</th>
+                                    <th>Provincia</th>
+                                    <th>Tiempo Estimado</th>
+                                    <th>Dificultad</th>
+                                    <th>Precio S/.</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tInfoCotizacion">
 
-                    </tbody>
-                    <tfoot>
-                        <div class="d-flex justify-content-center mb-3">
-                            <div class="form-floating col-md-8">
-                                <select name="sucursal" id="sucursal" class="form-select">
-                                    <option value="">Selecciona</option>
-                                </select>
-                                <label for="sucursal" class="form-label">Sucursal</label>
-                            </div>
-                        </div>
-                    </tfoot>
-                </table>
+                            </tbody>
+                            <hr>
+                            <thead class="table-dark">
+                                <tr>
+                                    <th colspan="3">Descripción</th>
+                                    <th>Tiempo</th>
+                                    <th>Costo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tInfoDescripcionTarifa">
+
+                            </tbody>
+                            <tfoot>
+                                <div class="d-flex justify-content-center mb-3">
+                                    <div class="form-floating col-md-8">
+                                        <select name="sucursal" id="sucursal" class="form-select">
+                                            <option value="">Selecciona</option>
+                                        </select>
+                                        <label for="sucursal" class="form-label">Sucursal</label>
+                                    </div>
+                                </div>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="btnGenerarCotizacion">Generar Cotizacion</button>
@@ -397,7 +412,7 @@
                                     <label for="noperacion" class="form-label">N° Operacion</label>
                                 </div>
                                 <div id="historialpagos">
-                                    <a href="<?= $hostOnlyHeader ?>/views/contabilidad/pagos/listar-pagos"></a>
+                                    <a href="<?= $hostOnlyHeader ?>/views/contabilidad/pagos/listar-pagos">Ver Historial de pagos</a>
                                 </div>
                             </div>
                         </div>

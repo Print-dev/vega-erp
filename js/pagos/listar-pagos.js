@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // MODALES
     let modalVerificarSunat
+    let clienteSelect = $q("#idcliente")
 
     function $q(object = null) {
         return document.querySelector(object);
@@ -282,6 +283,20 @@ document.addEventListener("DOMContentLoaded", async () => {
             `${hostOnly}/generators/generadores_pdf/nota_de_venta/notadeventa.php?idcomprobante=${idcomprobante}&idtipodoc=02`
         );
     }
+
+    async function obtenerClientes() {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerClientes");
+        const data = await getDatos(`${host}cliente.controller.php`, params);
+        console.log("data .> ", data);
+        clienteSelect.innerHTML = '<option value="">Todos</option>'
+        data.forEach(cliente => {
+            clienteSelect.innerHTML += `<option value="${cliente.idcliente}">${cliente.razonsocial} - ${cliente.ndocumento}</option>`
+        });
+        return data
+    }   
+
+    await obtenerClientes()
 
     /* async function buttonXMLComprobante(e) {
         idcomprobante = e.target.getAttribute("data-idcomprobante");
