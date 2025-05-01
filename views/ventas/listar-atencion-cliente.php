@@ -351,7 +351,7 @@
                 </div>
             </div>
             <hr>
-            <div class="modal-body">
+            <div class="modal-body" id="contenedor-general-admins">
                 <div class="container-fluid">
                     <p><strong>Enviar propuesta a:</strong></p>
 

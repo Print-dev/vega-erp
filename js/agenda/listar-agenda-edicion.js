@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // VARIABLES 
     let agenda = []
+    let idagendaeditor
     //let idagendaeditorFinal = -1
 
     //CALENDARIO
@@ -640,7 +641,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 )}</div>
                     <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
                       <button class="btn btn-primary" id="btnAsignarEditor" style="flex: 1;" data-idagendaeditor="${arg.event.extendedProps?.idagendaeditor}" data-idagendaedicion="${arg.event.extendedProps?.idagendaedicion}" data-idagendaeditor="${arg.event.extendedProps?.idagendaeditor}">Asignar</button>
-                      <button class="btn btn-primary" id="btnVerProgreso" style="flex: 1;" data-idagendaedicion="${arg.event.extendedProps?.idagendaedicion}">Ver progreso</button>
+                      <button class="btn btn-primary" id="btnVerProgreso" style="flex: 1;" data-idagendaedicion="${arg.event.extendedProps?.idagendaedicion}" data-idagendaeditor="${arg.event.extendedProps?.idagendaeditor}">Ver progreso</button>
                     </div>
                     `
                             :
@@ -791,6 +792,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             window.localStorage.setItem("idagendaedicion", idagendaedicion)
             window.location.href = `${host}/views/agenda/asignar-agenda-edicion` */
             idagendaedicion = e.target.getAttribute("data-idagendaedicion");
+            idagendaeditor = e.target.getAttribute("data-idagendaeditor");
 
             modalProgresoEdicion = new bootstrap.Modal($q("#modal-progresoedicion"));
             modalProgresoEdicion.show();
@@ -811,10 +813,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const tareaAtrasada = fechaHoraActual > fechaHoraEntrega;
                 console.log("tarea atrasada -> ", tareaAtrasada);
                 // Agregar clase de fondo rojo si está atrasada
-                const claseAtraso = tareaAtrasada ? 'bg-danger text-white' : '';
+                const claseAtraso = tareaAtrasada && editor.estado == 1 ? 'bg-danger text-white' : '';
+                if(tareaAtrasada){
+                    if(editor.estado )
+                } // editar aca
+                actualizarEstadoTareaEdicion(idagendaeditor, 5)
                 $q(".contenedor-tareas-edicion-pendientes").innerHTML += `
                 <tr class="${claseAtraso}">
-                    <td>${editor.fecha_entrega}</td>
+                    <td>${editor.fecha_entrega} - ${formatHour(editor.hora_entrega)}</td>
                     <td>${editor.nombres}</td>
                     <td>${editor.tipotarea ? editor.tipotarea : 'No especificado'}</td>
                     ${nivelacceso == "Administrador" ? `

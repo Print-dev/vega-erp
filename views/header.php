@@ -17,7 +17,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {
   //die(var_dump($totalElementos));
 
   //Verificando el permiso
-  //var_dump($listaAcceso);
+  
   $encontrado = false;
   $i = 0;
 

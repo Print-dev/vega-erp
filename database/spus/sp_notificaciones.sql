@@ -86,7 +86,6 @@ BEGIN
     WHERE NOTIF.idreferencia = _idreferencia AND NOTIF.tipo = 2;
 END $$
 
-CALL sp_obtener_notificacion_dp (27)
 DROP PROCEDURE IF EXISTS sp_obtener_notificacion_propuesta;
 DELIMITER $$
 CREATE PROCEDURE sp_obtener_notificacion_propuesta
@@ -108,15 +107,15 @@ BEGIN
     WHERE NOTIF.idreferencia = _idreferencia AND NOTIF.tipo = 4;
 END $$
 
-DROP PROCEDURE IF EXISTS sp_obtener_notificacion_propuesta;
+DROP PROCEDURE IF EXISTS sp_obtener_notificacion_precios_entrada;
 DELIMITER $$
-CREATE PROCEDURE sp_obtener_notificacion_propuesta
+CREATE PROCEDURE sp_obtener_notificacion_precios_entrada
 (
     IN _idreferencia INT
 )
 BEGIN
 	SELECT 
-	    NOTIF.idnotificacion, CLI.razonsocial, CLI.telefono,DP.iddetalle_presentacion, USU.nom_usuario, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DIS.distrito, PRO.provincia, DEP.departamento, PEE.preciogeneral, PEE.preciovip, NOTIF.fecha
+	    NOTIF.idnotificacion, CLI.razonsocial, CLI.telefono,DP.iddetalle_presentacion, USU.nom_usuario, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DIS.distrito, PRO.provincia, DEP.departamento, NOTIF.fecha
     FROM notificaciones NOTIF
     LEFT JOIN precios_entrada_evento PEE ON PEE.idprecioentradaevento = NOTIF.idreferencia
     LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = PEE.iddetalle_presentacion
@@ -125,9 +124,7 @@ BEGIN
     LEFT JOIN distritos DIS ON DIS.iddistrito = DP.iddistrito
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
-    WHERE NOTIF.idreferencia = 1 AND NOTIF.tipo = 5;
+    WHERE NOTIF.idreferencia = _idreferencia AND NOTIF.tipo = 5;
 END $$
 
-select * from notificaciones;
-select * from convenios;
-select * from detalles_presentacion;
+-- call sp_obtener_notificacion_propuesta(1);
