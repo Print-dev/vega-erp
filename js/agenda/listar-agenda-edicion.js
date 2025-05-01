@@ -815,7 +815,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // Agregar clase de fondo rojo si está atrasada
                 const claseAtraso = tareaAtrasada && editor.estado == 1 ? 'bg-danger text-white' : '';
                 if(tareaAtrasada){
-                    if(editor.estado )
+                    if(editor.estado == 1){
+                        console.log("la tarea atrasada y como esta en pendiente se marca COMO ATRASADO");
+                    }else if (editor.estado == 2){
+                        editor.
+                    }
                 } // editar aca
                 actualizarEstadoTareaEdicion(idagendaeditor, 5)
                 $q(".contenedor-tareas-edicion-pendientes").innerHTML += `
