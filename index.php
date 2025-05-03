@@ -7,6 +7,7 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
   header('Location:'.$hostOnly.'/views/ventas/listar-atencion-cliente');
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
