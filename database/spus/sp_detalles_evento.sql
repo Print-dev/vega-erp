@@ -513,7 +513,8 @@ BEGIN
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento;
 END //
 DELIMITER ;
-
+call sp_obtener_agenda_edicion();
+select * from agenda_edicion;
 -- call sp_obtener_agenda_edicion_por_editor_y_general (null);
 -- FILTRAR AGENDA POR EDITORES (TAREAS INDEPENDIENTES Y EN GENERAL PARA TODOS LOS EDITORES)
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_edicion_por_editor_y_general;

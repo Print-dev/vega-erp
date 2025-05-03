@@ -868,7 +868,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${x.departamento}/${x.provincia}/${x.distrito}</td>
                 <td>${x.fecha_presentacion}</td>                        
                 <td>${x.estado == 1 ? 'Activo' : x.estado == 2 ? 'Caducado' : x.estado == 3 ? 'Cancelado' : ''}</td>                        
-                <td>${x.estado_convenio == 2 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/402906/white-heavy-check-mark.svg" style="width: 24px; height: 24px;" title="Aprobado">' : x.estado_convenio == 3 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/292061/multiply-cross.svg" style="width: 24px; height: 24px;" title="Desaprobado">' : x.estado == 3 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/317774/time-capsule-done.svg" style="width: 24px; height: 24px;" title="Pendiente">' : 'Pendiente'}</td>                        
+                <td>${x.estado_convenio == 2 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/402906/white-heavy-check-mark.svg" style="width: 24px; height: 24px;" title="Aprobado">' : x.estado_convenio == 3 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/292061/multiply-cross.svg" style="width: 24px; height: 24px;" title="Desaprobado">' : x.estado == 3 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/317774/time-capsule-done.svg" style="width: 24px; height: 24px;" title="Pendiente">' : x.modalidad == 2 ? "No aplica" : 'Pendiente'}</td>                        
                 <td>
                     ${x.estado_convenio == 3 ? 'Desaprobado' : x.estado == 3 ? '' : `
                         ${x.estado == 2 ? '' : parseInt(x.estado_convenio) == 2 ? `

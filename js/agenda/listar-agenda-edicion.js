@@ -708,7 +708,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     horafinal: evento.horafinal,
                     establecimiento: evento.establecimiento,
                     idagendaedicion: evento.idagendaedicion,
-                    idusuario: evento.idusuarioEdicion
+                    idusuario: evento.idusuarioEdicion,
+                    tarea: evento.tipotarea
                 },
             });
         }
@@ -737,14 +738,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                   <div style="padding: 8px; word-wrap: break-word; 
                   overflow-wrap: break-word;
                   white-space: normal;">
-                    <div style="font-size: 20px; font-weight: bold;">${arg.event.title
-                    }</div>
-                      <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
-                    }</div>
-                      <div><strong>Tiempo:</strong> ${calculateDuration(
+                    <div style="font-size: 20px; font-weight: bold;">${arg.event.title}</div>
+                    <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"}</div>
+                    <div><strong>Tiempo:</strong> ${calculateDuration(
                         arg.event.extendedProps.horainicio,
                         arg.event.extendedProps.horafinal
                     )}</div>
+                    <div><strong>Tarea:</strong> ${arg.event.extendedProps.tarea || "No definido"}</div>
                   ${nivelacceso == "Administrador" || nivelacceso == "Community Manager" ? `
                     <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
                    <button class="btn btn-primary" id="btnVerProgresoIndividual" style="flex: 1;" data-idusuario="${arg.event.extendedProps.idusuario}" data-idagendaedicion="${arg.event.extendedProps.idagendaedicion}">Ver Progreso</button>
@@ -820,10 +820,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                     } else if (editor.estado == 3) {
                         console.log("la tarea esta atrasada pero como eesta en pendiente entonces q");
                         const estadoTareaActualizado = await actualizarEstadoTareaEdicion(editor.idagendaeditor, 3);
-                        console.log("estado tarea actualizada -> ", estadoTareaActualizado);                    
+                        console.log("estado tarea actualizada -> ", estadoTareaActualizado);
                     } else if (editor.estado == 4) {
                         console.log("la tarea esta atrasada pero como eesta en pendiente entonces q");
-                        const estadoTareaActualizado = await actualizarEstadoTareaEdicion(editor.idagendaeditor, 3);
+                        const estadoTareaActualizado = await actualizarEstadoTareaEdicion(editor.idagendaeditor, 4);
                         console.log("estado tarea actualizada -> ", estadoTareaActualizado);
                     }
                 }
@@ -844,13 +844,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                             </td>
                             <td>
                                 <select name="estado" class="form-select select-estado" data-idagendaeditor="${editor.idagendaeditor}" data-fechaentrega="${editor.fecha_entrega}" data-horaentrega="${editor.hora_entrega}" data-estado="${editor.estado}">
-                                    <option value="1" ${editor.estado == 1 ? 'selected' : ''}>Pendiente</option>
-                                    <option value="2" ${editor.estado == 2 ? 'selected' : ''}>Completado</option>
+                                    <option value="1" ${editor.estado == 1 || editor.estado == 3 ? 'selected' : ''}>Pendiente</option>
+                                    <option value="2" ${editor.estado == 2 || editor.estado == 4 ? 'selected' : ''}>Completado</option>
                                 </select>
                             </td>
                         ` : `
                             <td>${editor.altoketicket == 1 ? 'Pendiente' : editor.altoketicket == 2 ? 'Completado' : ''}</td>
-                            <td>${editor.estado == 1 ? 'Pendiente' : editor.estado == 2 ? 'Completado' : ''}</td>`}
+                            <td>${editor.estado == 1 ? 'Pendiente' : editor.estado == 3 ? "Atrasado" : editor.estado == 2 ? 'Completado' : editor.estado == 4 ? "Completado con atraso" : ''}</td>`}
                         <td>
                             <button type="button" class="btn btn-primary" id="btnVerContenido" data-idagendaeditor="${editor.idagendaeditor}">Ver</button>
                         </td>        
@@ -898,7 +898,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (tareaAtrasada) {
                         console.log("entrando adento linea 899");
                         if (nuevoEstado == 1) {
-                            if (estado == 2 || estado == 3 || estado == 4 ) {
+                            if (estado == 2 || estado == 3 || estado == 4) {
                                 console.log("la tarea atrasada y como esta en pendiente se marca COMO ATRASADO");
                                 const estadoTareaActualizado = await actualizarEstadoTareaEdicion(idagendaeditor, 3)
                                 console.log("estado tarea actualizada -> ", estadoTareaActualizado);
@@ -908,6 +908,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 }
                             }
                         } else if (nuevoEstado == 2) {
+                            console.log("id agenda editr._> ", idagendaeditor);
+                            console.log("estado -> ", estado);
                             if (estado == 1 || estado == 2 || estado == 3 || estado == 4) {
                                 console.log("la tarea atrasada y como esta en pendiente se marca COMO ATRASADO");
                                 const estadoTareaActualizado = await actualizarEstadoTareaEdicion(idagendaeditor, 4)
@@ -927,6 +929,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                         }
 
                     } else if (nuevoEstado == 2) {
+                        console.log("idagenda editor de q recien esta en pendiente _ > ", idagendaeditor);
+                        console.log("estado en el q esta: ", estado);
                         const estadoTareaActualizado = await actualizarEstadoTareaEdicion(idagendaeditor, 2)
                         console.log("estado tarea actualizada -> ", estadoTareaActualizado);
                         if (estadoTareaActualizado) {
@@ -1016,6 +1020,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 <i class="fa-solid fa-pen-to-square btnActualizarNombreTipoTarea" data-idtipotarea="${tipo.idtipotarea}" style="cursor: pointer;" title="editar"></i>
                             </div>
                         </td>
+                        
+            
+                        <td>
+                            <input type="date" class="form-control" name="fechaentrega" value="${fechaEntrega}">
+                        </td>
+                        <td>
+                            <input type="time" class="form-control" name="horaentrega" value="${horaEntrega}">
+                        </td>
                         <td class="contenedor-asignados">
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <select name="asignacioneditor" class="form-select" data-idtipotarea="${tipo.idtipotarea}">
@@ -1023,13 +1035,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 </select>
                                 <i class="fa-solid fa-trash btnQuitarUsuarioTarea" data-idagendaeditor="${tareaAsignada?.idagendaeditor}" title="Quitar Editor" style="cursor: pointer; color: red;"></i>
                             </div>
-                        </td>
-            
-                        <td>
-                            <input type="date" class="form-control" name="fechaentrega" value="${fechaEntrega}">
-                        </td>
-                        <td>
-                            <input type="time" class="form-control" name="horaentrega" value="${horaEntrega}">
                         </td>
                         <td>
                             <div style="display: flex; align-items: center; gap: 8px;">

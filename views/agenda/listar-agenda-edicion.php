@@ -328,9 +328,9 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th>Contenido</th>
-                                    <th>Editor</th>
                                     <th>Fecha de entrega</th>
                                     <th>Hora de entrega</th>
+                                    <th>Editor</th>
                                     <th>Responsable de Publicacion</th>
                                 </tr>
                             </thead>

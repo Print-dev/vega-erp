@@ -496,5 +496,6 @@ CREATE TABLE pagos_cuota (
 ) ENGINE = INNODB;
 
 select * from notificaciones;
+select * from agenda_edicion;
 select * from convenios;
 select * from precios_entrada_evento;

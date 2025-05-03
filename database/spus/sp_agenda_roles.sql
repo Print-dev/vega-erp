@@ -187,7 +187,7 @@ DROP PROCEDURE if exists sp_actualizar_estado_tarea_edicion;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_estado_tarea_edicion (
 	IN _idagendaeditor INT,
-    IN _estado VARCHAR(250)
+    IN _estado INT
 )
 BEGIN
 	UPDATE agenda_editores SET
@@ -195,7 +195,7 @@ BEGIN
     WHERE idagendaeditor = _idagendaeditor; 
 
 END //
-
+call sp_actualizar_estado_tarea_edicion (3, 4);
 DROP PROCEDURE if exists sp_actualizar_estado_tarea_altoketicket;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_estado_tarea_altoketicket (
@@ -246,15 +246,16 @@ CREATE PROCEDURE sp_obtener_tareas_editor
 )
 BEGIN	
 	SELECT 
-		AGED.idagendaeditor, AGEN.idagendaedicion, AGED.idusuario as idusuarioEdicion, AGED.fecha_asignacion, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.establecimiento, DP.estado, USU.nom_usuario, USUDP.color
+		AGED.idagendaeditor, AGEN.idagendaedicion, AGED.idusuario as idusuarioEdicion, AGED.fecha_asignacion, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.establecimiento, DP.estado, USU.nom_usuario, USUDP.color, TIP.tipotarea
 		FROM agenda_editores AGED
+        LEFT JOIN tipotarea TIP ON TIP.idtipotarea = AGED.idtipotarea
 		LEFT JOIN agenda_edicion AGEN ON AGEN.idagendaedicion = AGED.idagendaedicion
 		LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = AGEN.iddetalle_presentacion
 		LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
         LEFT JOIN usuarios USUDP ON USUDP.idusuario = DP.idusuario
         WHERE (_idusuario IS NULL OR AGED.idusuario = _idusuario OR AGED.idusuario IS NULL);
 END $$
-
+select * from agenda_edicion;
 -- ESTE SPU SERVIRA PARA LISTAR LAS AGENDAS DE EDICION EN GLOBAL, LUEGO DE ESO SE ACCEDERA A LAS TAREAS QUE ESTAN ADENTRO DE ELLO PERO SOLO LOS COMPLETADOS
 DROP PROCEDURE IF EXISTS sp_mostrar_contenido_revisado_edicion;
 DELIMITER $$
