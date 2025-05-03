@@ -389,6 +389,7 @@ CREATE TABLE agenda_editores (
     constraint fk_idusuario_ag_edit foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idtipotarea_agen foreign key (idtipotarea) references tipotarea (idtipotarea)
 ) engine = innodb;
+select * from agenda_editores;
 
 CREATE TABLE subidas_agenda_edicion (
 	idsubida	int  auto_increment primary key,
@@ -429,7 +430,7 @@ CREATE TABLE tareas_diaria_asignacion (
     constraint fk_idusuario	foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idtareadiaria_asig foreign key (idtareadiaria) references tareas_diarias (idtareadiaria)
 ) engine = innodb;
-
+select * from tareas_diaria_asignacion;
 -- --------------------------------------------- TABLAS FACTURA Y BOLETA -----------------------------------------------
 -- ALTER TABLE comprobantes
 -- ADD COLUMN iddetallepresentacion INT not NULL AFTER idcomprobante;

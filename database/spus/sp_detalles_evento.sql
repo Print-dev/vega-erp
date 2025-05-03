@@ -223,10 +223,10 @@ BEGIN
     LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito
     LEFT JOIN provincias PRODP ON PRODP.idprovincia = DISDP.idprovincia
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
-    WHERE DP.modalidad = 2
+    WHERE DP.modalidad = _modalidad
     GROUP BY DP.iddetalle_presentacion, CO.idcontrato;
 END //
-
+-- call sp_detalles_presentacion_por_modalidad (1)
 -- CALL sp_obtener_detalles_evento (null, null, NULL, null, "2025-03-08")
 
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_artista;

@@ -793,62 +793,71 @@ document.addEventListener("DOMContentLoaded", async () => {
             window.location.href = `${host}/views/agenda/asignar-agenda-edicion` */
             idagendaedicion = e.target.getAttribute("data-idagendaedicion");
             idagendaeditor = e.target.getAttribute("data-idagendaeditor");
-
+            let tareasEdicionHtml = ''
             modalProgresoEdicion = new bootstrap.Modal($q("#modal-progresoedicion"));
             modalProgresoEdicion.show();
 
             const editoresAsignados = await obtenerEditoresAsignados(idagendaedicion)
             console.log("editoresAsignados ->", editoresAsignados);
             $q(".contenedor-tareas-edicion-pendientes").innerHTML = ``
-            editoresAsignados.forEach(editor => {
+            for (const editor of editoresAsignados) {
                 const [fechaActual, horaActual] = obtenerFechaHoraPeru();
                 const fechaHoraString = `${fechaActual} ${horaActual.trim().replace('a.m.', 'AM').replace('p.m.', 'PM')}`;
                 const fechaHoraActual = new Date(fechaHoraString);
-                console.log("fechaHoraActual -> ,", fechaHoraActual);
-
-                // Crear objeto Date de la hora de entrega
                 const fechaHoraEntrega = new Date(`${editor.fecha_entrega} ${editor.hora_entrega}`);
-                console.log("fechaHoraEntrega -> ,", fechaHoraEntrega);
-                // Verificar si la tarea está atrasada
                 const tareaAtrasada = fechaHoraActual > fechaHoraEntrega;
-                console.log("tarea atrasada -> ", tareaAtrasada);
-                // Agregar clase de fondo rojo si está atrasada
-                const claseAtraso = tareaAtrasada && editor.estado == 1 ? 'bg-danger text-white' : '';
-                if(tareaAtrasada){
-                    if(editor.estado == 1){
+                const claseAtraso = tareaAtrasada && editor.estado == 1 || tareaAtrasada && editor.estado == 3 || tareaAtrasada && editor.estado == 4 ? 'bg-danger text-white' : '';
+                console.log("tareaAtrasada -> ", tareaAtrasada);
+                if (tareaAtrasada) {
+                    console.log("entranodox");
+                    if (editor.estado == 1) {
                         console.log("la tarea atrasada y como esta en pendiente se marca COMO ATRASADO");
-                    }else if (editor.estado == 2){
-                        editor.
+                        const estadoTareaActualizado = await actualizarEstadoTareaEdicion(editor.idagendaeditor, 3);
+                        console.log("estado tarea actualizada -> ", estadoTareaActualizado);
+                    } else if (editor.estado == 2) {
+                        console.log("fecha actual sobrepasa entrega, pero ya completado");
+
+                    } else if (editor.estado == 3) {
+                        console.log("la tarea esta atrasada pero como eesta en pendiente entonces q");
+                        const estadoTareaActualizado = await actualizarEstadoTareaEdicion(editor.idagendaeditor, 3);
+                        console.log("estado tarea actualizada -> ", estadoTareaActualizado);                    
+                    } else if (editor.estado == 4) {
+                        console.log("la tarea esta atrasada pero como eesta en pendiente entonces q");
+                        const estadoTareaActualizado = await actualizarEstadoTareaEdicion(editor.idagendaeditor, 3);
+                        console.log("estado tarea actualizada -> ", estadoTareaActualizado);
                     }
-                } // editar aca
-                actualizarEstadoTareaEdicion(idagendaeditor, 5)
-                $q(".contenedor-tareas-edicion-pendientes").innerHTML += `
-                <tr class="${claseAtraso}">
-                    <td>${editor.fecha_entrega} - ${formatHour(editor.hora_entrega)}</td>
-                    <td>${editor.nombres}</td>
-                    <td>${editor.tipotarea ? editor.tipotarea : 'No especificado'}</td>
-                    ${nivelacceso == "Administrador" ? `
-                        <td>
-                        <select name="altoketicket" class="form-select select-altoketicket" data-idagendaeditor="${editor.idagendaeditor}">
-                            <option value="1" ${editor.altoketicket == 1 ? 'selected' : ''}>Pendiente</option>
-                            <option value="2" ${editor.altoketicket == 2 ? 'selected' : ''}>Completado</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="estado" class="form-select select-estado" data-idagendaeditor="${editor.idagendaeditor}">
-                            <option value="1" ${editor.estado == 1 ? 'selected' : ''}>Pendiente</option>
-                            <option value="2" ${editor.estado == 2 ? 'selected' : ''}>Completado</option>
-                        </select>
-                    </td>
+                }
+                console.log("aun no vence la tarea y NO SUCEDE NADA");
+
+
+                tareasEdicionHtml += `
+                    <tr class="${claseAtraso}">
+                        <td>${editor.fecha_entrega} - ${formatHour(editor.hora_entrega)}</td>
+                        <td>${editor.nombres}</td>
+                        <td>${editor.tipotarea ? editor.tipotarea : 'No especificado'}</td>
+                        ${nivelacceso == "Administrador" ? `
+                            <td>
+                                <select name="altoketicket" class="form-select select-altoketicket" data-idagendaeditor="${editor.idagendaeditor}">
+                                    <option value="1" ${editor.altoketicket == 1 ? 'selected' : ''}>Pendiente</option>
+                                    <option value="2" ${editor.altoketicket == 2 ? 'selected' : ''}>Completado</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="estado" class="form-select select-estado" data-idagendaeditor="${editor.idagendaeditor}" data-fechaentrega="${editor.fecha_entrega}" data-horaentrega="${editor.hora_entrega}" data-estado="${editor.estado}">
+                                    <option value="1" ${editor.estado == 1 ? 'selected' : ''}>Pendiente</option>
+                                    <option value="2" ${editor.estado == 2 ? 'selected' : ''}>Completado</option>
+                                </select>
+                            </td>
                         ` : `
-                        <td>${editor.altoketicket == 1 ? 'Pendiente' : editor.altoketicket == 2 ? 'Completado' : ''}</td>
-                        <td>${editor.estado == 1 ? 'Pendiente' : editor.estado == 2 ? 'Completado' : ''}</td>`}
-                    <td>
-                        <button type="button" class="btn btn-primary" id="btnVerContenido" data-idagendaeditor="${editor.idagendaeditor}">Ver</button>
-                    </td>        
-                </tr>       
-                `
-            });
+                            <td>${editor.altoketicket == 1 ? 'Pendiente' : editor.altoketicket == 2 ? 'Completado' : ''}</td>
+                            <td>${editor.estado == 1 ? 'Pendiente' : editor.estado == 2 ? 'Completado' : ''}</td>`}
+                        <td>
+                            <button type="button" class="btn btn-primary" id="btnVerContenido" data-idagendaeditor="${editor.idagendaeditor}">Ver</button>
+                        </td>        
+                    </tr>       
+                `;
+            }
+            $q(".contenedor-tareas-edicion-pendientes").innerHTML = tareasEdicionHtml
             $all("#btnVerContenido").forEach(btn => {
                 btn.addEventListener("click", (e) => {
                     idagendaeditor = e.target.getAttribute("data-idagendaeditor")
@@ -861,18 +870,71 @@ document.addEventListener("DOMContentLoaded", async () => {
             })
             document.querySelectorAll(".select-estado").forEach(select => {
                 select.addEventListener("change", async (e) => {
+                    console.log("cambiando");
                     let idagendaeditor = e.target.getAttribute("data-idagendaeditor");
+                    let fecha_entrega = e.target.getAttribute("data-fechaentrega");
+                    let hora_entrega = e.target.getAttribute("data-horaentrega");
+                    let estado = e.target.getAttribute("data-estado");
                     let nuevoEstado = e.target.value;
 
                     console.log(`Tarea ${idagendaeditor} cambió a estado ${nuevoEstado}`);
 
                     // Aquí puedes hacer una petición para actualizar el estado en la base de datos
-                    const tareaActualizada = await actualizarEstadoTareaEdicion(idagendaeditor, nuevoEstado);
-                    console.log("tarea actualizada =_", tareaActualizada);
-                    if (tareaActualizada) {
-                        showToast("Estado cambiado correctamente", "SUCCESS")
-                        return
+                    /* const tareaActualizada = await actualizarEstadoTareaEdicion(idagendaeditor, nuevoEstado);
+                    console.log("tarea actualizada =_", tareaActualizada); */
+                    const [fechaActual, horaActual] = obtenerFechaHoraPeru();
+                    const fechaHoraString = `${fechaActual} ${horaActual.trim().replace('a.m.', 'AM').replace('p.m.', 'PM')}`;
+                    const fechaHoraActual = new Date(fechaHoraString);
+                    console.log("fechaHoraActual -> ,", fechaHoraActual);
+
+                    const fechaHoraEntrega = new Date(`${fecha_entrega} ${hora_entrega}`);
+                    console.log("fechaHoraEntrega -> ,", fechaHoraEntrega);
+                    const tareaAtrasada = fechaHoraActual > fechaHoraEntrega;
+                    console.log("tarea atrasada -> ", tareaAtrasada);
+                    /*  if (tareaActualizada) {
+                         showToast("Estado cambiado correctamente", "SUCCESS")
+                         return
+                     } */
+                    if (tareaAtrasada) {
+                        console.log("entrando adento linea 899");
+                        if (nuevoEstado == 1) {
+                            if (estado == 2 || estado == 3 || estado == 4 ) {
+                                console.log("la tarea atrasada y como esta en pendiente se marca COMO ATRASADO");
+                                const estadoTareaActualizado = await actualizarEstadoTareaEdicion(idagendaeditor, 3)
+                                console.log("estado tarea actualizada -> ", estadoTareaActualizado);
+                                if (estadoTareaActualizado) {
+                                    showToast("Estado cambiado correctamente", "SUCCESS")
+                                    return
+                                }
+                            }
+                        } else if (nuevoEstado == 2) {
+                            if (estado == 1 || estado == 2 || estado == 3 || estado == 4) {
+                                console.log("la tarea atrasada y como esta en pendiente se marca COMO ATRASADO");
+                                const estadoTareaActualizado = await actualizarEstadoTareaEdicion(idagendaeditor, 4)
+                                console.log("estado tarea actualizada -> ", estadoTareaActualizado);
+                                if (estadoTareaActualizado) {
+                                    showToast("Estado cambiado correctamente", "SUCCESS")
+                                    return
+                                }
+                            }
+                        }
+                    } else if (nuevoEstado == 1) {
+                        const estadoTareaActualizado = await actualizarEstadoTareaEdicion(idagendaeditor, 1)
+                        console.log("estado tarea actualizada -> ", estadoTareaActualizado);
+                        if (estadoTareaActualizado) {
+                            showToast("Estado cambiado correctamente", "SUCCESS")
+                            return
+                        }
+
+                    } else if (nuevoEstado == 2) {
+                        const estadoTareaActualizado = await actualizarEstadoTareaEdicion(idagendaeditor, 2)
+                        console.log("estado tarea actualizada -> ", estadoTareaActualizado);
+                        if (estadoTareaActualizado) {
+                            showToast("Estado cambiado correctamente", "SUCCESS")
+                            return
+                        }
                     }
+
                 });
             });
             document.querySelectorAll(".select-altoketicket").forEach(select => {

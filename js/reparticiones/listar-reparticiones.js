@@ -32,6 +32,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data.json();
   }
 
+  await obtenerDPporModalidad()
+
+
   // ******************************************** OBTENCION DE DATOS **********************************************************
 
   async function obtenerArtistas() {
@@ -106,8 +109,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  await obtenerDPporModalidad()
 
+  // ************************************* REGISTRO DE DATA *********************************************
+  async function registrarReparticion(iddetallepresentacion) {
+    const reparticion = new FormData();
+    reparticion.append("operation", "registrarReparticion");
+    reparticion.append("iddetallepresentacion", iddetallepresentacion);
+
+    const freparticion = await fetch(`${host}reparticion.controller.php`, {
+      method: "POST",
+      body: reparticion,
+    });
+    const rreparticion = await freparticion.json();
+    return rreparticion;
+  }
   // ******************************* OBTENER TOTALES DE INGRESOS  Y EGRESOS ******************************
 
   async function obtenerEgresoPorIdReparticion(idreparticion) { // modificar
@@ -488,6 +503,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   $q("#btnAñadirEvento").addEventListener("click", async () => {
     new bootstrap.Modal($q("#modal-nuevareparticion")).show()
   })
+  $q("#btnGuardarEvento").addEventListener("click", async () => {
+    const regi = await registrarReparticion(eventosSelect.value)
+    console.log("rei > ", regi);
+    await dataFilters()
+  })
 
-  
+
 });
