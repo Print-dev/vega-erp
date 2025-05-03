@@ -208,7 +208,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="btnAñadirEvento">Añadir</button>
+                    <button type="button" class="btn btn-secondary" id="btnGuardarEvento">Añadir</button>
                 </div>
             </div>
         </div>
