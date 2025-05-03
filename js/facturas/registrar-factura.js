@@ -147,10 +147,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         return fpersona
     }
 
+    async function obtenerUltimoSerieCorrelativo() {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerUltimoSerieCorrelativo");
+        const ultimaSerie = await getDatos(`${host}comprobante.controller.php`, params)
+        //return fpersona
+        $q("#nserie").value = ultimaSerie[0].nserie
+        let correlativoActual = ultimaSerie[0].correlativo
+        let correlativoNumero = parseInt(correlativoActual, 10) + 1;
+        let nuevoCorrelativo = correlativoNumero.toString().padStart(8, '0');
+
+        $q("#correlativo").value = nuevoCorrelativo; // Resultado: "00000003"        console.log("ultima serie -> ", ultimaSerie);
+    }
+
     async function dataFilters() {
         const params = new URLSearchParams();
         params.append("operation", "obtenerDetallesPresentacionPorModalidad");
         params.append("modalidad", 2);
+        params.append("igv", 1);
 
         const data = await getDatos(`${host}detalleevento.controller.php`, params);
         console.log("data -> ", data);
@@ -203,6 +217,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await obtenerSucursalesPorEmpresa()
     await obtenerClientes()
     await dataFilters()
+    await obtenerUltimoSerieCorrelativo()
 
     // ************************************************** REGISTRO DE DATA *******************************************************
 
@@ -342,8 +357,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             <tr>
                 <td></td>
                 <td>Presentación artística de ${dp[0]?.nom_usuario}</td>
-                <td>S/ ${tarifaArtista[0]?.precio}</td>
-                <td>S/ ${tarifaArtista[0]?.precio}</td>
+                <td>S/ ${tarifaArtista[0]?.precio ?? "Sin Tarifa"}</td>
+                <td>S/ ${tarifaArtista[0]?.precio ?? "Sin Tarifa"}</td>
             </tr>
         `
 
@@ -364,16 +379,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else if (dp[0]?.igv == 0) {
             totalConIgv = totalGravado
             igvTotal = 0;
-            
+
             showToast("Los contratos sin IGV deben emitirse mediante una nota de venta", "INFO")
             limpiarContenidoDetalleProducto()
             return
         }
 
         console.log("totalConIgv antes de pintar -> ", totalConIgv);
-        $q("#txtOperacionGravada").innerHTML = `S/ ${totalGravado.toFixed(2)}`
+
+        if (isNaN(totalGravado) || isNaN(totalConIgv)) {
+            console.log("entrando ....");
+            $q("#txtOperacionGravada").innerHTML = 'S/ 0.00'
+            $q("#txtIGV").innerHTML = 'S/ 0.00'
+            $q("#txtImporteTotal").innerHTML = 'S/ 0.00'
+            return
+        }
+        $q("#txtOperacionGravada").innerHTML = `S/ ${totalGravado.toFixed(2) ? totalGravado.toFixed(2) : "0.00"}`
         $q("#txtIGV").innerHTML = `S/ ${igvTotal == 0 ? 'No incluye' : igvTotal.toFixed(2)}`
-        $q("#txtImporteTotal").innerHTML = `S/ ${totalConIgv.toFixed(2)}`
+        $q("#txtImporteTotal").innerHTML = `S/ ${totalConIgv.toFixed(2) ? totalConIgv.toFixed(2) : "0.00"}`
 
         $q("#importeletra").value = n2words(totalConIgv, {
             lang: 'es'
@@ -553,7 +576,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return
             }
             else if (rptFactura?.success == true) {
-                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
+                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000)
                 const nuevoComprobante = await registrarComprobante(iddp, idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, 'F001', '00000001', $q("#tipomoneda").value, totalConIgv, igvObtenido, $q("#noperacion").value)
                 console.log("nuevo comprobante -> ", nuevoComprobante);
                 console.log("detalle > ", detalle);
@@ -610,7 +633,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return
             }
             else if (rptFactura?.success == true) {
-                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000, `${hostOnly}/views/comprobantes/facturas/listar-facturas`)
+                showToast(`¡${rptFactura?.estado}!, ${rptFactura?.descripcion}`, "SUCCESS", 6000)
                 const nuevoComprobante = await registrarComprobante(iddp, idsucursalObtenido, idclienteObtenido, '01', $q("#tipopago").value, nuevoCorrelativo.serie, nuevoCorrelativo.nuevoCorrelativo, $q("#tipomoneda").value, totalConIgv, igvObtenido, $q("#noperacion").value)
                 console.log("nuevo comprobante -> ", nuevoComprobante);
                 console.log("detalle > ", detalle);
@@ -637,7 +660,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
 
 
-    $q("#tipopago").addEventListener("change", async (e) => {
+    /* $q("#tipopago").addEventListener("change", async (e) => {
         const tipo = e.target.value
         console.log(tipo);
         if (parseInt(tipo) == 2) {
@@ -650,36 +673,54 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.querySelectorAll(".cuota-dinamica").forEach(tr => tr.remove());
         cuotas = [];
         contadorCuotas = 1;
+    }) */
+
+    $q("#tipopago").addEventListener("change", async (e) => {
+        const tipo = e.target.value
+        console.log(tipo);
+        if (parseInt(tipo) == 3) {
+            $q("#contenedor-btn-agregar-cuota").hidden = false
+            $q("#noperacion").value = ''
+        } else if (parseInt(tipo) == 1) {
+            $q("#contenedor-btn-agregar-cuota").hidden = true
+            $q("#noperacion").value = ''
+            console.log("cambiando .zzzz");
+        }
+        document.querySelectorAll(".cuota-dinamica").forEach(tr => tr.remove());
+        cuotas = [];
+        contadorCuotas = 1;
     })
 
-    $q("#btnAgregarCuota").addEventListener("click", () => {
-        nuevaCuota = document.createElement("tr");
-        nuevaCuota.classList.add("cuota-dinamica");
+    /*     $q("#btnAgregarCuota").addEventListener("click", () => {
+            nuevaCuota = document.createElement("tr");
+            nuevaCuota.classList.add("cuota-dinamica");
+    
+            nuevaCuota.innerHTML = `
+                <td colspan="2" class="no-border"></td>
+                <td class="no-border">
+                    <input type="text" class="form-control input-monto" placeholder="0.00 (Cuota ${contadorCuotas})">
+                </td>
+                <td class="no-border">
+                    <div class="d-flex gap-2 align-items-center">
+                        <input type="date" class="form-control form-control-sm input-fecha" style="min-width: 120px;">
+                        <button class="btn btn-danger btn-sm btnQuitarCuota">X</button>
+                    </div>
+                </td>
+            `;
+    
+    
+            // Inserta la nueva cuota justo antes del botón
+            const botonAgregar = $q("#contenedor-btn-agregar-cuota");
+            botonAgregar.parentNode.insertBefore(nuevaCuota, botonAgregar);
+    
+            contadorCuotas++;
+            // Guardamos una referencia a los inputs para leerlos luego
+            const inputMonto = nuevaCuota.querySelector(".input-monto");
+            const inputFecha = nuevaCuota.querySelector(".input-fecha");
+    
+            cuotas.push({ inputMonto, inputFecha }); // guardamos los elementos DOM
+        });
+     */
 
-        nuevaCuota.innerHTML = `
-            <td colspan="2" class="no-border"></td>
-            <td class="no-border">
-                <input type="text" class="form-control input-monto" placeholder="0.00 (Cuota ${contadorCuotas})">
-            </td>
-            <td class="no-border">
-                <div class="d-flex gap-2 align-items-center">
-                    <input type="date" class="form-control form-control-sm input-fecha" style="min-width: 120px;">
-                    <button class="btn btn-danger btn-sm btnQuitarCuota">X</button>
-                </div>
-            </td>
-        `;
-
-
-        // Inserta la nueva cuota justo antes del botón
-        const botonAgregar = $q("#contenedor-btn-agregar-cuota");
-        botonAgregar.parentNode.insertBefore(nuevaCuota, botonAgregar);
-
-        contadorCuotas++;
-        // Guardamos una referencia a los inputs para leerlos luego
-        const inputMonto = nuevaCuota.querySelector(".input-monto");
-        const inputFecha = nuevaCuota.querySelector(".input-fecha");
-
-        cuotas.push({ inputMonto, inputFecha }); // guardamos los elementos DOM
-    });
     // *****************************************************************************************************************************
 })

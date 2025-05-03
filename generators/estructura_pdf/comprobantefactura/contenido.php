@@ -99,6 +99,14 @@ function numeroATexto($numero)
     return ucfirst($formatter->format($numero));
 }
 
+$tiposPago = [
+    1 => "Al contado",
+    2 => "Crédito",
+    3 => "Deposito"
+];
+$formaPago = $tiposPago[$infocomprobante[0]['tipopago']] ?? "Otro";
+
+
 ?>
 
 <body>
@@ -136,7 +144,9 @@ function numeroATexto($numero)
         <strong>RUC/DNI:</strong> <?= $infocomprobante[0]['ndocumento'] ?><br>
         <strong>Dirección:</strong> <?= $infocomprobante[0]['direccion'] ?><br>
         <strong>Tipo de moneda:</strong> <?= $nombreMoneda ?><br>
-        <strong>Forma de pago:</strong> <?= ($infocomprobante[0]['tipopago'] == 1) ? "Al contado" : (($infocomprobante[0]['tipopago'] == 2) ? "Crédito" : "Otro") ?><br>
+        <strong>Forma de pago:</strong> <?= $formaPago ?><br>
+        <strong>N° de operación:</strong> <?= $infocomprobante[0]['noperacion'] ?><br>
+
     </div>
 
     <table class="productos" style="margin-bottom: 15px;">

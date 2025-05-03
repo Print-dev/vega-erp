@@ -36,6 +36,10 @@ if (isset($_GET['operation'])) {
             echo json_encode($comprobante->obtenerCuotasFacturaPorIdComprobante(['idcomprobante' => $_GET['idcomprobante']]));
             break;
 
+        case 'obtenerUltimoSerieCorrelativo':
+            echo json_encode($comprobante->obtenerUltimoSerieCorrelativo());
+            break;
+
         case 'filtrarFacturas':
             $cleanData = [
                 'fechaemision' => $_GET['fechaemision'] === "" ? null : $comprobante->limpiarCadena($_GET['fechaemision']),

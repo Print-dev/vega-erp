@@ -29,6 +29,7 @@ $idcomprobante = isset($_GET['idcomprobante']) && $_GET['idcomprobante'] !== "" 
 $idtipodoc = isset($_GET['idtipodoc']) && $_GET['idtipodoc'] !== "" ? $comprobante->limpiarCadena($_GET['idtipodoc']) : null;
 
 $infocomprobante = $comprobante->obtenerComprobantePorTipoDoc(['idcomprobante' => $idcomprobante, 'idtipodoc' => $idtipodoc]);
+//die(print_r($infocomprobante));
 $cuotasComprobante = $comprobante->obtenerCuotasFacturaPorIdComprobante(['idcomprobante' => $idcomprobante]);
 //die(print_r($cuotasComprobante));
 $infoEmpresa = $empresa->obtenerDatosEmpresa();

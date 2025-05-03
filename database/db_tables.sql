@@ -181,7 +181,7 @@ CREATE table detalles_presentacion (
     constraint	uk_ncotizacion 			UNIQUE(ncotizacion),
     constraint uk_idp 					UNIQUE(iddetalle_presentacion)
 )engine=innodb;
-
+-- select  * from detalles_presentacion;
 CREATE TABLE responsables_boleteria_contratoreservasreservas (
 	idresponsablecontrato	int auto_increment primary key,
     iddetalle_presentacion 	int not null,
@@ -435,6 +435,7 @@ select * from tareas_diaria_asignacion;
 -- ALTER TABLE comprobantes
 -- ADD COLUMN iddetallepresentacion INT not NULL AFTER idcomprobante;
 -- ALTER TABLE comprobantes ADD CONSTRAINT fk_iddp_compr foreign key (iddetallepresentacion) references detalles_presentacion (iddetalle_presentacion)
+-- ALTER TABLE comprobantes ADD COLUMN noperacion	varchar(15) null;
 CREATE TABLE comprobantes (
 	idcomprobante		INT auto_increment PRIMARY KEY,
     iddetallepresentacion	int not null,
@@ -454,7 +455,7 @@ CREATE TABLE comprobantes (
     constraint fk_idsucursal_comp foreign key (idsucursal) references sucursales (idsucursal),
 	constraint fk_iddp_comp foreign key (iddetallepresentacion) references detalles_presentacion (iddetalle_presentacion)
 ) ENGINE = INNODB;
-
+select * from comprobantes;
 CREATE TABLE items_comprobante (
 	iditemcomprobante	int auto_increment primary key,
     idcomprobante	int not null,
@@ -494,8 +495,9 @@ CREATE TABLE pagos_cuota (
     noperacion	varchar(20) null,
     constraint 	fk_idcuotacomprobante_pago	foreign key (idcuotacomprobante) references cuotas_comprobante (idcuotacomprobante)
 ) ENGINE = INNODB;
-
+select  * from detalles_presentacion;
 select * from notificaciones;
 select * from agenda_edicion;
 select * from convenios;
 select * from precios_entrada_evento;
+select * from reparticion_ingresos;

@@ -60,7 +60,8 @@ if (isset($_GET['operation'])) {
       
     case 'obtenerDetallesPresentacionPorModalidad':
       $cleanData = [
-        'modalidad' => $_GET['modalidad'] === "" ? null : $detalleevento->limpiarCadena($_GET['modalidad'])
+        'modalidad' => $_GET['modalidad'] === "" ? null : $detalleevento->limpiarCadena($_GET['modalidad']),
+        'igv' => $_GET['igv'] === "" ? null : $detalleevento->limpiarCadena($_GET['igv']),
       ];
       echo json_encode($detalleevento->obtenerDetallesPresentacionPorModalidad($cleanData));
       break;

@@ -146,6 +146,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const params = new URLSearchParams();
         params.append("operation", "obtenerDetallesPresentacionPorModalidad");
         params.append("modalidad", 2);
+        params.append("igv", 0);
 
         const data = await getDatos(`${host}detalleevento.controller.php`, params);
         console.log("data -> ", data);
@@ -322,8 +323,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             <tr>
                 <td></td>
                 <td>Presentación artística de ${dp[0]?.nom_usuario}</td>
-                <td>S/ ${tarifaArtista[0]?.precio}</td>
-                <td>S/ ${tarifaArtista[0]?.precio}</td>
+                <td>S/ ${tarifaArtista[0]?.precio ?? "Sin tarifa"}</td>
+                <td>S/ ${tarifaArtista[0]?.precio ?? "Sin tarifa"}</td>
             </tr>
         `
 
@@ -353,7 +354,10 @@ totalConIgv = totalGravado + igvTotal; */
                         showToast("Los contratos sin IGV deben emitirse mediante una nota de venta", "INFO")
                         limpiarContenidoDetalleProducto() */
         }
-
+        if(isNaN(totalConIgv)){
+            $q("#txtImporteTotal").innerHTML = "0.00"
+            return
+        }
         console.log("totalConIgv antes de pintar -> ", totalConIgv);
         //$q("#txtOperacionGravada").innerHTML = `S/ ${totalGravado.toFixed(2)}`
         //$q("#txtIGV").innerHTML = `S/ ${igvTotal == 0 ? 'No incluye' : igvTotal.toFixed(2)}`
@@ -477,6 +481,7 @@ totalConIgv = totalGravado + igvTotal; */
             console.log("nuevo comprobante -> ", nuevoComprobante);
             console.log("detalle > ", detalle);
             if (nuevoComprobante?.idcomprobante) {
+                showToast("Nota de venta registrada", "SUCCESS", 3000,  `${hostOnly}/views/comprobantes/notasdeventa/listar-notasdeventa`)
                 detalle.forEach(async item => {
                     const itemRegistrado = await registrarItemComprobante(nuevoComprobante?.idcomprobante, item?.descripcion, item?.valorunitario, item?.preciounitario)
                     console.log("item registrado -> ", itemRegistrado);
@@ -495,6 +500,7 @@ totalConIgv = totalGravado + igvTotal; */
             console.log("nuevo comprobante -> ", nuevoComprobante);
             console.log("detalle > ", detalle);
             if (nuevoComprobante?.idcomprobante) {
+                showToast("Nota de venta registrada", "SUCCESS", 3000,  `${hostOnly}/views/comprobantes/notasdeventa/listar-notasdeventa`)
                 detalle.forEach(async item => {
                     const itemRegistrado = await registrarItemComprobante(nuevoComprobante?.idcomprobante, item?.descripcion, item?.valorunitario, item?.preciounitario)
                     console.log("item registrado -> ", itemRegistrado);

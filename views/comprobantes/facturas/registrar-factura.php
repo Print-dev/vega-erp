@@ -14,14 +14,14 @@
                     <div class="col-md-3">
                         <div class="form-floating">
                             <input type="text" id="nserie" name="nserie"
-                                class="form-control" readonly value="F001">
+                                class="form-control" readonly>
                             <label for="nserie" class="form-label">Serie</label>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-floating">
                             <input type="text" id="correlativo" name="correlativo"
-                                class="form-control" readonly value="00000123">
+                                class="form-control" readonly>
                             <label for="correlativo" class="form-label">Correlativo</label>
                         </div>
                     </div>

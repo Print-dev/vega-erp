@@ -25,8 +25,8 @@ BEGIN
     END;
     
     -- Insertar la notificación
-    INSERT INTO comprobantes (idsucursal, iddetallepresentacion, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda , monto, tieneigv, noperacion)
-    VALUES (_idsucursal , _iddetallepresentacion,_idcliente, _idtipodoc, _tipopago, _nserie, _correlativo, _tipomoneda, _monto, _tieneigv, nullif(_noperacion,''));
+    INSERT INTO comprobantes (iddetallepresentacion, idsucursal, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda , monto, tieneigv, noperacion)
+    VALUES (_iddetallepresentacion, _idsucursal, _idcliente, _idtipodoc, _tipopago, _nserie, _correlativo, _tipomoneda, _monto, _tieneigv, nullif(_noperacion,''));
 
     IF existe_error = 1 THEN
         SET _idcomprobante = -1;
@@ -34,7 +34,8 @@ BEGIN
         SET _idcomprobante = LAST_INSERT_ID();
     END IF;
 END $$
-
+select * from comprobantes;
+-- CALL sp_registrar_comprobante (@idcomprobante, 19, 1, 1, '01', 1, 'F001', '00000001', 'PEN', 49205, 1, '');
 DROP PROCEDURE IF EXISTS `sp_registrar_item_comprobante`;
 DELIMITER $$
 CREATE PROCEDURE sp_registrar_item_comprobante(
@@ -98,7 +99,7 @@ BEGIN
     WHERE COMP.idcomprobante = _idcomprobante
     AND COMP.idtipodoc = _idtipodoc;
 END $$
-select * from sucursales;
+select * from comprobantes;
 DROP PROCEDURE IF EXISTS sp_obtener_notas_de_venta;
  DELIMITER $$
  CREATE PROCEDURE sp_obtener_notas_de_venta
