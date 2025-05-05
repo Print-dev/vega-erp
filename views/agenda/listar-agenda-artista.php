@@ -284,6 +284,13 @@
                         <label for="filmmaker" class="form-label">Filmmaker</label>
                     </div>
                 </div>
+                <div class="text-center my-4 position-relative">
+                    <hr>
+                    <span class="position-absolute top-50 start-50 translate-middle bg-white px-3">Filmakers Asignados</span>
+                </div>
+                <div class="contenedor-filmmakers-asignados">
+                
+                </div>
             </div>
             <div class="modal-footer text-end">
                 <button type="button" class="btn btn-secondary" id="btnGuardarFilmmaker">Asignar</button>

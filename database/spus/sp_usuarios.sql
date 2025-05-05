@@ -11,8 +11,8 @@ CREATE PROCEDURE sp_registrar_usuario
     IN _claveacceso VARBINARY(255),
     IN _color CHAR(7),
     IN _porcentaje INT,
-    IN _marcaagua VARCHAR(40),
-    IN _firma	VARCHAR(40),
+    IN _marcaagua VARCHAR(80),
+    IN _firma	VARCHAR(80),
     IN _idnivelacceso INT
 )
 BEGIN
@@ -135,8 +135,8 @@ CREATE PROCEDURE sp_actualizar_usuario (
     IN _claveacceso VARBINARY(255),
     IN _color	CHAR(7),
     IN _porcentaje INT,
-    IN _marcaagua varchar(40),
-    IN _firma	VARCHAR(40)
+    IN _marcaagua varchar(80),
+    IN _firma	VARCHAR(80)
 )
 BEGIN
 		UPDATE usuarios 

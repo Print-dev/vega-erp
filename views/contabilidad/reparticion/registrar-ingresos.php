@@ -11,6 +11,7 @@
                     <thead class="table-dark">
                         <tr>
                             <th style="min-width: 100px;">Tipo Pago</th>
+                            <th style="min-width: 100px;">Medio</th>
                             <th style="min-width: 100px;">N° Operacion</th>
                             <th style="min-width: 300px; max-width: 500px; white-space: normal;">Descripcion</th>
                             <th style="min-width: 150px;">Monto</th>
@@ -23,7 +24,7 @@
                     </div>
                     <tfoot class="monto">
                         <tr>
-                            <td colspan="3" class="text-end">Total:</td>
+                            <td colspan="4" class="text-end">Total:</td>
                             <td class="text-center" id="totalIngresos"></td>
                         </tr>
                     </tfoot>
@@ -55,8 +56,8 @@
                     <div class="row">
                         <div class="col-md-12 mb-3">
                             <div class="form-floating">
-                            <input type="text" id="descripcion" name="descripcion" class="form-control">
-                            <label for="descripcion" class="form-label">Descripcion</label>
+                                <input type="text" id="descripcion" name="descripcion" class="form-control">
+                                <label for="descripcion" class="form-label">Descripcion</label>
                             </div>
                         </div>
                         <div class="col-md-12 mb-3">
@@ -73,6 +74,12 @@
                                     <option value="2">Contado</option>
                                 </select>
                                 <label for="tipopago" class="form-label">Tipo de pago</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <input type="text" id="medio" name="medio" class="form-control">
+                                <label for="medio" class="form-label">Medio</label>
                             </div>
                         </div>
                         <div class="col-md-12 mb-3">

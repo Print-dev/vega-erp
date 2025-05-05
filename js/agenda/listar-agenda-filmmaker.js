@@ -42,9 +42,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
     })();
 
-    function enviarWebsocket(type, mensaje) {
+    function enviarWebsocket(idusuario, type, mensaje) {
         if (wsReady) {
             ws.send(JSON.stringify({
+                idusuario: idusuario,
                 type: type, // Tipo de mensaje WebSocket
                 /* idusuariodest: idusuariodest, // Usuario destinatario
                 idusuariorem: idusuariorem, // Usuario remitente
@@ -97,7 +98,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function renderizarAdmins(usuarios) {
         const contenedor = document.querySelector(".contenedor-admins");
-        contenedor.innerHTML = `<h5 class="mb-3">Enviar a</h5>`; // Limpia el contenido previo
+        contenedor.innerHTML = `<h5 class="mb-3">Notificar a</h5>`; // Limpia el contenido previo
 
         usuarios.forEach(usuario => {
 
@@ -431,7 +432,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 console.log("registrando viatic..");
                 const notificacionRegistrada = await registrarNotificacion(idAdmin, idusuarioLogeado, 1, viaticoRegistrado.idviatico, mensaje);
                 console.log(`Notificación enviada a ${idAdmin}:`, notificacionRegistrada);
-                enviarWebsocket("viatico", mensaje)
+                enviarWebsocket(idAdmin, "viatico", mensaje)
             }
 
             document.querySelectorAll(".chkAdmin").forEach(checkbox => {
@@ -727,7 +728,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                           <button class="btn btn-primary" id="btnVerViatico" style="flex: 1;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}" data-idusuarioFilmmaker="${arg.event.extendedProps.idusuariofilmmaker}" data-iddp="${arg.event.extendedProps?.iddetalle_presentacion}" data-idviatico="${arg.event.extendedProps?.idviatico}">Ver Viatico</button>
                         ` : ``}
                 
-                        ${arg.event.extendedProps.estadoBadge.text == "Incompleto" || arg.event.extendedProps.estadoBadge.text == "No Confirmado" ? '' : nivelacceso == "Filmmaker" ? `
+                        ${arg.event.extendedProps.estadoBadge.text == "Incompleto" || arg.event.extendedProps.estadoBadge.text == "No Confirmado" ? '<div class="mt-2 bg-white"><strong>Pendiente a ser aprobado</strong></div>' : nivelacceso == "Filmmaker" ? `
                           <button class="btn btn-primary" id="btnViatico" style="flex: 1;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}" data-idviatico="${arg.event.extendedProps.idviatico}" data-iddepartamento="${arg.event.extendedProps.iddepartamento}">Reportar Viático</button>
                         ` : ''}
                 

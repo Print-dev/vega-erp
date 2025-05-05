@@ -508,16 +508,13 @@
             <div class="modal-body">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="row g-3 justify-content-center">
+                        <div class="row justify-content-center">
                             <div class="col-md-6">
-                                <div class="form-floating mb-3">
-                                    <input type="number" class="form-control" id="general" name="general" placeholder="General">
-                                    <label for="general">General</label>
+                                <div class=" mb-3">
+                                    <label for="entradas">Descripcion</label>
+                                    <textarea class="form-control" id="entradas" name="entradas" rows="10"></textarea>
                                 </div>
-                                <div class="form-floating">
-                                    <input type="number" class="form-control" id="vip" name="vip" placeholder="VIP">
-                                    <label for="vip">VIP</label>
-                                </div>
+                               
                             </div>
                         </div>
 

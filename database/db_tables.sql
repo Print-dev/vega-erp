@@ -38,11 +38,29 @@ CREATE TABLE empresa (
 	nombrecomercial	varchar(120) null, -- este nombre aparecera en la sidebar como nombre de la aplicacion
     nombreapp 		varchar(120) null,
     direccion		varchar(120)  null,
-    web				varchar(120)  null,
-    usuariosol		char(8) null,
-    clavesol		char(12) null,
-    certificado		text null
+    web				varchar(120)  null
+    -- usuariosol		char(8) null,
+    -- clavesol		char(12) null,
+    -- certificado		text null,
+    -- correo			varchar(120) null,
+    -- contrasenagmailapp varchar(120) null
 ) ENGINE = INNODB;
+select * from empresa;
+ALTER TABLE empresa
+MODIFY COLUMN logoempresa VARCHAR(80) NULL;
+ALTER TABLE empresa ADD COLUMN correo			varchar(120) null;
+ALTER TABLE empresa ADD COLUMN contrasenagmailapp			varchar(120) null;
+ALTER TABLE empresa ADD COLUMN ncuenta	varchar(30) null;
+ALTER TABLE empresa ADD COLUMN ncci	varchar(30) null;
+ALTER TABLE empresa ADD COLUMN banco varchar(30) null;
+ALTER TABLE empresa ADD COLUMN moneda varchar(30) null;
+
+ALTER TABLE empresa
+  DROP COLUMN usuariosol,
+  DROP COLUMN clavesol,
+  DROP COLUMN certificado;
+
+
 CREATE TABLE sucursales (
 	idsucursal		int auto_increment primary key,
     idempresa		int not null,
@@ -86,6 +104,7 @@ CREATE TABLE nivelaccesos
     update_at	  DATETIME			  NULL
 )ENGINE=INNODB;
 
+
 CREATE TABLE usuarios (
     idusuario INT AUTO_INCREMENT PRIMARY KEY,
     idsucursal INT NOT NULL,
@@ -110,17 +129,24 @@ CREATE TABLE usuarios (
         REFERENCES sucursales (idsucursal)
 )  ENGINE=INNODB;
 
+-- ALTER TABLE usuarios
+-- MODIFY COLUMN marcaagua VARCHAR(80) NULL,
+-- MODIFY COLUMN firma VARCHAR(80) NULL;
+
 -- ALTER TABLE usuarios ADD COLUMN idsucursal int not null;
 CREATE TABLE tarifario (
 	idtarifario int auto_increment primary key,
     idusuario		int not null,
     idprovincia	int not null,
 	precio			decimal(10,2) not null,
+    -- tipo_evento	int	not null,
     constraint fk_idartista_tar foreign key (idusuario) references usuarios (idusuario),
     constraint fk_provincia_tarifario_art foreign key (idprovincia) references provincias (idprovincia)
 ) ENGINE = INNODB;
-
-
+ALTER TABLE tarifario
+  ADD COLUMN tipo_evento INT NOT NULL;
+-- SELECT * FROM tarifario WHERE idprovincia = 1 and tipo_evento = 2;
+select * from tarifario;
 CREATE TABLE permisos (
     idpermiso INT AUTO_INCREMENT PRIMARY KEY,
     idnivelacceso INT NOT NULL,
@@ -200,6 +226,11 @@ CREATE TABLE precios_entrada_evento (
     constraint fk_iddp_entrada_convenio foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 ) ENGINE = INNODB;
 
+ALTER TABLE precios_entrada_evento
+  DROP COLUMN preciogeneral,
+  DROP COLUMN preciovip,
+  ADD COLUMN entradas TEXT NULL;
+
 CREATE TABLE reportes_artista_evento (
 	idreporte	int auto_increment primary key,
     iddetalle_presentacion int not null,
@@ -217,6 +248,7 @@ CREATE TABLE agenda_asignaciones ( -- tabla que asigna la agenda a un filmmaker
     FOREIGN KEY (iddetalle_presentacion) REFERENCES detalles_presentacion(iddetalle_presentacion) ON DELETE CASCADE,
     FOREIGN KEY (idusuario) REFERENCES usuarios(idusuario) ON DELETE CASCADE
 );
+select * from agenda_asignaciones;
 create table convenios (
 	idconvenio	int auto_increment primary key,
     iddetalle_presentacion int not null,
@@ -300,7 +332,7 @@ CREATE TABLE cajachica (
     constraint fk_iddp_cajachicaa foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
     constraint fk_idmonto_caja foreign key (idmonto) references montoCajaChica (idmonto)
 ) engine = innodb;
-
+select * from cajachica;
 CREATE TABLE gastos_cajachica (
 	idgasto		int auto_increment primary key,
     idcajachica		int not null,
@@ -352,6 +384,7 @@ CREATE TABLE ingresos_evento (
     noperacion	varchar(15) null,	
     constraint fk_idreparticion_ing foreign key (idreparticion) references reparticion_ingresos (idreparticion)
 ) engine = innodb;
+ALTER TABLE ingresos_evento ADD COLUMN     medio		varchar(30) null;
 
 CREATE TABLE egresos_evento (
 	idegreso	int auto_increment primary key,

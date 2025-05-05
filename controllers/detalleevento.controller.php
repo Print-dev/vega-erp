@@ -72,6 +72,8 @@ if (isset($_GET['operation'])) {
       ];
       echo json_encode($detalleevento->obtenerNotificacionDP($cleanData));
       break;
+      
+
   }
 }
 if (isset($_POST['operation'])) {
@@ -163,8 +165,7 @@ if (isset($_POST['operation'])) {
     case 'registrarPrecioEvento':
       $cleanData = [
         'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']) ? $detalleevento->limpiarCadena($_POST['iddetallepresentacion']) : null,
-        'preciogeneral'   => $detalleevento->limpiarCadena($_POST['preciogeneral']) ? $detalleevento->limpiarCadena($_POST['preciogeneral']) : null,
-        'preciovip'   => $detalleevento->limpiarCadena($_POST['preciovip']) ? $detalleevento->limpiarCadena($_POST['preciovip']) : null,
+        'entradas'   => $detalleevento->limpiarCadena($_POST['entradas']) ? $detalleevento->limpiarCadena($_POST['entradas']) : null,
       ];
 
       $rpt = $detalleevento->registrarPrecioEvento($cleanData);
@@ -187,8 +188,7 @@ if (isset($_POST['operation'])) {
     case 'actualizarPrecioEntradaEvento':
       $cleanData = [
         'idprecioentradaconvenio'   => $detalleevento->limpiarCadena($_POST['idprecioentradaconvenio']) ? $detalleevento->limpiarCadena($_POST['idprecioentradaconvenio']) : null,
-        'preciogeneral'   => $detalleevento->limpiarCadena($_POST['preciogeneral']) ? $detalleevento->limpiarCadena($_POST['preciogeneral']) : null,
-        'preciovip'   => $detalleevento->limpiarCadena($_POST['preciovip']) ? $detalleevento->limpiarCadena($_POST['preciovip']) : null,
+        'entradas'   => $detalleevento->limpiarCadena($_POST['entradas']) ? $detalleevento->limpiarCadena($_POST['entradas']) : null,
       ];
 
       $rpt = $detalleevento->actualizarPrecioEntradaEvento($cleanData);

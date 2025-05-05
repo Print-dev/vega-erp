@@ -1,7 +1,7 @@
 </main>
 <!-- Modal de crear especificaciones -->
 <div class="modal fade" id="mdl-crear-espec" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"  style="max-width: 650px;">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 650px;">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="staticBackdropLabel">Crear Especificacion</h1>
@@ -47,16 +47,16 @@
   const hostOnlyJs = "http://localhost/vega-erp"
   <?php $hostOnly = "http://localhost/vega-erp" ?>
   const hostOnly = "<?= $hostOnly ?>";
-  <?php $hostWithAppName = "http://localhost/vega-erp"?>
+  <?php $hostWithAppName = "http://localhost/vega-erp" ?>
 </script>
 <!-- <script>
     const idusuarioLogeado = "<?php echo $_SESSION['login']['idusuario']; ?>"
     const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
 </script> -->
 
-  <!-- Notificaciones js -->
+<!-- Notificaciones js -->
 
-  <script src="<?= $hostOnly ?>/js/notificacionGlobal.js"></script>
+<script src="<?= $hostOnly ?>/js/notificacionGlobal.js"></script>
 <!-- Core -->
 <script
   src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -80,7 +80,6 @@
 
 <!-- <script src="<?= $hostOnly ?>/js/calcularFechaProgramadaTarea.js"></script> -->
 <script>
-
   // Manejo de la apertura/cierre del dropdown
   const dropdownButton = document.getElementById('drop-sb');
   dropdownButton?.addEventListener('click', () => {

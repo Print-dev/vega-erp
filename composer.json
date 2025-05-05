@@ -3,6 +3,8 @@
         "robrichards/xmlseclibs": "^3.1",
         "ninosimeon/xmlseclibs_sunat": "^3.0",
         "greenter/core": "^5.1",
-        "greenter/lite": "^5.1"
+        "greenter/lite": "^5.1",
+        "cloudinary/cloudinary_php": "^3.1",
+        "phpmailer/phpmailer": "^6.10"
     }
 }

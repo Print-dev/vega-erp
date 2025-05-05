@@ -18,11 +18,12 @@
                     <div class="row">
                         <!-- Vista previa del logo + botón subir -->
                         <div class="col-md-4 d-flex flex-column align-items-center">
-                            <img id="logo-preview" src="ruta/logo-por-defecto.png" class="img-fluid mb-2 border rounded" style="max-height: 180px; object-fit: contain;">
-                            <button id="upload_widget" type="button" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
-                                <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Logo (app)
-                            </button>
-
+                            <img id="previewImagenLogo" src="ruta/logo-por-defecto.png" class="img-fluid mb-2 border rounded" style="max-height: 180px; object-fit: contain;">
+                            <input id="upload_widget_logo" type="file" name="upload_widget_logo" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Logo (app)
+                            <!--  <div class="mt-3">
+                                <img id="previewImagenLogo" src="" alt="Vista previa" class="img-fluid rounded shadow" style="max-height: 300px;">
+                            </div> -->
                         </div>
 
                         <!-- Inputs: ruc, razonsocial, nombrecomercial, direccion -->
@@ -60,6 +61,10 @@
                     </div>
 
                     <!-- Inputs en columna -->
+                    <!-- <div class="text-center my-4 position-relative">
+                        <hr>
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3">Sunat</span>
+                    </div>
                     <div class="row mt-4">
                         <div class="col-md-4 mb-3">
                             <label for="usuariosol" class="form-label">Usuario SOL</label>
@@ -73,12 +78,49 @@
                             <label for="certificado" class="form-label">Certificado</label>
                             <textarea name="certificado" id="certificado" class="form-control" rows="3"></textarea>
                         </div>
+                    </div> -->
+                    <div class="text-center my-4 position-relative">
+                        <hr>
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3">Info Banco</span>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-2 mb-3">
+                            <label for="banco" class="form-label">Banco</label>
+                            <input type="text" name="banco" id="banco" class="form-control">
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label for="moneda" class="form-label">Moneda</label>
+                            <input type="text" name="moneda" id="moneda" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="ncuenta" class="form-label">N° Cuenta de ahorro</label>
+                            <input type="text" name="ncuenta" id="ncuenta" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="ncci" class="form-label">N° CCI</label>
+                            <input type="text" name="ncci" id="ncci" class="form-control">
+                        </div>
+
+                    </div>
+                    <div class="text-center my-4 position-relative">
+                        <hr>
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3">Correo para solicitudes y envios</span>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-6 mb-3">
+                            <label for="correoapp" class="form-label">Correo</label>
+                            <input type="text" name="correoapp" id="correoapp" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="contrasenagmailapp" class="form-label">Contraseña de aplicación</label>
+                            <input type="text" name="contrasenagmailapp" id="contrasenagmailapp" class="form-control">
+                        </div>
                     </div>
                 </div>
 
                 <div class="card-footer d-flex justify-content-end">
                     <div class="d-flex gap-2">
-                        <button type="button" id="btnActualizarEvento" class="btn btn-primary">
+                        <button type="button" id="btnActualizarEmpresa" class="btn btn-primary">
                             <i class="fa-solid fa-floppy-disk px-2"></i>Actualizar</button>
                     </div>
                 </div>

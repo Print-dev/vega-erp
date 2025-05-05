@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
   // VARIABLES
-  let imagen_public_id = "";
+  /* let imagen_public_id = "";
   let imagen_public_id_firma = "";
-  const BASE_CLOUDINARY_URL = "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742792207/";
+  const BASE_CLOUDINARY_URL = "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742792207/"; */
   let sucursal = $q("#sucursal")
 
   function $q(object = null) {
@@ -26,60 +26,60 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ******************************* CLODUINARY ********************************************************************
 
-  let myWidget = cloudinary.createUploadWidget(
-    {
-      cloudName: "dynpy0r4v",
-      uploadPreset: "vegaimagenes",
-      folder: "vegaimagenes",
-    },
-    async (error, result) => {
-      if (!error && result && result.event === "success") {
-        console.log("result -> ", result);
-
-        let previewImagen = document.getElementById("previewImagen");
-        previewImagen.src = result.info.secure_url;
-        previewImagen.classList.remove("d-none");
-        imagen_public_id = result.info?.public_id;
-        //$q("#btnGuardarContenido").disabled = false;
+  /*   let myWidget = cloudinary.createUploadWidget(
+      {
+        cloudName: "dynpy0r4v",
+        uploadPreset: "vegaimagenes",
+        folder: "vegaimagenes",
+      },
+      async (error, result) => {
+        if (!error && result && result.event === "success") {
+          console.log("result -> ", result);
+  
+          let previewImagen = document.getElementById("previewImagen");
+          previewImagen.src = result.info.secure_url;
+          previewImagen.classList.remove("d-none");
+          imagen_public_id = result.info?.public_id;
+          //$q("#btnGuardarContenido").disabled = false;
+        }
       }
-    }
-  );
-
-  let myWidgetFirma = cloudinary.createUploadWidget(
-    {
-      cloudName: "dynpy0r4v",
-      uploadPreset: "vegaimagenes",
-      folder: "vegaimagenes",
-    },
-    async (error, result) => {
-      if (!error && result && result.event === "success") {
-        console.log("result -> ", result);
-
-        let previewImagen = document.getElementById("previewImagenFirma");
-        previewImagen.src = result.info.secure_url;
-        previewImagen.classList.remove("d-none");
-        imagen_public_id_firma = result.info?.public_id;
-        //$q("#btnGuardarContenido").disabled = false;
+    );
+  
+    let myWidgetFirma = cloudinary.createUploadWidget(
+      {
+        cloudName: "dynpy0r4v",
+        uploadPreset: "vegaimagenes",
+        folder: "vegaimagenes",
+      },
+      async (error, result) => {
+        if (!error && result && result.event === "success") {
+          console.log("result -> ", result);
+  
+          let previewImagen = document.getElementById("previewImagenFirma");
+          previewImagen.src = result.info.secure_url;
+          previewImagen.classList.remove("d-none");
+          imagen_public_id_firma = result.info?.public_id;
+          //$q("#btnGuardarContenido").disabled = false;
+        }
       }
-    }
-  );
-
-  $q("#upload_widget")?.addEventListener(
-    "click",
-    function () {
-      myWidget.open();
-    },
-    false
-  );
-
-  $q("#upload_widget_firma")?.addEventListener(
-    "click",
-    function () {
-      myWidgetFirma.open();
-    },
-    false
-  );
-
+    );
+  
+    $q("#upload_widget")?.addEventListener(
+      "click",
+      function () {
+        myWidget.open();
+      },
+      false
+    );
+  
+    $q("#upload_widget_firma")?.addEventListener(
+      "click",
+      function () {
+        myWidgetFirma.open();
+      },
+      false
+    );
+   */
   /* ************************************* OBTENER RECURSOS ******************************************************* */
 
   await obtenerSucursales()
@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ME QUEDE ACA, FALTA IMPLEMENTAR EL USUARIO, SOLO LO COPIE DE OTRO CODIGO por el momento
-  async function registrarUsuario(idsucursal, idpersona) {
+  async function registrarUsuario(idsucursal, idpersona, imagenMarcaAgua, imagenFirma) {
     //const perfilData = await getPerfil(parseInt(selector("perfil").value));
     const params = new FormData();
     params.append("operation", "registrarUsuario");
@@ -161,8 +161,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     params.append("claveacceso", $q("#claveacceso").value);
     params.append("color", $q("#color")?.value ? $q("#color")?.value : '');
     params.append("porcentaje", $q("#porcentaje")?.value ? $q("#porcentaje")?.value : '');
-    params.append("marcaagua", imagen_public_id ? imagen_public_id : '');
-    params.append("firma", imagen_public_id_firma ? imagen_public_id_firma : '');
+    params.append("marcaagua", imagenMarcaAgua ? imagenMarcaAgua : '');
+    params.append("firma", imagenFirma ? imagenFirma : '');
     //params.append("esRepresentante", $q("#esrepresentante").checked ? 1 : 0);
     params.append("idnivelacceso", $q("#idnivelacceso").value);
     const resp = await fetch(`${host}usuario.controller.php`, {
@@ -479,6 +479,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     //    const unikeUser = await searchNomUser($q("#usuario").value);// valida que el nom usuario sea unico
     const unikeEmail = await existeCorreo($q("#correo").value);
     console.log("email encontrado -> ", unikeEmail);
+
+    const imagenInputMarcaAgua = $q("#upload_widget_marcaagua");
+    const fileMarcaAgua = imagenInputMarcaAgua.files[0];
+    const imagenInputFirma = $q("#upload_widget_firma");
+    const fileFirma = imagenInputFirma.files[0];
+
     //const existResp = await existeResponsable(parseInt($q("#area").value)); //valida que no exista un responsable en el area elegida
     //if (parseInt($q("#nivel").value) === 2 && isNaN(parseInt($q("#area").value))) { selectArea = false; }
 
@@ -491,7 +497,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log(data);
         //alert("registrando persona")
         if (data.idpersona > 0) {
-          const usuario = await registrarUsuario($q("#sucursal").value, data.idpersona);
+          const usuario = await registrarUsuario($q("#sucursal").value, data.idpersona, fileMarcaAgua, fileFirma);
           console.log(usuario);
 
           if (usuario.idusuario > 0) {
@@ -517,6 +523,45 @@ document.addEventListener("DOMContentLoaded", async () => {
       //if (unikeUser.length > 0) { message = "El nombre de usuario ya existe"; }
       //if (unikeEmail.length > 0) { message = "El correo electronico ya existe"; }
       showToast(message, "ERROR");
+    }
+  });
+
+  $q("#upload_widget_marcaagua").addEventListener("change", function (e) {
+    console.log("cambiando...");
+    const file = e.target.files[0];
+    console.log("file de imagen event -> ", file);
+    const preview = $q("#previewImagenMarcaAgua");
+
+    if (file && file.type.startsWith("image/")) {
+      console.log("renderizando ,,,,");
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        preview.src = e.target.result;
+        preview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = "";
+      preview.style.display = "none";
+    }
+  });
+
+
+  $q("#upload_widget_firma").addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    console.log("file de imagen event -> ", file);
+    const preview = $q("#previewImagenFirma");
+    
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        preview.src = e.target.result;
+        preview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = "";
+      preview.style.display = "none";
     }
   });
 });

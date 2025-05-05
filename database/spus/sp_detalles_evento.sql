@@ -726,16 +726,29 @@ DROP PROCEDURE if exists sp_actualizar_precios_entrada_evento;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_precios_entrada_evento (
 	IN _idprecioentradaevento INT,
-    IN _preciogeneral INT,
-    IN _preciovip INT
+    IN _entradas TEXT
 )
 BEGIN
 		UPDATE precios_entrada_evento SET
-    preciogeneral = nullif(_preciogeneral, ''),
-    preciovip = nullif(_preciovip, '')
+    entradas = nullif(_entradas, '')
     WHERE idprecioentradaevento = _idprecioentradaevento; 
 END //
 select * from precios_entrada_evento;
 select * from detalles_presentacion;
 select * from clientes;
 -- call sp_actualizar_responsables_boleteria_contrato_evento (1, 3, 3);
+drop procedure if exists sp_obtener_filmmakers_dp;
+DELIMITER //
+CREATE PROCEDURE `sp_obtener_filmmakers_dp`(
+	IN _iddetalle_presentacion	INT
+)
+BEGIN
+	SELECT *
+    FROM
+     agenda_asignaciones AGEN 
+    LEFT JOIN detalles_presentacion  DP ON AGEN.iddetalle_presentacion = DP.iddetalle_presentacion
+    LEFT JOIN usuarios USU ON USU.idusuario = AGEN.idusuario
+    LEFT JOIN personas PER ON PER.idpersona = USU.idpersona 
+    WHERE DP.iddetalle_presentacion = _iddetalle_presentacion;
+END //
+select * from agenda_asignaciones;

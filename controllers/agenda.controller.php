@@ -42,7 +42,7 @@ if (isset($_GET['operation'])) {
       ];
       echo json_encode($agenda->obtenerFilmmakerAsignado($cleanData));
       break;
-      
+
     case 'obtenerAgendaEdicionPorEditorYGeneral':
       $cleanData = [
         'idusuario' => $_GET['idusuario'] === "" ? null : $agenda->limpiarCadena($_GET['idusuario']),
@@ -104,6 +104,13 @@ if (isset($_GET['operation'])) {
     case 'obtenerTodasLasAgendasEdicion':
       echo json_encode($agenda->obtenerTodasLasAgendasEdicion());
       break;
+
+    case 'obtenerFilmmakersDP':
+      $cleanData = [
+        'iddetallepresentacion' => $_GET['iddetallepresentacion'] === "" ? null : $agenda->limpiarCadena($_GET['iddetallepresentacion'])
+      ];
+      echo json_encode($agenda->obtenerFilmmakersDP($cleanData));
+      break;
   }
 }
 //asignarAgendaEditor
@@ -132,7 +139,7 @@ if (isset($_POST['operation'])) {
     case 'subirContenidoEditor':
       $cleanData = [
         'idagendaeditor'   =>  $agenda->limpiarCadena($_POST['idagendaeditor']) ? $agenda->limpiarCadena($_POST['idagendaeditor']) : '',
-        'url'   => $agenda->limpiarCadena($_POST['url']) ?  $agenda->limpiarCadena($_POST['url']) :''
+        'url'   => $agenda->limpiarCadena($_POST['url']) ?  $agenda->limpiarCadena($_POST['url']) : ''
       ];
 
       $respuesta = ['idsubida' => -1];
@@ -145,7 +152,7 @@ if (isset($_POST['operation'])) {
 
       echo json_encode($respuesta);
       break;
-      
+
     case 'registrarNuevoTipoTarea':
       $cleanData = [
         'tipotarea'   =>  $agenda->limpiarCadena($_POST['tipotarea']) ? $agenda->limpiarCadena($_POST['tipotarea']) : ''
@@ -191,7 +198,7 @@ if (isset($_POST['operation'])) {
       break;
 
 
-/*     case 'actualizarAgendaEditor':
+    /*     case 'actualizarAgendaEditor':
       $cleanData = [
         'idagendaeditor' => $agenda->limpiarCadena($_POST['idagendaeditor']),
         'urlimagen' => $agenda->limpiarCadena($_POST['urlimagen']),
@@ -256,6 +263,16 @@ if (isset($_POST['operation'])) {
       ];
 
       $eliminado = $agenda->eliminarTareaUsuario($cleanData);
+
+      echo json_encode($eliminado);
+      break;
+      
+    case 'eliminarFilmmakerDP':
+      $cleanData = [
+        'idasignacion' => $agenda->limpiarCadena($_POST['idasignacion'])
+      ];
+
+      $eliminado = $agenda->eliminarFilmmakerDP($cleanData);
 
       echo json_encode($eliminado);
       break;

@@ -47,28 +47,35 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ****************************************** CONFIGURACION DE NOTIFICACIONE S*********************************
 
-  function recibirNotificacionAPI(body, type) {
+  function recibirNotificacionAPI(idusuario, body, type) {
     console.log("Notification.permission-> ", Notification.permission);
+    console.log("idusuario desde recibir notificacion de api -> ", idusuario);
+    console.log("idusuarioLogeado desde recibir notifacion de api -> ", idusuarioLogeado);
     if (Notification.permission === "granted") {
-      new Notification(`¡Nueva ${type}!`, {
-        body: body,
-        icon: "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png", // Puedes cambiar el icono
-      });
+      if (idusuarioLogeado == idusuario) {
+        new Notification(`¡Nueva ${type}!`, {
+          body: body,
+          icon: "https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png", // Puedes cambiar el icono
+        });
+        return
+      }
     } else {
       console.log("El usuario no concedió permisos.");
     }
   }
 
   // ********************************************* WEBSCOKETS **********************************************************
+  console.log("antes de entrar al webscoekt!!!!!!!!!!!!!!!!!");
   ws.onmessage = async (event) => {
     try {
       console.log("antes de obtener la noti");
+      //console.log("data solo con event -< ", JSON.parse(event));
       const data = JSON.parse(event.data);
       console.log("data -> ", data);
 
       if (data.type === "notificacion") {
         console.log("antes de recibir la notificacion api");
-        recibirNotificacionAPI(data?.mensaje, data?.type)
+        recibirNotificacionAPI(data?.idusuario, data?.mensaje, data?.type)
         console.log("📢 Nueva notificación recibida:", data);
         $q(".contenedor-notificacion").innerHTML = ''
         await obtenerNotificaciones()
@@ -77,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       else if (data.type === "evento") {
         console.log("antes de recibir la notificacion api");
-        recibirNotificacionAPI(data?.mensaje, data?.type)
+        recibirNotificacionAPI(data?.idusuario, data?.mensaje, data?.type)
         console.log("📢 Nueva notificación recibida:", data);
         $q(".contenedor-notificacion").innerHTML = ''
         await obtenerNotificaciones()
@@ -86,7 +93,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       else if (data.type === "asignacion filmmaker") {
         console.log("antes de recibir la notificacion api");
-        recibirNotificacionAPI(data?.mensaje, data?.type)
+        recibirNotificacionAPI(data?.idusuario, data?.mensaje, data?.type)
         console.log("📢 Nueva notificación recibida:", data);
         $q(".contenedor-notificacion").innerHTML = ''
         await obtenerNotificaciones()
@@ -95,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       else if (data.type === "viatico") {
         console.log("antes de recibir la notificacion api");
-        recibirNotificacionAPI(data?.mensaje, data?.type)
+        recibirNotificacionAPI(data?.idusuario, data?.mensaje, data?.type)
         console.log("📢 Nueva notificación recibida:", data);
         $q(".contenedor-notificacion").innerHTML = ''
         await obtenerNotificaciones()
@@ -104,7 +111,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       else if (data.type === "propuesta") {
         console.log("antes de recibir la notificacion api");
-        recibirNotificacionAPI(data?.mensaje, data?.type)
+        recibirNotificacionAPI(data?.idusuario, data?.mensaje, data?.type)
+        console.log("📢 Nueva notificación recibida:", data);
+        $q(".contenedor-notificacion").innerHTML = ''
+        await obtenerNotificaciones()
+        // Aquí puedes mostrar la notificación en la UI
+        //alert(`🔔 Nueva notificación: ${data.mensaje}`);
+      }
+      else if (data.type === "entradas") {
+        console.log("antes de recibir la notificacion api");
+        recibirNotificacionAPI(data?.idusuario, data?.mensaje, data?.type)
         console.log("📢 Nueva notificación recibida:", data);
         $q(".contenedor-notificacion").innerHTML = ''
         await obtenerNotificaciones()
@@ -384,8 +400,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           <hr>
           <div class="mt-3">
             <h4 class="fw-bold">Detalles Propuesta:</h4><br>
-            <label class="fw-bold">Abono de garantia: </label> <span id="noti-pasaje">S/ ${notificacion?.abono_garantia ? notificacion?.abono_garantia :''}</span> <br>
-            <label class="fw-bold">Abono de publicidad:</label> <span id="noti-comida">S/ ${notificacion?.abono_publicidad ? notificacion?.abono_publicidad :''}</span> <br>
+            <label class="fw-bold">Abono de garantia: </label> <span id="noti-pasaje">S/ ${notificacion?.abono_garantia ? notificacion?.abono_garantia : ''}</span> <br>
+            <label class="fw-bold">Abono de publicidad:</label> <span id="noti-comida">S/ ${notificacion?.abono_publicidad ? notificacion?.abono_publicidad : ''}</span> <br>
             <h5><strong>Acuerdo (%): </strong></h5>
             <label class="fw-bold">Vega: </label> <span id="noti-pasaje">${notificacion?.porcentaje_vega ? notificacion?.porcentaje_vega : ''}%</span> <br>
             <label class="fw-bold">Promotor: </label> <span id="noti-pasaje">${notificacion?.porcentaje_promotor ? notificacion?.porcentaje_promotor : ''}%</span> <br>
@@ -394,14 +410,17 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>      
         </div>
         <div class="card-footer">
-          <button class="btn btn-secondary" data-bs-dismiss="modal" id="btnDesaprobar">Desaprobar</button>
+        ${notificacion.estado == 1 ? `
+          <button class="btn btn-secondary" data-bs-dismiss="modal" id="btnDesaprobar" >Desaprobar</button>
           <button class="btn btn-secondary" data-bs-dismiss="modal" id="btnAprobar">Aprobar</button>
+          ` : notificacion.estado == 2 ? "Aprobada" : notificacion.estado == 3 ? "Desaprobado" : ''}
+          
         </div>
       </div>
       
     `;
 
-    $q("#btnAprobar").addEventListener("click", async () => {
+    $q("#btnAprobar")?.addEventListener("click", async () => {
       const convenioEstadoActualizado = await actualizarEstadoConvenio(notificacion.idconvenio, 2)
       console.log("estado convenio actualizdao ? -> ", convenioEstadoActualizado);
       const agendaEdicionRegistrada = await registrarAgendaEdicion(notificacion.iddetalle_presentacion)
@@ -418,7 +437,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       return
     })
-    $q("#btnDesaprobar").addEventListener("click", async () => {
+    $q("#btnDesaprobar")?.addEventListener("click", async () => {
       const convenioEstadoActualizado = await actualizarEstadoConvenio(notificacion.idconvenio, 3)
       console.log("estado convenio actualizdao ? -> ", convenioEstadoActualizado);
       /* const params = new URLSearchParams();

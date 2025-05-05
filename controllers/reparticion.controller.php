@@ -74,7 +74,8 @@ if (isset($_POST['operation'])) {
         'descripcion' => $reparticion->limpiarCadena($_POST['descripcion']) ? $reparticion->limpiarCadena($_POST['descripcion']) : '',
         'monto'   => $reparticion->limpiarCadena($_POST['monto']) ? $reparticion->limpiarCadena($_POST['monto']) : '',
         'tipopago'   => $reparticion->limpiarCadena($_POST['tipopago']) ? $reparticion->limpiarCadena($_POST['tipopago']) : '',
-        'noperacion'   => $reparticion->limpiarCadena($_POST['noperacion']) ? $reparticion->limpiarCadena($_POST['noperacion']) : ''
+        'noperacion'   => $reparticion->limpiarCadena($_POST['noperacion']) ? $reparticion->limpiarCadena($_POST['noperacion']) : '',
+        'medio'   => $reparticion->limpiarCadena($_POST['medio']) ? $reparticion->limpiarCadena($_POST['medio']) : '',
       ];
 
       $respuesta = ['idingreso' => -1];

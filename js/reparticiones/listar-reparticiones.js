@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const params = new URLSearchParams();
     params.append("operation", "obtenerDetallesPresentacionPorModalidad");
     params.append("modalidad", 1);
-    params.append("igv", null || '');
+    params.append("igv", null);
 
     const data = await getDatos(`${host}detalleevento.controller.php`, params);
     console.log("data -> ", data);

@@ -5,6 +5,10 @@ header("Access-Control-Allow-Origin: *");
 header("Content-type: application/json; charset=utf-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Métodos permitidos
 header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Encabezados permitidos
+require '../vendor/autoload.php';
+
+use Cloudinary\Cloudinary;
+use Cloudinary\Configuration\Configuration;
 
 $hostOnly  = "http://localhost/vega-erp";
 // cuando se pone en visible true se pone como dropdown
@@ -167,6 +171,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($usuario->obtenerUsuarioPorNivel(['idnivelacceso' => $_GET['idnivelacceso']]));
       break;
 
+    case 'obtenerPersonaCorreo':
+      echo json_encode($usuario->obtenerPersonaCorreo(['correo' => $_GET['correo']]));
+      break;
+
     /*     case 'obtenerRepresentanteEmpresa':
       echo json_encode($usuario->obtenerRepresentanteEmpresa());
       break; */
@@ -257,18 +265,50 @@ if (isset($_POST['operation'])) {
       break;
 
     case 'registrarUsuario':
+      $cloudinary = new Cloudinary([
+        'cloud' => [
+          'cloud_name' => 'dynpy0r4v',
+          'api_key'    => '722279687758731',
+          'api_secret' => 'KsLk7dNUAAjRYEBNUsv2JAV7cPI'
+        ],
+        'url' => [
+          'secure' => true
+        ]
+      ]);
+
+      // Variables por defecto
+      $secureUrlMarcaAgua = '';
+      $secureUrlFirma = '';
+
+      // Subir marca de agua si existe
+      if (isset($_FILES['marcaagua']) && $_FILES['marcaagua']['error'] === UPLOAD_ERR_OK) {
+        $uploadResultMarcaAgua = $cloudinary->uploadApi()->upload(
+          $_FILES['marcaagua']['tmp_name'],
+          ['folder' => 'marcadeagua_vegaproducciones']
+        );
+        $secureUrlMarcaAgua = $uploadResultMarcaAgua['public_id'] ?? '';
+      }
+
+      // Subir firma si existe
+      if (isset($_FILES['firma']) && $_FILES['firma']['error'] === UPLOAD_ERR_OK) {
+        $uploadResultFirma = $cloudinary->uploadApi()->upload(
+          $_FILES['firma']['tmp_name'],
+          ['folder' => 'firmas_vegaproducciones']
+        );
+        $secureUrlFirma = $uploadResultFirma['public_id'] ?? '';
+      }
+
       $clave = $usuario->limpiarCadena($_POST['claveacceso']);
       $cleanData = [
         'idsucursal' => $usuario->limpiarCadena($_POST['idsucursal']),
         'idpersona' => $usuario->limpiarCadena($_POST['idpersona']),
         'nom_usuario' => $usuario->limpiarCadena($_POST['nom_usuario']),
         'claveacceso' => password_hash($clave, PASSWORD_BCRYPT),
-        'color' =>  $usuario->limpiarCadena($_POST['color']) ? $usuario->limpiarCadena($_POST['color']) : '',
-        'porcentaje' =>  $usuario->limpiarCadena($_POST['porcentaje']) ? $usuario->limpiarCadena($_POST['porcentaje']) : '',
-        'marcaagua' =>  $usuario->limpiarCadena($_POST['marcaagua']) ? $usuario->limpiarCadena($_POST['marcaagua']) : '',
-        'firma' =>  $usuario->limpiarCadena($_POST['firma']) ? $usuario->limpiarCadena($_POST['firma']) : '',
-        //'esRepresentante' =>  $usuario->limpiarCadena($_POST['esRepresentante']) ? $usuario->limpiarCadena($_POST['esRepresentante']) : '',
-        'idnivelacceso' =>  $usuario->limpiarCadena($_POST['idnivelacceso']) ? $usuario->limpiarCadena($_POST['idnivelacceso']) : '',
+        'color' => $usuario->limpiarCadena($_POST['color'] ?? ''),
+        'porcentaje' => $usuario->limpiarCadena($_POST['porcentaje'] ?? ''),
+        'marcaagua' => $secureUrlMarcaAgua,
+        'firma' => $secureUrlFirma,
+        'idnivelacceso' => $usuario->limpiarCadena($_POST['idnivelacceso'] ?? ''),
       ];
 
       $respuesta = ['idusuario' => -1];
@@ -282,6 +322,46 @@ if (isset($_POST['operation'])) {
       break;
 
     case 'actualizarUsuario':
+      $cloudinary = new Cloudinary([
+        'cloud' => [
+          'cloud_name' => 'dynpy0r4v',
+          'api_key'    => '722279687758731',
+          'api_secret' => 'KsLk7dNUAAjRYEBNUsv2JAV7cPI'
+        ],
+        'url' => ['secure' => true]
+      ]);
+
+      // PUBLIC_ID actuales
+      $marcaaguaActual = $_POST['publicIdMarcaAguaAnterior'] ?? '';
+      $firmaActual = $_POST['publicIdFirmaAnterior'] ?? '';
+
+      $secureUrlMarcaAgua = $marcaaguaActual;
+      $secureUrlFirma = $firmaActual;
+
+      // Si se sube nueva marca de agua
+      if (isset($_FILES['marcaagua']) && $_FILES['marcaagua']['error'] === UPLOAD_ERR_OK) {
+        if (!empty($marcaaguaActual)) {
+          $cloudinary->uploadApi()->destroy($marcaaguaActual);
+        }
+        $uploadResultMarcaAgua = $cloudinary->uploadApi()->upload(
+          $_FILES['marcaagua']['tmp_name'],
+          ['folder' => 'marcadeagua_vegaproducciones']
+        );
+        $secureUrlMarcaAgua = $uploadResultMarcaAgua['public_id'] ?? '';
+      }
+
+      // Si se sube nueva firma
+      if (isset($_FILES['firma']) && $_FILES['firma']['error'] === UPLOAD_ERR_OK) {
+        if (!empty($firmaActual)) {
+          $cloudinary->uploadApi()->destroy($firmaActual);
+        }
+        $uploadResultFirma = $cloudinary->uploadApi()->upload(
+          $_FILES['firma']['tmp_name'],
+          ['folder' => 'firmas_vegaproducciones']
+        );
+        $secureUrlFirma = $uploadResultFirma['public_id'] ?? '';
+      }
+
       $clave = $usuario->limpiarCadena($_POST['claveacceso']);
       $cleanData = [
         'idsucursal' => $usuario->limpiarCadena($_POST['idsucursal']) ?  $usuario->limpiarCadena($_POST['idsucursal']) : '',
@@ -290,12 +370,24 @@ if (isset($_POST['operation'])) {
         'claveacceso' => $clave ? password_hash($clave, PASSWORD_BCRYPT) : '',
         'color' => $usuario->limpiarCadena($_POST['color']) ? $usuario->limpiarCadena($_POST['color']) : '',
         'porcentaje' => $usuario->limpiarCadena($_POST['porcentaje']) ? $usuario->limpiarCadena($_POST['porcentaje']) : '',
-        'marcaagua' => $usuario->limpiarCadena($_POST['marcaagua']) ? $usuario->limpiarCadena($_POST['marcaagua']) : '',
-        'firma' =>  $usuario->limpiarCadena($_POST['firma']) ? $usuario->limpiarCadena($_POST['firma']) : '',
+        'marcaagua' => $secureUrlMarcaAgua,
+        'firma' => $secureUrlFirma,
         //'esRepresentante' =>  $usuario->limpiarCadena($_POST['esRepresentante']) ? $usuario->limpiarCadena($_POST['esRepresentante']) : '',
       ];
 
       $update = $usuario->actualizarUsuario($cleanData);
+
+      echo json_encode($update);
+      break;
+
+    case 'actualizarContrasenaUsuario':
+      $clave = $usuario->limpiarCadena($_POST['claveacceso']);
+      $cleanData = [
+        'idpersona' => $usuario->limpiarCadena($_POST['idpersona']) ?  $usuario->limpiarCadena($_POST['idpersona']) : '',
+        'claveacceso' => $clave ? password_hash($clave, PASSWORD_BCRYPT) : ''
+      ];
+
+      $update = $usuario->actualizarContrasenaUsuario($cleanData);
 
       echo json_encode($update);
       break;

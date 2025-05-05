@@ -34,6 +34,16 @@
                             <label for="departamento">Departamento</label>
                         </div>
                     </div>
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <select name="tipo" id="tipo" class="form-select" required>
+                                <option value="">Seleccione</option>
+                                <option value="1">Publico</option>
+                                <option value="2">Privado</option>
+                            </select>
+                            <label for="tipo">Tipo</label>
+                        </div>
+                    </div>
                 </div>
 
                 <hr class="my-4">
@@ -44,6 +54,7 @@
                             <tr>
                                 <th>Provincia</th>
                                 <th>Costo</th>
+                                <th>Tipo</th>
                                 <th>Opciones</th>
                             </tr>
                         </thead>

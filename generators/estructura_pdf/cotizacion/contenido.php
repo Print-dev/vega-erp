@@ -446,10 +446,10 @@ echo $hora_final_formateada;
             <td class="label" style="text-align: center;">CCI N°</td>
         </tr>
         <tr>
-            <td>BCP</td>
-            <td>Soles</td>
-            <td colspan="2" style="text-align: center;">1929842849014</td>
-            <td style="text-align: center;">00219200984284901432</td>
+            <td><?= $infoEmpresa[0]['banco']; ?></td>
+            <td><?= $infoEmpresa[0]['moneda']; ?></td>
+            <td colspan="2" style="text-align: center;"><?= $infoEmpresa[0]['ncuenta']; ?></td>
+            <td style="text-align: center;"><?= $infoEmpresa[0]['ncci']; ?></td>
         </tr>
     </table>
     <table class="datos-terminos-condiciones">

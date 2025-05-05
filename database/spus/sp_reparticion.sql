@@ -59,7 +59,8 @@ CREATE PROCEDURE sp_registrar_ingreso (
     IN _descripcion varchar(80),
     IN _monto  DECIMAL(10,2),
     IN _tipopago tinyint,
-    IN _noperacion varchar(15)
+    IN _noperacion varchar(15),
+    IN _medio VARCHAR(30)
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
@@ -70,8 +71,8 @@ BEGIN
     END;
 
     -- Insertar nueva caja chica
-    INSERT INTO ingresos_evento (idreparticion, descripcion ,monto, tipopago, noperacion)
-    VALUES (_idreparticion, _descripcion, _monto, _tipopago, nullif(_noperacion, ''));
+    INSERT INTO ingresos_evento (idreparticion, descripcion ,monto, tipopago, noperacion, medio)
+    VALUES (_idreparticion, _descripcion, _monto, _tipopago, nullif(_noperacion, ''), nullif(_medio, ''));
 
     -- Obtener el ID generado
     IF existe_error = 1 THEN

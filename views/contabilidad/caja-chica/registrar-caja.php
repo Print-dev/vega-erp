@@ -13,7 +13,7 @@
                     <div class="col-md-3">
                         <div class="form-floating">
                             <!-- <input type="text" id="ccinicial" name="ccinicial" class="form-control" placeholder="C.C.Inicial"> -->
-                            <label for="ccinicial" id="ccinicial" class="form-label"></label>
+                            <p for="ccinicial" id="ccinicial" class="form-label"></p>
                         </div>
                     </div>
                     <div class="col-md-3">

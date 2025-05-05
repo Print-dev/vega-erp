@@ -59,12 +59,11 @@ class DetalleEvento extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('INSERT INTO precios_entrada_evento (iddetalle_presentacion, preciogeneral, preciovip) VALUES (?,?,?)');
+      $cmd = $pdo->prepare('INSERT INTO precios_entrada_evento (iddetalle_presentacion, entradas) VALUES (?,?)');
       $rpt = $cmd->execute(
         array(
           $params['iddetallepresentacion'],
-          $params['preciogeneral'],
-          $params['preciovip']
+          $params['entradas']
         )
       );
 
@@ -99,12 +98,11 @@ class DetalleEvento extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_actualizar_precios_entrada_evento (?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_actualizar_precios_entrada_evento (?,?)');
       $rpt = $cmd->execute(
         array(
           $params['idprecioentradaconvenio'],
-          $params['preciogeneral'],
-          $params['preciovip'],
+          $params['entradas']
         )
       );
 
@@ -483,4 +481,6 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
+
+  
 }

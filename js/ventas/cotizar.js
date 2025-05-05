@@ -57,9 +57,10 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   // ****************************************** CONFIGURACION DE NOTIFICACIONE S*********************************
 
-  function enviarWebsocket(type, mensaje) {
+  function enviarWebsocket(idusuario, type, mensaje) {
     if (wsReady) {
       ws.send(JSON.stringify({
+        idusuario: idusuario,
         type: type, // Tipo de mensaje WebSocket
         /* idusuariodest: idusuariodest, // Usuario destinatario
         idusuariorem: idusuariorem, // Usuario remitente
@@ -861,14 +862,14 @@ document.addEventListener('DOMContentLoaded', async function () {
                   mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
                   const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
                   console.log("notificacion registrada ? -> ", notificacionRegistrada)
-                  enviarWebsocket("evento", mensaje)
+                  enviarWebsocket($q("#artista").value, "evento", mensaje)
                   console.log(detalleevento);
                 } else if ($q("#modalidad").value == 2) {
                   detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
                   const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
                   mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
                   const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
-                  enviarWebsocket("evento", mensaje)
+                  enviarWebsocket($q("#artista").value, "evento", mensaje)
                   console.log("notificacion registrada ? -> ", notificacionRegistrada)
 
                   console.log(detalleevento);
@@ -912,7 +913,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 console.log("mensaje ->", mensaje);
 
                 const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
-                enviarWebsocket("evento", mensaje)
+                enviarWebsocket($q("#artista").value, "evento", mensaje)
                 console.log("notificacion registrada ? -> ", notificacionRegistrada)
               } else if ($q("#modalidad").value == 2) {
                 console.log("idcliente-> en valor 2 ", idcliente);
@@ -921,7 +922,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
                 mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
                 const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
-                enviarWebsocket("evento", mensaje)
+                enviarWebsocket($q("#artista").value, "evento", mensaje)
                 console.log("notificacion registrada ? -> ", notificacionRegistrada)
               } else if ($q("#modalidad").value == -1) {
                 console.log("idcliente-> en valor -1 ", idcliente);

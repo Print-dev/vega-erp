@@ -145,6 +145,7 @@ while (true) {
       if ($decoded !== null) {
         if ($decoded['type'] === 'notificacion') {
           $response = json_encode([
+            'idusuario' => $decoded['idusuario'],
             'type' => 'notificacion',
             /* 'idusuariodest' => $decoded['idusuariodest'],
               'idusuariorem' => $decoded['idusuariorem'],
@@ -161,6 +162,7 @@ while (true) {
         }
         else if ($decoded['type'] === 'evento') {
           $response = json_encode([
+            'idusuario' => $decoded['idusuario'],
             'type' => 'evento',
             /* 'idusuariodest' => $decoded['idusuariodest'],
               'idusuariorem' => $decoded['idusuariorem'],
@@ -177,6 +179,7 @@ while (true) {
         }
         else if ($decoded['type'] === 'asignacion filmmaker') {
           $response = json_encode([
+            'idusuario' => $decoded['idusuario'],
             'type' => 'asignacion filmmaker',
             /* 'idusuariodest' => $decoded['idusuariodest'],
               'idusuariorem' => $decoded['idusuariorem'],
@@ -193,7 +196,42 @@ while (true) {
         }
         else if ($decoded['type'] === 'viatico') {
           $response = json_encode([
+            'idusuario' => $decoded['idusuario'],
             'type' => 'viatico',
+            /* 'idusuariodest' => $decoded['idusuariodest'],
+              'idusuariorem' => $decoded['idusuariorem'],
+              'tipo' => $decoded['tipo'],
+              'idreferencia' => $decoded['idreferencia'], */
+            'mensaje' => $decoded['mensaje']
+          ]);
+
+          foreach ($clients as $client) {
+            if ($client !== $read_socket) { // No reenviar al emisor
+              socket_write($client, ws_encode($response));
+            }
+          }
+        }
+        else if ($decoded['type'] === 'propuesta') {
+          $response = json_encode([
+            'idusuario' => $decoded['idusuario'],
+            'type' => 'propuesta',
+            /* 'idusuariodest' => $decoded['idusuariodest'],
+              'idusuariorem' => $decoded['idusuariorem'],
+              'tipo' => $decoded['tipo'],
+              'idreferencia' => $decoded['idreferencia'], */
+            'mensaje' => $decoded['mensaje']
+          ]);
+
+          foreach ($clients as $client) {
+            if ($client !== $read_socket) { // No reenviar al emisor
+              socket_write($client, ws_encode($response));
+            }
+          }
+        }
+        else if ($decoded['type'] === 'entradas') {
+          $response = json_encode([
+            'idusuario' => $decoded['idusuario'],
+            'type' => 'entradas',
             /* 'idusuariodest' => $decoded['idusuariodest'],
               'idusuariorem' => $decoded['idusuariorem'],
               'tipo' => $decoded['tipo'],

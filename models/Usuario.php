@@ -120,7 +120,7 @@ class Usuario extends ExecQuery
     }
   }
 
-/*   public function obtenerRepresentanteEmpresa(): array
+  /*   public function obtenerRepresentanteEmpresa(): array
   {
     try {
       $cmd = parent::execQ("CALL sp_obtener_representante");
@@ -171,6 +171,25 @@ class Usuario extends ExecQuery
           //$params['esRepresentante'],
         )
       );
+
+      return $act;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+
+  public function actualizarContrasenaUsuario($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("UPDATE usuarios SET
+      claveacceso = ?
+      WHERE idpersona = ?");
+      $act = $cmd->execute([
+        $params['claveacceso'], // primero va la contraseña
+        $params['idpersona']    // luego el ID
+      ]);
 
       return $act;
     } catch (Exception $e) {
@@ -242,6 +261,17 @@ class Usuario extends ExecQuery
     try {
       $cmd = parent::execQ("CALL sp_obtener_usuario_por_nivel(?)");
       $cmd->execute(array($params['idnivelacceso']));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerPersonaCorreo($params = []): array // mas que todo para obtener ARTISTAS, ULTIMA UPDATE: USARSE PARA FILTRAR SU AGENDA
+  {
+    try {
+      $cmd = parent::execQ("SELECT * FROM personas WHERE correo = ?");
+      $cmd->execute(array($params['correo']));
       return $cmd->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
       die($e->getMessage());

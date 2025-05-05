@@ -37,17 +37,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     const data = await getDatos(`${host}reparticion.controller.php`, params);
     return data;
   }
-  
+
 
   const ingresos = await obtenerIngresoPorIdReparticion(idreparticion)
   console.log("ingresos -> ", ingresos);
-  if(ingresos.length > 0){ 
+  if (ingresos.length > 0) {
     $q(".tbody-ingresos").innerHTML = "";
     ingresos.forEach((ingreso) => {
       totalIngresos += parseFloat(ingreso.monto);
       $q(".tbody-ingresos").innerHTML += `
         <tr>
           <td>${ingreso.tipopago == 1 ? "Transferencia" : 'Contado'}</td>
+          <td>${ingreso.medio}</td>
           <td>${ingreso.noperacion != null ? ingreso.noperacion : 'No aplica'}</td>
           <td>${ingreso.descripcion}</td>
           <td>S/. ${parseFloat(ingreso.monto).toFixed(2)}</td>
@@ -94,6 +95,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     ingreso.append("monto", $q("#monto").value);
     ingreso.append("tipopago", $q("#tipopago").value); // id artista
     ingreso.append("noperacion", $q("#noperacion").value ? $q("#noperacion").value : ''); // id artista
+    ingreso.append("medio", $q("#medio").value ? $q("#medio").value : ''); // id artista
 
     const fingreso = await fetch(`${host}reparticion.controller.php`, {
       method: "POST",
@@ -105,11 +107,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ************************************* EVENTOS ***********************************
 
-  $q("#btnRegistrarNuevoIngreso").addEventListener("click", ()=>{
+  $q("#btnRegistrarNuevoIngreso").addEventListener("click", () => {
     $q("#descripcion").value = ''
     $q("#monto").value = ''
     $q("#tipopago").value = ''
     $q("#noperacion").value = ''
+    $q("#medio").value = ''
     modalIngreso = new bootstrap.Modal($q("#modal-ingreso"))
     modalIngreso.show()
   })
@@ -121,41 +124,41 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Validaciones de campos
     if (descripcion === "") {
-        showToast("La descripción del ingreso no puede estar vacía.", "ERROR");
-        return;
+      showToast("La descripción del ingreso no puede estar vacía.", "ERROR");
+      return;
     }
 
     if (isNaN(monto) || monto <= 0) {
-        showToast("El monto del ingreso debe ser un número válido y mayor a 0.", "ERROR");
-        return;
+      showToast("El monto del ingreso debe ser un número válido y mayor a 0.", "ERROR");
+      return;
     }
 
-    if (tipopago === "" || isNaN(parseInt(tipopago))) { 
-        showToast("Elija una opción de pago válida.", "ERROR");
-        return;
+    if (tipopago === "" || isNaN(parseInt(tipopago))) {
+      showToast("Elija una opción de pago válida.", "ERROR");
+      return;
     }
 
     // Convertir a número para asegurar validación correcta
-    const tipoPagoInt = parseInt(tipopago); 
+    const tipoPagoInt = parseInt(tipopago);
 
     // Validar que el tipo de pago sea 1 o 2
     if (![1, 2].includes(tipoPagoInt)) {
-        showToast("Opción de pago inválida.", "ERROR");
-        return;
+      showToast("Opción de pago inválida.", "ERROR");
+      return;
     }
 
     // Llamada a la función de registro
     const ingresoRegistrado = await registrarIngreso(idreparticion);
     if (!ingresoRegistrado || !ingresoRegistrado.idingreso) {
-        showToast("Error al registrar el ingreso.", "ERROR");
-        return;
+      showToast("Error al registrar el ingreso.", "ERROR");
+      return;
     }
 
     // Obtener los datos del ingreso recién agregado
     const ingresoObtenido = await obtenerIngresoPorId(ingresoRegistrado.idingreso);
     if (!ingresoObtenido || ingresoObtenido.length === 0) {
-        showToast("Error al obtener ingreso registrado.", "ERROR");
-        return;
+      showToast("Error al obtener ingreso registrado.", "ERROR");
+      return;
     }
 
     // Actualizar el total de ingresos
@@ -166,6 +169,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q(".tbody-ingresos").innerHTML += `
         <tr>
           <td>${ingresoObtenido[0]?.tipopago == 1 ? "Transferencia" : 'Contado'}</td>
+          <td>${ingresoObtenido[0]?.medio}</td>
           <td>${ingresoObtenido[0]?.noperacion != null ? ingresoObtenido[0]?.noperacion : 'No aplica'}</td>
           <td>${ingresoObtenido[0]?.descripcion}</td>
           <td>S/. ${parseFloat(ingresoObtenido[0]?.monto).toFixed(2)}</td>

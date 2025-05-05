@@ -16,6 +16,17 @@ class Empresa extends ExecQuery
         }
     }
 
+    public function obtenerCorreoEmpresa(): array
+    {
+        try {
+            $sp = parent::execQ("SELECT correo, contrasenagmailapp, nombreapp FROM empresa ");
+            $sp->execute();
+            return $sp->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+    }
+
     /*   public function filtrarSucursales($params = []): array
   {
     try {
@@ -75,7 +86,7 @@ class Empresa extends ExecQuery
     {
         try {
             $pdo = parent::getConexion();
-            $cmd = $pdo->prepare('CALL sp_actualizar_empresa(?,?,?,?,?,?,?,?,?,?,?)');
+            $cmd = $pdo->prepare('CALL sp_actualizar_empresa(?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
             $rpt = $cmd->execute(
                 array(
                     $params['idempresa'],
@@ -86,9 +97,15 @@ class Empresa extends ExecQuery
                     $params['nombreapp'],
                     $params['direccion'],
                     $params['web'],
-                    $params['usuariosol'],
+                    /* $params['usuariosol'],
                     $params['clavesol'],
-                    $params['certificado'],
+                    $params['certificado'], */
+                    $params['correo'],
+                    $params['contrasenagmailapp'],
+                    $params['ncuenta'],
+                    $params['ncci'],
+                    $params['banco'],
+                    $params['moneda'],
                 )
             );
 

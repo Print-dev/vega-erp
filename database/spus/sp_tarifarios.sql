@@ -11,7 +11,7 @@ CREATE PROCEDURE sp_obtener_tarifario_por_provincia
 )
 BEGIN
 	SELECT 
-	T.idtarifario, T.precio, PR.idprovincia, D.iddepartamento, USU.idusuario
+	T.idtarifario, T.precio, T.tipo_evento, PR.idprovincia, D.iddepartamento, USU.idusuario
     FROM usuarios USU
     LEFT JOIN tarifario T ON T.idusuario = USU.idusuario
     LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
@@ -28,7 +28,7 @@ CREATE PROCEDURE sp_search_tarifa_artista_por_provincia
 )
 BEGIN
 	SELECT 
-	T.idtarifario, T.precio, PR.idprovincia, D.iddepartamento
+	T.idtarifario, T.precio, T.tipo_evento, PR.idprovincia, D.iddepartamento
     FROM usuarios USU
     LEFT JOIN tarifario T ON T.idusuario = USU.idusuario
     LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
@@ -56,13 +56,15 @@ END $$
 
 CALL sp_search_tarifa_artista('A');
 
+DROP PROCEDURE IF EXISTS sp_registrar_tarifa;
 DELIMITER $$
 CREATE PROCEDURE sp_registrar_tarifa
 (
 	OUT _idtarifario INT,
     IN _idusuario INT,
     IN _idprovincia int,
-    IN _precio decimal(10,2)
+    IN _precio decimal(10,2),
+    IN _tipo_evento INT
 )
 BEGIN
 	DECLARE existe_error INT DEFAULT 0;
@@ -72,8 +74,8 @@ BEGIN
         SET existe_error = 1;
 	END;
     
-    INSERT INTO tarifario (idusuario, idprovincia, precio)VALUES 
-		(_idusuario, _idprovincia, _precio);
+    INSERT INTO tarifario (idusuario, idprovincia, precio, tipo_evento)VALUES 
+		(_idusuario, _idprovincia, _precio, _tipo_evento);
         
 	IF existe_error= 1 THEN
 		SET _idtarifario = -1;

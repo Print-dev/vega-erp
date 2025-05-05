@@ -2,10 +2,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let idusuario = window.localStorage.getItem("idusuario") ? window.localStorage.getItem("idusuario") : -1
   let idpersona = -1
-  let urlMarca = `https://res.cloudinary.com/dynpy0r4v/image/upload/v1742792207/`
+  //let urlMarca = `https://res.cloudinary.com/dynpy0r4v/image/upload/v1742792207/`
 
-  let imagen_public_id = "";
-  let imagen_public_id_firma = "";
+  /*    let imagen_public_id = "";
+     let imagen_public_id_firma = ""; */
   let imagenUrlMarcaAgua = ""
   let imagenUrlFirma = ""
 
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderizarDatosPersona(persona[0])
 
   // ***************************************************** CLOUDINARY *****************************************************************************
-  let myWidget = cloudinary.createUploadWidget(
+  /* let myWidget = cloudinary.createUploadWidget(
     {
       cloudName: "dynpy0r4v",
       uploadPreset: "vegaimagenes",
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       myWidgetFirma.open();
     },
     false
-  );
+  ); */
 
   function renderizarDatosPersona(persona) {
     $q("#num_doc").value = persona.num_doc
@@ -213,11 +213,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     // $q("#esrepresentante").checked = usuario.esRepresentante == 1 ? true : false
     $q("#porcentaje").value = usuario.porcentaje
     $q("#sucursal").value = usuario.idsucursal
-    $q("#previewImagen").src = `https://res.cloudinary.com/dynpy0r4v/image/upload/v1742792207/${usuario?.marcaagua}`
-    $q("#previewImagenFirma").src = `https://res.cloudinary.com/dynpy0r4v/image/upload/v1742792207/${usuario?.firma}`
+    $q("#previewImagenMarcaAgua").src = `https://res.cloudinary.com/dynpy0r4v/image/upload/v1746321637/${usuario?.marcaagua}`
+    $q("#previewImagenFirma").src = `https://res.cloudinary.com/dynpy0r4v/image/upload/v1746321640/${usuario?.firma}`
   }
 
-  async function actualizarUsuario(idsucursal, idusuario, marcaagua, firma) {
+  async function actualizarUsuario(idsucursal, idusuario, imagenMarcaAgua, imagenFirma) {
     const body = new FormData();
     body.append("operation", "actualizarUsuario");
     body.append("idsucursal", idsucursal);
@@ -226,8 +226,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     body.append("claveacceso", $q("#claveacceso").value ? $q("#claveacceso").value : '');
     body.append("color", $q("#color").value ? $q("#color").value : '');
     body.append("porcentaje", $q("#porcentaje").value ? $q("#porcentaje").value : '');
-    body.append("marcaagua", marcaagua ? marcaagua : imagenUrlMarcaAgua);
-    body.append("firma", firma ? firma : imagenUrlFirma);
+    body.append("marcaagua", imagenMarcaAgua ? imagenMarcaAgua : imagenUrlMarcaAgua);
+    body.append("firma", imagenFirma ? imagenFirma : imagenUrlFirma);
+    body.append("publicIdMarcaAguaAnterior", imagenUrlMarcaAgua);
+    body.append("publicIdFirmaAnterior", imagenUrlFirma);
     // body.append("esRepresentante", $q("#esrepresentante").checked ? 1 : 0);
 
     const fbody = await fetch(`${host}usuario.controller.php`, {
@@ -262,31 +264,51 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   $q("#btnActualizarPersona").addEventListener("click", async () => {
     try {
+      const btn = $q("#btnActualizarPersona")
       console.log("idpersona -> ", idpersona);
+      btn.disabled = true
+      btn.textContent = "Actualizando..."
       const persona = await actualizarPersona(idpersona)
       console.log("eprsona actualizad? ", persona);
       if (persona) {
         showToast("Datos de la persona actualizadas.", "SUCCESS")
+        btn.disabled = false;
+        btn.textContent = "Actualizar Datos Persona";
         return
       }
     } catch (error) {
       showToast("Un error ha ocurrido", "ERROR")
+      btn.disabled = false;
+      btn.textContent = "Actualizar Datos Persona";
       return
     }
   })
 
   $q("#btnActualizarUsuario").addEventListener("click", async () => {
     try {
+      const btn = $q("#btnActualizarUsuario")
+      const imagenInputMarcaAgua = $q("#upload_widget_marcaagua");
+      const fileMarcaAgua = imagenInputMarcaAgua.files[0];
+      const imagenInputFirma = $q("#upload_widget_firma");
+      const fileFirma = imagenInputFirma.files[0];
       //const nuevaUrlMarca = urlMarca + imagen_public_id
       //console.log("nueva url marca -> ", nuevaUrlMarca);
-      const usuario = await actualizarUsuario($q("#sucursal").value, idusuario, imagen_public_id, imagen_public_id_firma)
+      /* console.log("marca de agua antigguio:", imagenUrlMarcaAgua);
+      console.log("firma antigguio:", imagenUrlFirma); */
+      btn.disabled = true
+      btn.textContent = "Actualizando..."
+      const usuario = await actualizarUsuario($q("#sucursal").value, idusuario, fileMarcaAgua, fileFirma)
       console.log("usuario actualizad? ", usuario);
       if (usuario) {
         showToast("Datos del usuario actualizadas.", "SUCCESS")
+        btn.disabled = false;
+        btn.textContent = "Actualizar Datos Usuario";
         return
       }
     } catch (error) {
       showToast("Un error ha ocurrido", "ERROR")
+      btn.disabled = false;
+      btn.textContent = "Actualizar Datos Usuario";
       return
     }
   })
@@ -294,5 +316,44 @@ document.addEventListener("DOMContentLoaded", async () => {
   $q("#btnRegresarActualizarUsuario").addEventListener("click", () => {
     window.location.href = `${hostOnly}/views/utilitario/usuarios/listar-usuarios`
   })
+
+  $q("#upload_widget_marcaagua").addEventListener("change", function (e) {
+    console.log("cambiando...");
+    const file = e.target.files[0];
+    console.log("file de imagen event -> ", file);
+    const preview = $q("#previewImagenMarcaAgua");
+
+    if (file && file.type.startsWith("image/")) {
+      console.log("renderizando ,,,,");
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        preview.src = e.target.result;
+        preview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = "";
+      preview.style.display = "none";
+    }
+  });
+
+
+  $q("#upload_widget_firma").addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    console.log("file de imagen event -> ", file);
+    const preview = $q("#previewImagenFirma");
+
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        preview.src = e.target.result;
+        preview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = "";
+      preview.style.display = "none";
+    }
+  });
 
 })

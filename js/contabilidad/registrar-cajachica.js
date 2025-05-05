@@ -326,7 +326,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         "Caja chica cerrada correctamente",
         "SUCCESS",
         2000,
-        `${host}/views/contabilidad/caja-chica/caja-chica`
+        `${hostOnly}/views/contabilidad/caja-chica/caja-chica`
       );
     } else {
       showToast("Error al cerrar la caja chica", "ERROR");
@@ -435,10 +435,10 @@ document.addEventListener("DOMContentLoaded", async function () {
       ccfinalGlobal = ccinicial - incremento;
     }
 
-    if (ccfinalGlobal < 0) {
+/*     if (ccfinalGlobal < 0) {
       showToast("El monto final no puede ser negativo.", "ERROR");
       return;
-    }
+    } */
 
     console.log("Nuevo incremento: ", nuevoIncremento);
     console.log("Nuevo decremento: ", nuevoDecremento);
@@ -460,9 +460,9 @@ document.addEventListener("DOMContentLoaded", async function () {
       }
 
       // Actualizar el monto final
-      const montoFinalActualizado = await actualizarCCfinal(idcajachicaObtenida || idcajachicaNew, ccfinalGlobal);
+     /*  const montoFinalActualizado = await actualizarCCfinal(idcajachicaObtenida || idcajachicaNew, ccfinalGlobal);
       console.log("Monto final actualizado: ", montoFinalActualizado);
-
+ */
       // Actualizar el monto en caja chica
       const montoCajaActualizado = await actualizarMontoCajaChica(1, ccfinalGlobal);
       console.log("Monto en caja chica actualizado: ", montoCajaActualizado);

@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let idprovincia = -1;
   let iddistrito = -1;
   let idagendaedicion = -1
+  let idasignacion
 
   console.log("idusuario logeado", idusuarioLogeado)
 
@@ -272,6 +273,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data;
   }
 
+  async function obtenerFilmmakersDP(iddp) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerFilmmakersDP");
+    params.append("iddetallepresentacion", iddp);
+    const data = await getDatos(`${host}agenda.controller.php`, params);
+    return data;
+  }
+
   // *************************************** REGISTRAR DATOS ***************************************************************
 
   async function asignarAgendaEditor(idagendaedicion) {
@@ -325,9 +334,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rviatico;
   }
 
-  function enviarWebsocket(type, mensaje) {
+  function enviarWebsocket(idusuario, type, mensaje) {
     if (wsReady) {
       ws.send(JSON.stringify({
+        idusuario: idusuario,
         type: type, // Tipo de mensaje WebSocket
         /* idusuariodest: idusuariodest, // Usuario destinatario
         idusuariorem: idusuariorem, // Usuario remitente
@@ -359,6 +369,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("rivatico . ", rviatico)
 
     return rviatico;
+  }
+
+  async function eliminarFilmmakerDP(idasignacion) {
+    const filmmaker = new FormData();
+    filmmaker.append("operation", "eliminarFilmmakerDP");
+    filmmaker.append("idasignacion", idasignacion);
+
+    const ffilmmaker = await fetch(`${host}agenda.controller.php`, {
+      method: "POST",
+      body: filmmaker,
+    });
+    const rfilmmaker = await ffilmmaker.json();
+    console.log("rivatico . ", rfilmmaker)
+
+    return rfilmmaker;
   }
 
   async function actualizarViatico(idviatico) {
@@ -624,7 +649,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           for (const admins of usuariosAdmin) {
             console.log("admins -> ", admins);
             const notificacionSalida = await registrarNotificacion(admins.idusuario, idusuarioLogeado, 2, reporteRegistradoEventoArt.idreporte, mensaje)
-            enviarWebsocket("notificacion", mensaje)
+            enviarWebsocket(admins.idusuario, "notificacion", mensaje)
             console.log("notificacion salida -> ", notificacionSalida);
           }
           //modalSalida.hide()
@@ -659,7 +684,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           for (const admins of usuariosAdmin) {
             console.log("admins -> ", admins);
             const notificacionRetorno = await registrarNotificacion(admins.idusuario, idusuarioLogeado, 2, reporteRegistradoEventoArt.idreporte, mensaje)
-            enviarWebsocket("notificacion", mensaje)
+            enviarWebsocket(admins.idusuario, "notificacion", mensaje)
             console.log("notificacion retorno -> ", notificacionRetorno);
           }
           setTimeout(() => {
@@ -1126,9 +1151,47 @@ document.addEventListener("DOMContentLoaded", async () => {
       modalFilmmaker.show();
       const filmmakers = await obtenerFilmmakers()
       console.log("filmmakers -> ", filmmakers)
+      const filmmakersDP = await obtenerFilmmakersDP(iddp)
       $q("#filmmaker").innerHTML = "<option value=''>Selecciona</option>"
       filmmakers.forEach(filmmaker => {
         $q("#filmmaker").innerHTML += `<option value="${filmmaker.idusuario}">${filmmaker.nom_usuario}</option>`
+      })
+      console.log(" filmmakersDP ->", filmmakersDP);
+      if (filmmakersDP.length > 0) {
+        $q(".contenedor-filmmakers-asignados").innerHTML = ''
+        filmmakersDP.forEach(filmmakerDP => {
+          $q(".contenedor-filmmakers-asignados").innerHTML += `
+          <div class="d-flex justify-content-around align-items-center mb-3" style="background-color:rgb(212, 212, 212);" data-idasignacion="${filmmakerDP?.idasignacion}">
+              <label for="">${filmmakerDP.nombres} ${filmmakerDP.apellidos} - (${filmmakerDP.nom_usuario})</label>
+              <i class="fa-solid fa-trash btnQuitarFilmmaker p-3" data-idasignacion="${filmmakerDP?.idasignacion}" title="Quitar Filmmaker" style="cursor: pointer; color: white; background-color: red"></i>
+          </div>
+          `
+        })
+      } else {
+        $q(".contenedor-filmmakers-asignados").innerHTML = `
+        <div class="container">
+                    <div class="text-center">
+                        <p>sin filmmakers asignados.</p>
+                    </div>
+                </div>
+        `
+      }
+
+
+      $all(".btnQuitarFilmmaker").forEach(btn => {
+        btn.addEventListener("click", async (e) => {
+          idasignacion = e.target.getAttribute("data-idasignacion")
+          console.log("idasignacion -> ", idasignacion);
+          const filmmakerDPeliminado = await eliminarFilmmakerDP(idasignacion)
+          console.log("filmmaker dp eliminado -> ", filmmakerDPeliminado);
+          if (filmmakerDPeliminado) {
+            const divFilmmaker = document.querySelector(`.contenedor-filmmakers-asignados [data-idasignacion="${idasignacion}"]`);
+            if (divFilmmaker) divFilmmaker.remove();
+            showToast("Filmmaker removido!", "SUCCESS")
+            return
+          }
+          return
+        })
       })
 
     }
@@ -1344,7 +1407,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       showToast("Filmmaker asignado correctamente", "SUCCESS")
       const notiAsigFilm = await registrarNotificacion($q("#filmmaker").value, idusuarioLogeado, 3, filmmakerAsignado.idasignacion, "Has sido asignado a un nuevo evento, revisa tu agenda")
       console.log("noti asig film -< ", notiAsigFilm);
-      enviarWebsocket("asignacion filmmaker", "Has sido asignado a un nuevo evento, revisa tu agenda")
+      enviarWebsocket($q("#filmmaker").value, "asignacion filmmaker", "Has sido asignado a un nuevo evento, revisa tu agenda")
       /*       const agendaUsuario = await obtenerAgenda(idUsuario);
             console.log("agendaUsuario todo obtenido ->", agendaUsuario);
       

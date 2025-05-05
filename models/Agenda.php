@@ -352,6 +352,7 @@ class Agenda extends ExecQuery
 
 
 
+
   public function registrarNuevoTipoTarea($params = []): int
   {
     try {
@@ -385,6 +386,36 @@ class Agenda extends ExecQuery
       );
       $respuesta = $pdo->query("SELECT @idreporte AS idreporte")->fetch(PDO::FETCH_ASSOC);
       return $respuesta['idreporte'];
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+
+  public function obtenerFilmmakersDP($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("call sp_obtener_filmmakers_dp (?)");
+      $cmd->execute(array(
+        $params['iddetallepresentacion']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function eliminarFilmmakerDP($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("DELETE FROM agenda_asignaciones WHERE idasignacion = ?");
+      $rpt = $cmd->execute(
+        array(
+          $params['idasignacion']
+        )
+      );
+      return $rpt;
     } catch (Exception $e) {
       error_log("Error: " . $e->getMessage());
       return false;

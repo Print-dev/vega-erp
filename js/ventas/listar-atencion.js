@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   //let selectSucursales = $q("#sucursal")
   let idsucursal
   let iddp
+  let mensaje
 
   //MODALES
   let modalDatosContrato
@@ -70,9 +71,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
   })();
 
-  function enviarWebsocket(type, mensaje) {
+  function enviarWebsocket(idusuario, type, mensaje) {
     if (wsReady) {
       ws.send(JSON.stringify({
+        idusuario: idusuario,
         type: type, // Tipo de mensaje WebSocket
         /* idusuariodest: idusuariodest, // Usuario destinatario
         idusuariorem: idusuariorem, // Usuario remitente
@@ -613,13 +615,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const rreserva = await freserva.json();
     return rreserva;
   }
-  async function registrarPrecioEvento(iddetallepresentacion, preciogeneral, preciovip) {
+  async function registrarPrecioEvento(iddetallepresentacion, entradas) {
 
     const reserva = new FormData();
     reserva.append("operation", "registrarPrecioEvento");
     reserva.append("iddetallepresentacion", iddetallepresentacion);
-    reserva.append("preciogeneral", preciogeneral ? preciogeneral : null);
-    reserva.append("preciovip", preciovip ? preciovip : null);
+    reserva.append("entradas", entradas ? entradas : null);
 
     const freserva = await fetch(`${host}detalleevento.controller.php`, {
       method: "POST",
@@ -645,13 +646,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rreserva;
   }
 
-  async function actualizarPrecioEntradaEvento(idprecioentradaconvenio, preciogeneral, preciovip) {
+  async function actualizarPrecioEntradaEvento(idprecioentradaconvenio, entradas) {
 
     const reserva = new FormData();
     reserva.append("operation", "actualizarPrecioEntradaEvento");
     reserva.append("idprecioentradaconvenio", idprecioentradaconvenio)
-    reserva.append("preciogeneral", preciogeneral ? preciogeneral : null);
-    reserva.append("preciovip", preciovip ? preciovip : null);
+    reserva.append("entradas", entradas ? entradas : null);
 
     const freserva = await fetch(`${host}detalleevento.controller.php`, {
       method: "POST",
@@ -1155,8 +1155,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }); */
 
     console.log("object -> ", preciosevento);
-    $q("#general").value = preciosevento[0]?.preciogeneral
-    $q("#vip").value = preciosevento[0]?.preciovip
+    $q("#entradas").value = preciosevento[0]?.entradas
   }
 
   $q("#btnGuardarResponsables").addEventListener("click", async () => {
@@ -1186,25 +1185,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("object -> ", preciosevento);
     if (preciosevento.length > 0) {
 
-      const actualizado = await actualizarPrecioEntradaEvento(preciosevento[0]?.idprecioentradaevento, $q("#general").value, $q("#vip").value)
-      console.log("input general -> ", $q("#general").value);
-      console.log("input vip -> ", $q("#vip").value);
+      const actualizado = await actualizarPrecioEntradaEvento(preciosevento[0]?.idprecioentradaevento, $q("#entradas").value)
+      console.log("input general -> ", $q("#entradas").value);
       console.log("actualizado ? -< ", actualizado);
       showToast("Precio asignado correctamente", "SUCCESS")
       return
     } else {
-      const precioeventoregis = await registrarPrecioEvento(iddp, $q("#general").value, $q("#vip").value)
+      const precioeventoregis = await registrarPrecioEvento(iddp, $q("#entradas").value)
       console.log("precioeventoregis _>", precioeventoregis);
       if (precioeventoregis) {
         const dpInfo = await obtenerDPporId(iddp)
-        const mensaje = `Se ha configurado precios para el evento de ${dpInfo[0]?.nom_usuario} - ${dpInfo[0]?.establecimiento} (${formatDate(dpInfo[0]?.fecha_presentacion)})`
+        mensaje = `Se ha configurado precios para el evento de ${dpInfo[0]?.nom_usuario} - ${dpInfo[0]?.establecimiento} (${formatDate(dpInfo[0]?.fecha_presentacion)})`
 
         const admins = await obtenerUsuariosPorNivel(3)
         console.log("admins -> ", admins);
         admins.forEach(async admin => {
           const notificacionRegistrada = await registrarNotificacion(admin.idusuario, idusuarioLogeado, 5, iddp, mensaje)
           console.log("notificacion registrada-> ", notificacionRegistrada);
-          enviarWebsocket("propuesta", mensaje)
+          enviarWebsocket(admin.idusuario, "entradas", mensaje)
         });
 
       }
@@ -1355,7 +1353,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       //$q("#btnGuardarPendiente")?.hidden = false
       $q("#btnActualizarPropuesta").hidden = true
+      $q("#btnEnviarPropuesta").hidden = false
+      $q("#contenedor-general-admins").hidden = false
       $q(".contenedor-admins").innerHTML = ''
+      console.log("apunto de renderizar los admins ...");
       admins.forEach(admin => {
         $q(".contenedor-admins").innerHTML += `
           <div class="form-check">
@@ -1941,10 +1942,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (convenioRegistrado?.idconvenio) {
         const idUsuarioSeleccionado = seleccionado.dataset.idusuario;
         console.log("ID del admin seleccionado:", idUsuarioSeleccionado);
-        const mensaje = "Una nueva propuesta ha llegado, haz click para revisarlo."
+        mensaje = "Una nueva propuesta ha llegado, haz click para revisarlo."
         const notificacionRegistrada = await registrarNotificacion(idUsuarioSeleccionado, idusuarioLogeado, 4, iddetallepresentacion, mensaje)
         console.log("notificacion registrada-> ", notificacionRegistrada);
-        enviarWebsocket("propuesta", mensaje)
+        enviarWebsocket(idUsuarioSeleccionado, "propuesta", mensaje)
         modalPropuestaCliente.hide()
         //await dataFilters()
         showToast("Se ha enviado la propuesta", "SUCCESS")

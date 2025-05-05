@@ -88,10 +88,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // ********************************* EVENTOS Y CARGA DE DATOS *********************************
 
-    $q("#artista").addEventListener("change", async ()=> {
-        if($q("#artista").value == -1 || $q("#artista").value == "-1"){idartista = $q("#artista").value}
+    $q("#artista").addEventListener("change", async () => {
+        if ($q("#artista").value == -1 || $q("#artista").value == "-1") { idartista = $q("#artista").value }
         idartista = $q("#artista").value
-        
+
         console.log("idartista selccionado", idartista)
         $q("#departamento").value = ''
         $q("#nacionalidad").value = ''
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("tarifas-> ", tarifas)
 
         $q("#tb-body-tarifario").innerHTML = ''
-        
+
         provincias.forEach(pro => {
             const tarifaExistente = tarifas.find(t => t.idprovincia === pro.idprovincia);
             //console.log("tarifario existente : ", tarifaExistente)
@@ -123,6 +123,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>
                     <input type="number" id="precio" class="form-control input-precio" value="${precio ? precio : '0.00'}">
                 </td>
+                
                 <td>
                     <button type="button" data-idprovincia="${pro.idprovincia}" data-idtarifario="${tarifaExistente?.idtarifario}" class="btn btn-primary btnGuardarPrecio"><i class="fa-solid fa-floppy-disk"></i></button>
                 </td>
@@ -131,49 +132,51 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         const btnsGuardarPrecio = $all(".btnGuardarPrecio")
-          btnsGuardarPrecio.forEach(btn => {
+        btnsGuardarPrecio.forEach(btn => {
             btn.addEventListener("click", async () => {
-              if(idartista != -1){
-                const idprovincia = btn.getAttribute("data-idprovincia")
-                const idtarifario = btn.getAttribute("data-idtarifario")
-                console.log("idtarifario -> ", idtarifario)
-              
-                const fila = btn.closest("tr");
-                const precio = fila.querySelector(`#precio`).value;
-                console.log("precio -> ", precio)
-                //console.log("precio: ", precio)
-                let resultado;
+                if (idartista != -1) {
+                    const idprovincia = btn.getAttribute("data-idprovincia")
+                    const idtarifario = btn.getAttribute("data-idtarifario")
+                    console.log("idtarifario -> ", idtarifario)
 
-                if (idtarifario && idtarifario !== "undefined" && idtarifario.trim() !== "") {  
-                    console.log(idtarifario)
-                    console.log("idartista ->", idartista)
-                    // Si existe un idtarifario válido, actualizarlo
-                    resultado = await actualizarTarifa(idtarifario, precio);
-                    console.log("Tarifa actualizada:", resultado);
-                    showToast("Tarifa actualizada", "SUCCESS");
-                } else {
-                    console.log(idtarifario)
-                    console.log("idartista ->", idartista)
-                    // Si no hay idtarifario, registrar una nueva tarifa
-                    resultado = await registrarTarifa(idartista, idprovincia, precio);
-                    console.log("Tarifa registrada:", resultado);
-                    showToast("Tarifa registrada", "SUCCESS");
+                    const fila = btn.closest("tr");
+                    const precio = fila.querySelector(`#precio`).value;
+                    console.log("precio -> ", precio)
+                    //console.log("precio: ", precio)
+                    let resultado;
 
-                    if (resultado.idtarifa) {  
-                        btn.setAttribute("data-idtarifario", resultado.idtarifa);
-                        const idtarifario = btn.getAttribute("data-idtarifario")
-                        console.log("idtarifario -> ", idtarifario)
+                    if (idtarifario && idtarifario !== "undefined" && idtarifario.trim() !== "") {
+                        console.log(idtarifario)
+                        console.log("idartista ->", idartista)
+                        // Si existe un idtarifario válido, actualizarlo
+                        resultado = await actualizarTarifa(idtarifario, precio);
+                        console.log("Tarifa actualizada:", resultado);
+                        showToast("Tarifa actualizada", "SUCCESS");
+                    } else {
+                        console.log(idtarifario)
+                        console.log("idartista ->", idartista)
+                        // Si no hay idtarifario, registrar una nueva tarifa
+                        resultado = await registrarTarifa(idartista, idprovincia, precio);
+                        console.log("Tarifa registrada:", resultado);
+                        showToast("Tarifa registrada", "SUCCESS");
+
+                        if (resultado.idtarifa) {
+                            btn.setAttribute("data-idtarifario", resultado.idtarifa);
+                            const idtarifario = btn.getAttribute("data-idtarifario")
+                            console.log("idtarifario -> ", idtarifario)
+                        }
                     }
                 }
-              }
-              else{
-                showToast("Seleccione un artista", 'ERROR')
-              }
+                else {
+                    showToast("Seleccione un artista", 'ERROR')
+                }
 
             })
-          })
+        })
 
     });
 
-
+    $q("#tipo").addEventListener("click", async () => {
+        ME QUEDE ACA
+    })
 });

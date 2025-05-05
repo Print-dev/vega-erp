@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
   let myTable = null;
   let listCajas = []
-
+  let ccinicial = 0
+  let ccfinalMonto = 0;
   // modales 
   let modalGastos
   let modalCierreCaja
@@ -20,6 +21,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   //contenedor-btn-nuevacaja
+  async function actualizarMontoCajaChica(idmonto, monto) {
+    const cajaestado = new FormData();
+    cajaestado.append("operation", "actualizarMontoCajaChica");
+    cajaestado.append("idmonto", idmonto);
+    cajaestado.append("monto", monto);
+
+    const fcajaestado = await fetch(`${host}cajachica.controller.php`, {
+      method: "POST",
+      body: cajaestado,
+    });
+    const rcajaestado = await fcajaestado.json();
+    return rcajaestado;
+  }
 
   async function actualizarEstadoCaja(idcajachica, estado) {
     const cajaestado = new FormData();
@@ -71,8 +85,98 @@ document.addEventListener("DOMContentLoaded", async () => {
     return fcajaestado;
   }
 
+  const montoCaja = await obtenerMontoCajaChica();
+  console.log("obtenerMontoCajaChica -> ", montoCaja);
+  $q("#txtMontoCajaChica").innerHTML = `C.C.Inicial: ${montoCaja[0].monto}`;
+  ccinicial = parseFloat(montoCaja[0].monto);
+  /*   $q("#btnGuardarMontoCajaChica").addEventListener("click", async () => {
+      const montoCaja = await obtenerMontoCajaChica();
+      console.log("obtenerMontoCajaChica -> ", montoCaja);
+      let montoInicial = montoCaja[0]?.monto ? montoCaja[0]?.monto : ccfinalMonto;
+      console.log("Monto final al actualizar -> ", montoInicial);
+    }) */
 
+  $q("#btnGuardarMontoCajaChica").addEventListener("click", async function () {
+    // Obtener el incremento y decremento actual desde la BD
+    /*  const incrementoDecremento = await obtenerIncrementoDecrementoPorIdCaja(idcajachicaObtenida || idcajachicaNew);
+     console.log("incrementoDecremento -> ", incrementoDecremento);
+  */
+    // Extraer valores actuales de incremento y decremento
+    /*  let incrementoActual = incrementoDecremento[0]?.incremento || 0;
+     let decrementoActual = incrementoDecremento[0]?.decremento || 0; */
+
+    // Obtener el valor ingresado por el usuario
+    const incremento = parseFloat($q("#incremento").value) || 0;
+    const operacion = $q("#operacionCC").value; // "agregar" o "quitar"
+
+    // Validaciones
+    if (isNaN(incremento) || incremento <= 0) {
+      alert("El monto ingresado debe ser un número válido y mayor a 0.");
+      return;
+    }
+
+    // Calcular el nuevo monto según la operación
+    /* let nuevoIncremento = incrementoActual;
+    let nuevoDecremento = decrementoActual; */
+    let ccfinalGlobal;
+
+    if (operacion === "agregar") {
+      //nuevoIncremento += incremento; // Sumar al incremento existente
+      ccfinalGlobal = ccinicial + incremento;
+    } else if (operacion === "quitar") {
+      //nuevoDecremento += incremento; // Sumar al decremento existente
+      ccfinalGlobal = ccinicial - incremento;
+    }
+
+    /*     if (ccfinalGlobal < 0) {
+          showToast("El monto final no puede ser negativo.", "ERROR");
+          return;
+        } */
+
+    /* console.log("Nuevo incremento: ", nuevoIncremento);
+    console.log("Nuevo decremento: ", nuevoDecremento); */
+    console.log("ccfinalGlobal después del cálculo: ", ccfinalGlobal);
+
+    // Verificar si la caja chica existe
+    /* const cajaChicaExiste = await obtenerCajaChicaPorId(idcajachicaObtenida || idcajachicaNew);
+    console.log("cajaChicaExiste -> ", cajaChicaExiste); */
+
+    //if (cajaChicaExiste?.length > 0) {
+
+    /*     if (operacion === "agregar") {
+          const incrementoAct = await actualizarIncremento(idcajachicaObtenida || idcajachicaNew, nuevoIncremento);
+          console.log("Incremento actualizado: ", incrementoAct);
+        } else if (operacion === "quitar") {
+          const decrementoAct = await actualizarDecremento(idcajachicaObtenida || idcajachicaNew, nuevoDecremento);
+          console.log("Decremento actualizado: ", decrementoAct);
+        }
+     */
+    /*     // Actualizar el monto final
+        const montoFinalActualizado = await actualizarCCfinal(idcajachicaObtenida || idcajachicaNew, ccfinalGlobal);
+        console.log("Monto final actualizado: ", montoFinalActualizado); */
+
+    // Actualizar el monto en caja chica
+    const montoCajaActualizado = await actualizarMontoCajaChica(1, ccfinalGlobal);
+    console.log("Monto en caja chica actualizado: ", montoCajaActualizado);
+
+    $q("#nuevoMonto").innerText = `Nuevo monto S/. ${parseFloat(ccfinalGlobal.toFixed(2))}`;
+    //}
+  });
   // *********************************** OBTENER DATOS ********************************
+  async function obtenerIncrementoDecrementoPorIdCaja(idcajachica) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerIncrementoDecrementoPorIdCaja");
+    params.append("idcajachica", idcajachica);
+    const data = await getDatos(`${host}cajachica.controller.php`, params);
+    return data;
+  }
+
+  async function obtenerMontoCajaChica() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerMontoCajaChica");
+    const data = await getDatos(`${host}cajachica.controller.php`, params);
+    return data;
+  }
 
   async function obtenerGastosPorCaja(idcajachica) {
     const params = new URLSearchParams();
@@ -167,8 +271,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     listCajas = []
+    for (const x of data) {
+      let totalGastos = 0
 
-    data.forEach((x) => {
+      const gastosCaja = await obtenerGastosPorCaja(x.idcajachica)
+      console.log("gastos caja chica -> ", gastosCaja);
+
+      gastosCaja.forEach(gasto => {
+        totalGastos += parseFloat(gasto.monto);
+        $q(".tbody-reg-gastos").innerHTML += `
+          <tr>
+              <td>${gasto.fecha_gasto}</td>
+              <td>${gasto.concepto}</td>
+              <td>S/. ${parseFloat(gasto.monto).toFixed(2)}</td>
+          </tr>
+        `
+      });
+      // $q("#totalGastos").innerText = `S/. ${totalGastos.toFixed(2)}`;
+
       if (x.estado == 2) {
         listCajas.push({
           idcajachica: x.idcajachica,
@@ -192,6 +312,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${x.incremento}</td>
                 <td>${x.decremento}</td>
                 <td>${x.estado == 2 ? `<button class="btn btn-sm btn-success btn-vergastos" data-id="${x.idcajachica}">Ver Gastos</button>` : "No disponible aún."}</td>
+                <td>${totalGastos.toFixed(2)}</td>  
                 <td>${x.ccfinal}</td>  
                 <td>
                     ${x.estado == 1
@@ -201,7 +322,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </td>
             </tr>
         `;
-    });
+    };
     console.log("listCajas -> ", listCajas);
     /* const ultimaCaja = await obtenerUltimaCCFinal(); // sale error aca, corregir
     console.log("fcajaestado -> ", ultimaCaja[0].estado);
@@ -309,7 +430,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function buttonCerrarCaja(e) {
     ccinicialMonto = e.target.getAttribute("data-ccinicial");
     idcajachica = e.target.getAttribute("data-id");
-    
+
     const cajaCerrada = await actualizarEstadoCaja(idcajachica, 2);
     const gastos = await obtenerGastosPorCaja(idcajachica)
 

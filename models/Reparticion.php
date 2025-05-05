@@ -111,14 +111,15 @@ class Reparticion extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_ingreso(@idingreso,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_ingreso(@idingreso,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idreparticion'],
           $params['descripcion'],
           $params['monto'],
           $params['tipopago'],
-          $params['noperacion']
+          $params['noperacion'],
+          $params['medio'],
         )
       );
 

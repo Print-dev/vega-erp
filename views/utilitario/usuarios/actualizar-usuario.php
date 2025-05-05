@@ -24,7 +24,6 @@
                   class="form-control"
                   minlength="8"
                   maxlength="20"
-
                   autofocus
                   title="Ingresa solo números.">
 
@@ -173,15 +172,14 @@
           <div class="row g-2 mt-3 contenedor-marcaagua" hidden>
             <label for="marcaagua" class="col-sm-1 form-label size-label mt-3">Marca de agua (para documentos):</label>
             <div class="col-sm-5 text-center">
-              <label for="upload_widget" class="form-label fw-bold">Subir Imagen</label>
+              <label for="upload_widget_marcaagua" class="form-label fw-bold">Subir Imagen</label>
 
-              <button id="upload_widget" type="button" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+              <input id="upload_widget_marcaagua" name="upload_widget_marcaagua" type="file" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
                 <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Archivo
-              </button>
 
               <!-- Vista previa de la imagen -->
               <div class="mt-3">
-                <img id="previewImagen" src="" alt="Vista previa" class="img-fluid rounded shadow" style="max-height: 300px;">
+                <img id="previewImagenMarcaAgua" src="" alt="Vista previa" class="img-fluid rounded shadow" style="max-height: 300px;">
               </div>
             </div>
           </div>
@@ -190,9 +188,8 @@
             <div class="col-sm-5 text-center">
               <label for="upload_widget_firma" class="form-label fw-bold">Subir Imagen</label>
 
-              <button id="upload_widget_firma" type="button" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+              <input id="upload_widget_firma" name="upload_widget_firma" type="file" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
                 <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Archivo
-              </button>
 
               <!-- Vista previa de la imagen firma -->
               <div class="mt-3">
