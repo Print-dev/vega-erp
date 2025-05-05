@@ -45,20 +45,20 @@ CREATE TABLE empresa (
     -- correo			varchar(120) null,
     -- contrasenagmailapp varchar(120) null
 ) ENGINE = INNODB;
-select * from empresa;
-ALTER TABLE empresa
-MODIFY COLUMN logoempresa VARCHAR(80) NULL;
-ALTER TABLE empresa ADD COLUMN correo			varchar(120) null;
-ALTER TABLE empresa ADD COLUMN contrasenagmailapp			varchar(120) null;
-ALTER TABLE empresa ADD COLUMN ncuenta	varchar(30) null;
-ALTER TABLE empresa ADD COLUMN ncci	varchar(30) null;
-ALTER TABLE empresa ADD COLUMN banco varchar(30) null;
-ALTER TABLE empresa ADD COLUMN moneda varchar(30) null;
 
-ALTER TABLE empresa
-  DROP COLUMN usuariosol,
-  DROP COLUMN clavesol,
-  DROP COLUMN certificado;
+-- ALTER TABLE empresa
+-- MODIFY COLUMN logoempresa VARCHAR(80) NULL;
+-- ALTER TABLE empresa ADD COLUMN correo			varchar(120) null;
+-- ALTER TABLE empresa ADD COLUMN contrasenagmailapp			varchar(120) null;
+-- ALTER TABLE empresa ADD COLUMN ncuenta	varchar(30) null;
+-- ALTER TABLE empresa ADD COLUMN ncci	varchar(30) null;
+-- ALTER TABLE empresa ADD COLUMN banco varchar(30) null;
+-- ALTER TABLE empresa ADD COLUMN moneda varchar(30) null;
+
+-- ALTER TABLE empresa
+ -- DROP COLUMN usuariosol,
+ -- DROP COLUMN clavesol,
+  -- DROP COLUMN certificado;
 
 
 CREATE TABLE sucursales (
@@ -143,10 +143,9 @@ CREATE TABLE tarifario (
     constraint fk_idartista_tar foreign key (idusuario) references usuarios (idusuario),
     constraint fk_provincia_tarifario_art foreign key (idprovincia) references provincias (idprovincia)
 ) ENGINE = INNODB;
-ALTER TABLE tarifario
-  ADD COLUMN tipo_evento INT NOT NULL;
+-- ALTER TABLE tarifario
+ --  ADD COLUMN tipo_evento INT NOT NULL;
 -- SELECT * FROM tarifario WHERE idprovincia = 1 and tipo_evento = 2;
-select * from tarifario;
 CREATE TABLE permisos (
     idpermiso INT AUTO_INCREMENT PRIMARY KEY,
     idnivelacceso INT NOT NULL,
@@ -248,7 +247,6 @@ CREATE TABLE agenda_asignaciones ( -- tabla que asigna la agenda a un filmmaker
     FOREIGN KEY (iddetalle_presentacion) REFERENCES detalles_presentacion(iddetalle_presentacion) ON DELETE CASCADE,
     FOREIGN KEY (idusuario) REFERENCES usuarios(idusuario) ON DELETE CASCADE
 );
-select * from agenda_asignaciones;
 create table convenios (
 	idconvenio	int auto_increment primary key,
     iddetalle_presentacion int not null,
@@ -263,7 +261,6 @@ create table convenios (
     constraint fk_dp_cv foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
     constraint ck_estado check(estado IN(1,2,3))
 ) engine = innodb;
--- select * from convenios;
 create table contratos (
 	idcontrato	int auto_increment primary key,
     iddetalle_presentacion	int not null,
@@ -332,7 +329,6 @@ CREATE TABLE cajachica (
     constraint fk_iddp_cajachicaa foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
     constraint fk_idmonto_caja foreign key (idmonto) references montoCajaChica (idmonto)
 ) engine = innodb;
-select * from cajachica;
 CREATE TABLE gastos_cajachica (
 	idgasto		int auto_increment primary key,
     idcajachica		int not null,
@@ -422,7 +418,6 @@ CREATE TABLE agenda_editores (
     constraint fk_idusuario_ag_edit foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idtipotarea_agen foreign key (idtipotarea) references tipotarea (idtipotarea)
 ) engine = innodb;
-select * from agenda_editores;
 
 CREATE TABLE subidas_agenda_edicion (
 	idsubida	int  auto_increment primary key,
@@ -488,7 +483,6 @@ CREATE TABLE comprobantes (
     constraint fk_idsucursal_comp foreign key (idsucursal) references sucursales (idsucursal),
 	constraint fk_iddp_comp foreign key (iddetallepresentacion) references detalles_presentacion (iddetalle_presentacion)
 ) ENGINE = INNODB;
-select * from comprobantes;
 CREATE TABLE items_comprobante (
 	iditemcomprobante	int auto_increment primary key,
     idcomprobante	int not null,
@@ -528,9 +522,3 @@ CREATE TABLE pagos_cuota (
     noperacion	varchar(20) null,
     constraint 	fk_idcuotacomprobante_pago	foreign key (idcuotacomprobante) references cuotas_comprobante (idcuotacomprobante)
 ) ENGINE = INNODB;
-select  * from detalles_presentacion;
-select * from notificaciones;
-select * from agenda_edicion;
-select * from convenios;
-select * from precios_entrada_evento;
-select * from reparticion_ingresos;
