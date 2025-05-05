@@ -1,8 +1,7 @@
 -- USE vega_producciones_erp;
 
--- NO HABRA UN SPU PARA REGISTRAR TAREOS DIARIOS PQ ES MUY FACL (ACTUALIZACION: SI LO HABRA PARA RECIBIR SU ID Y COLOCARLO EN EL SELECT)
 DROP PROCEDURE IF EXISTS sp_asignar_tarea_diaria;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_asignar_tarea_diaria
 (
 	OUT _idtaradiariaasig INT,
@@ -27,10 +26,11 @@ BEGIN
 	ELSE
         SET _idtaradiariaasig = last_insert_id();
 	END IF;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_registrar_tarea_diaria;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_tarea_diaria
 (
 	OUT _idtareadiaria INT,
@@ -52,11 +52,11 @@ BEGIN
 	ELSE
         SET _idtareadiaria = last_insert_id();
 	END IF;
-END $$
-
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_tareas_diarias_por_usuario;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_tareas_diarias_por_usuario
 (
     IN _idusuario INT
@@ -69,7 +69,8 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = TDA.idusuario
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
     WHERE TDA.idusuario = _idusuario;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE if exists sp_actualizar_estado_tarea_diaria_asignacion;
 DELIMITER //
@@ -82,5 +83,4 @@ BEGIN
     estado = _estado    
     WHERE idtaradiariaasig = _idtaradiariaasig; 
 END //
-
-CALL sp_obtener_tareas_diarias_por_usuario (2)
+DELIMITER ;

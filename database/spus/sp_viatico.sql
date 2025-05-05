@@ -1,7 +1,7 @@
 -- USE vega_producciones_erp;
 
 DROP PROCEDURE IF EXISTS `sp_registrar_viatico`;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_viatico(
     OUT _idviatico INT,
 	IN _iddetalle_presentacion INT,
@@ -28,12 +28,11 @@ BEGIN
     ELSE
         SET _idviatico = LAST_INSERT_ID();
     END IF;
-END $$
--- call sp_registrar_viatico (2,5,null,777,1,1,1,888);
--- CALL sp_registrar_viatico (@idviatico, 2, 5.00, 45.00, null)
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_actualizar_viatico;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_actualizar_viatico
 (
 	IN _idviatico			INT,
@@ -43,10 +42,11 @@ BEGIN
 	UPDATE viaticos SET
     pasaje = _pasaje
     WHERE idviatico = _idviatico;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_info_viatico_notificacion;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_info_viatico_notificacion
 (
 	IN _idusuario INT,
@@ -69,10 +69,11 @@ BEGIN
     WHERE
     (_idusuario IS NULL OR VIA.idusuario = _idusuario) AND
     (_idviatico IS NULL OR VIA.idviatico = _idviatico);
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_info_viatico;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_info_viatico
 (
 	IN _iddetallepresentacion INT,
@@ -95,4 +96,5 @@ BEGIN
     WHERE
     (_iddetallepresentacion IS NULL OR VIA.iddetalle_presentacion = _iddetallepresentacion) AND
     (_idusuario IS NULL OR VIA.idusuario = _idusuario);
-END $$
+END //
+DELIMITER ;

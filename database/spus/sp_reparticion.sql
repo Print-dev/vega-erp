@@ -20,11 +20,12 @@ BEGIN
     AND (DP.establecimiento LIKE CONCAT('%', COALESCE(_establecimiento, ''), '%') OR _establecimiento IS NULL)
     AND (DP.fecha_presentacion LIKE CONCAT('%', COALESCE(_fecha_presentacion, ''), '%') OR _fecha_presentacion IS NULL);
 END //
+DELIMITER ;
 
 -- CALL sp_registrar_reparticion (@idreparticion,1, 0,0,0,0,0,0);
 
 DROP PROCEDURE IF EXISTS sp_registrar_reparticion;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_reparticion (
     OUT _idreparticion INT,
     IN _iddetalle_presentacion INT
@@ -47,12 +48,12 @@ BEGIN
     ELSE
         SET _idreparticion = LAST_INSERT_ID();
     END IF;
-END $$
+END //
 
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_registrar_ingreso;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_ingreso (
     OUT _idingreso INT,
     IN _idreparticion INT,
@@ -80,13 +81,13 @@ BEGIN
     ELSE
         SET _idingreso = LAST_INSERT_ID();
     END IF;
-END $$
+END //
 
 DELIMITER ;
 
 
 DROP PROCEDURE IF EXISTS sp_registrar_egresos;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_egresos (
     OUT _idegreso INT,
     IN _idreparticion INT,
@@ -113,7 +114,7 @@ BEGIN
     ELSE
         SET _idegreso = LAST_INSERT_ID();
     END IF;
-END $$
+END //
 
 DELIMITER ;
 

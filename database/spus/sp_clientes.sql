@@ -1,9 +1,7 @@
 -- USE vega_producciones_erp;
 
--- CALL sp_registrar_cliente (@idcliente,null, null, null, 'sr orlando', null, null, null,null);
-
 DROP PROCEDURE IF EXISTS sp_registrar_cliente;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_cliente (
     OUT _idcliente INT,
     IN _tipodoc	INT,
@@ -31,12 +29,12 @@ BEGIN
     ELSE
         SET _idcliente = LAST_INSERT_ID();
     END IF;
-END $$
+END //
 
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_search_cliente_numdoc;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_search_cliente_numdoc
 (
 	IN _ndocumento char(20)
@@ -51,10 +49,11 @@ BEGIN
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
     LEFT JOIN nacionalidades NA ON NA.idnacionalidad = D.idnacionalidad
     WHERE C.ndocumento = _ndocumento;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_search_cliente;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_search_cliente (
     IN _ndocumento CHAR(20),
     IN _telefono VARCHAR(15), 
@@ -75,14 +74,14 @@ BEGIN
         (C.ndocumento = _ndocumento OR _ndocumento IS NULL OR _ndocumento = '') 
         AND (C.telefono = _telefono OR _telefono IS NULL OR _telefono = '') 
         AND (C.razonsocial LIKE CONCAT('%', _razonsocial, '%') OR _razonsocial IS NULL OR _razonsocial = '');
-END $$
+END //
 
 DELIMITER ;
 
 -- CALL sp_search_cliente_numdoc('20607656372')
 
 DROP PROCEDURE IF EXISTS sp_actualizar_cliente;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_actualizar_cliente
 (
 	IN _idcliente			INT,
@@ -106,6 +105,6 @@ BEGIN
     correo = _correo,
     direccion = _direccion
     WHERE idcliente = _idcliente;
-END $$
+END //
 
 -- CALL sp_actualizar_cliente(2, 74, '72754752', 'ROYER ALEXIS AVLOS ROMEO', '', '938439212', 'alex@gmail.com', 'mi haus 69');

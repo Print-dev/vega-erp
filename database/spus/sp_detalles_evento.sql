@@ -32,8 +32,10 @@ BEGIN
 	WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
 
+DELIMITER ;
+
 DROP PROCEDURE IF EXISTS sp_registrar_detalle_presentacion;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_detalle_presentacion (
     OUT _iddetalle_presentacion INT,
 	IN _idusuario int,
@@ -79,9 +81,9 @@ BEGIN
     );
 
     SET _iddetalle_presentacion = LAST_INSERT_ID();
-END $$
--- CALL sp_registrar_detalle_presentacion (@iddp, 7,3,74, null, '2025-03-29', '21:35', '00:00', 'lomas', null, null, 1, 1, 3, false);
--- select * from detalles_presentacion;
+END //
+DELIMITER ;
+
 drop procedure if exists sp_obtener_dp_porid;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_dp_porid`(
@@ -98,8 +100,9 @@ BEGIN
     LEFT JOIN departamentos DE ON DE.iddepartamento = PRO.iddepartamento
     WHERE DP.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
 END //
-select * from detalles_presentacion;
-drop procedure if exists sp_obtener_dps;
+DELIMITER ;
+
+DROP DATABASE IF EXISTS `sp_obtener_dps`
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_dps`(
 )
@@ -113,7 +116,7 @@ BEGIN
     LEFT JOIN departamentos DE ON DE.iddepartamento = PRO.iddepartamento
     WHERE DP.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
 END //
-
+DELIMITER ;
 
 -- CALL sp_obtener_filmmaker_asociado_evento (4)
 drop procedure if exists sp_obtener_filmmaker_asociado_evento;
@@ -128,6 +131,8 @@ BEGIN
     LEFT JOIN agenda_asignaciones AGEN ON AGEN.iddetalle_presentacion = DP.iddetalle_presentacion
 	WHERE AGEN.idusuario = _idusuario;
 END //
+
+DELIMITER ;
 
 drop procedure if exists sp_obtener_detalles_evento;
 DELIMITER //
@@ -183,6 +188,8 @@ BEGIN
 
 END //
 
+DELIMITER ;
+
 drop procedure if exists sp_detalles_presentacion_por_modalidad;
 DELIMITER //
 CREATE PROCEDURE `sp_detalles_presentacion_por_modalidad`(
@@ -227,8 +234,7 @@ BEGIN
     WHERE DP.modalidad = _modalidad AND (_igv IS NULL OR DP.igv = _igv)
     GROUP BY DP.iddetalle_presentacion, CO.idcontrato;
 END //
--- call sp_detalles_presentacion_por_modalidad (1, 0)
--- CALL sp_obtener_detalles_evento (null, null, NULL, null, "2025-03-08")
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_artista;
 DELIMITER //
@@ -294,9 +300,6 @@ BEGIN
 END //
 DELIMITER ;
 
--- SPU PARA LISTAR LA AGENDA DE LOS OTROS ROLES 
-select * from agenda_asignaciones;
--- CALL sp_obtener_agenda (null, null, 6)
 DROP PROCEDURE IF EXISTS sp_obtener_agenda;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_agenda`(
@@ -514,10 +517,7 @@ BEGIN
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento;
 END //
 DELIMITER ;
-call sp_obtener_agenda_edicion();
-select * from agenda_edicion;
--- call sp_obtener_agenda_edicion_por_editor_y_general (null);
--- FILTRAR AGENDA POR EDITORES (TAREAS INDEPENDIENTES Y EN GENERAL PARA TODOS LOS EDITORES)
+
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_edicion_por_editor_y_general;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_agenda_edicion_por_editor_y_general`(
@@ -618,6 +618,8 @@ BEGIN
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
 
+DELIMITER ;
+
 DROP PROCEDURE if exists sp_actualizar_pagado50_dp;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_pagado50_dp (
@@ -630,6 +632,8 @@ BEGIN
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
 
+DELIMITER ; 
+
 DROP PROCEDURE if exists sp_actualizar_caja_dp;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_caja_dp (
@@ -641,6 +645,8 @@ BEGIN
     tienecaja = _tienecaja
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
+
+DELIMITER ; 
 
 
 
@@ -656,6 +662,8 @@ BEGIN
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
 
+DELIMITER;
+
 DROP PROCEDURE if exists sp_editar_acuerdo_evento;
 DELIMITER //
 CREATE PROCEDURE sp_editar_acuerdo_evento (
@@ -667,6 +675,7 @@ BEGIN
     acuerdo = nullif(_acuerdo, '')
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
+DELIMITER ;
 
 -- quitar luego
 DROP PROCEDURE if exists sp_asignarfilmmaker_dp;
@@ -680,9 +689,10 @@ BEGIN
     idusuario = nullif(_idusuario, '')
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_reportar_artista_evento; -- esto servira para reportar salidas y retornos
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_reportar_artista_evento (
     OUT _idreporte INT,
 	IN _iddetalle_presentacion int,
@@ -706,7 +716,9 @@ BEGIN
     ELSE
         SET _idreporte = LAST_INSERT_ID();
     END IF;
-END $$
+END //
+
+DELIMITER ;
 
 DROP PROCEDURE if exists sp_actualizar_responsables_boleteria_contrato_evento;
 DELIMITER //
@@ -721,6 +733,7 @@ BEGIN
     idusuarioContrato = nullif(_idusuarioContrato, '')
     WHERE idresponsablecontrato = _idresponsablecontrato; 
 END //
+DELIMITER ;
 
 DROP PROCEDURE if exists sp_actualizar_precios_entrada_evento;
 DELIMITER //
@@ -733,6 +746,8 @@ BEGIN
     entradas = nullif(_entradas, '')
     WHERE idprecioentradaevento = _idprecioentradaevento; 
 END //
+
+DELIMITER ; 
 
 -- call sp_actualizar_responsables_boleteria_contrato_evento (1, 3, 3);
 drop procedure if exists sp_obtener_filmmakers_dp;
@@ -749,4 +764,4 @@ BEGIN
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona 
     WHERE DP.iddetalle_presentacion = _iddetalle_presentacion;
 END //
-select * from agenda_asignaciones;
+DELIMITER ;

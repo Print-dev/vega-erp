@@ -1,7 +1,5 @@
 DROP PROCEDURE IF EXISTS sp_filtrar_cajachica;
-DELIMITER $$
-
--- CALL sp_filtrar_cajachica (null, null, null, null, 'h');
+DELIMITER //
 
 CREATE PROCEDURE sp_filtrar_cajachica(
     IN _fecha_apertura DATETIME,
@@ -37,12 +35,12 @@ BEGIN
         -- Filtrar por nombre de usuario y establecimiento unidos
         AND (_busqueda_general IS NULL 
             OR CONCAT(USU.nom_usuario, ' ', DP.establecimiento) LIKE CONCAT('%', _busqueda_general, '%'));
-END $$
+END //
 
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_actualizar_estado_caja;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_actualizar_estado_caja
 (
 	IN _idcajachica			INT,
@@ -53,10 +51,11 @@ BEGIN
     estado = _estado,
     fecha_cierre = now()
     WHERE idcajachica = _idcajachica;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_actualizar_monto_cajachica;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_actualizar_monto_cajachica
 (
 	IN _idmonto			INT,
@@ -66,11 +65,12 @@ BEGIN
 	UPDATE montoCajaChica SET
     monto = _monto
     WHERE idmonto = _idmonto;
-END $$
+END //
+DELIMITER ;
 
 
 DROP PROCEDURE IF EXISTS sp_actualizar_ccfinal;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_actualizar_ccfinal
 (
 	IN _idcajachica			INT,
@@ -80,10 +80,11 @@ BEGIN
 	UPDATE cajachica SET
     ccfinal = _ccfinal
     WHERE idcajachica = _idcajachica;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_actualizar_incremento;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_actualizar_incremento
 (
 	IN _idcajachica			INT,
@@ -93,10 +94,11 @@ BEGIN
 	UPDATE cajachica SET
     incremento = _incremento
     WHERE idcajachica = _idcajachica;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_actualizar_decremento;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_actualizar_decremento
 (
 	IN _idcajachica			INT,
@@ -106,11 +108,12 @@ BEGIN
 	UPDATE cajachica SET
     decremento = _decremento
     WHERE idcajachica = _idcajachica;
-END $$
+END //
+DELIMITER ;
 
 
 DROP PROCEDURE IF EXISTS sp_registrar_cajachica;
-DELIMITER $$
+DELIMITER //
 
 CREATE PROCEDURE sp_registrar_cajachica (
     OUT _idcajachica INT,
@@ -139,7 +142,7 @@ BEGIN
     ELSE
         SET _idcajachica = LAST_INSERT_ID();
     END IF;
-END $$
+END //
 
 DELIMITER ;
 
@@ -147,7 +150,7 @@ DELIMITER ;
 
 -- Eliminar procedimiento si ya existe
 DROP PROCEDURE IF EXISTS sp_registrar_gasto;
-DELIMITER $$
+DELIMITER //
 
 CREATE PROCEDURE sp_registrar_gasto (
     OUT _idgasto INT,
@@ -173,6 +176,6 @@ BEGIN
     ELSE
         SET _idgasto = LAST_INSERT_ID();
     END IF;
-END $$
+END //
 
 DELIMITER ;

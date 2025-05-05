@@ -1,7 +1,7 @@
 -- USE vega_producciones_erp;
 
 DROP PROCEDURE IF EXISTS `sp_registrar_comprobante`;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_comprobante(
     OUT _idcomprobante	INT ,
     IN _iddetallepresentacion INT,
@@ -33,11 +33,12 @@ BEGIN
     ELSE
         SET _idcomprobante = LAST_INSERT_ID();
     END IF;
-END $$
-select * from comprobantes;
--- CALL sp_registrar_comprobante (@idcomprobante, 19, 1, 1, '01', 1, 'F001', '00000001', 'PEN', 49205, 1, '');
+END //
+
+DELIMITER ;
+
 DROP PROCEDURE IF EXISTS `sp_registrar_item_comprobante`;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_item_comprobante(
 	IN _idcomprobante INT,
     IN _cantidad	INT ,
@@ -48,10 +49,12 @@ CREATE PROCEDURE sp_registrar_item_comprobante(
 BEGIN
     INSERT INTO items_comprobante (idcomprobante, cantidad, descripcion, valorunitario, valortotal)
     VALUES (_idcomprobante, _cantidad, _descripcion, _valorunitario, _valortotal);
-END $$
+END //
+
+DELIMITER;
 
 DROP PROCEDURE IF EXISTS `sp_registrar_detalle_comprobante`;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_detalle_comprobante(
 	IN _idcomprobante INT,
     IN _estado	varchar(10),
@@ -60,10 +63,11 @@ CREATE PROCEDURE sp_registrar_detalle_comprobante(
 BEGIN
     INSERT INTO detalles_comprobante (idcomprobante, estado, info)
     VALUES (_idcomprobante, _estado, _info);
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_comprobante_por_tipodoc;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_comprobante_por_tipodoc
 (
     IN _idcomprobante INT,
@@ -98,10 +102,12 @@ BEGIN
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
     WHERE COMP.idcomprobante = _idcomprobante
     AND COMP.idtipodoc = _idtipodoc;
-END $$
+END //
+
+DELIMITER;
 
 DROP PROCEDURE IF EXISTS sp_obtener_notas_de_venta;
- DELIMITER $$
+ DELIMITER //
  CREATE PROCEDURE sp_obtener_notas_de_venta
  (
      IN _fechaemision DATE,
@@ -144,10 +150,12 @@ DROP PROCEDURE IF EXISTS sp_obtener_notas_de_venta;
          COMP.correlativo,
          COMP.tipomoneda,
          COMP.monto;
- END $$
+ END //
+ 
+ DELIMITER;
 
 DROP PROCEDURE IF EXISTS sp_obtener_facturas;
- DELIMITER $$
+ DELIMITER //
  CREATE PROCEDURE sp_obtener_facturas
  (
      IN _fechaemision DATE,
@@ -190,10 +198,11 @@ DROP PROCEDURE IF EXISTS sp_obtener_facturas;
          COMP.correlativo,
          COMP.tipomoneda,
          COMP.monto;
- END $$
+ END //
+ DELIMITER;
  
 DROP PROCEDURE IF EXISTS `sp_registrar_cuota_factura`;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE `sp_registrar_cuota_factura`(
 	IN _idcomprobante INT,
     IN _fecha	date ,
@@ -202,11 +211,12 @@ CREATE PROCEDURE `sp_registrar_cuota_factura`(
 BEGIN
     INSERT INTO cuotas_comprobante (idcomprobante, fecha, monto)
     VALUES (_idcomprobante, _fecha, _monto);
-END $$
+END //
+DELIMITER;
 
 
 DROP PROCEDURE IF EXISTS sp_obtener_cuotas;
-DELIMITER $$
+DELIMITER //
 
 CREATE PROCEDURE sp_obtener_cuotas
 (
@@ -241,13 +251,13 @@ BEGIN
         AND (_idcliente IS NULL OR COMP.idcliente = _idcliente OR COMP.idcliente IS NULL)
 
     GROUP BY CCMP.idcuotacomprobante;
-END $$
+END //
 DELIMITER ;
 
 select * from cuotas_comprobante;
 
 DROP PROCEDURE IF EXISTS `sp_registrar_pago_cuota`;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_pago_cuota(
 	IN _idcuotacomprobante INT,
     IN _montopagado decimal(10,2),
@@ -258,10 +268,11 @@ BEGIN
     
     INSERT INTO pagos_cuota (idcuotacomprobante, montopagado, tipo_pago, noperacion)
     VALUES (_idcuotacomprobante, _montopagado, _tipo_pago, NULLIF(_noperacion, ''));
-END $$
+END //
+DELIMITER;
 
 DROP PROCEDURE IF EXISTS `sp_actualizar_estado_cuota_comprobante`;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_actualizar_estado_cuota_comprobante(
 	IN _idcuotacomprobante INT,
     IN _estado TINYINT
@@ -270,7 +281,9 @@ BEGIN
     		UPDATE cuotas_comprobante SET
 	estado = _estado
     WHERE idcuotacomprobante = _idcuotacomprobante; 
-END $$
+END //
+
+DELIMITER ;
 
 
 -- CALL sp_obtener_cuotas (null, 'F001-00000003', null);

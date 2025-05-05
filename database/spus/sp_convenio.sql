@@ -34,9 +34,10 @@ BEGIN
     LEFT JOIN usuarios	USU ON USU.idusuario = DP.idusuario
     WHERE C.idconvenio = _idconvenio; -- me quede aca
 END //
-call obtenerContratoConvenio (1);
+DELIMITER ;
 
-DELIMITER $$
+DROP PROCEDURE IF EXISTS `sp_registrar_convenio`
+DELIMITER //
 CREATE PROCEDURE sp_registrar_convenio (
     OUT _idconvenio INT,
 	IN _iddetalle_presentacion INT,
@@ -63,12 +64,13 @@ BEGIN
     ELSE
         SET _idconvenio = LAST_INSERT_ID();
     END IF;
-END $$
+END //
+DELIMITER ;
 
 -- CALL sp_registrar_convenio (4, 350.00, 450.00, 40, 60, 'hola soy la prppesta', 1)
 
 DROP PROCEDURE IF EXISTS sp_actualizar_estado_convenio;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_actualizar_estado_convenio
 (
 	IN _idconvenio			INT,
@@ -79,10 +81,11 @@ BEGIN
     estado = _estado,
     updated_at = now()
     WHERE idconvenio = _idconvenio;
-END $$
+END //
+DELIMITER ; 
 
 DROP PROCEDURE IF EXISTS sp_actualizar_convenio;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_actualizar_convenio
 (
 	IN _idconvenio			INT,
@@ -103,7 +106,8 @@ BEGIN
     estado = _estado,
     updated_at = now()
     WHERE idconvenio = _idconvenio;
-END $$
+END //
+DELIMITER ;
 
 -- CALL sp_actualizar_convenio (1,2099.50, 3050.50, 'gaaa');
 
@@ -120,6 +124,4 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     WHERE C.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
 END //
-
-CALL obtenerConvenioPorIdDP (5)
-
+DELIMITER ;

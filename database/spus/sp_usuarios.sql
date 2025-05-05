@@ -1,7 +1,7 @@
 -- USE vega_producciones_erp;
 
 DROP PROCEDURE IF EXISTS sp_registrar_usuario;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_usuario
 (
 	OUT _idusuario INT,
@@ -31,10 +31,11 @@ BEGIN
 	ELSE
         SET _idusuario = last_insert_id();
 	END IF;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_usuario_por_id;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_usuario_por_id
 (
 	IN _idusuario INT
@@ -48,10 +49,11 @@ BEGIN
         INNER JOIN nivelaccesos NA ON U.idnivelacceso = NA.idnivelacceso
         INNER JOIN personas P ON U.idpersona = P.idpersona
         WHERE idusuario = _idusuario;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_user_login;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_user_login
 (
 	IN _usuario VARCHAR(30)
@@ -69,12 +71,11 @@ BEGIN
         INNER JOIN nivelaccesos NA ON US.idnivelacceso = NA.idnivelacceso
         INNER JOIN personas PE ON PE.idpersona = US.idpersona
         WHERE US.nom_usuario = _usuario;
-END $$
-
-CALL sp_user_login('royer.18');
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_usuario_por_nivel;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_usuario_por_nivel
 (
 	IN _idnivelacceso INT
@@ -91,12 +92,12 @@ BEGIN
         INNER JOIN nivelaccesos NA ON US.idnivelacceso = NA.idnivelacceso
         LEFT JOIN personas PER ON PER.idpersona = US.idpersona
         WHERE NA.idnivelacceso = _idnivelacceso;
-END $$
+END //
+DELIMITER ;
 
--- CALL sp_obtener_usuario_por_nivel(6)
--- CALL sp_obtener_usuarios (NULL,NULL,NULL,NULL,NULL,NULL)
+
 DROP PROCEDURE IF EXISTS sp_obtener_usuarios;
-DELIMITER $$
+DELIMITER //
 
 CREATE PROCEDURE sp_obtener_usuarios
 (
@@ -122,7 +123,7 @@ BEGIN
   AND (US.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%') OR US.nom_usuario IS NULL)
   AND (US.idsucursal LIKE CONCAT('%', COALESCE(_idsucursal, ''), '%') OR US.idsucursal IS NULL);
 
-END $$
+END //
 DELIMITER ;
 
 
@@ -157,6 +158,7 @@ BEGIN
         WHERE idusuario = _idusuario;
     END IF;
 END //
+DELIMITER ;
 
 DROP PROCEDURE if exists sp_actualizar_persona;
 DELIMITER //
@@ -185,6 +187,7 @@ BEGIN
 		update_at = now()
     WHERE idpersona = _idpersona; 
 END //
+DELIMITER ;
 
 DROP PROCEDURE if exists sp_deshabilitar_usuario;
 DELIMITER //
@@ -198,3 +201,4 @@ BEGIN
         update_at = now()
     WHERE idusuario = _idusuario; 
 END //
+DELIMITER ;

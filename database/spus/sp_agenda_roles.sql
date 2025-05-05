@@ -1,7 +1,7 @@
 -- use vega_producciones_erp;
 
 DROP PROCEDURE IF EXISTS sp_asignar_agenda;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_asignar_agenda (
     OUT _idasignacion INT,
 	IN _iddetalle_presentacion int,
@@ -23,10 +23,11 @@ BEGIN
     ELSE
         SET _idasignacion = LAST_INSERT_ID();
     END IF;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_filmmaker_asignado;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_filmmaker_asignado
 (
     IN _iddetalle_presentacion INT
@@ -38,10 +39,11 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = AGE.idusuario
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
     WHERE AGE.iddetalle_presentacion = _iddetalle_presentacion;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_asignar_agenda_editor; -- editado
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_asignar_agenda_editor (
     OUT _idagendaeditor INT,
 	IN _idagendaedicion int,
@@ -66,7 +68,8 @@ BEGIN
     ELSE
         SET _idagendaeditor = LAST_INSERT_ID();
     END IF;
-END $$
+END //
+DELIMITER ;
 
 
 DROP PROCEDURE if exists sp_actualizar_agenda_editor;
@@ -86,9 +89,10 @@ BEGIN
     hora_entrega = _hora_entrega
     WHERE idagendaeditor = _idagendaeditor; 
 END //
+DELIMITER ;
 
 DROP PROCEDURE if exists obtenerUsuarioAsignado;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE obtenerUsuarioAsignado(
     IN p_idagendaedicion INT,
     IN p_idtipotarea INT
@@ -109,12 +113,12 @@ BEGIN
     JOIN tipotarea tt ON ae.idtipotarea = tt.idtipotarea
     WHERE ae.idagendaedicion = p_idagendaedicion
     AND ae.idtipotarea = p_idtipotarea;
-END $$
+END //
 DELIMITER ;
 
 
 DROP PROCEDURE IF EXISTS sp_subir_contenido_editor; -- editado
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_subir_contenido_editor (
 	OUT _idsubida INT,
     IN _idagendaeditor INT,
@@ -136,11 +140,12 @@ BEGIN
     ELSE
         SET _idsubida = LAST_INSERT_ID();
     END IF;
-END $$
+END //
+DELIMITER ;
 
 
 DROP PROCEDURE IF EXISTS sp_obtener_contenido_historial_edicion;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_contenido_historial_edicion
 (
     IN _idagendaeditor INT
@@ -151,10 +156,11 @@ BEGIN
     FROM subidas_agenda_edicion SUBI
     LEFT JOIN agenda_editores AGE ON AGE.idagendaeditor = SUBI.idagendaeditor
     WHERE SUBI.idagendaeditor = _idagendaeditor;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_editores;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_agenda_editores
 (
     IN _idagendaedicion INT
@@ -167,9 +173,9 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = AGE.idusuario
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
     WHERE AGE.idagendaedicion = _idagendaedicion;
-END $$
+END //
+DELIMITER ;
 
-select * from agenda_editores
 DROP PROCEDURE if exists sp_actualizar_observacion_subida; -- ELIMINAR ESTO (que?)
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_observacion_subida (
@@ -182,6 +188,7 @@ BEGIN
     WHERE idsubida = _idsubida; 
 
 END //
+DELIMITER ;
 
 DROP PROCEDURE if exists sp_actualizar_estado_tarea_edicion;
 DELIMITER //
@@ -195,7 +202,8 @@ BEGIN
     WHERE idagendaeditor = _idagendaeditor; 
 
 END //
--- call sp_actualizar_estado_tarea_edicion (3, 4);
+DELIMITER ;
+
 DROP PROCEDURE if exists sp_actualizar_estado_tarea_altoketicket;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_estado_tarea_altoketicket (
@@ -208,11 +216,11 @@ BEGIN
     WHERE idagendaeditor = _idagendaeditor; 
 
 END //
--- select * from agenda_editores;
+DELIMITER ;
 
 
 DROP PROCEDURE IF EXISTS sp_obtener_usuario_asignado_tarea;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_usuario_asignado_tarea
 (
     IN _idusuario INT,
@@ -225,21 +233,23 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = AGE.idusuario
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
     WHERE AGE.idusuario = _idusuario AND AGE.idagendaedicion = _idagendaedicion;
-END $$
+END //
+DELIMITER ;
 
 
 DROP PROCEDURE IF EXISTS sp_quitar_tarea_usuario;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_quitar_tarea_usuario
 (
     IN _idagendaeditor INT
 )
 BEGIN	
 	DELETE FROM agenda_editores WHERE idagendaeditor = _idagendaeditor;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_tareas_editor;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_tareas_editor
 (
     IN _idusuario INT
@@ -254,11 +264,11 @@ BEGIN
 		LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
         LEFT JOIN usuarios USUDP ON USUDP.idusuario = DP.idusuario
         WHERE (_idusuario IS NULL OR AGED.idusuario = _idusuario OR AGED.idusuario IS NULL);
-END $$
-select * from agenda_edicion;
--- ESTE SPU SERVIRA PARA LISTAR LAS AGENDAS DE EDICION EN GLOBAL, LUEGO DE ESO SE ACCEDERA A LAS TAREAS QUE ESTAN ADENTRO DE ELLO PERO SOLO LOS COMPLETADOS
+END //
+DELIMITER ;
+
 DROP PROCEDURE IF EXISTS sp_mostrar_contenido_revisado_edicion;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_mostrar_contenido_revisado_edicion
 (
     IN _iddetalle_presentacion INT
@@ -271,15 +281,12 @@ BEGIN
 		LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
         LEFT JOIN usuarios USUDP ON USUDP.idusuario = DP.idusuario
         WHERE (_iddetalle_presentacion IS NULL OR AGED.iddetalle_presentacion = _iddetalle_presentacion OR AGED.iddetalle_presentacion IS NULL);
-END $$
-select * from agenda_edicion;
-CALL sp_mostrar_contenido_revisado_edicion (1)
-select * from 
+END //
+DELIMITER ;
 
--- ESTE SPU HARA LO MISMO QUE LA EDICION
-call sp_mostrar_contenido_revisado_filmmakers (1);
+
 DROP PROCEDURE IF EXISTS sp_mostrar_contenido_revisado_filmmakers;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_mostrar_contenido_revisado_filmmakers
 (
     IN _iddetalle_presentacion INT
@@ -292,5 +299,5 @@ BEGIN
 		LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
         LEFT JOIN usuarios USUDP ON USUDP.idusuario = DP.idusuario
         WHERE (_iddetalle_presentacion IS NULL OR AGENA.iddetalle_presentacion = _iddetalle_presentacion OR AGENA.iddetalle_presentacion IS NULL);
-END $$
-select * from agenda_asignaciones; 
+END //
+DELIMITER ;

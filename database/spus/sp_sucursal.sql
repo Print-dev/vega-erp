@@ -23,9 +23,10 @@ BEGIN
     AND (DEP.iddepartamento LIKE CONCAT('%', COALESCE(_iddepartamento, ''), '%') OR _iddepartamento IS NULL);
 -- insert into sucursales (iddistrito, idresponsable, nombre, ruc, telefono, direccion) values (959, 'NEGOCIACIONES Y PRODUCCIONES VEGA S.A.C.', '20608627422', '')
 END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `sp_registrar_sucursal`;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_sucursal(
     IN _idempresa INT,
 	IN _iddistrito INT,
@@ -39,7 +40,8 @@ CREATE PROCEDURE sp_registrar_sucursal(
 BEGIN
     INSERT INTO sucursales (idempresa, iddistrito, idresponsable, nombre, ruc, telefono, direccion, email)
     VALUES (_idempresa, _iddistrito, nullif(_idresponsable, ''), nullif(_nombre, ''), _ruc, nullif(_telefono, ''), _direccion, nullif(_email, ''));
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE if exists sp_actualizar_sucursal;
 DELIMITER //
@@ -66,7 +68,8 @@ BEGIN
     email = _email
     WHERE idsucursal = _idsucursal; 
 END //
--- call sp_actualizar_sucursal(1,1, 98, 1, 'vega prodcucciones ', '10727547510', '973133189', 'av falsa', 'prueba@gmail.com');
+DELIMITER ;
+
 drop procedure if exists sp_obtener_representante;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_representante`(
@@ -83,6 +86,7 @@ BEGIN
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
     WHERE SUC.idsucursal = _idsucursal;
 END //
+DELIMITER ;
 
 drop procedure if exists sp_obtener_sucursales_por_empresa;
 DELIMITER //
@@ -98,7 +102,7 @@ BEGIN
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
     WHERE SUC.idempresa = _idempresa;
 END //
-
+DELIMITER ;
 
 drop procedure if exists obtenerSucursalPorId;
 DELIMITER //
@@ -114,3 +118,4 @@ BEGIN
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
     WHERE SUC.idsucursal = _idsucursal;
 END //
+DELIMITER ;

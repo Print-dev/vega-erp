@@ -1,7 +1,7 @@
 -- USE vega_producciones_erp;
 
 DROP PROCEDURE IF EXISTS `obtenerContrato`;
-DELIMITER $$
+DELIMITER //
 
 CREATE PROCEDURE `obtenerContrato`(
     IN _idcontrato INT
@@ -39,12 +39,11 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     WHERE CO.idcontrato = _idcontrato;
 
-END $$
-
-CALL obtenerContrato(1)
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `sp_obtenerCotizacion`;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE `sp_obtenerCotizacion`(
     IN _iddetalle_presentacion INT
 )
@@ -78,14 +77,12 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     WHERE DP.iddetalle_presentacion = _iddetalle_presentacion;
 
-END $$
+END //
 
 DELIMITER ;
 
-CALL sp_obtenerCotizacion (1);
-
 DROP PROCEDURE IF EXISTS `sp_registrar_contrato`;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_contrato(
     OUT _idcontrato INT,
 	IN _iddetalle_presentacion INT,
@@ -107,10 +104,11 @@ BEGIN
     ELSE
         SET _idcontrato = LAST_INSERT_ID();
     END IF;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `sp_registrar_pago_contrato`;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_pago_contrato(
     OUT _idpagocontrato INT,
 	IN _idcontrato INT,
@@ -137,10 +135,11 @@ BEGIN
     ELSE
         SET _idpagocontrato = LAST_INSERT_ID();
     END IF;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_actualizar_estado_contrato;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_actualizar_estado_contrato
 (
 	IN _idcontrato			INT,
@@ -151,11 +150,12 @@ BEGIN
     estado = _estado,
     updated_at = now()
     WHERE idcontrato = _idcontrato;
-END $$
+END // 
+DELIMITER ;
 
 
 DROP PROCEDURE IF EXISTS `sp_obtener_pagos_contrato`;
-DELIMITER $$
+DELIMITER //
 
 CREATE PROCEDURE `sp_obtener_pagos_contrato`(
     IN _idcliente INT
@@ -189,6 +189,5 @@ BEGIN
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
 	WHERE CLI.idcliente LIKE CONCAT('%', COALESCE(_idcliente, ''), '%');
-END $$
-call sp_obtener_pagos_contrato (9);
-select * from clientes;
+END //
+DELIMITER ;

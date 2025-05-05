@@ -1,7 +1,7 @@
 -- USE vega_producciones_erp;
 
 DROP PROCEDURE IF EXISTS sp_registrar_persona;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_persona (
     OUT _idpersona INT,
     IN _num_doc VARCHAR(20),
@@ -30,12 +30,12 @@ BEGIN
     ELSE
         SET _idpersona = LAST_INSERT_ID();
     END IF;
-END $$
+END //
 
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_search_persona_numdoc;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_search_persona_numdoc
 (
 	IN _num_doc VARCHAR(20)
@@ -52,4 +52,5 @@ BEGIN
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
     LEFT JOIN nacionalidades NA ON NA.idnacionalidad = D.idnacionalidad
     WHERE P.num_doc = _num_doc;
-END $$
+END //
+DELIMITER ;

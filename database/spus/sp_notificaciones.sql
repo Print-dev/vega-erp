@@ -2,7 +2,7 @@
 
 -- DROP PROCEDURE `sp_registrar_notificacion_viatico` 
 DROP PROCEDURE IF EXISTS `sp_registrar_notificacion`;
-DELIMITER $$
+DELIMITER //
 
 -- CALL sp_registrar_notificacion(@idnotificacion,1,3,1,2,'yooo')
 CREATE PROCEDURE sp_registrar_notificacion(
@@ -30,14 +30,12 @@ BEGIN
     ELSE
         SET _idnotificacion = LAST_INSERT_ID();
     END IF;
-END $$
+END //
 
 DELIMITER ;
 
--- CALL sp_registrar_notificacion_viatico (@idnotificacion, 1, 3, 'Johan envio un viatico');
-
 DROP PROCEDURE IF EXISTS sp_obtener_notificaciones;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_notificaciones
 (
 	IN _iddepartamento INT,
@@ -48,10 +46,11 @@ BEGIN
 		*
     FROM notificaciones NOTIF
     WHERE NOTIF.idusuario = _idusuario;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_notificaciones_por_nivel;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_notificaciones_por_nivel
 (
 	IN _idnivelacceso INT,
@@ -64,11 +63,12 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = NOTIF.idusuariodest
     LEFT JOIN nivelaccesos NIVEL ON NIVEL.idnivelacceso = USU.idnivelacceso
     WHERE USU.idnivelacceso = _idnivelacceso AND USU.idusuario = _idusuario;
-END $$
+END //
+DELIMITER ;
 -- call sp_obtener_notificaciones (3)
 
 DROP PROCEDURE IF EXISTS sp_obtener_notificacion_dp;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_notificacion_dp
 (
     IN _idreferencia INT
@@ -84,10 +84,11 @@ BEGIN
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
     WHERE NOTIF.idreferencia = _idreferencia AND NOTIF.tipo = 2;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_notificacion_propuesta;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_notificacion_propuesta
 (
     IN _idreferencia INT
@@ -104,10 +105,11 @@ BEGIN
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
     WHERE NOTIF.idreferencia = _idreferencia AND NOTIF.tipo = 4;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_notificacion_precios_entrada;
-DELIMITER $$
+DELIMITER // 
 CREATE PROCEDURE sp_obtener_notificacion_precios_entrada
 (
     IN _idreferencia INT
@@ -124,6 +126,6 @@ BEGIN
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
     WHERE NOTIF.idreferencia = _idreferencia AND NOTIF.tipo = 5;
-END $$
+END //
 
--- call sp_obtener_notificacion_propuesta(1);
+DELIMITER ;

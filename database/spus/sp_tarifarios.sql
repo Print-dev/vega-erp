@@ -1,9 +1,7 @@
 -- USE vega_producciones_erp;
 
-DELIMITER $$
-
 DROP PROCEDURE IF EXISTS sp_obtener_tarifario_por_provincia;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_tarifario_por_provincia
 (
 	IN _iddepartamento INT,
@@ -18,10 +16,11 @@ BEGIN
     LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
     WHERE PR.iddepartamento = _iddepartamento AND USU.idusuario = _idusuario AND T.tipo_evento = _tipo_evento;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_search_tarifa_artista_por_provincia;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_search_tarifa_artista_por_provincia
 (
 	IN _idprovincia INT,
@@ -36,11 +35,11 @@ BEGIN
     LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
     WHERE PR.idprovincia = _idprovincia AND USU.idusuario = _idusuario AND T.tipo_evento = _tipo_evento;
-END $$
--- CALL sp_search_tarifa_artista_por_provincia (100, 2)
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_search_tarifa_artista;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_search_tarifa_artista
 (
 	IN _nom_usuario varchar(30)
@@ -53,12 +52,11 @@ BEGIN
     LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
     WHERE USU.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%');
-END $$
-
-CALL sp_search_tarifa_artista('A');
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_registrar_tarifa;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_registrar_tarifa
 (
 	OUT _idtarifario INT,
@@ -83,10 +81,11 @@ BEGIN
 	ELSE
         SET _idtarifario = last_insert_id();
 	END IF;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_actualizar_tarifa;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_actualizar_tarifa
 (
 	IN _idtarifario			INT,
@@ -96,4 +95,5 @@ BEGIN
 	UPDATE tarifario SET
     precio = _precio
     WHERE idtarifario = _idtarifario;
-END $$
+END //
+DELIMITER ;

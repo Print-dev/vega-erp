@@ -14,6 +14,7 @@ BEGIN
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento;
 -- insert into sucursales (iddistrito, idresponsable, nombre, ruc, telefono, direccion) values (959, 'NEGOCIACIONES Y PRODUCCIONES VEGA S.A.C.', '20608627422', '')
 END //
+DELIMITER ;
 
 DROP PROCEDURE if exists sp_actualizar_empresa;
 DELIMITER //
@@ -56,3 +57,4 @@ BEGIN
     moneda = nullif(_moneda , '')
     WHERE idempresa = _idempresa; 
 END //
+DELIMITER ;

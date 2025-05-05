@@ -1,7 +1,7 @@
 -- USE vega_producciones_erp;
 
 DROP PROCEDURE IF EXISTS sp_asignar_agenda_cmanager;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_asignar_agenda_cmanager
 (
 	OUT _idagendacommanager INT,
@@ -24,12 +24,11 @@ BEGIN
 	ELSE
         SET _idagendacommanager = last_insert_id();
 	END IF;
-END $$
--- select * from agenda_commanager;
--- CALL sp_asignar_agenda_cmanager (@idagenda, 15)
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_cmmanager;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_agenda_cmmanager
 (
     IN _idagendaeditor INT
@@ -44,10 +43,11 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = DEP.idusuario
     LEFT JOIN tipotarea TIPO ON TIPO.idtipotarea = AGENE.idtipotarea
     WHERE AGENE.idagendaeditor = _idagendaeditor;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_tareas_para_publicar;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_tareas_para_publicar
 (
     IN _establecimiento varchar(80),
@@ -72,10 +72,11 @@ BEGIN
     AND (DEP.idusuario LIKE CONCAT('%', COALESCE(_idusuario, ''), '%') OR _idusuario IS NULL)
     AND (AGENC.idusuarioCmanager LIKE CONCAT('%', COALESCE(_idusuarioEditor, ''), '%') OR _idusuarioEditor IS NULL) AND
     AGENE.estado = 2 OR AGENE.estado = 4;
-END $$
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_obtener_tarea_vinculada_cmanager;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_obtener_tarea_vinculada_cmanager
 (
     IN _idagendaeditor int
@@ -86,21 +87,20 @@ BEGIN
 	FROM agenda_commanager  AGENC
     LEFT JOIN agenda_editores AGENE ON AGENE.idagendaeditor = AGENC.idagendaeditor
     WHERE AGENC.idagendaeditor = _idagendaeditor;
-END $$
+END //
+DELIMITER ;
 
 
--- call sp_obtener_tareas_para_publicar("mega", null , 10, 9)
-
-select * from detalles_presentacion;
 DROP PROCEDURE IF EXISTS sp_quitar_responsable_posteo;
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_quitar_responsable_posteo
 (
     IN _idagendaeditor INT
 )
 BEGIN	
 	DELETE FROM agenda_commanager WHERE idagendaeditor = _idagendaeditor;
-END $$
+END //
+DELIMITER ;
 
 
 DROP PROCEDURE if exists sp_asignar_portal_web_contenido;
@@ -114,6 +114,7 @@ BEGIN
     portalpublicar = _portalpublicar    
     WHERE idagendacommanager = _idagendacommanager; 
 END //
+DELIMITER ;
 
 DROP PROCEDURE if exists sp_actualizar_estado_publicar_contenido;
 DELIMITER //
@@ -127,8 +128,7 @@ BEGIN
     fechapublicacion = now()
     WHERE idagendacommanager = _idagendacommanager; 
 END //
-
--- CALL sp_actualizar_estado_publicar_contenido (1, 2)
+DELIMITER ; 
 
 DROP PROCEDURE if exists sp_actualizar_copy_contenido;
 DELIMITER //
@@ -141,4 +141,4 @@ BEGIN
     copy = _copy    
     WHERE idagendacommanager = _idagendacommanager; 
 END //
-
+DELIMITER ;
