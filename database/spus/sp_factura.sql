@@ -99,7 +99,7 @@ BEGIN
     WHERE COMP.idcomprobante = _idcomprobante
     AND COMP.idtipodoc = _idtipodoc;
 END $$
-select * from comprobantes;
+
 DROP PROCEDURE IF EXISTS sp_obtener_notas_de_venta;
  DELIMITER $$
  CREATE PROCEDURE sp_obtener_notas_de_venta

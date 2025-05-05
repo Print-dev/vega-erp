@@ -195,7 +195,7 @@ BEGIN
     WHERE idagendaeditor = _idagendaeditor; 
 
 END //
-call sp_actualizar_estado_tarea_edicion (3, 4);
+-- call sp_actualizar_estado_tarea_edicion (3, 4);
 DROP PROCEDURE if exists sp_actualizar_estado_tarea_altoketicket;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_estado_tarea_altoketicket (
@@ -208,7 +208,7 @@ BEGIN
     WHERE idagendaeditor = _idagendaeditor; 
 
 END //
-select * from agenda_editores;
+-- select * from agenda_editores;
 
 
 DROP PROCEDURE IF EXISTS sp_obtener_usuario_asignado_tarea;

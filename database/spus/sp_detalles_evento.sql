@@ -733,9 +733,7 @@ BEGIN
     entradas = nullif(_entradas, '')
     WHERE idprecioentradaevento = _idprecioentradaevento; 
 END //
-select * from precios_entrada_evento;
-select * from detalles_presentacion;
-select * from clientes;
+
 -- call sp_actualizar_responsables_boleteria_contrato_evento (1, 3, 3);
 drop procedure if exists sp_obtener_filmmakers_dp;
 DELIMITER //

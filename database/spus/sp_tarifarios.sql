@@ -37,7 +37,6 @@ BEGIN
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
     WHERE PR.idprovincia = _idprovincia AND USU.idusuario = _idusuario AND T.tipo_evento = _tipo_evento;
 END $$
-select * from tarifario;
 -- CALL sp_search_tarifa_artista_por_provincia (100, 2)
 
 DROP PROCEDURE IF EXISTS sp_search_tarifa_artista;
