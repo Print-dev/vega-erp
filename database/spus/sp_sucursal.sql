@@ -1,4 +1,4 @@
-USE vega_producciones_erp;
+-- USE vega_producciones_erp;
 
 drop procedure if exists sp_listar_sucursales;
 DELIMITER //

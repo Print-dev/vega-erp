@@ -1,4 +1,4 @@
-use vega_producciones_erp;
+-- use vega_producciones_erp;
 
 DROP PROCEDURE IF EXISTS sp_asignar_agenda;
 DELIMITER $$

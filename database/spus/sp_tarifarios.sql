@@ -1,4 +1,4 @@
-USE vega_producciones_erp;
+-- USE vega_producciones_erp;
 
 DELIMITER $$
 

@@ -1,4 +1,4 @@
-use vega_producciones_erp;
+-- use vega_producciones_erp;
 
 -- USAR ESTE SPU SIEMPRE , EL OTRO SP_TAREA NO SE PQ LO CREE XD NO LO USES POR ESO (29/03/2025)
 

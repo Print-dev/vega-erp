@@ -1,5 +1,5 @@
-USE vega_producciones_erp;
-drop procedure if exists sp_registrar_detalle_presentacion;
+-- USE vega_producciones_erp;
+-- drop procedure if exists sp_registrar_detalle_presentacion;
 
 -- CALL sp_registrar_detalle_presentacion(@iddetalle_presentacion,2, null, 2, null, null, '2025-03-01', null,null,null,null,null,null,null,null,0)
 DROP PROCEDURE IF EXISTS sp_actualizar_detalle_presentacion;

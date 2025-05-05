@@ -1,6 +1,4 @@
 
-select * from distritos;
-select * from provincias where idprovincia = 98;
 INSERT INTO personas (num_doc, apellidos, nombres, genero, direccion, telefono, telefono2, correo, iddistrito)
 VALUES ('72754752', 'Avalos Romero', 'Royer Alexis', 'M', 'Asent. H. Fe y Alegria Mz D Lt 08', '973189350', null, 'royer.190818@email.com', 959);
 

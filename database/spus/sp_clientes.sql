@@ -1,4 +1,4 @@
-USE vega_producciones_erp;
+-- USE vega_producciones_erp;
 
 -- CALL sp_registrar_cliente (@idcliente,null, null, null, 'sr orlando', null, null, null,null);
 
