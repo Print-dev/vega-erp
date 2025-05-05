@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let idconvenio
   let idusuarioArtDest
   let fechapresentacion
+  let tipoevento
   //let selectSucursales = $q("#sucursal")
   let idsucursal
   let iddp
@@ -166,11 +167,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data;
   }
 
-  async function obtenerTarifaArtistaPorProvincia(idprovincia, idusuario) {
+  async function obtenerTarifaArtistaPorProvincia(idprovincia, idusuario, tipoevento) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerTarifaArtistaPorProvincia");
     params.append("idprovincia", idprovincia);
     params.append("idusuario", idusuario);
+    params.append("tipoevento", tipoevento);
     const data = await getDatos(`${host}tarifa.controller.php`, params);
     return data;
   }
@@ -567,12 +569,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rconvenioupdate;
   }
 
-  async function registrarTarifa(idartista, idprovincia, precio) {
+  async function registrarTarifa(idartista, idprovincia, precio, tipoevento) {
     const tarifa = new FormData();
     tarifa.append("operation", "registrarTarifa");
     tarifa.append("idusuario", idartista);
     tarifa.append("idprovincia", idprovincia);
     tarifa.append("precio", precio);
+    tarifa.append("tipoevento", tipoevento);
 
     const ftarifa = await fetch(`${host}tarifa.controller.php`, {
       method: "POST",
@@ -1375,7 +1378,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function buttonCotizar(e) {
     idcotizar = e.target.getAttribute("data-id");
     await renderizarUbigeoPresentacion(idcotizar);
-    modalPreviaCotizacion  = new bootstrap.Modal($q("#modal-previacotizacion"));
+    modalPreviaCotizacion = new bootstrap.Modal($q("#modal-previacotizacion"));
     modalPreviaCotizacion.show();
     const dataSucursales = await obtenerSucursales()
 
@@ -1655,6 +1658,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     idartista = dp[0]?.idusuario;
     idcliente = dp[0]?.idcliente;
     igv = dp[0]?.igv;
+    tipoevento = dp[0]?.tipo_evento;
     iddetallepresentacion = dp[0]?.iddetalle_presentacion;
     totalPagado = 0
     console.log(dp);
@@ -1710,6 +1714,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     idartista = dp[0]?.idusuario;
     provincia = dp[0]?.provincia;
     iddetalleevento = dp[0]?.iddetalle_presentacion;
+    tipoevento = dp[0]?.tipo_evento
 
     const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
     console.log("longlatCiudad->>>", longlatCiudad)
@@ -1719,8 +1724,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const cotizacion = await obtenerCotizacion(iddetalleevento)
     console.log("cotizacion -> ", cotizacion);
-    const tarifaArtista = await obtenerTarifaArtistaPorProvincia(idprovincia, idartista)
-
+    const tarifaArtista = await obtenerTarifaArtistaPorProvincia(idprovincia, idartista, tipoevento)
+    console.log("tipoevento del dp -> ", tipoevento);
+    console.log("tipoevento de la tarifa aartista  -> ", tarifaArtista[0]?.tipo_evento);
     $q("#tInfoCotizacion").innerHTML = "";
     $q("#tInfoCotizacion").innerHTML = `
         <tr>
@@ -1736,10 +1742,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       <tr>
         <td colspan="3">Puesto en la locacion de ${cotizacion[0]?.provincia_evento + "/" + cotizacion[0]?.departamento_evento}</td>
         <td>${calculateDuration(cotizacion[0]?.horainicio, cotizacion[0]?.horafinal)}</td>
-        <td>${tarifaArtista[0]?.precio ?? `
+        <td>${tipoevento == tarifaArtista[0]?.tipo_evento ? tarifaArtista[0]?.precio : `
           <div>
           <input type="text" id="tarifaCosto" name="tarifaCosto" class="form-control">
-          <i class="fa-solid fa-floppy-disk btnGuardarTarifa" title="Guardar" style="cursor: pointer;"></i>
+          <div class="form-floating">
+              <select name="tipoevento" id="tipoevento" class="form-select" required>
+                  <option value="">Seleccione</option>
+                  <option value="1">Publico</option>
+                  <option value="2">Privado</option>
+              </select>
+              <label for="tipoevento">Tipo</label>
+          </div>
+                    <i class="fa-solid fa-floppy-disk btnGuardarTarifa" title="Guardar" style="cursor: pointer;"></i>
+
           </div>
           `}</td>
       </tr>
@@ -1752,9 +1767,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         showToast("Agregue un costo!", "ERROR")
         return
       }
-      const nuevaTarifa = await registrarTarifa(idartista, idprovincia, $q("#tarifaCosto").value)
+      const nuevaTarifa = await registrarTarifa(idartista, idprovincia, $q("#tarifaCosto").value, $q("#tipoevento").value)
       console.log("nueva tariofa rregistrada -> ", nuevaTarifa);
       modalPreviaCotizacion.hide()
+      $q("#tipoevento").value = ""
       showToast("Tarifa agregada!", "SUCCESS")
       return
     })
@@ -2028,9 +2044,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     let precio50 = -1;
 
     console.log("adasddadsadds");
+    console.log("el tipo de evento al tipearse el monto a pagar : ", tipoevento);
+    console.log("id artista al tipearse el monto a pagar : ", idartista);
+    console.log("id idprovincia al tipearse el monto a pagar : ", idprovincia);
     const tarifa = await obtenerTarifaArtistaPorProvincia(
       idprovincia,
-      idartista
+      idartista,
+      tipoevento
     );
 
     const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
@@ -2038,7 +2058,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     console.log("tarifa->", tarifa);
-
+    console.log("tarifa[0]?.precio -> ", tarifa[0]?.precio);
+    console.log("calcularDificultadPrecio?.costoDificultad -> ", calcularDificultadPrecio?.costoDificultad);
     if (igv == 0) {
       precioFinal = parseFloat(tarifa[0]?.precio) + calcularDificultadPrecio?.costoDificultad;
     } else if (igv == 1) {
@@ -2085,9 +2106,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     let precio50 = -1;
 
     console.log("adasddadsadds");
+    console.log("el tipo de evento al guardarse el monto a pagar : ", tipoevento);
+
     const tarifa = await obtenerTarifaArtistaPorProvincia(
       idprovincia,
-      idartista
+      idartista,
+      tipoevento
     );
 
 

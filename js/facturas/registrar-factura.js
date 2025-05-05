@@ -114,11 +114,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data
     }
 
-    async function obtenerTarifaArtistaPorProvincia(idprovincia, idusuario) {
+    async function obtenerTarifaArtistaPorProvincia(idprovincia, idusuario, tipoevento) {
         const params = new URLSearchParams();
         params.append("operation", "obtenerTarifaArtistaPorProvincia");
         params.append("idprovincia", idprovincia);
         params.append("idusuario", idusuario);
+        params.append("tipoevento", tipoevento);
         const fpersona = await getDatos(`${host}tarifa.controller.php`, params)
         return fpersona
     }
@@ -152,8 +153,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         params.append("operation", "obtenerUltimoSerieCorrelativo");
         const ultimaSerie = await getDatos(`${host}comprobante.controller.php`, params)
         //return fpersona
-        $q("#nserie").value = ultimaSerie[0].nserie
-        let correlativoActual = ultimaSerie[0].correlativo
+        $q("#nserie").value = ultimaSerie[0]?.nserie 
+        let correlativoActual = ultimaSerie[0]?.correlativo
         let correlativoNumero = parseInt(correlativoActual, 10) + 1;
         let nuevoCorrelativo = correlativoNumero.toString().padStart(8, '0');
 
@@ -350,7 +351,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         iddp = e.target.value
         const dp = await obtenerDPporId(iddp)
         await renderizarUbigeoPresentacion(iddp)
-        const tarifaArtista = await obtenerTarifaArtistaPorProvincia(dp[0]?.idprovincia, dp[0]?.idusuario)
+        const tarifaArtista = await obtenerTarifaArtistaPorProvincia(dp[0]?.idprovincia, dp[0]?.idusuario, dp[0]?.tipo_evento)
         console.log("tarifaartista-> ", tarifaArtista);
         console.log("dp info -> ", dp);
         $q("#tablaProductos tbody").innerHTML += `

@@ -109,11 +109,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data
     }
 
-    async function obtenerTarifaArtistaPorProvincia(idprovincia, idusuario) {
+    async function obtenerTarifaArtistaPorProvincia(idprovincia, idusuario, tipoevento) {
         const params = new URLSearchParams();
         params.append("operation", "obtenerTarifaArtistaPorProvincia");
         params.append("idprovincia", idprovincia);
         params.append("idusuario", idusuario);
+        params.append("tipoevento", tipoevento);
         const fpersona = await getDatos(`${host}tarifa.controller.php`, params)
         return fpersona
     }
@@ -316,7 +317,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         iddp = e.target.value
         const dp = await obtenerDPporId(iddp)
         await renderizarUbigeoPresentacion(iddp)
-        const tarifaArtista = await obtenerTarifaArtistaPorProvincia(dp[0]?.idprovincia, dp[0]?.idusuario)
+        const tarifaArtista = await obtenerTarifaArtistaPorProvincia(dp[0]?.idprovincia, dp[0]?.idusuario, dp[0]?.tipo_evento)
         console.log("tarifaartista-> ", tarifaArtista);
         console.log("dp info -> ", dp);
         $q("#tablaProductos tbody").innerHTML += `
@@ -420,8 +421,8 @@ totalConIgv = totalGravado + igvTotal; */
         $q("#tablaProductos tbody").innerHTML = ''
         eventosSelect.disabled = false
         eventosSelect.value = ''
-        $q("#txtOperacionGravada").innerHTML = 'S/ 0.00'
-        $q("#txtIGV").innerHTML = 'S/ 0.00'
+        //$q("#txtOperacionGravada").innerHTML = 'S/ 0.00'
+        //$q("#txtIGV").innerHTML = 'S/ 0.00'
         $q("#txtImporteTotal").innerHTML = 'S/ 0.00'
         $q("#importeletra").value = ''
         totalGravado = 0

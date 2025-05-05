@@ -47,21 +47,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data
     }
 
-    async function obtenerTarifasPorProvincia() {
+    async function obtenerTarifasPorProvinciaYTipo() {
         const params = new URLSearchParams();
-        params.append("operation", "obtenerTarifasPorProvincia");
+        params.append("operation", "obtenerTarifasPorProvinciaYTipo");
         params.append("iddepartamento", $q("#departamento").value);
         params.append("idusuario", $q("#artista").value);
+        params.append("tipoevento", $q("#tipo").value);
         const data = await getDatos(`${host}tarifa.controller.php`, params);
         return data
     }
 
-    async function registrarTarifa(idartista, idprovincia, precio) {
+    async function registrarTarifa(idartista, idprovincia, precio, tipo_evento) {
         const tarifa = new FormData();
         tarifa.append("operation", "registrarTarifa");
         tarifa.append("idusuario", idartista);
         tarifa.append("idprovincia", idprovincia);
         tarifa.append("precio", precio);
+        tarifa.append("tipoevento", tipo_evento);
 
         const ftarifa = await fetch(`${host}tarifa.controller.php`, {
             method: "POST",
@@ -106,9 +108,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     });
 
-    $q("#departamento").addEventListener("change", async () => {
+    /* $q("#departamento").addEventListener("change", async () => {
+        
+    }); */
+
+    $q("#tipo").addEventListener("change", async () => {
         const provincias = await obtenerProvincias();
-        const tarifas = await obtenerTarifasPorProvincia();
+        const tarifas = await obtenerTarifasPorProvinciaYTipo();
         console.log("tarifas-> ", tarifas)
 
         $q("#tb-body-tarifario").innerHTML = ''
@@ -156,7 +162,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         console.log(idtarifario)
                         console.log("idartista ->", idartista)
                         // Si no hay idtarifario, registrar una nueva tarifa
-                        resultado = await registrarTarifa(idartista, idprovincia, precio);
+                        resultado = await registrarTarifa(idartista, idprovincia, precio, $q("#tipo").value);
                         console.log("Tarifa registrada:", resultado);
                         showToast("Tarifa registrada", "SUCCESS");
 
@@ -173,10 +179,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             })
         })
-
-    });
+    })
 
     $q("#tipo").addEventListener("click", async () => {
-        ME QUEDE ACA
+        
     })
 });

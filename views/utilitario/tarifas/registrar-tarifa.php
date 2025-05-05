@@ -54,7 +54,6 @@
                             <tr>
                                 <th>Provincia</th>
                                 <th>Costo</th>
-                                <th>Tipo</th>
                                 <th>Opciones</th>
                             </tr>
                         </thead>

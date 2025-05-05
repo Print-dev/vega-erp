@@ -412,7 +412,7 @@
                                     <label for="noperacion" class="form-label">N° Operacion</label>
                                 </div>
                                 <div id="historialpagos">
-                                    <a href="<?= $hostOnlyHeader ?>/views/contabilidad/pagos/listar-pagos">Ver Historial de pagos</a>
+                                    <a href="<?= $hostOnlyHeader ?>/views/contabilidad/pagos/listar-pagos" target="_blank">Ver Historial de pagos</a>
                                 </div>
                             </div>
                         </div>

@@ -4,14 +4,15 @@ require_once 'ExecQuery.php';
 
 class Tarifario extends ExecQuery
 {
-  public function obtenerTarifasPorProvincia($params = []): array
+  public function obtenerTarifasPorProvinciaYTipo($params = []): array
   {
     try {
-      $sp = parent::execQ("CALL sp_obtener_tarifario_por_provincia(?,?) ");
+      $sp = parent::execQ("CALL sp_obtener_tarifario_por_provincia(?,?,?) ");
       $sp->execute(
         array(    
           $params['iddepartamento'],
           $params['idusuario'],
+          $params['tipoevento'],
         )
         
       );
@@ -24,11 +25,12 @@ class Tarifario extends ExecQuery
   public function obtenerTarifaArtistaPorProvincia($params = []): array
   {
     try {
-      $sp = parent::execQ("CALL sp_search_tarifa_artista_por_provincia(?,?) ");
+      $sp = parent::execQ("CALL sp_search_tarifa_artista_por_provincia(?,?,?) ");
       $sp->execute(
         array(    
           $params['idprovincia'],
           $params['idusuario'],
+          $params['tipoevento'],
         )
         
       );
@@ -58,12 +60,13 @@ class Tarifario extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_tarifa(@idtarifario,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_tarifa(@idtarifario,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idusuario'],
           $params['idprovincia'],
-          $params['precio']          
+          $params['precio'],         
+          $params['tipoevento'],         
         )
       );
 

@@ -17,18 +17,20 @@ if(isset($_GET['operation'])){
         echo json_encode($tarifa->filtrarTarifas($cleanData));
         break;
 
-    case 'obtenerTarifasPorProvincia':
+    case 'obtenerTarifasPorProvinciaYTipo':
         $cleanData = [
           'iddepartamento' => $tarifa->limpiarCadena($_GET['iddepartamento']), 
-          'idusuario' => $tarifa->limpiarCadena($_GET['idusuario']) 
+          'idusuario' => $tarifa->limpiarCadena($_GET['idusuario']),
+          'tipoevento' => $tarifa->limpiarCadena($_GET['tipoevento']),
         ];
-        echo json_encode($tarifa->obtenerTarifasPorProvincia($cleanData));
+        echo json_encode($tarifa->obtenerTarifasPorProvinciaYTipo($cleanData));
         break;
         
     case 'obtenerTarifaArtistaPorProvincia':
         $cleanData = [
           'idprovincia' => $tarifa->limpiarCadena($_GET['idprovincia']),
           'idusuario' => $tarifa->limpiarCadena($_GET['idusuario']),
+          'tipoevento' => $tarifa->limpiarCadena($_GET['tipoevento']),
         ];
         echo json_encode($tarifa->obtenerTarifaArtistaPorProvincia($cleanData));
         break;
@@ -42,7 +44,8 @@ if (isset($_POST['operation'])) {
       $cleanData = [
         'idusuario'   => $tarifa->limpiarCadena($_POST['idusuario']),
         'idprovincia' => $tarifa->limpiarCadena($_POST['idprovincia']),
-        'precio'   => $tarifa->limpiarCadena($_POST['precio'])
+        'precio'   => $tarifa->limpiarCadena($_POST['precio']),
+        'tipoevento'   => $tarifa->limpiarCadena($_POST['tipoevento']),
       ];
 
       $respuesta = ['idtarifa' => -1];

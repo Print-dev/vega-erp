@@ -19,6 +19,7 @@ BEGIN
         DP.establecimiento, 
         DP.referencia,
         DP.idusuario,
+        DP.tipo_evento,
         DISDP.distrito AS distrito_evento, 
         PRODP.provincia AS provincia_evento, 
         PRODP.idprovincia AS idprovincia_evento,

@@ -7,7 +7,8 @@ DELIMITER $$
 CREATE PROCEDURE sp_obtener_tarifario_por_provincia
 (
 	IN _iddepartamento INT,
-    IN _idusuario INT
+    IN _idusuario INT,
+    IN _tipo_evento INT
 )
 BEGIN
 	SELECT 
@@ -16,7 +17,7 @@ BEGIN
     LEFT JOIN tarifario T ON T.idusuario = USU.idusuario
     LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
-    WHERE PR.iddepartamento = _iddepartamento AND USU.idusuario = _idusuario ;
+    WHERE PR.iddepartamento = _iddepartamento AND USU.idusuario = _idusuario AND T.tipo_evento = _tipo_evento;
 END $$
 
 DROP PROCEDURE IF EXISTS sp_search_tarifa_artista_por_provincia;
@@ -24,7 +25,8 @@ DELIMITER $$
 CREATE PROCEDURE sp_search_tarifa_artista_por_provincia
 (
 	IN _idprovincia INT,
-    IN _idusuario INT
+    IN _idusuario INT,
+	IN _tipo_evento INT
 )
 BEGIN
 	SELECT 
@@ -33,9 +35,9 @@ BEGIN
     LEFT JOIN tarifario T ON T.idusuario = USU.idusuario
     LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
-    WHERE PR.idprovincia = _idprovincia AND USU.idusuario = _idusuario;
+    WHERE PR.idprovincia = _idprovincia AND USU.idusuario = _idusuario AND T.tipo_evento = _tipo_evento;
 END $$
-
+select * from tarifario;
 -- CALL sp_search_tarifa_artista_por_provincia (100, 2)
 
 DROP PROCEDURE IF EXISTS sp_search_tarifa_artista;

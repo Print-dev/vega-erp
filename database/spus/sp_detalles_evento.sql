@@ -89,7 +89,7 @@ CREATE PROCEDURE `sp_obtener_dp_porid`(
 )
 BEGIN
 	SELECT 		
-		DP.iddetalle_presentacion, USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal
+		DP.iddetalle_presentacion, USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.tipo_evento
 	FROM detalles_presentacion DP
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
@@ -98,7 +98,7 @@ BEGIN
     LEFT JOIN departamentos DE ON DE.iddepartamento = PRO.iddepartamento
     WHERE DP.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
 END //
-
+select * from detalles_presentacion;
 drop procedure if exists sp_obtener_dps;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_dps`(

@@ -146,11 +146,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data
   }
 
-  async function obtenerTarifaArtistaPorProvincia(idprovincia, idusuario) {
+  async function obtenerTarifaArtistaPorProvincia(idprovincia, idusuario, tipoevento) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerTarifaArtistaPorProvincia");
     params.append("idprovincia", idprovincia);
     params.append("idusuario", idusuario);
+    params.append("tipoevento", tipoevento);
     const fpersona = await getDatos(`${host}tarifa.controller.php`, params)
     console.log(fpersona);
     return fpersona
@@ -893,7 +894,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const tarifaArtista = await obtenerTarifaArtistaPorProvincia(
           contrato[0]?.idprovincia_evento,
-          contrato[0]?.idusuario
+          contrato[0]?.idusuario,
+          contrato[0]?.tipo_evento
         );
         console.log("tarifaArtista -> ", tarifaArtista);
         //await renderizarUbigeoPresentacion(contrato[0]?.iddetalle_presentacion);
