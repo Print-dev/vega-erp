@@ -50,7 +50,7 @@ CREATE PROCEDURE sp_obtener_tarifario_artista_pais
 )
 BEGIN
 	SELECT 
-	T.idtarifario, T.precio, T.tipo_evento, NAC.idnacionalidad, NAC.pais
+	T.idtarifario, T.precio, T.tipo_evento, NAC.idnacionalidad, NAC.pais, T.precioExtranjero
     FROM usuarios USU
     LEFT JOIN tarifario T ON T.idusuario = USU.idusuario
     LEFT JOIN nacionalidades NAC ON NAC.idnacionalidad = T.idnacionalidad
@@ -85,7 +85,8 @@ CREATE PROCEDURE sp_registrar_tarifa
     IN _idprovincia int,
     IN _precio decimal(10,2),
     IN _tipo_evento INT,
-    IN _idnacionalidad INT
+    IN _idnacionalidad INT,
+    IN _precioExtranjero decimal(10,2)
 )
 BEGIN
 	DECLARE existe_error INT DEFAULT 0;
@@ -95,8 +96,8 @@ BEGIN
         SET existe_error = 1;
 	END;
     
-    INSERT INTO tarifario (idusuario, idprovincia, precio, tipo_evento, idnacionalidad)VALUES 
-		(_idusuario, nullif(_idprovincia, ''), _precio, _tipo_evento, nullif(_idnacionalidad , ''));
+    INSERT INTO tarifario (idusuario, idprovincia, precio, tipo_evento, idnacionalidad, precioExtranjero)VALUES 
+		(_idusuario, nullif(_idprovincia, ''), _precio, _tipo_evento, nullif(_idnacionalidad , ''), nullif(_precioExtranjero,''));
         
 	IF existe_error= 1 THEN
 		SET _idtarifario = -1;
@@ -112,11 +113,25 @@ DELIMITER //
 CREATE PROCEDURE sp_actualizar_tarifa
 (
 	IN _idtarifario			INT,
-    IN _precio			INT
+    IN _precio			DECIMAL(10,2)
 )
 BEGIN 
 	UPDATE tarifario SET
     precio = _precio
+    WHERE idtarifario = _idtarifario;
+END //
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS sp_actualizar_tarifa_precio_extranjero;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_tarifa_precio_extranjero
+(
+	IN _idtarifario			INT,
+    IN _precioExtranjero DECIMAL(10,2)
+)
+BEGIN 
+	UPDATE tarifario SET
+    precioExtranjero = _precioExtranjero
     WHERE idtarifario = _idtarifario;
 END //
 DELIMITER ;

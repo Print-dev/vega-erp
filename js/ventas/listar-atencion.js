@@ -177,6 +177,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data;
   }
 
+  async function obtenerTarifaArtistaPorPais(idusuario, idnacionalidad, tipoevento) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerTarifaArtistaPorPais");
+    params.append("idusuario", idusuario);
+    params.append("idnacionalidad", idnacionalidad);
+    params.append("tipoevento", tipoevento);
+    const data = await getDatos(`${host}tarifa.controller.php`, params);
+    return data
+  }
+
+
   async function obtenerReservaPorPagoContrato(idpagocontrato) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerReservaPorPagoContrato");
@@ -569,13 +580,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rconvenioupdate;
   }
 
-  async function registrarTarifa(idartista, idprovincia, precio, tipoevento) {
+  async function registrarTarifa(idartista, idprovincia, precio, tipoevento, idnacionalidad, precioextranjero) {
     const tarifa = new FormData();
     tarifa.append("operation", "registrarTarifa");
     tarifa.append("idusuario", idartista);
     tarifa.append("idprovincia", idprovincia);
     tarifa.append("precio", precio);
     tarifa.append("tipoevento", tipoevento);
+    tarifa.append("idnacionalidad", idnacionalidad || '');
+    tarifa.append("precioextranjero", precioextranjero || '');
 
     const ftarifa = await fetch(`${host}tarifa.controller.php`, {
       method: "POST",
@@ -586,6 +599,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
 
+
+  // NUEVO 
   async function registrarReserva(idpagocontrato, vigencia) {
     const fechaHoraPeru = obtenerFechaHoraPeru();
 
@@ -858,7 +873,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     for (const x of data) {
-      console.log("pais -> ", x.pais);
       tbody.innerHTML += `
             <tr>
                 <td>${x.ncotizacion ? x.ncotizacion : 'no aplica'}</td>
@@ -867,9 +881,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${x.razonsocial ? x.razonsocial : ''}</td>
                 <td>${x.tipo_evento == 1 ? "Público" : x.tipo_evento == 2 ? "Privado" : ``}</td>
                 <td>${x.modalidad == 1 ? "Convenio" : x.modalidad == 2 ? "Contrato" : ``}</td>
-                <td>${ x.pais}</td>
+                <td>${x.pais ?? "Perú"}</td>
                 <td>${x.establecimiento ? x.establecimiento : ``}</td>
-                <td>${ x.departamento ? x.departamento + "/" + x.provincia + "/" + x.distrito : "No aplica"}</td>
+                <td>${x.departamento ? x.departamento + "/" + x.provincia + "/" + x.distrito : "No aplica"}</td>
                 <td>${x.fecha_presentacion}</td>                        
                 <td>${x.estado == 1 ? 'Activo' : x.estado == 2 ? 'Caducado' : x.estado == 3 ? 'Cancelado' : ''}</td>                        
                 <td>${x.estado_convenio == 2 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/402906/white-heavy-check-mark.svg" style="width: 24px; height: 24px;" title="Aprobado">' : x.estado_convenio == 3 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/292061/multiply-cross.svg" style="width: 24px; height: 24px;" title="Desaprobado">' : x.estado == 3 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/317774/time-capsule-done.svg" style="width: 24px; height: 24px;" title="Pendiente">' : x.modalidad == 2 ? "No aplica" : 'Pendiente'}</td>                        
@@ -890,14 +904,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                             Generar Convenio
                         </button>
                         `  : parseInt(x.modalidad) == 2 ? `
-                        <button type="button" class="btn btn-sm btn-success btn-cotizar" data-id=${x.iddetalle_presentacion} data-estado=${x.condicion} title="Cotizar">Cotizar</button>
+                        <button type="button" class="btn btn-sm btn-success btn-cotizar" data-idnacionalidad="${x.idnacionalidad}" data-id=${x.iddetalle_presentacion} data-estado=${x.condicion} title="Cotizar">Cotizar</button>
                     ` : ``}
 
                     ${x.estado == 2 ? '' : parseInt(x.modalidad) === 2 ? `
-                        <button type="button" class="btn btn-sm btn-secondary btn-pagar" data-id=${x.iddetalle_presentacion} title="Pagar">
+                        <button type="button" class="btn btn-sm btn-secondary btn-pagar" data-idnacionalidad="${x.idnacionalidad}" data-id=${x.iddetalle_presentacion} title="Pagar">
                             Pagar
                         </button>
-                        <button type="button" class="btn btn-sm btn-secondary btn-contrato" data-id=${x.iddetalle_presentacion} title="Generar contrato">
+                        <button type="button" class="btn btn-sm btn-secondary btn-contrato" data-idnacionalidad="${x.idnacionalidad}" data-id=${x.iddetalle_presentacion} title="Generar contrato">
                             Generar Contrato
                         </button>
                     ` : ``}
@@ -1378,6 +1392,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function buttonCotizar(e) {
     idcotizar = e.target.getAttribute("data-id");
+    nacionalidadObtenida = e.target.getAttribute("data-idnacionalidad")
     await renderizarUbigeoPresentacion(idcotizar);
     modalPreviaCotizacion = new bootstrap.Modal($q("#modal-previacotizacion"));
     modalPreviaCotizacion.show();
@@ -1397,141 +1412,276 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function buttonContrato(e) {
     let pagoAdelantadoO50 = false
     idcontrato = e.target.getAttribute("data-id");//esto en realidad es id detalle presentacion
+    nacionalidadObtenida = e.target.getAttribute("data-idnacionalidad");//esto en realidad es id detalle presentacion
     const dp = await obtenerDPporId(idcontrato);
     idprovincia = dp[0]?.idprovincia
     idartista = dp[0]?.idusuario;
     idcliente = dp[0]?.idcliente;
+    tipoevento = dp[0]?.tipo_evento;
 
-    const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
-    console.log("longlatCiudad->>>", longlatCiudad)
-    const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
-    const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
-    calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
+    if (nacionalidadObtenida == "31") {
+      const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
+      console.log("longlatCiudad->>>", longlatCiudad)
+      const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
+      const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
+      calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
 
-    const contrato = await obtenerContratoPorDP(idcontrato) //esto en realidad es id detalle presentacion
-    console.log("contratoo al dar click al btn contrato -> ", contrato)
-    if (contrato.length > 0) {
-      const pagosContrato = await obtenerPagosContratoPorIdContrato(contrato[0]?.idcontrato)
-      console.log("pagos contrato al dar click al btn contrato -> ", pagosContrato)
-      for (let i = 0; i < pagosContrato.length; i++) {
-        if (pagosContrato[i].estado == 3) {
-          // ya se pago el 25% restante o bien ya se pago el 50% de golpe
-          pagoAdelantadoO50 = true
-          break;
+      const contrato = await obtenerContratoPorDP(idcontrato) //esto en realidad es id detalle presentacion
+      console.log("contratoo al dar click al btn contrato -> ", contrato)
+      if (contrato.length > 0) {
+        const pagosContrato = await obtenerPagosContratoPorIdContrato(contrato[0]?.idcontrato)
+        console.log("pagos contrato al dar click al btn contrato -> ", pagosContrato)
+        for (let i = 0; i < pagosContrato.length; i++) {
+          if (pagosContrato[i].estado == 3) {
+            // ya se pago el 25% restante o bien ya se pago el 50% de golpe
+            pagoAdelantadoO50 = true
+            break;
+          }
+
         }
-
-      }
-      if (pagoAdelantadoO50) {
-        const cliente = await verificarDatosIncompletosCliente(dp[0]?.idcliente);
-        const contratoExiste = await obtenerContratoPorDP(idcontrato); //esto en realidad es id detalle presentacion
-        console.log(contratoExiste);
-        idcontrato = contratoExiste[0]?.idcontrato
-        console.log("idcontrato existente -> " + idcontrato)
+        if (pagoAdelantadoO50) {
+          const cliente = await verificarDatosIncompletosCliente(dp[0]?.idcliente);
+          const contratoExiste = await obtenerContratoPorDP(idcontrato); //esto en realidad es id detalle presentacion
+          console.log(contratoExiste);
+          idcontrato = contratoExiste[0]?.idcontrato
+          console.log("idcontrato existente -> " + idcontrato)
 
 
-        console.log(cliente);
-        if (contratoExiste.length > 0) {
-          let pago50 = false
-          const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
-          console.log("pagos -> ", pagos)
-          pagosExistentes = pagos
+          console.log(cliente);
+          if (contratoExiste.length > 0) {
+            let pago50 = false
+            const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
+            console.log("pagos -> ", pagos)
+            pagosExistentes = pagos
 
-          totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
+            totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
 
-          console.log("Total pagado: ", totalPagado);
+            console.log("Total pagado: ", totalPagado);
 
 
-          pagos.forEach(pago => {
-            if (pago?.estado == 3) {
-              pago50 = true
-            }
-          });
-          console.log("pago50 bool -> ", pago50)
-          if (pago50) {
-            const datosIncompletos = await verificarDatosIncompletosCliente(idcliente);
-            console.log("datosIncompletos -> ", datosIncompletos);
+            pagos.forEach(pago => {
+              if (pago?.estado == 3) {
+                pago50 = true
+              }
+            });
+            console.log("pago50 bool -> ", pago50)
+            if (pago50) {
+              const datosIncompletos = await verificarDatosIncompletosCliente(idcliente);
+              console.log("datosIncompletos -> ", datosIncompletos);
 
-            // Verificar si es un array y tiene al menos un elemento
-            if (!Array.isArray(datosIncompletos) || datosIncompletos.length === 0) { // me quede aca, falta implementar el de tipodoc = 2 ruc
-              console.error("Error: datosIncompletos no es un array válido o está vacío", datosIncompletos);
-              return;
-            }
+              // Verificar si es un array y tiene al menos un elemento
+              if (!Array.isArray(datosIncompletos) || datosIncompletos.length === 0) { // me quede aca, falta implementar el de tipodoc = 2 ruc
+                console.error("Error: datosIncompletos no es un array válido o está vacío", datosIncompletos);
+                return;
+              }
 
-            let incompleto = false;
-            const datosCliente = datosIncompletos[0]; // Extraer el primer objeto del array
+              let incompleto = false;
+              const datosCliente = datosIncompletos[0]; // Extraer el primer objeto del array
 
-            for (const clave in datosCliente) {
-              if (datosCliente[clave] === null || datosCliente[clave] === "") {
-                if (!(datosCliente.tipodoc == 1 && clave === "representantelegal")) {
-                  console.log("DATOS CLIENTE incompleto")
-                  incompleto = true;
-                  break;
+              for (const clave in datosCliente) {
+                if (datosCliente[clave] === null || datosCliente[clave] === "") {
+                  if (!(datosCliente.tipodoc == 1 && clave === "representantelegal")) {
+                    console.log("DATOS CLIENTE incompleto")
+                    incompleto = true;
+                    break;
+                  }
                 }
               }
-            }
-            console.log("incompleto? ??? : ", incompleto)
-            if (incompleto) {
-              if (datosCliente?.tipodoc == 1) {
-                $q("#container-representantelegal").hidden = true;
-                modalDatosClienteIncompleto = new bootstrap.Modal(
-                  $q("#modal-datosclienteincompletos")
-                );
-                modalDatosClienteIncompleto.show();
-                console.log("supuestamente deberia renderizar");
-                await renderizarDatosClienteIncompleto(datosCliente);
-                return;
+              console.log("incompleto? ??? : ", incompleto)
+              if (incompleto) {
+                if (datosCliente?.tipodoc == 1) {
+                  $q("#container-representantelegal").hidden = true;
+                  modalDatosClienteIncompleto = new bootstrap.Modal(
+                    $q("#modal-datosclienteincompletos")
+                  );
+                  modalDatosClienteIncompleto.show();
+                  console.log("supuestamente deberia renderizar");
+                  await renderizarDatosClienteIncompleto(datosCliente);
+                  return;
+                }
+                else if (datosCliente?.tipodoc == 2) {
+                  $q("#container-representantelegal").hidden = false;
+                  modalDatosClienteIncompleto = new bootstrap.Modal(
+                    $q("#modal-datosclienteincompletos")
+                  );
+                  modalDatosClienteIncompleto.show();
+                  await renderizarDatosClienteIncompleto(datosCliente);
+                  return;
+                }
+                else {
+                  $q("#container-representantelegal").hidden = false;
+                  modalDatosClienteIncompleto = new bootstrap.Modal(
+                    $q("#modal-datosclienteincompletos")
+                  );
+                  modalDatosClienteIncompleto.show();
+                  await renderizarDatosClienteIncompleto(datosCliente);
+                  return;
+                }
               }
-              else if (datosCliente?.tipodoc == 2) {
-                $q("#container-representantelegal").hidden = false;
-                modalDatosClienteIncompleto = new bootstrap.Modal(
-                  $q("#modal-datosclienteincompletos")
+
+              const dataSucursales = await obtenerSucursales()
+
+              $q("#sucursalDocumento").innerHTML = "<option value=''>Seleccione</option>"
+              dataSucursales.forEach((sucursal) => {
+                $q("#sucursalDocumento").innerHTML += `<option value="${sucursal.idsucursal}">${sucursal.nombre}</option>`;
+
+              });
+              modalpreviageneracion = new bootstrap.Modal($q("#modal-previageneracion"));
+              modalpreviageneracion.show();
+              $q("#sucursalDocumento").addEventListener("change", async (e) => {
+                idsucursal = e.target.value
+
+              })
+              $q("#btnGenerarDocumento").addEventListener("click", async () => {
+                window.open(
+                  `${hostOnly}/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0]?.idcontrato
+                  }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${calcularDificultadPrecio?.costoDificultad}&idsucursal=${idsucursal}`
                 );
-                modalDatosClienteIncompleto.show();
-                await renderizarDatosClienteIncompleto(datosCliente);
-                return;
-              }
-              else {
-                $q("#container-representantelegal").hidden = false;
-                modalDatosClienteIncompleto = new bootstrap.Modal(
-                  $q("#modal-datosclienteincompletos")
-                );
-                modalDatosClienteIncompleto.show();
-                await renderizarDatosClienteIncompleto(datosCliente);
-                return;
-              }
-            }
-
-            const dataSucursales = await obtenerSucursales()
-
-            $q("#sucursalDocumento").innerHTML = "<option value=''>Seleccione</option>"
-            dataSucursales.forEach((sucursal) => {
-              $q("#sucursalDocumento").innerHTML += `<option value="${sucursal.idsucursal}">${sucursal.nombre}</option>`;
-
-            });
-            modalpreviageneracion = new bootstrap.Modal($q("#modal-previageneracion"));
-            modalpreviageneracion.show();
-            $q("#sucursalDocumento").addEventListener("change", async (e) => {
-              idsucursal = e.target.value
-
-            })
-            $q("#btnGenerarDocumento").addEventListener("click", async () => {
-              window.open(
-                `${hostOnly}/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0]?.idcontrato
-                }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${calcularDificultadPrecio?.costoDificultad}&idsucursal=${idsucursal}`
-              );
+                return
+              })
               return
-            })
-            return
+            }
+          }
+
+          /* window.open(
+            `${hostOnly}/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contrato[0]?.idcontrato
+            }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
+          );
+          return */
+        }
+      }
+    } else {
+      /* const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
+      console.log("longlatCiudad->>>", longlatCiudad)
+      const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
+      const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
+      calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo) */
+      const tarifa = await obtenerTarifaArtistaPorPais(
+        idartista,
+        nacionalidadObtenida,
+        tipoevento
+      );
+
+      const contrato = await obtenerContratoPorDP(idcontrato) //esto en realidad es id detalle presentacion
+      console.log("contratoo al dar click al btn contrato -> ", contrato)
+      if (contrato.length > 0) {
+        const pagosContrato = await obtenerPagosContratoPorIdContrato(contrato[0]?.idcontrato)
+        console.log("pagos contrato al dar click al btn contrato -> ", pagosContrato)
+        for (let i = 0; i < pagosContrato.length; i++) {
+          if (pagosContrato[i].estado == 3) {
+            // ya se pago el 25% restante o bien ya se pago el 50% de golpe
+            pagoAdelantadoO50 = true
+            break;
+          }
+
+        }
+        if (pagoAdelantadoO50) {
+          const cliente = await verificarDatosIncompletosCliente(dp[0]?.idcliente);
+          const contratoExiste = await obtenerContratoPorDP(idcontrato); //esto en realidad es id detalle presentacion
+          console.log(contratoExiste);
+          idcontrato = contratoExiste[0]?.idcontrato
+          console.log("idcontrato existente -> " + idcontrato)
+
+
+          console.log(cliente);
+          if (contratoExiste.length > 0) {
+            let pago50 = false
+            const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
+            console.log("pagos -> ", pagos)
+            pagosExistentes = pagos
+
+            totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
+
+            console.log("Total pagado: ", totalPagado);
+
+
+            pagos.forEach(pago => {
+              if (pago?.estado == 3) {
+                pago50 = true
+              }
+            });
+            console.log("pago50 bool -> ", pago50)
+            if (pago50) {
+              const datosIncompletos = await verificarDatosIncompletosCliente(idcliente);
+              console.log("datosIncompletos -> ", datosIncompletos);
+
+              // Verificar si es un array y tiene al menos un elemento
+              if (!Array.isArray(datosIncompletos) || datosIncompletos.length === 0) { // me quede aca, falta implementar el de tipodoc = 2 ruc
+                console.error("Error: datosIncompletos no es un array válido o está vacío", datosIncompletos);
+                return;
+              }
+
+              let incompleto = false;
+              const datosCliente = datosIncompletos[0]; // Extraer el primer objeto del array
+
+              for (const clave in datosCliente) {
+                if (datosCliente[clave] === null || datosCliente[clave] === "") {
+                  if (!(datosCliente.tipodoc == 1 && clave === "representantelegal")) {
+                    console.log("DATOS CLIENTE incompleto")
+                    incompleto = true;
+                    break;
+                  }
+                }
+              }
+              console.log("incompleto? ??? : ", incompleto)
+              if (incompleto) {
+                if (datosCliente?.tipodoc == 1) {
+                  $q("#container-representantelegal").hidden = true;
+                  modalDatosClienteIncompleto = new bootstrap.Modal(
+                    $q("#modal-datosclienteincompletos")
+                  );
+                  modalDatosClienteIncompleto.show();
+                  console.log("supuestamente deberia renderizar");
+                  await renderizarDatosClienteIncompleto(datosCliente);
+                  return;
+                }
+                else if (datosCliente?.tipodoc == 2) {
+                  $q("#container-representantelegal").hidden = false;
+                  modalDatosClienteIncompleto = new bootstrap.Modal(
+                    $q("#modal-datosclienteincompletos")
+                  );
+                  modalDatosClienteIncompleto.show();
+                  await renderizarDatosClienteIncompleto(datosCliente);
+                  return;
+                }
+                else {
+                  $q("#container-representantelegal").hidden = false;
+                  modalDatosClienteIncompleto = new bootstrap.Modal(
+                    $q("#modal-datosclienteincompletos")
+                  );
+                  modalDatosClienteIncompleto.show();
+                  await renderizarDatosClienteIncompleto(datosCliente);
+                  return;
+                }
+              }
+
+              const dataSucursales = await obtenerSucursales()
+
+              $q("#sucursalDocumento").innerHTML = "<option value=''>Seleccione</option>"
+              dataSucursales.forEach((sucursal) => {
+                $q("#sucursalDocumento").innerHTML += `<option value="${sucursal.idsucursal}">${sucursal.nombre}</option>`;
+
+              });
+              modalpreviageneracion = new bootstrap.Modal($q("#modal-previageneracion"));
+              modalpreviageneracion.show();
+              $q("#sucursalDocumento").addEventListener("change", async (e) => {
+                idsucursal = e.target.value
+
+              })
+              $q("#btnGenerarDocumento").addEventListener("click", async () => {
+                window.open(
+                  `${hostOnly}/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0]?.idcontrato
+                  }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${tarifa[0]?.precioExtranjero}&idsucursal=${idsucursal}`
+                );
+                return
+              })
+              return
+            }
           }
         }
-
-        /* window.open(
-          `${hostOnly}/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contrato[0]?.idcontrato
-          }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${2500}`
-        );
-        return */
       }
     }
+
     showToast("Aun no puedes generar contrato hasta pagar el adelanto del 50%", "ERROR")
   }
 
@@ -1649,11 +1799,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function buttonPagar(e) {
+
     $q("#montopagado").value = 0
     $q("#contenedor-noperacion").hidden = true
     $q("#noperacion").value = ''
     $q("#tipopago").value = -1
     iddp = e.target.getAttribute("data-id");
+    nacionalidadObtenida = e.target.getAttribute("data-idnacionalidad");
     const dp = await obtenerDPporId(iddp);
     idprovincia = dp[0]?.idprovincia;
     idartista = dp[0]?.idusuario;
@@ -1670,39 +1822,72 @@ document.addEventListener("DOMContentLoaded", async () => {
     idcontrato = contratoExiste[0]?.idcontrato
     console.log("idcontrato existente -> " + idcontrato)
 
-    const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
-    console.log("longlatCiudad->>>", longlatCiudad)
-    const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
-    const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
-    calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
+    if (nacionalidadObtenida == "31") {
+      const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
+      console.log("longlatCiudad->>>", longlatCiudad)
+      const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
+      const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
+      calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
 
-    console.log(cliente);
-    if (contratoExiste.length > 0) {
-      const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
-      console.log("pagos -> ", pagos)
-      pagosExistentes = pagos
+      console.log(cliente);
+      if (contratoExiste.length > 0) {
+        const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
+        console.log("pagos -> ", pagos)
+        pagosExistentes = pagos
 
-      totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
+        totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
 
-      console.log("Total pagado: ", totalPagado);
+        console.log("Total pagado: ", totalPagado);
 
-      // ESTO ES CUANDO ES 25%  
-      modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
-      modalDatosContrato.show();
-      console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
-      //$q("#btnGenerarReserva").hidden = false
-      $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
-
-    } else {
-      console.log("iddetallepresentacion -> ", iddetallepresentacion)
-      const contrato = await registrarContrato(iddetallepresentacion, 1);
-      console.log("idcontrato > ", contrato)
-      idcontrato = contrato.idcontrato
-      if (idcontrato) {
+        // ESTO ES CUANDO ES 25%  
         modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
         modalDatosContrato.show();
+        console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
+        //$q("#btnGenerarReserva").hidden = false
+        $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
+
+      } else {
+        console.log("iddetallepresentacion -> ", iddetallepresentacion)
+        const contrato = await registrarContrato(iddetallepresentacion, 1);
+        console.log("idcontrato > ", contrato)
+        idcontrato = contrato.idcontrato
+        if (idcontrato) {
+          modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
+          modalDatosContrato.show();
+        }
+      }
+    } else {
+      /* const cotizacion = await obtenerCotizacion(iddetalleevento)
+      const tarifaArtista = await obtenerTarifaArtistaPorPais(idartista, nacionalidadObtenida, tipoevento) */
+      if (contratoExiste.length > 0) {
+        const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
+        console.log("pagos -> ", pagos)
+        pagosExistentes = pagos
+
+        totalPagado = pagos.reduce((acumulador, pago) => acumulador + parseFloat(pago.monto), 0);
+
+        console.log("Total pagado: ", totalPagado);
+
+        // ESTO ES CUANDO ES 25%  
+        modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
+        modalDatosContrato.show();
+        console.log("aca se regsitrara el contrato apenas habra", contratoExiste)
+        //$q("#btnGenerarReserva").hidden = false
+        $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
+
+      } else {
+        console.log("iddetallepresentacion -> ", iddetallepresentacion)
+        const contrato = await registrarContrato(iddetallepresentacion, 1);
+        console.log("idcontrato > ", contrato)
+        idcontrato = contrato.idcontrato
+        if (idcontrato) {
+          modalDatosContrato = new bootstrap.Modal($q("#modal-contrato"));
+          modalDatosContrato.show();
+        }
       }
     }
+
+
   }
 
   // ******************************************* VINCULANDO DATOS A MODALES ********************************
@@ -1716,20 +1901,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     provincia = dp[0]?.provincia;
     iddetalleevento = dp[0]?.iddetalle_presentacion;
     tipoevento = dp[0]?.tipo_evento
+    console.log("nacionaldiad obtenida -> ", nacionalidadObtenida);
+    if (nacionalidadObtenida == "31") {
+      const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
+      console.log("longlatCiudad->>>", longlatCiudad)
+      const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
+      const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
+      calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
 
-    const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
-    console.log("longlatCiudad->>>", longlatCiudad)
-    const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
-    const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
-    calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
-
-    const cotizacion = await obtenerCotizacion(iddetalleevento)
-    console.log("cotizacion -> ", cotizacion);
-    const tarifaArtista = await obtenerTarifaArtistaPorProvincia(idprovincia, idartista, tipoevento)
-    console.log("tipoevento del dp -> ", tipoevento);
-    console.log("tipoevento de la tarifa aartista  -> ", tarifaArtista[0]?.tipo_evento);
-    $q("#tInfoCotizacion").innerHTML = "";
-    $q("#tInfoCotizacion").innerHTML = `
+      const cotizacion = await obtenerCotizacion(iddetalleevento)
+      console.log("cotizacion -> ", cotizacion);
+      const tarifaArtista = await obtenerTarifaArtistaPorProvincia(idprovincia, idartista, tipoevento)
+      console.log("tipoevento del dp -> ", tipoevento);
+      console.log("tipoevento de la tarifa aartista  -> ", tarifaArtista[0]?.tipo_evento);
+      $q(".contenedor-cotizacion").hidden = false;
+      $q(".contenedor-tarifa-extranjero").hidden = true;
+      $q("#tInfoCotizacion").innerHTML = "";
+      $q("#tInfoCotizacion").innerHTML = `
         <tr>
           <td>${dp[0]?.departamento}</td>
           <td>${dp[0]?.provincia}</td>
@@ -1738,8 +1926,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           <td>${calcularDificultadPrecio?.costoDificultad}</td>
         </tr>
       `;
-    $q("#tInfoDescripcionTarifa").innerHTML = "";
-    $q("#tInfoDescripcionTarifa").innerHTML = `
+      $q(".contenedor-tarifa").hidden = false;
+
+      $q("#tInfoDescripcionTarifa").innerHTML = "";
+      $q("#tInfoDescripcionTarifa").innerHTML = `
       <tr>
         <td colspan="3">Puesto en la locacion de ${cotizacion[0]?.provincia_evento + "/" + cotizacion[0]?.departamento_evento}</td>
         <td>${calculateDuration(cotizacion[0]?.horainicio, cotizacion[0]?.horafinal)}</td>
@@ -1761,6 +1951,66 @@ document.addEventListener("DOMContentLoaded", async () => {
       </tr>
     `;
 
+    } else {
+      // MODIFICAR ACA
+      const cotizacion = await obtenerCotizacion(iddetalleevento)
+      const tarifaArtista = await obtenerTarifaArtistaPorPais(idartista, nacionalidadObtenida, tipoevento)
+      console.log(" tarifaArtista -> ", tarifaArtista);
+      $q(".contenedor-cotizacion").hidden = true;
+      $q(".contenedor-tarifa").hidden = true;
+      $q(".contenedor-tarifa-extranjero").hidden = false;
+      $q("#tInfoDescripcionTarifaExtranjero").innerHTML = `
+        <tr>
+          <td colspan="3">
+            Puesto en la locacion de ${cotizacion[0]?.establecimiento + "/" + cotizacion[0]?.pais}
+          </td>
+          <td>
+            ${calculateDuration(cotizacion[0]?.horainicio, cotizacion[0]?.horafinal)}
+          </td>
+          <td>
+            ${tipoevento == tarifaArtista[0]?.tipo_evento
+          ? (tarifaArtista[0]?.tipo_evento == 1
+            ? "Público"
+            : tarifaArtista[0]?.tipo_evento == 2
+              ? "Privado"
+              : "Desconocido")
+          : `
+                <div class="form-floating mb-2">
+                  <select name="tipoevento" id="tipoevento" class="form-select w-100" required>
+                    <option value="-1">Seleccione</option>
+                    <option value="1">Publico</option>
+                    <option value="2">Privado</option>
+                  </select>
+                  <label for="tipoevento">Tipo</label>
+                </div>
+              `
+        }
+          </td>
+          <td>
+            ${tipoevento == tarifaArtista[0]?.tipo_evento
+          ? tarifaArtista[0]?.precio
+          : `
+                  <input type="text" id="tarifaCosto" name="tarifaCosto" class="form-control" placeholder="Costo">
+                `
+        }
+          </td>
+          <td>
+            ${tipoevento == tarifaArtista[0]?.tipo_evento
+          ? tarifaArtista[0]?.precioExtranjero
+          : `
+                  <input type="text" id="tarifaCostoViaje" name="tarifaCostoViaje" class="form-control" placeholder="Costo Viaje">
+                `
+        }
+          </td>
+          <td ${tarifaArtista[0]?.tipo_evento || tarifaArtista[0]?.precio || tarifaArtista[0]?.precioExtranjero ? "hidden" : ''}>
+            <i class="fa-solid fa-floppy-disk btnGuardarTarifaExtranjero" title="Guardar" style="cursor: pointer;"></i>
+          </td>
+          
+        </tr>
+
+      `;
+    }
+
     $q(".btnGuardarTarifa")?.addEventListener("click", async () => {
       console.log("nueva tarifa->", $q("#tarifaCosto").value);
       console.log("clickckc");
@@ -1768,10 +2018,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         showToast("Agregue un costo!", "ERROR")
         return
       }
-      const nuevaTarifa = await registrarTarifa(idartista, idprovincia, $q("#tarifaCosto").value, $q("#tipoevento").value)
+      const nuevaTarifa = await registrarTarifa(idartista, idprovincia, $q("#tarifaCosto").value, $q("#tipoevento").value, nacionalidadObtenida)
       console.log("nueva tariofa rregistrada -> ", nuevaTarifa);
       modalPreviaCotizacion.hide()
       $q("#tipoevento").value = ""
+      showToast("Tarifa agregada!", "SUCCESS")
+      return
+    })
+
+    $q(".btnGuardarTarifaExtranjero")?.addEventListener("click", async (e) => {
+      //const idnacionalidad = e.target.getAttribute("data-idnacionalidad")
+      console.log("id nacionalidad bglobal .-> ", nacionalidadObtenida);
+      //console.log("idnacionalidad obtenido >", idnacionalidad);
+      console.log("nueva tarifa de costo->", $q("#tarifaCosto").value);
+      console.log("nueva tarifa de extranjero->", $q("#tarifaCostoViaje").value);
+      console.log("clickckc");
+      if ($q("#tarifaCostoViaje").value.trim() == "" || $q("#tarifaCosto").value.trim() == "" || $q("#tipoevento").value == "-1") {
+        showToast("Complete los campos!", "ERROR")
+        return
+      }
+      const nuevaTarifa = await registrarTarifa(idartista, idprovincia, $q("#tarifaCosto").value, $q("#tipoevento").value, nacionalidadObtenida, $q("#tarifaCostoViaje").value)
+      console.log("nueva tariofa rregistrada -> ", nuevaTarifa);
+      modalPreviaCotizacion.hide()
+      $q("#tipoevento").value = ""
+      $q("#tarifaCostoViaje").value = ""
+      $q("#tarifaCosto").value = ""
       showToast("Tarifa agregada!", "SUCCESS")
       return
     })
@@ -2028,13 +2299,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     console.log("clickeando");
     window.open(
-      `${hostOnly}/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&precio=${calcularDificultadPrecio?.costoDificultad}&idsucursal=${idsucursal}`
+      `${hostOnly}/generators/generadores_pdf/cotizacion/cotizacion.php?iddetallepresentacion=${iddetalleevento}&idprovincia=${idprovincia}&idusuario=${idartista}&provincia=${provincia}&tipoevento=${tipoevento}&idnacionalidad=${nacionalidadObtenida}&precio=${calcularDificultadPrecio?.costoDificultad}&idsucursal=${idsucursal}`
     );
     return;
   });
 
   // HACER APARECER UN LABEL QUE DIGA EL PORCENTAJE DE PAGO MIENTRAS SE VA DIGITANDO 
   $q("#montopagado").addEventListener("input", async () => {
+    /*     const cotizacion = await obtenerCotizacion(iddetalleevento)
+        const tarifaArtista = await obtenerTarifaArtistaPorPais(idartista, nacionalidadObtenida, tipoevento) */
     //console.log("pagosExistentes -[->", pagosExistentes)
     $q("#montoActual").innerHTML = `<label for="" class="text-primary">Monto actual pagado: ${totalPagado}</label>`;
 
@@ -2048,49 +2321,96 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("el tipo de evento al tipearse el monto a pagar : ", tipoevento);
     console.log("id artista al tipearse el monto a pagar : ", idartista);
     console.log("id idprovincia al tipearse el monto a pagar : ", idprovincia);
-    const tarifa = await obtenerTarifaArtistaPorProvincia(
-      idprovincia,
-      idartista,
-      tipoevento
-    );
+    if (nacionalidadObtenida == "31") {
+      const tarifa = await obtenerTarifaArtistaPorProvincia(
+        idprovincia,
+        idartista,
+        tipoevento
+      );
 
-    const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
-    console.log("pagos -> ", pagos)
+      const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
+      console.log("pagos -> ", pagos)
 
 
-    console.log("tarifa->", tarifa);
-    console.log("tarifa[0]?.precio -> ", tarifa[0]?.precio);
-    console.log("calcularDificultadPrecio?.costoDificultad -> ", calcularDificultadPrecio?.costoDificultad);
-    if (igv == 0) {
-      precioFinal = parseFloat(tarifa[0]?.precio) + calcularDificultadPrecio?.costoDificultad;
-    } else if (igv == 1) {
-      precioFinal = (parseFloat(tarifa[0]?.precio) + calcularDificultadPrecio?.costoDificultad) * 1.18; // Se multiplica por 1.18 para agregar IGV
+      console.log("tarifa->", tarifa);
+      console.log("tarifa[0]?.precio -> ", tarifa[0]?.precio);
+      console.log("calcularDificultadPrecio?.costoDificultad -> ", calcularDificultadPrecio?.costoDificultad);
+      if (igv == 0) {
+        precioFinal = parseFloat(tarifa[0]?.precio) + calcularDificultadPrecio?.costoDificultad;
+      } else if (igv == 1) {
+        precioFinal = (parseFloat(tarifa[0]?.precio) + calcularDificultadPrecio?.costoDificultad) * 1.18; // Se multiplica por 1.18 para agregar IGV
+      }
+
+      precio25 = precioFinal * 0.25;
+      precio50 = precioFinal * 0.5;
+
+      if (parseFloat($q("#montopagado").value) >= precio50 || totalPagado >= precio50) {
+        console.log("pago del 50%");
+        if (pagosExistentes.length == 0) {
+          $q("#porciento").innerHTML =
+            '<label for="" class="text-success"><small>Pago del 50%</small></label>';
+          $q("#btnGuardar").hidden = false
+        }
+        $q("#btnGuardar").hidden = false
+      } else if (parseFloat($q("#montopagado").value) >= precio25 || totalPagado >= precio25) {
+        console.log("pago del 25%");
+        if (pagosExistentes.length == 0) {
+          $q("#porciento").innerHTML =
+            '<label for="" class="text-success"><small>Pago del 25%</small></label>';
+          $q("#btnGuardar").hidden = false
+        }
+        $q("#btnGuardar").hidden = false
+
+      } else if ($q("#montopagado").value == 0) {
+        console.log("no hay ningun pago")
+        $q("#porciento").innerHTML = ''
+      } // este ultimo else if no funciona.
+    } else {
+      const tarifa = await obtenerTarifaArtistaPorPais(
+        idartista,
+        nacionalidadObtenida,
+        tipoevento
+      );
+
+      const pagos = await obtenerPagosContratoPorIdContrato(idcontrato)
+      console.log("pagos -> ", pagos)
+
+
+      console.log("tarifa->", tarifa);
+      console.log("tarifa[0]?.precio -> ", tarifa[0]?.precio);
+      console.log("calcularDificultadPrecio?.costoDificultad -> ", tarifa[0]?.precioExtranjero);
+      if (igv == 0) {
+        precioFinal = parseFloat(tarifa[0]?.precio) + parseFloat(tarifa[0]?.precioExtranjero);
+      } else if (igv == 1) {
+        precioFinal = (parseFloat(tarifa[0]?.precio) + parseFloat(tarifa[0]?.precioExtranjero)) * 1.18; // Se multiplica por 1.18 para agregar IGV
+      }
+      console.log("precioFinal -> ", precioFinal);
+      precio25 = parseFloat(precioFinal) * 0.25;
+      precio50 = parseFloat(precioFinal) * 0.5;
+
+      if (parseFloat($q("#montopagado").value) >= precio50 || totalPagado >= precio50) {
+        console.log("pago del 50%");
+        if (pagosExistentes.length == 0) {
+          $q("#porciento").innerHTML =
+            '<label for="" class="text-success"><small>Pago del 50%</small></label>';
+          $q("#btnGuardar").hidden = false
+        }
+        $q("#btnGuardar").hidden = false
+      } else if (parseFloat($q("#montopagado").value) >= precio25 || totalPagado >= precio25) {
+        console.log("pago del 25%");
+        if (pagosExistentes.length == 0) {
+          $q("#porciento").innerHTML =
+            '<label for="" class="text-success"><small>Pago del 25%</small></label>';
+          $q("#btnGuardar").hidden = false
+        }
+        $q("#btnGuardar").hidden = false
+
+      } else if ($q("#montopagado").value == 0) {
+        console.log("no hay ningun pago")
+        $q("#porciento").innerHTML = ''
+      } // este ultimo else if no funciona.
     }
 
-    precio25 = precioFinal * 0.25;
-    precio50 = precioFinal * 0.5;
-
-    if (parseFloat($q("#montopagado").value) >= precio50 || totalPagado >= precio50) {
-      console.log("pago del 50%");
-      if (pagosExistentes.length == 0) {
-        $q("#porciento").innerHTML =
-          '<label for="" class="text-success"><small>Pago del 50%</small></label>';
-        $q("#btnGuardar").hidden = false
-      }
-      $q("#btnGuardar").hidden = false
-    } else if (parseFloat($q("#montopagado").value) >= precio25 || totalPagado >= precio25) {
-      console.log("pago del 25%");
-      if (pagosExistentes.length == 0) {
-        $q("#porciento").innerHTML =
-          '<label for="" class="text-success"><small>Pago del 25%</small></label>';
-        $q("#btnGuardar").hidden = false
-      }
-      $q("#btnGuardar").hidden = false
-
-    } else if ($q("#montopagado").value == 0) {
-      console.log("no hay ningun pago")
-      $q("#porciento").innerHTML = ''
-    } // este ultimo else if no funciona.
   });
 
   /*  $q("#btnGuardar").addEventListener("click", async () => {

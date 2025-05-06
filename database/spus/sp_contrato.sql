@@ -65,7 +65,10 @@ BEGIN
         DEDP.departamento AS departamento_evento,
         DP.igv,
         DP.validez,
-        USU.marcaagua
+        USU.marcaagua,
+        NAC.pais,
+        NAC.idnacionalidad,
+        DP.esExtranjero
     FROM detalles_presentacion DP
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN distritos DISCLI ON DISCLI.iddistrito = CLI.iddistrito
@@ -75,6 +78,7 @@ BEGIN
     LEFT JOIN provincias PRODP ON PRODP.idprovincia = DISDP.idprovincia
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+    LEFT JOIN nacionalidades NAC ON NAC.idnacionalidad = DP.idnacionalidad
     WHERE DP.iddetalle_presentacion = _iddetalle_presentacion;
 
 END //

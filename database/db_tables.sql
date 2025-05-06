@@ -7,47 +7,6 @@ CREATE TABLE nacionalidades (
     nacionalidad VARCHAR(100) NOT NULL
 );
 
-ALTER TABLE nacionalidades ADD COLUMN pais VARCHAR(50) NOT NULL;
-UPDATE nacionalidades SET pais = 'Afganistán' WHERE idnacionalidad = 1;
-UPDATE nacionalidades SET pais = 'Albania' WHERE idnacionalidad = 2;
-UPDATE nacionalidades SET pais = 'Alemania' WHERE idnacionalidad = 3;
-UPDATE nacionalidades SET pais = 'Andorra' WHERE idnacionalidad = 4;
-UPDATE nacionalidades SET pais = 'Angola' WHERE idnacionalidad = 5;
-UPDATE nacionalidades SET pais = 'Argentina' WHERE idnacionalidad = 6;
-UPDATE nacionalidades SET pais = 'Australia' WHERE idnacionalidad = 7;
-UPDATE nacionalidades SET pais = 'Bélgica' WHERE idnacionalidad = 8;
-UPDATE nacionalidades SET pais = 'Bolivia' WHERE idnacionalidad = 9;
-UPDATE nacionalidades SET pais = 'Brasil' WHERE idnacionalidad = 10;
-UPDATE nacionalidades SET pais = 'Canadá' WHERE idnacionalidad = 11;
-UPDATE nacionalidades SET pais = 'Chile' WHERE idnacionalidad = 12;
-UPDATE nacionalidades SET pais = 'China' WHERE idnacionalidad = 13;
-UPDATE nacionalidades SET pais = 'Colombia' WHERE idnacionalidad = 14;
-UPDATE nacionalidades SET pais = 'Costa Rica' WHERE idnacionalidad = 15;
-UPDATE nacionalidades SET pais = 'Cuba' WHERE idnacionalidad = 16;
-UPDATE nacionalidades SET pais = 'Ecuador' WHERE idnacionalidad = 17;
-UPDATE nacionalidades SET pais = 'Egipto' WHERE idnacionalidad = 18;
-UPDATE nacionalidades SET pais = 'España' WHERE idnacionalidad = 19;
-UPDATE nacionalidades SET pais = 'Estados Unidos' WHERE idnacionalidad = 20;
-UPDATE nacionalidades SET pais = 'Filipinas' WHERE idnacionalidad = 21;
-UPDATE nacionalidades SET pais = 'Francia' WHERE idnacionalidad = 22;
-UPDATE nacionalidades SET pais = 'Guatemala' WHERE idnacionalidad = 23;
-UPDATE nacionalidades SET pais = 'Honduras' WHERE idnacionalidad = 24;
-UPDATE nacionalidades SET pais = 'India' WHERE idnacionalidad = 25;
-UPDATE nacionalidades SET pais = 'Italia' WHERE idnacionalidad = 26;
-UPDATE nacionalidades SET pais = 'Japón' WHERE idnacionalidad = 27;
-UPDATE nacionalidades SET pais = 'México' WHERE idnacionalidad = 28;
-UPDATE nacionalidades SET pais = 'Panamá' WHERE idnacionalidad = 29;
-UPDATE nacionalidades SET pais = 'Paraguay' WHERE idnacionalidad = 30;
-UPDATE nacionalidades SET pais = 'Perú' WHERE idnacionalidad = 31;
-UPDATE nacionalidades SET pais = 'Portugal' WHERE idnacionalidad = 32;
-UPDATE nacionalidades SET pais = 'El Salvador' WHERE idnacionalidad = 33;
-UPDATE nacionalidades SET pais = 'Suiza' WHERE idnacionalidad = 34;
-UPDATE nacionalidades SET pais = 'Uruguay' WHERE idnacionalidad = 35;
-UPDATE nacionalidades SET pais = 'Venezuela' WHERE idnacionalidad = 36;
-
-
-select * from nacionalidades;
-
 CREATE TABLE departamentos (
     iddepartamento INT AUTO_INCREMENT PRIMARY KEY,
     idnacionalidad INT not null,
@@ -191,7 +150,7 @@ select * from tarifario;
 	-- ADD CONSTRAINT fk_idnacionalidad_tarifario FOREIGN KEY (idnacionalidad) REFERENCES nacionalidades(idnacionalidad);
 -- ALTER TABLE tarifario
  -- MODIFY COLUMN idprovincia INT NULL;
-
+SELECT * FROM tarifario;
 -- SELECT * FROM tarifario WHERE idprovincia = 1 and tipo_evento = 2;
 CREATE TABLE permisos (
     idpermiso INT AUTO_INCREMENT PRIMARY KEY,
@@ -254,7 +213,6 @@ CREATE table detalles_presentacion (
     constraint uk_idp 					UNIQUE(iddetalle_presentacion)
 )engine=innodb;
 select * from detalles_presentacion;
-SHOW CREATE TABLE detalles_presentacion
 -- ALTER TABLE detalles_presentacion ADD COLUMN esExtranjero TINYINT AFTER created_at;
 -- ALTER TABLE detalles_presentacion
 -- ADD COLUMN idnacionalidad INT NULL,
@@ -326,7 +284,7 @@ create table contratos (
     constraint ck_estado	check(estado IN (1,2,3))
 ) engine = innodb;
 -- select * from pagos_contrato (idcontrato, monto, tipopago, noperacion) values ();
--- select * from pagos_contrato;
+-- select * from contratos;
 create table pagos_contrato (
 	idpagocontrato		int auto_increment primary key,
     idcontrato	int not null,
@@ -349,7 +307,7 @@ create table reservas (
     fechacreada		date not null,
     constraint fk_idpagocontrato_res foreign key (idpagocontrato) references pagos_contrato (idpagocontrato)
 ) engine = innodb;
-
+select * from reservas;
 CREATE TABLE viaticos (
 	idviatico		int auto_increment primary key,
     iddetalle_presentacion int not null,

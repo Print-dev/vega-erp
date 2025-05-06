@@ -245,7 +245,7 @@ $monto_texto = numeroATexto($monto_numerico);
                 <?php endif; ?>
                 IGV; siendo que LA ORGANIZADORA deberá abonar en forma de Garantía el monto
                 de S/. <?= $convenioContrato[0]['abono_garantia'] ?> (<?= strtoupper($monto_texto) ?> CON 100/100) el cual deberá ser dado en efectivo o por
-                transferencia bancaria a la cuenta BCP N° 1929842849014 o CCI N° 00219200984284901432 a
+                transferencia bancaria a la cuenta <?= $infoEmpresa[0]['banco']; ?> N° <?= $infoEmpresa[0]['ncuenta']; ?> o CCI N° <?= $infoEmpresa[0]['ncci']; ?> a
                 nombre de EL REPRESENTANTE, y será contabilizado al cálculo de la liquidación.
             </td>
         </tr>

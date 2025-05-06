@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
     let idartista = -1
     let idnacionalidad
+    let resultado
 
     function $q(object = null) {
         return document.querySelector(object);
@@ -90,7 +91,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data
     }
 
-    async function registrarTarifa(idartista, idprovincia, precio, tipo_evento, idnacionalidad) {
+    async function registrarTarifa(idartista, idprovincia, precio, tipo_evento, idnacionalidad, precioextranjero) {
         const tarifa = new FormData();
         tarifa.append("operation", "registrarTarifa");
         tarifa.append("idusuario", idartista);
@@ -98,6 +99,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         tarifa.append("precio", precio);
         tarifa.append("tipoevento", tipo_evento);
         tarifa.append("idnacionalidad", idnacionalidad || '');
+        tarifa.append("precioextranjero", precioextranjero || '');
 
         const ftarifa = await fetch(`${host}tarifa.controller.php`, {
             method: "POST",
@@ -112,6 +114,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         tarifa.append("operation", "actualizarTarifa");
         tarifa.append("idtarifario", idtarifario);
         tarifa.append("precio", precio);
+
+        const ftarifa = await fetch(`${host}tarifa.controller.php`, {
+            method: "POST",
+            body: tarifa,
+        });
+        const rtarifa = await ftarifa.json();
+        return rtarifa;
+    }
+
+    async function actualizarTarifaPrecioExtranjero(idtarifario, precioextranjero) {
+        const tarifa = new FormData();
+        tarifa.append("operation", "actualizarTarifaPrecioExtranjero");
+        tarifa.append("idtarifario", idtarifario);
+        tarifa.append("precioextranjero", precioextranjero);
 
         const ftarifa = await fetch(`${host}tarifa.controller.php`, {
             method: "POST",
@@ -136,7 +152,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     $q("#nacionalidad").addEventListener("change", async (e) => {
         $q("#tb-body-tarifario-pais").innerHTML = ''
-         idnacionalidad = e.target.value
+        idnacionalidad = e.target.value
         const departamentos = await obtenerDepartamentos();
         $q("#departamento").innerHTML = "<option value=''>Selecciona</option>";
         departamentos.forEach(dpa => {
@@ -187,7 +203,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const precio = fila.querySelector(`#precio`).value;
                     console.log("precio -> ", precio)
                     //console.log("precio: ", precio)
-                    let resultado;
+                    resultado = -1;
 
                     if (idtarifario && idtarifario !== "undefined" && idtarifario.trim() !== "") {
                         console.log(idtarifario)
@@ -227,27 +243,44 @@ document.addEventListener("DOMContentLoaded", async () => {
             $q("#contenedor-tarifario-pais").classList.add("block");
             $q("#contenedor-tarifario").classList.add("d-none")
 
+            if (tarifas.length == 0) {
+
+            }
             nacionalidad.forEach(nacionalidad => {
                 const tarifaExistente = tarifas.find(n => n.idnacionalidad === nacionalidad.idnacionalidad);
                 if (nacionalidad.idnacionalidad == parseInt(idnacionalidad)) {
                     const precio = tarifaExistente ? tarifaExistente.precio : ""; // Si hay tarifa, usar el precio, si no, dejar vacío
+                    const precioextranjero = tarifaExistente ? tarifaExistente.precioExtranjero : ""; // Si hay tarifa, usar el precio, si no, dejar vacío
 
                     $q("#tb-body-tarifario-pais").innerHTML = `
                     <tr>
                         <td>${nacionalidad?.pais}</td>
+
                         <td>
-                            <input type="number" id="precio" class="form-control input-precio" value="${precio ? precio : '0.00'}">
-                        </td>
-                        
+                            <div class="d-flex align-items-center">
+                                <input type="number" id="precio" class="form-control input-precio me-2" value="${precio ? precio : '0.00'}">
+                                <button type="button" data-idnacionalidad="${tarifas.idnacionalidad}" data-idtarifario="${tarifaExistente?.idtarifario}" class="btn btn-primary btnGuardarPrecio">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                </button>
+                            </div>
+                        </td>                                            
+
                         <td>
-                            <button type="button" data-idnacionalidad="${tarifas.idnacionalidad}" data-idtarifario="${tarifaExistente?.idtarifario}" class="btn btn-primary btnGuardarPrecio"><i class="fa-solid fa-floppy-disk"></i></button>
+                            <div class="d-flex align-items-center">
+                                <input type="number" id="precioextranjero" class="form-control input-precioextranjero me-2" value="${precioextranjero ? precioextranjero : '0.00'}"  ${tarifas.length == 0 ? "disabled" : ""}>
+                                <button type="button" data-idnacionalidad="${tarifas.idnacionalidad}" data-idtarifario="${tarifaExistente?.idtarifario}" class="btn btn-primary btnGuardarPrecioExtranjero"  ${tarifas.length == 0 ? "disabled" : ""}>
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
+
                 `;
                 }
             });
 
             const btnsGuardarPrecio = $all(".btnGuardarPrecio")
+            const btnsGuardarPrecioExtranjero = $all(".btnGuardarPrecioExtranjero")
             btnsGuardarPrecio.forEach(btn => {
                 btn.addEventListener("click", async () => {
                     if (idartista != -1) {
@@ -258,8 +291,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                         const fila = btn.closest("tr");
                         const precio = fila.querySelector(`#precio`).value;
                         console.log("precio -> ", precio)
+                        resultado = -1
                         //console.log("precio: ", precio)
-                        let resultado;
 
                         if (idtarifario && idtarifario !== "undefined" && idtarifario.trim() !== "") {
                             console.log(idtarifario)
@@ -273,6 +306,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                             console.log("idartista ->", idartista)
                             // Si no hay idtarifario, registrar una nueva tarifa
                             resultado = await registrarTarifa(idartista, idprovincia, precio, $q("#tipo").value, idnacionalidad);
+                            console.log("resultado ->", resultado);
+
+                            const inputExtranjero = fila.querySelector(".input-precioextranjero");
+                            const btnExtranjero = fila.querySelector(".btnGuardarPrecioExtranjero");
+
+                            inputExtranjero?.removeAttribute("disabled");
+                            btnExtranjero?.removeAttribute("disabled");
                             console.log("Tarifa registrada:", resultado);
                             showToast("Tarifa registrada", "SUCCESS");
 
@@ -281,6 +321,53 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 const idtarifario = btn.getAttribute("data-idtarifario")
                                 console.log("idtarifario -> ", idtarifario)
                             }
+                        }
+                    }
+                    else {
+                        showToast("Seleccione un artista", 'ERROR')
+                    }
+
+                })
+            })
+            btnsGuardarPrecioExtranjero.forEach(btn => {
+                btn.addEventListener("click", async () => {
+                    if (idartista != -1) {
+                        const idprovincia = btn.getAttribute("data-idprovincia")
+                        const idtarifario = btn.getAttribute("data-idtarifario")
+                        console.log("idtarifario -> ", resultado.idtarifa)
+
+                        const fila = btn.closest("tr");
+                        const precio = fila.querySelector(`#precioextranjero`).value;
+                        console.log("precio -> ", precio)
+                        //console.log("precio: ", precio)
+
+
+                        if (idtarifario && idtarifario !== "undefined" && idtarifario.trim() !== "") {
+                            console.log(idtarifario)
+                            console.log("idartista ->", idartista)
+                            // Si existe un idtarifario válido, actualizarlo
+                            resultado = await actualizarTarifaPrecioExtranjero(idtarifario, precio);
+                            console.log("Tarifa actualizada:", resultado);
+                            showToast("Precio actualizado", "SUCCESS");
+                        } else {
+                            console.log(idtarifario)
+                            console.log("idartista ->", idartista)
+                            // Si existe un idtarifario válido, actualizarlo
+                            resultado = await actualizarTarifaPrecioExtranjero(resultado.idtarifa, precio);
+                            console.log("Tarifa actualizada:", resultado);
+                            showToast("Precio actualizado", "SUCCESS");
+                            /* console.log(idtarifario)
+                            console.log("idartista ->", idartista)
+                            // Si no hay idtarifario, registrar una nueva tarifa
+                            resultado = await registrarTarifa(idartista, idprovincia, precio, $q("#tipo").value, idnacionalidad, );
+                            console.log("Tarifa registrada:", resultado);
+                            showToast("Precio registrado", "SUCCESS");
+
+                            if (resultado.idtarifa) {
+                                btn.setAttribute("data-idtarifario", resultado.idtarifa);
+                                const idtarifario = btn.getAttribute("data-idtarifario")
+                                console.log("idtarifario -> ", idtarifario)
+                            } */
                         }
                     }
                     else {

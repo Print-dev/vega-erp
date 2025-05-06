@@ -2,8 +2,8 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '../../../../models/DetalleEvento.php';
 require_once __DIR__ . '../../../../models/Tarifario.php';
-require_once __DIR__ .'../../../../models/Sucursal.php';
-require_once __DIR__ .'../../../../models/Empresa.php';
+require_once __DIR__ . '../../../../models/Sucursal.php';
+require_once __DIR__ . '../../../../models/Empresa.php';
 
 
 use Dompdf\Dompdf;
@@ -29,15 +29,28 @@ $iddetallepresentacion = isset($_GET['iddetallepresentacion']) && $_GET['iddetal
 $idprovincia = isset($_GET['idprovincia']) && $_GET['idprovincia'] !== "" ? $detalleevento->limpiarCadena($_GET['idprovincia']) : null;
 $idusuario = isset($_GET['idusuario']) && $_GET['idusuario'] !== "" ? $detalleevento->limpiarCadena($_GET['idusuario']) : null;
 $provincia = isset($_GET['provincia']) && $_GET['provincia'] !== "" ? $detalleevento->limpiarCadena($_GET['provincia']) : null;
+$tipoevento = isset($_GET['tipoevento']) && $_GET['tipoevento'] !== "" ? $detalleevento->limpiarCadena($_GET['tipoevento']) : null;
+$idnacionalidad = isset($_GET['idnacionalidad']) && $_GET['idnacionalidad'] !== "" ? $detalleevento->limpiarCadena($_GET['idnacionalidad']) : null;
 $precio = isset($_GET['precio']) && $_GET['precio'] !== "" ? $detalleevento->limpiarCadena($_GET['precio']) : null; // PRECIO DE LA DIFICULTAD CALCULADA POR GOOGLE MAPS
 
 //EJECUTAR FUNCION
 $cotizacion = $detalleevento->obtenerCotizacion(['iddetallepresentacion' => $iddetallepresentacion]);
-$tarifaArtista = $tarifario->obtenerTarifaArtistaPorProvincia(['idprovincia' => $idprovincia, 'idusuario' => $idusuario]);
-$igv = ($tarifaArtista[0]['precio'] + $precio) * 0.18;
+//die(print_r($cotizacion));
+
+if ($cotizacion[0]['esExtranjero'] == 1) {
+    $tarifaArtista = $tarifario->obtenerTarifaArtistaPorPais(['idusuario' => $idusuario, 'idnacionalidad' => $idnacionalidad,'tipoevento' => $tipoevento]);
+    //die(print_r($tarifaArtista));
+    $igv = ($tarifaArtista[0]['precio'] + $tarifaArtista[0]['precioExtranjero']) * 0.18;
+} else {
+    $tarifaArtista = $tarifario->obtenerTarifaArtistaPorProvincia(['idprovincia' => $idprovincia, 'idusuario' => $idusuario, 'tipoevento' => $tipoevento]);
+    $igv = ($tarifaArtista[0]['precio'] + $precio) * 0.18;
+}
+
 //$igv = ($tarifaArtista[0]['precio'] + $precio) + $igv_total;
 $infoEmpresa = $empresa->obtenerDatosEmpresa();
+
 $representante = $sucursal->obtenerRepresentanteEmpresa(['idsucursal' => $sucursal->limpiarCadena($_GET['idsucursal'])]); // OBTENER EL REPRESENTANTES DESDE LA TABLA SUCURSALES
+//die(print_r($igv));
 
 
 //die(var_dump($cotizacion[0]['igv']));

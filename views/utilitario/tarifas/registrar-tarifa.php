@@ -68,8 +68,8 @@
                         <thead class="table-dark">
                             <tr>
                                 <th>País</th>
-                                <th>Costo</th>
-                                <th>Opciones</th>
+                                <th>Costo Presentación</th>
+                                <th>Costo de Viaje</th>
                             </tr>
                         </thead>
                         <tbody id="tb-body-tarifario-pais">

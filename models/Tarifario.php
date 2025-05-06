@@ -78,7 +78,7 @@ class Tarifario extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_tarifa(@idtarifario,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_tarifa(@idtarifario,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idusuario'],
@@ -86,6 +86,7 @@ class Tarifario extends ExecQuery
           $params['precio'],         
           $params['tipoevento'],         
           $params['idnacionalidad'],         
+          $params['precioextranjero'],         
         )
       );
 
@@ -105,7 +106,25 @@ class Tarifario extends ExecQuery
       $rpt = $cmd->execute(
         array(
           $params['idtarifario'],
-          $params['precio']
+          $params['precio'],
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+  
+  public function actualizarTarifaPrecioExtranjero($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_actualizar_tarifa_precio_extranjero(?, ?)");
+      $rpt = $cmd->execute(
+        array(
+          $params['idtarifario'],
+          $params['precioextranjero'],
         )
       );
       return $rpt;

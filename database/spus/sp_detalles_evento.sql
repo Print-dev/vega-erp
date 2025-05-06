@@ -85,7 +85,7 @@ DELIMITER ;
 
 CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,88,1183,'0044-2025','2025-05-21','19:00','03:00','oceania (segundo turno)', '', '', 1,1,2,7,0);
 CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,92, '','','2025-05-24','16:00','21:00','montevideo', '', '', 1,1,1,'',0, 1);
-CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 5,17, '','0045-2025','2025-05-19','19:00','23:00','romano', '', '', 1,1,2,7,0, 1, 35);
+CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,17, '','0044-2025','2025-05-16','19:00','23:00','coliseo', '', '', 1,1,2,7,0, 1, 35);
 
 select * from detalles_presentacion;
 select * from nacionalidades;
@@ -191,7 +191,7 @@ BEGIN
     LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito
     LEFT JOIN provincias PRODP ON PRODP.idprovincia = DISDP.idprovincia
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
-    LEFT JOIN nacionalidades NAC ON NAC.idnacionalidad = DEDP.idnacionalidad
+    LEFT JOIN nacionalidades NAC ON NAC.idnacionalidad = DP.idnacionalidad
     WHERE 
     (DP.ncotizacion IS NULL OR DP.ncotizacion LIKE CONCAT('%', COALESCE(_ncotizacion, ''), '%'))
     AND (CLI.ndocumento LIKE CONCAT('%', COALESCE(_ndocumento, ''), '%') OR _ndocumento IS NULL)
@@ -201,6 +201,9 @@ BEGIN
     GROUP BY DP.iddetalle_presentacion, CO.idcontrato;
 
 END //
+
+select * from detalles_presentacion;
+select * from nacionalidades;
 
 DELIMITER ;
 drop procedure if exists sp_detalles_presentacion_por_modalidad;

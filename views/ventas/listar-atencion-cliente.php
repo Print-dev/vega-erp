@@ -101,7 +101,7 @@
 
 <!-- MODAL PARA COTIZAR DE MANERA CONTRATO -->
 <div class="modal fade" id="modal-previacotizacion" tabindex="-1" aria-labelledby="modalPreviaCotizacion" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="modalPreviaCotizacion">Previa cotizacion</h1>
@@ -110,41 +110,60 @@
             <div class="modal-body">
                 <div class="row g-1">
                     <div class="table-responsive">
-                        <table class="table">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Departamento</th>
-                                    <th>Provincia</th>
-                                    <th>Tiempo Estimado</th>
-                                    <th>Dificultad</th>
-                                    <th>Precio S/.</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tInfoCotizacion">
+                        <div class="contenedor-cotizacion">
+                            <table class="table">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Departamento</th>
+                                        <th>Provincia</th>
+                                        <th>Tiempo Estimado</th>
+                                        <th>Dificultad</th>
+                                        <th>Precio S/.</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tInfoCotizacion"></tbody>
+                            </table>
+                        </div>
 
-                            </tbody>
-                            <hr>
-                            <thead class="table-dark">
-                                <tr>
-                                    <th colspan="3">Descripción</th>
-                                    <th>Tiempo</th>
-                                    <th>Costo</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tInfoDescripcionTarifa">
+                        <!-- TARIFA -->
+                        <div class="contenedor-tarifa">
+                            <table class="table">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th colspan="3">Descripción</th>
+                                        <th>Tiempo</th>
+                                        <th>Costo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tInfoDescripcionTarifa"></tbody>
+                            </table>
+                        </div>
+                        <div class="contenedor-tarifa-extranjero">
+                            <table class="table">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th colspan="3">Descripción</th>
+                                        <th>Tiempo</th>
+                                        <th>Tipo</th>
+                                        <th>Precio</th>
+                                        <th>Precio Viaje</th>
+                                        <th>Opciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tInfoDescripcionTarifaExtranjero"></tbody>
+                            </table>
+                        </div>
 
-                            </tbody>
-                            <tfoot>
-                                <div class="d-flex justify-content-center mb-3">
-                                    <div class="form-floating col-md-8">
-                                        <select name="sucursal" id="sucursal" class="form-select">
-                                            <option value="">Selecciona</option>
-                                        </select>
-                                        <label for="sucursal" class="form-label">Sucursal</label>
-                                    </div>
-                                </div>
-                            </tfoot>
-                        </table>
+                        <!-- PIE -->
+                        <div class="d-flex justify-content-center mb-3">
+                            <div class="form-floating col-md-8">
+                                <select name="sucursal" id="sucursal" class="form-select">
+                                    <option value="">Selecciona</option>
+                                </select>
+                                <label for="sucursal" class="form-label">Sucursal</label>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -515,7 +534,7 @@
                                     <label for="entradas">Descripcion</label>
                                     <textarea class="form-control" id="entradas" name="entradas" rows="10"></textarea>
                                 </div>
-                               
+
                             </div>
                         </div>
 

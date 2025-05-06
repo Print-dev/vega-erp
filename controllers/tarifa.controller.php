@@ -56,6 +56,7 @@ if (isset($_POST['operation'])) {
         'precio'   => $tarifa->limpiarCadena($_POST['precio']),
         'tipoevento'   => $tarifa->limpiarCadena($_POST['tipoevento']),
         'idnacionalidad'   => $tarifa->limpiarCadena($_POST['idnacionalidad']) ? $tarifa->limpiarCadena($_POST['idnacionalidad']) : '',
+        'precioextranjero'   => $tarifa->limpiarCadena($_POST['precioextranjero']) ? $tarifa->limpiarCadena($_POST['precioextranjero']) : '',
       ];
 
       $respuesta = ['idtarifa' => -1];
@@ -72,12 +73,28 @@ if (isset($_POST['operation'])) {
     case 'actualizarTarifa':
       $cleanData = [
         'idtarifario'=>$tarifa->limpiarCadena($_POST['idtarifario']),
-        'precio'=>$tarifa->limpiarCadena($_POST['precio'])
+        'precio'=>$tarifa->limpiarCadena($_POST['precio']),
       ];
 
       $respuesta=['update'=>false];
 
       $update = $tarifa->actualizarTarifa($cleanData);
+
+      if($update){
+        $respuesta['update']=true;
+      }
+      echo json_encode($respuesta);
+      break;
+
+    case 'actualizarTarifaPrecioExtranjero':
+      $cleanData = [
+        'idtarifario'=>$tarifa->limpiarCadena($_POST['idtarifario']),
+        'precioextranjero'=>$tarifa->limpiarCadena($_POST['precioextranjero']),
+      ];
+
+      $respuesta=['update'=>false];
+
+      $update = $tarifa->actualizarTarifaPrecioExtranjero($cleanData);
 
       if($update){
         $respuesta['update']=true;

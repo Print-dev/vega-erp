@@ -4,6 +4,8 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 //require_once __DIR__ . '../../../../models/Tarifario.php';
 require_once __DIR__ .'../../../../models/Convenio.php';
 require_once __DIR__ .'../../../../models/Sucursal.php';
+require_once __DIR__ . '../../../../models/Empresa.php';
+
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -21,6 +23,8 @@ ob_start();
 $convenio = new Convenio();
 $sucursal = new Sucursal();
 //$tarifario = new Tarifario();
+$empresa = new Empresa();
+
 
 
 //PROCESAR LLEGADA DE DATOS
@@ -40,6 +44,8 @@ $tarifaArtista = $tarifario->obtenerTarifaArtistaPorProvincia(['idprovincia' => 
 $igv = ($tarifaArtista[0]['precio'] + $precio) * 0.18; */
 
 //die(var_dump($convenioContrato[0]));
+$infoEmpresa = $empresa->obtenerDatosEmpresa();
+
 
 require_once __DIR__ . '/../../estructura_pdf/contrato_convenio/contenido.php';
 $html = ob_get_clean();

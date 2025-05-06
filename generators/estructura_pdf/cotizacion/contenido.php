@@ -1,8 +1,8 @@
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cotización <?= $cotizacion[0]['nom_usuario'] ?></title>
-  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotización <?= $cotizacion[0]['nom_usuario'] ?></title>
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png">
 </head>
 <style>
     html,
@@ -236,32 +236,32 @@ function formatoHora($hora_24h)
 }
  */
 
- function restarHoras($horaInicio, $horaFinal)
- {
-     $inicio = new DateTime($horaInicio);
-     $final = new DateTime($horaFinal);
- 
-     // Si la hora final es menor que la inicial, significa que termina al día siguiente
-     if ($final < $inicio) {
-         $final->modify('+1 day'); // Sumar un día a la hora final
-     }
- 
-     $intervalo = $inicio->diff($final);
-     $horas = $intervalo->h + ($intervalo->d * 24); // Agregar días convertidos a horas
-     $minutos = $intervalo->i;
- 
-     // Formatear la salida
-     $resultado = [];
-     if ($horas > 0) {
-         $resultado[] = "$horas " . ($horas == 1 ? "hora" : "horas");
-     }
-     if ($minutos > 0) {
-         $resultado[] = "$minutos " . ($minutos == 1 ? "minuto" : "minutos");
-     }
- 
-     return implode(" con ", $resultado);
- }
- 
+function restarHoras($horaInicio, $horaFinal)
+{
+    $inicio = new DateTime($horaInicio);
+    $final = new DateTime($horaFinal);
+
+    // Si la hora final es menor que la inicial, significa que termina al día siguiente
+    if ($final < $inicio) {
+        $final->modify('+1 day'); // Sumar un día a la hora final
+    }
+
+    $intervalo = $inicio->diff($final);
+    $horas = $intervalo->h + ($intervalo->d * 24); // Agregar días convertidos a horas
+    $minutos = $intervalo->i;
+
+    // Formatear la salida
+    $resultado = [];
+    if ($horas > 0) {
+        $resultado[] = "$horas " . ($horas == 1 ? "hora" : "horas");
+    }
+    if ($minutos > 0) {
+        $resultado[] = "$minutos " . ($minutos == 1 ? "minuto" : "minutos");
+    }
+
+    return implode(" con ", $resultado);
+}
+
 
 // Ejemplo de uso
 $horainicio = $cotizacion[0]['horainicio']; // Ejemplo: "14:00:00"
@@ -367,7 +367,12 @@ echo $hora_final_formateada;
         </tr>
         <tr>
             <td class="label">Ubicación</td>
-            <td colspan="3"><?php echo $cotizacion[0]['departamento_evento'] . '/' . $cotizacion[0]['provincia_evento'] . '/' . $cotizacion[0]['distrito_evento']; ?></td>
+            <td colspan="3"><?php if ($cotizacion[0]['esExtranjero'] == 1) {
+                                echo  $cotizacion[0]['establecimiento'] . '/' . $cotizacion[0]['pais'];
+                            } else {
+                                echo $cotizacion[0]['departamento_evento'] . '/' . $cotizacion[0]['provincia_evento'] . '/' . $cotizacion[0]['distrito_evento'];
+                            }
+                            ?></td>
         </tr>
         <tr>
             <td class="label">Referencia</td>
@@ -404,8 +409,20 @@ echo $hora_final_formateada;
             <td>2</td>
             <td>Puesto en la locacion de <?php echo $provincia; ?></td>
             <td></td>
-            <td><?php echo "S/. " . $precio; ?></td>
-            <td><?php echo "S/. " . $precio; ?></td>
+            <td><?php
+                if ($cotizacion[0]['esExtranjero'] == 1) {
+                    echo "S/. " . $tarifaArtista[0]['precioExtranjero'];
+                } else {
+                    echo "S/. " . $precio;
+                }
+                ?></td>
+            <td><?php
+                if ($cotizacion[0]['esExtranjero'] == 1) {
+                    echo "S/. " . $tarifaArtista[0]['precioExtranjero'];
+                } else {
+                    echo "S/. " . $precio;
+                }
+                ?></td>
         </tr>
         <tr>
             <td colspan="3" style="text-align: right; border: none;">(Opcional)</td>
@@ -419,19 +436,37 @@ echo $hora_final_formateada;
         <tr>
             <td colspan="3" style="text-align: right; border: none;"></td>
             <td><strong>TOTAL</strong></td>
-            <td><?php if ($cotizacion[0]['igv'] == 0) {
-                    if (isset($tarifaArtista[0]['precio'])) {
-                        echo "S/. " . $tarifaArtista[0]['precio'] + $precio;
-                    } else {
-                        echo "S/. " . $precio;
+            <td><?php
+                if ($cotizacion[0]['esExtranjero'] == 1) {
+                    if ($cotizacion[0]['igv'] == 0) {
+                        if (isset($tarifaArtista[0]['precio'])) {
+                            echo "S/. " . $tarifaArtista[0]['precio'] + $tarifaArtista[0]['precioExtranjero'];
+                        } else {
+                            echo "S/. " . $tarifaArtista[0]['precioExtranjero'];
+                        }
+                    } else if ($cotizacion[0]['igv'] == 1) {
+                        if (isset($tarifaArtista[0]['precio'])) {
+                            echo "S/. " . ($tarifaArtista[0]['precio'] + $tarifaArtista[0]['precioExtranjero']) + $igv;
+                        } else {
+                            echo "S/. " . $tarifaArtista[0]['precioExtranjero'] + $igv;
+                        }
                     }
-                } else if ($cotizacion[0]['igv'] == 1) {
-                    if (isset($tarifaArtista[0]['precio'])) {
-                        echo "S/. " . ($tarifaArtista[0]['precio'] + $precio) + $igv;
-                    } else {
-                        echo "S/. " . $precio + $igv;
+                } else {
+                    if ($cotizacion[0]['igv'] == 0) {
+                        if (isset($tarifaArtista[0]['precio'])) {
+                            echo "S/. " . $tarifaArtista[0]['precio'] + $precio;
+                        } else {
+                            echo "S/. " . $precio;
+                        }
+                    } else if ($cotizacion[0]['igv'] == 1) {
+                        if (isset($tarifaArtista[0]['precio'])) {
+                            echo "S/. " . ($tarifaArtista[0]['precio'] + $precio) + $igv;
+                        } else {
+                            echo "S/. " . $precio + $igv;
+                        }
                     }
-                } ?></td>
+                }
+                ?></td>
         </tr>
 
     </table>
