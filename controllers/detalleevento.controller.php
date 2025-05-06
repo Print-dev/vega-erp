@@ -95,6 +95,8 @@ if (isset($_POST['operation'])) {
         'modalidad'  => $detalleevento->limpiarCadena($_POST['modalidad']) ? $detalleevento->limpiarCadena($_POST['modalidad']) : '',
         'validez'  => $detalleevento->limpiarCadena($_POST['validez']) ? $detalleevento->limpiarCadena($_POST['validez']) : '',
         'igv'  => $detalleevento->limpiarCadena($_POST['igv']),
+        'esExtranjero'  => $detalleevento->limpiarCadena($_POST['esExtranjero']),
+        'idnacionalidad'  => $detalleevento->limpiarCadena($_POST['idnacionalidad']) ? $detalleevento->limpiarCadena($_POST['idnacionalidad']) : '',
       ];
 
       $respuesta = ['iddetalleevento' => -1];

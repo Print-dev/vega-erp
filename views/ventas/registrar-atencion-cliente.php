@@ -204,8 +204,8 @@
                             <div class="col-md-3">
                                 <div class="form-floating">
                                     <select name="nacionalidad2" id="nacionalidad2" class="form-select" ">
-                                        <option value="">Selecciona</option>
-                                        <option value=" 31">Peru</option>
+                                        <!-- <option value="">Selecciona</option>
+                                        <option value="31">Peru</option> -->
                                     </select>
                                     <label for="nacionalidad2" class="form-label">País</label>
                                 </div>

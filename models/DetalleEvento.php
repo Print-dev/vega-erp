@@ -153,7 +153,7 @@ class DetalleEvento extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_detalle_presentacion(@iddetalleevento,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_detalle_presentacion(@iddetalleevento,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idusuario'],
@@ -171,6 +171,8 @@ class DetalleEvento extends ExecQuery
           $params['modalidad'],
           $params['validez'],
           $params['igv'],
+          $params['esExtranjero'],
+          $params['idnacionalidad'],
         )
       );
 

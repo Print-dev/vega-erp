@@ -15,6 +15,12 @@ class Conexion{
   private $usuario = "root";
   private $clave = "";
 
+/*   private $servidor = "127.0.0.1:3306";
+  private $puerto = "3306";
+  private $baseDatos = "u321513493_vegaerp";
+  private $usuario = "u321513493_vegaerp";
+  private $clave = "Qv:dHH&3c"; */
+
   public function getConexion(){
 
     try{

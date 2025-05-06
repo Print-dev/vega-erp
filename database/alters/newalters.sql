@@ -28,3 +28,6 @@ ALTER TABLE empresa ADD COLUMN moneda varchar(30) null;
 
 ALTER TABLE tarifario
   ADD COLUMN tipo_evento INT NOT NULL;
+  
+  ALTER TABLE detalles_presentacion
+DROP CONSTRAINT ck_tevento_dp;

@@ -22,10 +22,10 @@
                     <div class="col-md-4">
                         <div class="form-floating">
                             <select name="nacionalidad" id="nacionalidad" class="form-select" required>
-                                <option value="" selected>Selecciona</option>
-                                <option value="31">Peru</option>
+                                <!-- <option value="" selected>Selecciona</option>
+                                <option value="31">Peru</option> -->
                             </select>
-                            <label for="nacionalidad">Nacionalidad</label>
+                            <label for="nacionalidad">País</label>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -48,7 +48,7 @@
 
                 <hr class="my-4">
 
-                <div class="table-responsive d-flex justify-content-center">
+                <div class="table-responsive d-flex justify-content-center" id="contenedor-tarifario">
                     <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
                         <thead class="table-dark">
                             <tr>
@@ -58,6 +58,21 @@
                             </tr>
                         </thead>
                         <tbody id="tb-body-tarifario">
+                            <!-- Contenido dinámico -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-responsive d-flex justify-content-center d-none" id="contenedor-tarifario-pais">
+                    <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>País</th>
+                                <th>Costo</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tb-body-tarifario-pais">
                             <!-- Contenido dinámico -->
                         </tbody>
                     </table>

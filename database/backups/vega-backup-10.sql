@@ -3405,7 +3405,7 @@ CREATE TABLE `viaticos` (
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `obtenerContrato`(
+CREATE PROCEDURE `obtenerContrato`(
     IN _idcontrato INT
 )
 BEGIN
@@ -3441,7 +3441,7 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     WHERE CO.idcontrato = _idcontrato;
 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `obtenerContratoConvenio` */
@@ -3450,7 +3450,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `obtenerContratoConvenio`(
+CREATE PROCEDURE `obtenerContratoConvenio`(
 	IN _idconvenio	INT
 )
 BEGIN
@@ -3480,7 +3480,7 @@ BEGIN
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
     LEFT JOIN usuarios	USU ON USU.idusuario = DP.idusuario
     WHERE C.idconvenio = _idconvenio; -- me quede aca
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `obtenerConvenioPorIdDP` */
@@ -3489,7 +3489,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `obtenerConvenioPorIdDP`(
+CREATE PROCEDURE `obtenerConvenioPorIdDP`(
 	IN _iddetalle_presentacion	INT
 )
 BEGIN
@@ -3499,7 +3499,7 @@ BEGIN
 	LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = C.iddetalle_presentacion
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     WHERE C.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `obtenerSucursalPorId` */
@@ -3508,7 +3508,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `obtenerSucursalPorId`(
+CREATE PROCEDURE `obtenerSucursalPorId`(
 	IN _idsucursal INT
 )
 BEGIN
@@ -3519,7 +3519,7 @@ BEGIN
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
     WHERE SUC.idsucursal = _idsucursal;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `obtenerUsuarioAsignado` */
@@ -3528,7 +3528,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `obtenerUsuarioAsignado`(
+CREATE PROCEDURE `obtenerUsuarioAsignado`(
     IN p_idagendaedicion INT,
     IN p_idtipotarea INT
 )
@@ -3548,7 +3548,7 @@ BEGIN
     JOIN tipotarea tt ON ae.idtipotarea = tt.idtipotarea
     WHERE ae.idagendaedicion = p_idagendaedicion
     AND ae.idtipotarea = p_idtipotarea;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_agenda_editor` */
@@ -3557,7 +3557,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_agenda_editor`(
+CREATE PROCEDURE `sp_actualizar_agenda_editor`(
 	IN _idagendaeditor INT,
     IN _idusuario INT,
     IN _idtipotarea INT,
@@ -3571,7 +3571,7 @@ BEGIN
     fecha_entrega = _fecha_entrega,
     hora_entrega = _hora_entrega
     WHERE idagendaeditor = _idagendaeditor; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_caja_dp` */
@@ -3580,7 +3580,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_caja_dp`(
+CREATE PROCEDURE `sp_actualizar_caja_dp`(
 	IN _iddetalle_presentacion INT,
     IN _tienecaja TINYINT
 )
@@ -3588,7 +3588,7 @@ BEGIN
 		UPDATE detalles_presentacion SET
     tienecaja = _tienecaja
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_ccfinal` */
@@ -3597,7 +3597,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_ccfinal`(
+CREATE PROCEDURE `sp_actualizar_ccfinal`(
 	IN _idcajachica			INT,
     IN _ccfinal			double (10,2)
 )
@@ -3605,7 +3605,7 @@ BEGIN
 	UPDATE cajachica SET
     ccfinal = _ccfinal
     WHERE idcajachica = _idcajachica;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_cliente` */
@@ -3614,7 +3614,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_cliente`(
+CREATE PROCEDURE `sp_actualizar_cliente`(
 	IN _idcliente			INT,
     IN _tipodoc				INT,
     IN _iddistrito			INT,
@@ -3636,7 +3636,7 @@ BEGIN
     correo = _correo,
     direccion = _direccion
     WHERE idcliente = _idcliente;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_convenio` */
@@ -3645,7 +3645,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_convenio`(
+CREATE PROCEDURE `sp_actualizar_convenio`(
 	IN _idconvenio			INT,
     IN _abono_garantia		decimal(10,2) ,
     IN _abono_publicidad 	decimal(10,2) ,
@@ -3664,7 +3664,7 @@ BEGIN
     estado = _estado,
     updated_at = now()
     WHERE idconvenio = _idconvenio;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_copy_contenido` */
@@ -3673,7 +3673,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_copy_contenido`(
+CREATE PROCEDURE `sp_actualizar_copy_contenido`(
 	IN _idagendacommanager INT,
     IN _copy text
 )
@@ -3681,7 +3681,7 @@ BEGIN
 		UPDATE agenda_commanager SET
     copy = _copy    
     WHERE idagendacommanager = _idagendacommanager; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_decremento` */
@@ -3690,7 +3690,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_decremento`(
+CREATE PROCEDURE `sp_actualizar_decremento`(
 	IN _idcajachica			INT,
     IN _decremento			double (10,2)
 )
@@ -3698,7 +3698,7 @@ BEGIN
 	UPDATE cajachica SET
     decremento = _decremento
     WHERE idcajachica = _idcajachica;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_detalle_presentacion` */
@@ -3707,7 +3707,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_detalle_presentacion`(
+CREATE PROCEDURE `sp_actualizar_detalle_presentacion`(
 	IN _iddetalle_presentacion INT,
     IN _fechapresentacion date,
     IN _horainicio time,
@@ -3733,7 +3733,7 @@ BEGIN
 	iddistrito = _iddistrito,
 	igv = _igv
 	WHERE iddetalle_presentacion = _iddetalle_presentacion; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_empresa` */
@@ -3742,7 +3742,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_empresa`(
+CREATE PROCEDURE `sp_actualizar_empresa`(
 	IN _idempresa INT,
     IN _ruc char(11),
     IN _logoempresa varchar(80),
@@ -3780,7 +3780,7 @@ BEGIN
     banco = nullif(_banco , ''),
     moneda = nullif(_moneda , '')
     WHERE idempresa = _idempresa; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_estado_caja` */
@@ -3789,7 +3789,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_estado_caja`(
+CREATE PROCEDURE `sp_actualizar_estado_caja`(
 	IN _idcajachica			INT,
     IN _estado			tinyint
 )
@@ -3798,7 +3798,7 @@ BEGIN
     estado = _estado,
     fecha_cierre = now()
     WHERE idcajachica = _idcajachica;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_estado_contrato` */
@@ -3807,7 +3807,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_estado_contrato`(
+CREATE PROCEDURE `sp_actualizar_estado_contrato`(
 	IN _idcontrato			INT,
     IN _estado			INT
 )
@@ -3816,7 +3816,7 @@ BEGIN
     estado = _estado,
     updated_at = now()
     WHERE idcontrato = _idcontrato;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_estado_convenio` */
@@ -3825,7 +3825,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_estado_convenio`(
+CREATE PROCEDURE `sp_actualizar_estado_convenio`(
 	IN _idconvenio			INT,
     IN _estado			INT
 )
@@ -3834,7 +3834,7 @@ BEGIN
     estado = _estado,
     updated_at = now()
     WHERE idconvenio = _idconvenio;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_estado_cuota_comprobante` */
@@ -3843,7 +3843,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_estado_cuota_comprobante`(
+CREATE PROCEDURE `sp_actualizar_estado_cuota_comprobante`(
 	IN _idcuotacomprobante INT,
     IN _estado TINYINT
 )
@@ -3851,7 +3851,7 @@ BEGIN
     		UPDATE cuotas_comprobante SET
 	estado = _estado
     WHERE idcuotacomprobante = _idcuotacomprobante; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_estado_dp` */
@@ -3860,7 +3860,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_estado_dp`(
+CREATE PROCEDURE `sp_actualizar_estado_dp`(
 	IN _iddetalle_presentacion INT,
     IN _estado TINYINT
 )
@@ -3868,7 +3868,7 @@ BEGIN
 		UPDATE detalles_presentacion SET
     estado = _estado
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_estado_publicar_contenido` */
@@ -3877,7 +3877,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_estado_publicar_contenido`(
+CREATE PROCEDURE `sp_actualizar_estado_publicar_contenido`(
 	IN _idagendacommanager INT,
     IN _estado SMALLINT
 )
@@ -3886,7 +3886,7 @@ BEGIN
     estado = _estado    ,
     fechapublicacion = now()
     WHERE idagendacommanager = _idagendacommanager; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_estado_reserva_dp` */
@@ -3895,7 +3895,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_estado_reserva_dp`(
+CREATE PROCEDURE `sp_actualizar_estado_reserva_dp`(
 	IN _iddetalle_presentacion INT,
     IN _reserva TINYINT
 )
@@ -3903,7 +3903,7 @@ BEGIN
 		UPDATE detalles_presentacion SET
     reserva = _reserva
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_estado_tarea_altoketicket` */
@@ -3912,7 +3912,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_estado_tarea_altoketicket`(
+CREATE PROCEDURE `sp_actualizar_estado_tarea_altoketicket`(
 	IN _idagendaeditor INT,
     IN _altoketicket VARCHAR(250)
 )
@@ -3920,7 +3920,7 @@ BEGIN
 	UPDATE agenda_editores SET
     altoketicket = _altoketicket
     WHERE idagendaeditor = _idagendaeditor; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_estado_tarea_diaria_asignacion` */
@@ -3929,7 +3929,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_estado_tarea_diaria_asignacion`(
+CREATE PROCEDURE `sp_actualizar_estado_tarea_diaria_asignacion`(
 	IN _idtaradiariaasig INT,
     IN _estado SMALLINT
 )
@@ -3937,7 +3937,7 @@ BEGIN
 		UPDATE tareas_diaria_asignacion SET
     estado = _estado    
     WHERE idtaradiariaasig = _idtaradiariaasig; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_estado_tarea_edicion` */
@@ -3946,7 +3946,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_estado_tarea_edicion`(
+CREATE PROCEDURE `sp_actualizar_estado_tarea_edicion`(
 	IN _idagendaeditor INT,
     IN _estado VARCHAR(250)
 )
@@ -3954,7 +3954,7 @@ BEGIN
 	UPDATE agenda_editores SET
     estado = _estado
     WHERE idagendaeditor = _idagendaeditor; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_incremento` */
@@ -3963,7 +3963,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_incremento`(
+CREATE PROCEDURE `sp_actualizar_incremento`(
 	IN _idcajachica			INT,
     IN _incremento			double (10,2)
 )
@@ -3971,7 +3971,7 @@ BEGIN
 	UPDATE cajachica SET
     incremento = _incremento
     WHERE idcajachica = _idcajachica;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_monto_cajachica` */
@@ -3980,7 +3980,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_monto_cajachica`(
+CREATE PROCEDURE `sp_actualizar_monto_cajachica`(
 	IN _idmonto			INT,
     IN _monto			 DECIMAL(10,2)
 )
@@ -3988,7 +3988,7 @@ BEGIN
 	UPDATE montoCajaChica SET
     monto = _monto
     WHERE idmonto = _idmonto;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_nombre_tipotarea` */
@@ -3997,7 +3997,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_nombre_tipotarea`(
+CREATE PROCEDURE `sp_actualizar_nombre_tipotarea`(
 	IN _idtipotarea INT,
     IN _tipotarea varchar(30)
 )
@@ -4005,7 +4005,7 @@ BEGIN
 		UPDATE tipotarea SET
     tipotarea = _tipotarea    
     WHERE idtipotarea = _idtipotarea; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_observacion_subida` */
@@ -4014,7 +4014,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_observacion_subida`(
+CREATE PROCEDURE `sp_actualizar_observacion_subida`(
 	IN _idsubida INT,
     IN _observaciones VARCHAR(250)
 )
@@ -4022,7 +4022,7 @@ BEGIN
 	UPDATE subidas_agenda_edicion SET
     observaciones = _observaciones
     WHERE idsubida = _idsubida; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_pagado50_dp` */
@@ -4031,7 +4031,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_pagado50_dp`(
+CREATE PROCEDURE `sp_actualizar_pagado50_dp`(
 	IN _iddetalle_presentacion INT,
     IN _pagado50 TINYINT
 )
@@ -4039,7 +4039,7 @@ BEGIN
 		UPDATE detalles_presentacion SET
     pagado50 = _pagado50
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_persona` */
@@ -4048,7 +4048,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_persona`(
+CREATE PROCEDURE `sp_actualizar_persona`(
 	IN _idpersona INT,
     IN _num_doc VARCHAR(20),
     IN _apellidos varchar(100),
@@ -4072,7 +4072,7 @@ BEGIN
         iddistrito = nullif(_iddistrito, ''),
 		update_at = now()
     WHERE idpersona = _idpersona; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_precios_entrada_evento` */
@@ -4081,7 +4081,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_precios_entrada_evento`(
+CREATE PROCEDURE `sp_actualizar_precios_entrada_evento`(
 	IN _idprecioentradaevento INT,
     IN _entradas TEXT
 )
@@ -4089,7 +4089,7 @@ BEGIN
 		UPDATE precios_entrada_evento SET
     entradas = nullif(_entradas, '')
     WHERE idprecioentradaevento = _idprecioentradaevento; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_responsables_boleteria_contrato_evento` */
@@ -4098,7 +4098,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_responsables_boleteria_contrato_evento`(
+CREATE PROCEDURE `sp_actualizar_responsables_boleteria_contrato_evento`(
 	IN _idresponsablecontrato INT,
     IN _idusuarioBoleteria INT,
     IN _idusuarioContrato INT
@@ -4108,7 +4108,7 @@ BEGIN
     idusuarioBoleteria = nullif(_idusuarioBoleteria, ''),
     idusuarioContrato = nullif(_idusuarioContrato, '')
     WHERE idresponsablecontrato = _idresponsablecontrato; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_sucursal` */
@@ -4117,7 +4117,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_sucursal`(
+CREATE PROCEDURE `sp_actualizar_sucursal`(
 	IN _idsucursal INT,
     IN _idempresa INT,
     IN _iddistrito INT,
@@ -4139,7 +4139,7 @@ BEGIN
     direccion = _direccion,
     email = _email
     WHERE idsucursal = _idsucursal; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_tarifa` */
@@ -4148,7 +4148,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_tarifa`(
+CREATE PROCEDURE `sp_actualizar_tarifa`(
 	IN _idtarifario			INT,
     IN _precio			INT
 )
@@ -4156,7 +4156,7 @@ BEGIN
 	UPDATE tarifario SET
     precio = _precio
     WHERE idtarifario = _idtarifario;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_usuario` */
@@ -4165,7 +4165,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_usuario`(
+CREATE PROCEDURE `sp_actualizar_usuario`(
 	IN _idsucursal INT,
 	IN _idusuario INT,
     IN _nom_usuario VARCHAR(30),
@@ -4192,7 +4192,7 @@ BEGIN
         SET claveacceso = _claveacceso
         WHERE idusuario = _idusuario;
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_actualizar_viatico` */
@@ -4201,7 +4201,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_viatico`(
+CREATE PROCEDURE `sp_actualizar_viatico`(
 	IN _idviatico			INT,
     IN _pasaje			INT
 )
@@ -4209,7 +4209,7 @@ BEGIN
 	UPDATE viaticos SET
     pasaje = _pasaje
     WHERE idviatico = _idviatico;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_asignarfilmmaker_dp` */
@@ -4218,7 +4218,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_asignarfilmmaker_dp`(
+CREATE PROCEDURE `sp_asignarfilmmaker_dp`(
 	IN _iddetalle_presentacion INT,
     IN _idusuario INT
 )
@@ -4226,7 +4226,7 @@ BEGIN
 		UPDATE detalles_presentacion_asignados SET
     idusuario = nullif(_idusuario, '')
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_asignar_agenda` */
@@ -4235,7 +4235,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_asignar_agenda`(
+CREATE PROCEDURE `sp_asignar_agenda`(
     OUT _idasignacion INT,
 	IN _iddetalle_presentacion int,
     IN _idusuario INT
@@ -4256,7 +4256,7 @@ BEGIN
     ELSE
         SET _idasignacion = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_asignar_agenda_cmanager` */
@@ -4265,7 +4265,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_asignar_agenda_cmanager`(
+CREATE PROCEDURE `sp_asignar_agenda_cmanager`(
 	OUT _idagendacommanager INT,
     IN _idagendaeditor INT,
     IN _idusuarioCmanager INT
@@ -4285,7 +4285,7 @@ BEGIN
 	ELSE
         SET _idagendacommanager = last_insert_id();
 	END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_asignar_agenda_editor` */
@@ -4294,7 +4294,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_asignar_agenda_editor`(
+CREATE PROCEDURE `sp_asignar_agenda_editor`(
     OUT _idagendaeditor INT,
 	IN _idagendaedicion int,
 	IN _idusuario int,
@@ -4318,7 +4318,7 @@ BEGIN
     ELSE
         SET _idagendaeditor = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_asignar_portal_web_contenido` */
@@ -4327,7 +4327,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_asignar_portal_web_contenido`(
+CREATE PROCEDURE `sp_asignar_portal_web_contenido`(
 	IN _idagendacommanager INT,
     IN _portalpublicar VARCHAR(120)
 )
@@ -4335,7 +4335,7 @@ BEGIN
 		UPDATE agenda_commanager SET
     portalpublicar = _portalpublicar    
     WHERE idagendacommanager = _idagendacommanager; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_asignar_tarea_diaria` */
@@ -4344,7 +4344,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_asignar_tarea_diaria`(
+CREATE PROCEDURE `sp_asignar_tarea_diaria`(
 	OUT _idtaradiariaasig INT,
     IN _idusuario INT,
     IN _idtareadiaria int,
@@ -4366,7 +4366,7 @@ BEGIN
 	ELSE
         SET _idtaradiariaasig = last_insert_id();
 	END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_deshabilitar_usuario` */
@@ -4375,7 +4375,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_deshabilitar_usuario`(
+CREATE PROCEDURE `sp_deshabilitar_usuario`(
 	IN _idusuario INT,
     IN _estado TINYINT
 )
@@ -4384,7 +4384,7 @@ BEGIN
         estado = _estado,
         update_at = now()
     WHERE idusuario = _idusuario; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_detalles_presentacion_por_modalidad` */
@@ -4393,7 +4393,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_detalles_presentacion_por_modalidad`(
+CREATE PROCEDURE `sp_detalles_presentacion_por_modalidad`(
 	IN _modalidad INT,
 	IN _igv tinyint
 )
@@ -4434,7 +4434,7 @@ BEGIN
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
     WHERE DP.modalidad = _modalidad AND (_igv IS NULL OR DP.igv = _igv)
     GROUP BY DP.iddetalle_presentacion, CO.idcontrato;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_editar_acuerdo_evento` */
@@ -4443,7 +4443,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_editar_acuerdo_evento`(
+CREATE PROCEDURE `sp_editar_acuerdo_evento`(
 	IN _iddetalle_presentacion INT,
     IN _acuerdo TEXT
 )
@@ -4451,7 +4451,7 @@ BEGIN
 		UPDATE detalles_presentacion SET
     acuerdo = nullif(_acuerdo, '')
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_filtrar_cajachica` */
@@ -4460,7 +4460,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_filtrar_cajachica`(
+CREATE PROCEDURE `sp_filtrar_cajachica`(
     IN _fecha_apertura DATETIME,
     IN _fecha_cierre DATETIME,
     IN _mes INT,
@@ -4494,7 +4494,7 @@ BEGIN
         -- Filtrar por nombre de usuario y establecimiento unidos
         AND (_busqueda_general IS NULL 
             OR CONCAT(USU.nom_usuario, ' ', DP.establecimiento) LIKE CONCAT('%', _busqueda_general, '%'));
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_filtrar_reparticiones` */
@@ -4503,7 +4503,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_filtrar_reparticiones`(
+CREATE PROCEDURE `sp_filtrar_reparticiones`(
     IN _nom_usuario VARCHAR(30),
     IN _establecimiento VARCHAR(80),
     IN _fecha_presentacion DATE
@@ -4520,7 +4520,7 @@ BEGIN
     (USU.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%') OR _nom_usuario IS NULL)
     AND (DP.establecimiento LIKE CONCAT('%', COALESCE(_establecimiento, ''), '%') OR _establecimiento IS NULL)
     AND (DP.fecha_presentacion LIKE CONCAT('%', COALESCE(_fecha_presentacion, ''), '%') OR _fecha_presentacion IS NULL);
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_listar_sucursales` */
@@ -4529,7 +4529,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_listar_sucursales`(
+CREATE PROCEDURE `sp_listar_sucursales`(
 	IN _nombre varchar(120),
     IN _iddepartamento int,
     IN _idprovincia int,
@@ -4548,7 +4548,7 @@ BEGIN
 	AND (DIS.iddistrito LIKE CONCAT('%', COALESCE(_iddistrito, ''), '%') OR _iddistrito IS NULL)
 	AND (PRO.idprovincia LIKE CONCAT('%', COALESCE(_idprovincia, ''), '%') OR _idprovincia IS NULL)
     AND (DEP.iddepartamento LIKE CONCAT('%', COALESCE(_iddepartamento, ''), '%') OR _iddepartamento IS NULL);
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_mostrar_contenido_revisado_edicion` */
@@ -4557,7 +4557,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_mostrar_contenido_revisado_edicion`(
+CREATE PROCEDURE `sp_mostrar_contenido_revisado_edicion`(
     IN _iddetalle_presentacion INT
 )
 BEGIN	
@@ -4568,7 +4568,7 @@ BEGIN
 		LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
         LEFT JOIN usuarios USUDP ON USUDP.idusuario = DP.idusuario
         WHERE (_iddetalle_presentacion IS NULL OR AGED.iddetalle_presentacion = _iddetalle_presentacion OR AGED.iddetalle_presentacion IS NULL);
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_mostrar_contenido_revisado_filmmakers` */
@@ -4577,7 +4577,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_mostrar_contenido_revisado_filmmakers`(
+CREATE PROCEDURE `sp_mostrar_contenido_revisado_filmmakers`(
     IN _iddetalle_presentacion INT
 )
 BEGIN	
@@ -4588,7 +4588,7 @@ BEGIN
 		LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
         LEFT JOIN usuarios USUDP ON USUDP.idusuario = DP.idusuario
         WHERE (_iddetalle_presentacion IS NULL OR AGENA.iddetalle_presentacion = _iddetalle_presentacion OR AGENA.iddetalle_presentacion IS NULL);
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtenerCotizacion` */
@@ -4597,7 +4597,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtenerCotizacion`(
+CREATE PROCEDURE `sp_obtenerCotizacion`(
     IN _iddetalle_presentacion INT
 )
 BEGIN
@@ -4629,7 +4629,7 @@ BEGIN
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     WHERE DP.iddetalle_presentacion = _iddetalle_presentacion;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_agenda` */
@@ -4638,7 +4638,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_agenda`(
+CREATE PROCEDURE `sp_obtener_agenda`(
     IN _idusuario INT, 
     IN _iddetalle_presentacion INT,
     IN _idnivelacceso INT
@@ -4709,7 +4709,7 @@ BEGIN
         (_iddetalle_presentacion IS NULL OR ASIG.iddetalle_presentacion = _iddetalle_presentacion) AND
         (_idnivelacceso IS NULL OR NIVEL.idnivelacceso = _idnivelacceso)
         GROUP BY DP.iddetalle_presentacion;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_agenda_artista` */
@@ -4718,7 +4718,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_agenda_artista`(
+CREATE PROCEDURE `sp_obtener_agenda_artista`(
     IN _idusuario INT, 
     IN _iddetalle_presentacion INT
 )
@@ -4777,7 +4777,7 @@ BEGIN
     WHERE 
         (_idusuario IS NULL OR USU.idusuario = _idusuario) AND
         (_iddetalle_presentacion IS NULL OR DP.iddetalle_presentacion = _iddetalle_presentacion);
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_agenda_cmmanager` */
@@ -4786,7 +4786,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_agenda_cmmanager`(
+CREATE PROCEDURE `sp_obtener_agenda_cmmanager`(
     IN _idagendaeditor INT
 )
 BEGIN
@@ -4799,7 +4799,7 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = DEP.idusuario
     LEFT JOIN tipotarea TIPO ON TIPO.idtipotarea = AGENE.idtipotarea
     WHERE AGENE.idagendaeditor = _idagendaeditor;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_agenda_edicion` */
@@ -4808,7 +4808,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_agenda_edicion`(
+CREATE PROCEDURE `sp_obtener_agenda_edicion`(
 )
 BEGIN
     SELECT 
@@ -4864,7 +4864,7 @@ BEGIN
     LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito
     LEFT JOIN provincias PRODP ON PRODP.idprovincia = DISDP.idprovincia
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_agenda_edicion_por_editor_y_general` */
@@ -4873,7 +4873,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_agenda_edicion_por_editor_y_general`(
+CREATE PROCEDURE `sp_obtener_agenda_edicion_por_editor_y_general`(
 	IN _idusuario INT
 )
 BEGIN
@@ -4942,7 +4942,7 @@ BEGIN
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
 	    WHERE 
         (_idusuario IS NULL OR AGEDIT.idusuario = _idusuario OR USU.idusuario = _idusuario);
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_agenda_editores` */
@@ -4951,7 +4951,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_agenda_editores`(
+CREATE PROCEDURE `sp_obtener_agenda_editores`(
     IN _idagendaedicion INT
 )
 BEGIN
@@ -4962,7 +4962,7 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = AGE.idusuario
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
     WHERE AGE.idagendaedicion = _idagendaedicion;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_agenda_filmmakers` */
@@ -4971,7 +4971,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_agenda_filmmakers`(
+CREATE PROCEDURE `sp_obtener_agenda_filmmakers`(
     IN _idusuario INT, 
     IN _iddetalle_presentacion INT,
     IN _idnivelacceso INT
@@ -5041,7 +5041,7 @@ BEGIN
         (_idusuario IS NULL OR ASIG.idusuario = _idusuario OR USU.idusuario = _idusuario) AND
         (_iddetalle_presentacion IS NULL OR DP.iddetalle_presentacion = _iddetalle_presentacion) AND
         (_idnivelacceso IS NULL OR NIVEL.idnivelacceso = _idnivelacceso);
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_comprobante_por_tipodoc` */
@@ -5050,7 +5050,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_comprobante_por_tipodoc`(
+CREATE PROCEDURE `sp_obtener_comprobante_por_tipodoc`(
     IN _idcomprobante INT,
     IN _idtipodoc	CHAR(2)
 )
@@ -5083,7 +5083,7 @@ BEGIN
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
     WHERE COMP.idcomprobante = _idcomprobante
     AND COMP.idtipodoc = _idtipodoc;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_contenido_historial_edicion` */
@@ -5092,7 +5092,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_contenido_historial_edicion`(
+CREATE PROCEDURE `sp_obtener_contenido_historial_edicion`(
     IN _idagendaeditor INT
 )
 BEGIN
@@ -5101,7 +5101,7 @@ BEGIN
     FROM subidas_agenda_edicion SUBI
     LEFT JOIN agenda_editores AGE ON AGE.idagendaeditor = SUBI.idagendaeditor
     WHERE SUBI.idagendaeditor = _idagendaeditor;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_cuotas` */
@@ -5110,7 +5110,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_cuotas`(
+CREATE PROCEDURE `sp_obtener_cuotas`(
     IN _fecha DATE,
     IN _numero_comprobante VARCHAR(20),
     IN _idcliente INT
@@ -5139,7 +5139,7 @@ BEGIN
              OR CONCAT(COMP.nserie, '-', COMP.correlativo) LIKE CONCAT('%', COALESCE(_numero_comprobante, ''), '%'))
         AND (_idcliente IS NULL OR COMP.idcliente = _idcliente OR COMP.idcliente IS NULL)
     GROUP BY CCMP.idcuotacomprobante;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_detalles_evento` */
@@ -5148,7 +5148,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_detalles_evento`(
+CREATE PROCEDURE `sp_obtener_detalles_evento`(
     IN _ncotizacion CHAR(9),
     IN _ndocumento CHAR(9),
     IN _nom_usuario CHAR(30),
@@ -5197,7 +5197,7 @@ BEGIN
     AND (DP.establecimiento LIKE CONCAT('%', COALESCE(_establecimiento, ''), '%') OR _establecimiento IS NULL)
     AND (DP.fecha_presentacion LIKE CONCAT('%', COALESCE(_fecha_presentacion, ''), '%') OR _fecha_presentacion IS NULL)
     GROUP BY DP.iddetalle_presentacion, CO.idcontrato;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_dps` */
@@ -5206,7 +5206,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_dps`(
+CREATE PROCEDURE `sp_obtener_dps`(
 )
 BEGIN
 	SELECT 		
@@ -5217,7 +5217,7 @@ BEGIN
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
     LEFT JOIN departamentos DE ON DE.iddepartamento = PRO.iddepartamento
     WHERE DP.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_dp_porid` */
@@ -5226,7 +5226,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_dp_porid`(
+CREATE PROCEDURE `sp_obtener_dp_porid`(
 	IN _iddetalle_presentacion	INT
 )
 BEGIN
@@ -5239,7 +5239,7 @@ BEGIN
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
     LEFT JOIN departamentos DE ON DE.iddepartamento = PRO.iddepartamento
     WHERE DP.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_dp_por_fecha` */
@@ -5248,7 +5248,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_dp_por_fecha`(
+CREATE PROCEDURE `sp_obtener_dp_por_fecha`(
 	IN _idusuario	INT,
 	IN _fecha_presentacion	DATE
 )
@@ -5257,7 +5257,7 @@ BEGIN
     FROM
     detalles_presentacion 
     WHERE fecha_presentacion = _fecha_presentacion AND idusuario = _idusuario; -- me quede aca
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_empresa` */
@@ -5266,7 +5266,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_empresa`(
+CREATE PROCEDURE `sp_obtener_empresa`(
 )
 BEGIN
     SELECT 
@@ -5275,7 +5275,7 @@ BEGIN
     LEFT JOIN distritos DIS ON DIS.iddistrito = EMP.iddistrito
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_facturas` */
@@ -5284,7 +5284,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_facturas`(
+CREATE PROCEDURE `sp_obtener_facturas`(
      IN _fechaemision DATE,
      IN _horaemision TIME,
      IN _numero_comprobante VARCHAR(20) -- Por ejemplo: 'F001-00000001'
@@ -5324,7 +5324,7 @@ BEGIN
          COMP.correlativo,
          COMP.tipomoneda,
          COMP.monto;
- END */$$
+ END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_filmmaker_asignado` */
@@ -5333,7 +5333,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_filmmaker_asignado`(
+CREATE PROCEDURE `sp_obtener_filmmaker_asignado`(
     IN _iddetalle_presentacion INT
 )
 BEGIN
@@ -5343,7 +5343,7 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = AGE.idusuario
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
     WHERE AGE.iddetalle_presentacion = _iddetalle_presentacion;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_filmmaker_asociado_evento` */
@@ -5352,7 +5352,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_filmmaker_asociado_evento`(
+CREATE PROCEDURE `sp_obtener_filmmaker_asociado_evento`(
 	IN _idusuario	INT
 )
 BEGIN
@@ -5361,7 +5361,7 @@ BEGIN
 	FROM detalles_presentacion DP
     LEFT JOIN agenda_asignaciones AGEN ON AGEN.iddetalle_presentacion = DP.iddetalle_presentacion
 	WHERE AGEN.idusuario = _idusuario;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_info_viatico` */
@@ -5370,7 +5370,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_info_viatico`(
+CREATE PROCEDURE `sp_obtener_info_viatico`(
 	IN _iddetallepresentacion INT,
     IN _idusuario INT
 )
@@ -5391,7 +5391,7 @@ BEGIN
     WHERE
     (_iddetallepresentacion IS NULL OR VIA.iddetalle_presentacion = _iddetallepresentacion) AND
     (_idusuario IS NULL OR VIA.idusuario = _idusuario);
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_info_viatico_notificacion` */
@@ -5400,7 +5400,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_info_viatico_notificacion`(
+CREATE PROCEDURE `sp_obtener_info_viatico_notificacion`(
 	IN _idusuario INT,
     IN _idviatico INT
 )
@@ -5421,7 +5421,7 @@ BEGIN
     WHERE
     (_idusuario IS NULL OR VIA.idusuario = _idusuario) AND
     (_idviatico IS NULL OR VIA.idviatico = _idviatico);
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_notas_de_venta` */
@@ -5430,7 +5430,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_notas_de_venta`(
+CREATE PROCEDURE `sp_obtener_notas_de_venta`(
      IN _fechaemision DATE,
      IN _horaemision TIME,
      IN _numero_comprobante VARCHAR(20) -- Por ejemplo: 'F001-00000001'
@@ -5471,7 +5471,7 @@ BEGIN
          COMP.correlativo,
          COMP.tipomoneda,
          COMP.monto;
- END */$$
+ END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_notificaciones` */
@@ -5480,7 +5480,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_notificaciones`(
+CREATE PROCEDURE `sp_obtener_notificaciones`(
 	IN _iddepartamento INT,
     IN _idusuario INT
 )
@@ -5489,7 +5489,7 @@ BEGIN
 		*
     FROM notificaciones NOTIF
     WHERE NOTIF.idusuario = _idusuario;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_notificaciones_por_nivel` */
@@ -5498,7 +5498,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_notificaciones_por_nivel`(
+CREATE PROCEDURE `sp_obtener_notificaciones_por_nivel`(
 	IN _idnivelacceso INT,
     IN _idusuario INT
 )
@@ -5509,7 +5509,7 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = NOTIF.idusuariodest
     LEFT JOIN nivelaccesos NIVEL ON NIVEL.idnivelacceso = USU.idnivelacceso
     WHERE USU.idnivelacceso = _idnivelacceso AND USU.idusuario = _idusuario;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_notificacion_dp` */
@@ -5518,7 +5518,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_notificacion_dp`(
+CREATE PROCEDURE `sp_obtener_notificacion_dp`(
     IN _idreferencia INT
 )
 BEGIN
@@ -5532,7 +5532,7 @@ BEGIN
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
     WHERE NOTIF.idreferencia = _idreferencia AND NOTIF.tipo = 2;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_notificacion_propuesta` */
@@ -5541,7 +5541,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_notificacion_propuesta`(
+CREATE PROCEDURE `sp_obtener_notificacion_propuesta`(
     IN _idreferencia INT
 )
 BEGIN
@@ -5556,7 +5556,7 @@ BEGIN
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
     WHERE NOTIF.idreferencia = _idreferencia AND NOTIF.tipo = 4;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_pagos_contrato` */
@@ -5565,7 +5565,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_pagos_contrato`(
+CREATE PROCEDURE `sp_obtener_pagos_contrato`(
     IN _idcliente INT
 )
 BEGIN
@@ -5597,7 +5597,7 @@ BEGIN
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
 	WHERE CLI.idcliente LIKE CONCAT('%', COALESCE(_idcliente, ''), '%');
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_permisos` */
@@ -5606,13 +5606,13 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_permisos`(IN p_idnivelacceso INT)
+CREATE PROCEDURE `sp_obtener_permisos`(IN p_idnivelacceso INT)
 BEGIN
     SELECT 
         modulo, ruta, texto, visibilidad, icono
     FROM permisos
     WHERE idnivelacceso = p_idnivelacceso;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_representante` */
@@ -5621,7 +5621,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_representante`(
+CREATE PROCEDURE `sp_obtener_representante`(
 	IN _idsucursal INT
 )
 BEGIN
@@ -5634,7 +5634,7 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = SUC.idresponsable
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
     WHERE SUC.idsucursal = _idsucursal;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_reserva_por_pagocontrato` */
@@ -5643,7 +5643,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_reserva_por_pagocontrato`(
+CREATE PROCEDURE `sp_obtener_reserva_por_pagocontrato`(
 	IN _idpagocontrato INT
 )
 BEGIN
@@ -5652,7 +5652,7 @@ BEGIN
     FROM reservas R
     LEFT JOIN pagos_contrato PC ON PC.idpagocontrato = R.idpagocontrato
     WHERE PC.idpagocontrato = _idpagocontrato;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_sucursales_por_empresa` */
@@ -5661,7 +5661,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_sucursales_por_empresa`(
+CREATE PROCEDURE `sp_obtener_sucursales_por_empresa`(
 	IN _idempresa INT
 )
 BEGIN
@@ -5672,7 +5672,7 @@ BEGIN
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
     WHERE SUC.idempresa = _idempresa;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_tareas_diarias_por_usuario` */
@@ -5681,7 +5681,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_tareas_diarias_por_usuario`(
+CREATE PROCEDURE `sp_obtener_tareas_diarias_por_usuario`(
     IN _idusuario INT
 )
 BEGIN
@@ -5692,7 +5692,7 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = TDA.idusuario
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
     WHERE TDA.idusuario = _idusuario;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_tareas_editor` */
@@ -5701,7 +5701,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_tareas_editor`(
+CREATE PROCEDURE `sp_obtener_tareas_editor`(
     IN _idusuario INT
 )
 BEGIN	
@@ -5713,7 +5713,7 @@ BEGIN
 		LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
         LEFT JOIN usuarios USUDP ON USUDP.idusuario = DP.idusuario
         WHERE (_idusuario IS NULL OR AGED.idusuario = _idusuario OR AGED.idusuario IS NULL);
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_tareas_para_publicar` */
@@ -5722,7 +5722,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_tareas_para_publicar`(
+CREATE PROCEDURE `sp_obtener_tareas_para_publicar`(
     IN _establecimiento varchar(80),
     IN _fecha_presentacion DATE,
     IN _idusuario	INT,
@@ -5745,7 +5745,7 @@ BEGIN
     AND (DEP.idusuario LIKE CONCAT('%', COALESCE(_idusuario, ''), '%') OR _idusuario IS NULL)
     AND (AGENC.idusuarioCmanager LIKE CONCAT('%', COALESCE(_idusuarioEditor, ''), '%') OR _idusuarioEditor IS NULL) AND
     AGENE.estado = 2 OR AGENE.estado = 4;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_tarea_vinculada_cmanager` */
@@ -5754,7 +5754,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_tarea_vinculada_cmanager`(
+CREATE PROCEDURE `sp_obtener_tarea_vinculada_cmanager`(
     IN _idagendaeditor int
     )
 BEGIN
@@ -5763,7 +5763,7 @@ BEGIN
 	FROM agenda_commanager  AGENC
     LEFT JOIN agenda_editores AGENE ON AGENE.idagendaeditor = AGENC.idagendaeditor
     WHERE AGENC.idagendaeditor = _idagendaeditor;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_tarifario_por_provincia` */
@@ -5772,7 +5772,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_tarifario_por_provincia`(
+CREATE PROCEDURE `sp_obtener_tarifario_por_provincia`(
 	IN _iddepartamento INT,
     IN _idusuario INT,
     IN _tipo_evento INT
@@ -5785,7 +5785,7 @@ BEGIN
     LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
     WHERE PR.iddepartamento = _iddepartamento AND USU.idusuario = _idusuario AND T.tipo_evento = _tipo_evento;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_usuarios` */
@@ -5794,7 +5794,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_usuarios`(
+CREATE PROCEDURE `sp_obtener_usuarios`(
 	IN _nivelacceso VARCHAR(30),
 	IN _num_doc	VARCHAR(20),
 	IN _nombres VARCHAR(100),
@@ -5816,7 +5816,7 @@ BEGIN
   AND (PE.telefono LIKE CONCAT('%', COALESCE(_telefono, ''), '%') OR PE.telefono IS NULL)
   AND (US.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%') OR US.nom_usuario IS NULL)
   AND (US.idsucursal LIKE CONCAT('%', COALESCE(_idsucursal, ''), '%') OR US.idsucursal IS NULL);
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_usuario_asignado_tarea` */
@@ -5825,7 +5825,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_usuario_asignado_tarea`(
+CREATE PROCEDURE `sp_obtener_usuario_asignado_tarea`(
     IN _idusuario INT,
     IN _idagendaedicion INT
 )
@@ -5836,7 +5836,7 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = AGE.idusuario
     LEFT JOIN personas PER ON PER.idpersona = USU.idpersona
     WHERE AGE.idusuario = _idusuario AND AGE.idagendaedicion = _idagendaedicion;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_usuario_por_id` */
@@ -5845,7 +5845,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_usuario_por_id`(
+CREATE PROCEDURE `sp_obtener_usuario_por_id`(
 	IN _idusuario INT
 )
 BEGIN
@@ -5857,7 +5857,7 @@ BEGIN
         INNER JOIN nivelaccesos NA ON U.idnivelacceso = NA.idnivelacceso
         INNER JOIN personas P ON U.idpersona = P.idpersona
         WHERE idusuario = _idusuario;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_obtener_usuario_por_nivel` */
@@ -5866,7 +5866,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_usuario_por_nivel`(
+CREATE PROCEDURE `sp_obtener_usuario_por_nivel`(
 	IN _idnivelacceso INT
 )
 BEGIN
@@ -5881,7 +5881,7 @@ BEGIN
         INNER JOIN nivelaccesos NA ON US.idnivelacceso = NA.idnivelacceso
         LEFT JOIN personas PER ON PER.idpersona = US.idpersona
         WHERE NA.idnivelacceso = _idnivelacceso;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_quitar_responsable_posteo` */
@@ -5890,12 +5890,12 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_quitar_responsable_posteo`(
+CREATE PROCEDURE `sp_quitar_responsable_posteo`(
     IN _idagendaeditor INT
 )
 BEGIN	
 	DELETE FROM agenda_commanager WHERE idagendaeditor = _idagendaeditor;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_quitar_tarea_usuario` */
@@ -5904,12 +5904,12 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_quitar_tarea_usuario`(
+CREATE PROCEDURE `sp_quitar_tarea_usuario`(
     IN _idagendaeditor INT
 )
 BEGIN	
 	DELETE FROM agenda_editores WHERE idagendaeditor = _idagendaeditor;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_cajachica` */
@@ -5918,7 +5918,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_cajachica`(
+CREATE PROCEDURE `sp_registrar_cajachica`(
     OUT _idcajachica INT,
     IN _iddetalle_presentacion INT,
     IN _idmonto INT,
@@ -5942,7 +5942,7 @@ BEGIN
     ELSE
         SET _idcajachica = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_cliente` */
@@ -5951,7 +5951,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_cliente`(
+CREATE PROCEDURE `sp_registrar_cliente`(
     OUT _idcliente INT,
     IN _tipodoc	INT,
 	IN _iddistrito INT,
@@ -5978,7 +5978,7 @@ BEGIN
     ELSE
         SET _idcliente = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_comprobante` */
@@ -5987,7 +5987,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_comprobante`(
+CREATE PROCEDURE `sp_registrar_comprobante`(
     OUT _idcomprobante	INT ,
     IN _iddetallepresentacion INT,
     IN _idsucursal int,
@@ -6016,7 +6016,7 @@ BEGIN
     ELSE
         SET _idcomprobante = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_contrato` */
@@ -6025,7 +6025,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_contrato`(
+CREATE PROCEDURE `sp_registrar_contrato`(
     OUT _idcontrato INT,
 	IN _iddetalle_presentacion INT,
     IN _estado int
@@ -6046,7 +6046,7 @@ BEGIN
     ELSE
         SET _idcontrato = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_convenio` */
@@ -6055,7 +6055,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_convenio`(
+CREATE PROCEDURE `sp_registrar_convenio`(
     OUT _idconvenio INT,
 	IN _iddetalle_presentacion INT,
     IN _abono_garantia DOUBLE,
@@ -6081,7 +6081,7 @@ BEGIN
     ELSE
         SET _idconvenio = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_cuota_factura` */
@@ -6090,7 +6090,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_cuota_factura`(
+CREATE PROCEDURE `sp_registrar_cuota_factura`(
 	IN _idcomprobante INT,
     IN _fecha	date ,
     IN _monto decimal(10,2)
@@ -6098,7 +6098,7 @@ DELIMITER $$
 BEGIN
     INSERT INTO cuotas_comprobante (idcomprobante, fecha, monto)
     VALUES (_idcomprobante, _fecha, _monto);
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_detalle_comprobante` */
@@ -6107,7 +6107,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_detalle_comprobante`(
+CREATE PROCEDURE `sp_registrar_detalle_comprobante`(
 	IN _idcomprobante INT,
     IN _estado	varchar(10),
     IN _info varchar(60)
@@ -6115,7 +6115,7 @@ DELIMITER $$
 BEGIN
     INSERT INTO detalles_comprobante (idcomprobante, estado, info)
     VALUES (_idcomprobante, _estado, _info);
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_detalle_presentacion` */
@@ -6124,7 +6124,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_detalle_presentacion`(
+CREATE PROCEDURE `sp_registrar_detalle_presentacion`(
     OUT _iddetalle_presentacion INT,
 	IN _idusuario int,
     IN _idcliente int,
@@ -6165,7 +6165,7 @@ BEGIN
         NULLIF(_referencia, ''), NULLIF(_acuerdo, ''), nullif(_tipoevento,''), nullif(_modotransporte,''), nullif(_modalidad,''), _validez, _igv
     );
     SET _iddetalle_presentacion = LAST_INSERT_ID();
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_egresos` */
@@ -6174,7 +6174,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_egresos`(
+CREATE PROCEDURE `sp_registrar_egresos`(
     OUT _idegreso INT,
     IN _idreparticion INT,
     IN _descripcion varchar(80),
@@ -6197,7 +6197,7 @@ BEGIN
     ELSE
         SET _idegreso = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_gasto` */
@@ -6206,7 +6206,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_gasto`(
+CREATE PROCEDURE `sp_registrar_gasto`(
     OUT _idgasto INT,
     IN _idcajachica INT,
     IN _concepto VARCHAR(250),
@@ -6227,7 +6227,7 @@ BEGIN
     ELSE
         SET _idgasto = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_ingreso` */
@@ -6236,7 +6236,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_ingreso`(
+CREATE PROCEDURE `sp_registrar_ingreso`(
     OUT _idingreso INT,
     IN _idreparticion INT,
     IN _descripcion varchar(80),
@@ -6260,7 +6260,7 @@ BEGIN
     ELSE
         SET _idingreso = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_item_comprobante` */
@@ -6269,7 +6269,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_item_comprobante`(
+CREATE PROCEDURE `sp_registrar_item_comprobante`(
 	IN _idcomprobante INT,
     IN _cantidad	INT ,
     IN _descripcion text,
@@ -6279,7 +6279,7 @@ DELIMITER $$
 BEGIN
     INSERT INTO items_comprobante (idcomprobante, cantidad, descripcion, valorunitario, valortotal)
     VALUES (_idcomprobante, _cantidad, _descripcion, _valorunitario, _valortotal);
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_notificacion` */
@@ -6288,7 +6288,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_notificacion`(
+CREATE PROCEDURE `sp_registrar_notificacion`(
     OUT _idnotificacion INT,
     IN _idusuariodest INT,
     IN _idusuariorem INT,
@@ -6312,7 +6312,7 @@ BEGIN
     ELSE
         SET _idnotificacion = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_nuevo_tipotarea` */
@@ -6321,7 +6321,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_nuevo_tipotarea`(
+CREATE PROCEDURE `sp_registrar_nuevo_tipotarea`(
 	OUT _idtipotarea INT,
     IN _tipotarea VARCHAR(30)
 )
@@ -6340,7 +6340,7 @@ BEGIN
 	ELSE
         SET _idtipotarea = last_insert_id();
 	END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_pago_contrato` */
@@ -6349,7 +6349,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_pago_contrato`(
+CREATE PROCEDURE `sp_registrar_pago_contrato`(
     OUT _idpagocontrato INT,
 	IN _idcontrato INT,
     IN _monto decimal(10,2),
@@ -6375,7 +6375,7 @@ BEGIN
     ELSE
         SET _idpagocontrato = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_pago_cuota` */
@@ -6384,7 +6384,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_pago_cuota`(
+CREATE PROCEDURE `sp_registrar_pago_cuota`(
 	IN _idcuotacomprobante INT,
     IN _montopagado decimal(10,2),
     IN _tipo_pago 	TINYINT, 
@@ -6394,7 +6394,7 @@ BEGIN
     
     INSERT INTO pagos_cuota (idcuotacomprobante, montopagado, tipo_pago, noperacion)
     VALUES (_idcuotacomprobante, _montopagado, _tipo_pago, NULLIF(_noperacion, ''));
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_persona` */
@@ -6403,7 +6403,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_persona`(
+CREATE PROCEDURE `sp_registrar_persona`(
     OUT _idpersona INT,
     IN _num_doc VARCHAR(20),
     IN _apellidos VARCHAR(100),
@@ -6431,7 +6431,7 @@ BEGIN
     ELSE
         SET _idpersona = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_reparticion` */
@@ -6440,7 +6440,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_reparticion`(
+CREATE PROCEDURE `sp_registrar_reparticion`(
     OUT _idreparticion INT,
     IN _iddetalle_presentacion INT
 )
@@ -6459,7 +6459,7 @@ BEGIN
     ELSE
         SET _idreparticion = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_sucursal` */
@@ -6468,7 +6468,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_sucursal`(
+CREATE PROCEDURE `sp_registrar_sucursal`(
     IN _idempresa INT,
 	IN _iddistrito INT,
     IN _idresponsable	INT ,
@@ -6481,7 +6481,7 @@ DELIMITER $$
 BEGIN
     INSERT INTO sucursales (idempresa, iddistrito, idresponsable, nombre, ruc, telefono, direccion, email)
     VALUES (_idempresa, _iddistrito, nullif(_idresponsable, ''), nullif(_nombre, ''), _ruc, nullif(_telefono, ''), _direccion, nullif(_email, ''));
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_tarea_diaria` */
@@ -6490,7 +6490,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_tarea_diaria`(
+CREATE PROCEDURE `sp_registrar_tarea_diaria`(
 	OUT _idtareadiaria INT,
     IN _tarea varchar(120)
 )
@@ -6509,7 +6509,7 @@ BEGIN
 	ELSE
         SET _idtareadiaria = last_insert_id();
 	END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_tarifa` */
@@ -6518,7 +6518,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_tarifa`(
+CREATE PROCEDURE `sp_registrar_tarifa`(
 	OUT _idtarifario INT,
     IN _idusuario INT,
     IN _idprovincia int,
@@ -6541,7 +6541,7 @@ BEGIN
 	ELSE
         SET _idtarifario = last_insert_id();
 	END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_tipotarea` */
@@ -6550,7 +6550,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_tipotarea`(
+CREATE PROCEDURE `sp_registrar_tipotarea`(
     OUT _idtipotarea INT,
 	IN _tipotarea varchar(30)
 )
@@ -6570,7 +6570,7 @@ BEGIN
     ELSE
         SET _idtipotarea = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_usuario` */
@@ -6579,7 +6579,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_usuario`(
+CREATE PROCEDURE `sp_registrar_usuario`(
 	OUT _idusuario INT,
     IN _idsucursal INT,
     IN _idpersona INT,
@@ -6606,7 +6606,7 @@ BEGIN
 	ELSE
         SET _idusuario = last_insert_id();
 	END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_registrar_viatico` */
@@ -6615,7 +6615,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_viatico`(
+CREATE PROCEDURE `sp_registrar_viatico`(
     OUT _idviatico INT,
 	IN _iddetalle_presentacion INT,
     IN _idusuario	INT ,
@@ -6641,7 +6641,7 @@ BEGIN
     ELSE
         SET _idviatico = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_remover_tipotarea` */
@@ -6650,12 +6650,12 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_remover_tipotarea`(
+CREATE PROCEDURE `sp_remover_tipotarea`(
     IN _idtipotarea INT
 )
 BEGIN	
 	DELETE FROM tipotarea WHERE idtipotarea = _idtipotarea;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_reportar_artista_evento` */
@@ -6664,7 +6664,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_reportar_artista_evento`(
+CREATE PROCEDURE `sp_reportar_artista_evento`(
     OUT _idreporte INT,
 	IN _iddetalle_presentacion int,
 	IN _tipo int,
@@ -6687,7 +6687,7 @@ BEGIN
     ELSE
         SET _idreporte = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_search_cliente` */
@@ -6696,7 +6696,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_search_cliente`(
+CREATE PROCEDURE `sp_search_cliente`(
     IN _ndocumento CHAR(20),
     IN _telefono VARCHAR(15), 
     IN _razonsocial VARCHAR(255)
@@ -6716,7 +6716,7 @@ BEGIN
         (C.ndocumento = _ndocumento OR _ndocumento IS NULL OR _ndocumento = '') 
         AND (C.telefono = _telefono OR _telefono IS NULL OR _telefono = '') 
         AND (C.razonsocial LIKE CONCAT('%', _razonsocial, '%') OR _razonsocial IS NULL OR _razonsocial = '');
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_search_cliente_numdoc` */
@@ -6725,7 +6725,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_search_cliente_numdoc`(
+CREATE PROCEDURE `sp_search_cliente_numdoc`(
 	IN _ndocumento char(20)
 )
 BEGIN
@@ -6738,7 +6738,7 @@ BEGIN
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
     LEFT JOIN nacionalidades NA ON NA.idnacionalidad = D.idnacionalidad
     WHERE C.ndocumento = _ndocumento;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_search_persona_numdoc` */
@@ -6747,7 +6747,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_search_persona_numdoc`(
+CREATE PROCEDURE `sp_search_persona_numdoc`(
 	IN _num_doc VARCHAR(20)
 )
 BEGIN
@@ -6762,7 +6762,7 @@ BEGIN
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
     LEFT JOIN nacionalidades NA ON NA.idnacionalidad = D.idnacionalidad
     WHERE P.num_doc = _num_doc;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_search_tarifa_artista` */
@@ -6771,7 +6771,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_search_tarifa_artista`(
+CREATE PROCEDURE `sp_search_tarifa_artista`(
 	IN _nom_usuario varchar(30)
 )
 BEGIN
@@ -6782,7 +6782,7 @@ BEGIN
     LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
     WHERE USU.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%');
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_search_tarifa_artista_por_provincia` */
@@ -6791,7 +6791,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_search_tarifa_artista_por_provincia`(
+CREATE PROCEDURE `sp_search_tarifa_artista_por_provincia`(
 	IN _idprovincia INT,
     IN _idusuario INT,
 	IN _tipo_evento INT
@@ -6804,7 +6804,7 @@ BEGIN
     LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
     WHERE PR.idprovincia = _idprovincia AND USU.idusuario = _idusuario AND T.tipo_evento = _tipo_evento;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_subir_contenido_editor` */
@@ -6813,7 +6813,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_subir_contenido_editor`(
+CREATE PROCEDURE `sp_subir_contenido_editor`(
 	OUT _idsubida INT,
     IN _idagendaeditor INT,
 	IN _url TEXT
@@ -6834,7 +6834,7 @@ BEGIN
     ELSE
         SET _idsubida = LAST_INSERT_ID();
     END IF;
-END */$$
+END $$
 DELIMITER ;
 
 /* Procedure structure for procedure `sp_user_login` */
@@ -6843,7 +6843,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_user_login`(
+CREATE PROCEDURE `sp_user_login`(
 	IN _usuario VARCHAR(30)
 )
 BEGIN
@@ -6859,7 +6859,7 @@ BEGIN
         INNER JOIN nivelaccesos NA ON US.idnivelacceso = NA.idnivelacceso
         INNER JOIN personas PE ON PE.idpersona = US.idpersona
         WHERE US.nom_usuario = _usuario;
-END */$$
+END $$
 DELIMITER ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

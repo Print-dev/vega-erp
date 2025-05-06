@@ -10,11 +10,12 @@ CREATE PROCEDURE sp_obtener_tarifario_por_provincia
 )
 BEGIN
 	SELECT 
-	T.idtarifario, T.precio, T.tipo_evento, PR.idprovincia, D.iddepartamento, USU.idusuario
+	T.idtarifario, T.precio, T.tipo_evento, NAC.idnacionalidad, NAC.pais,PR.idprovincia, D.iddepartamento, USU.idusuario
     FROM usuarios USU
     LEFT JOIN tarifario T ON T.idusuario = USU.idusuario
     LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
+	LEFT JOIN nacionalidades NAC ON NAC.idnacionalidad = T.idnacionalidad
     WHERE PR.iddepartamento = _iddepartamento AND USU.idusuario = _idusuario AND T.tipo_evento = _tipo_evento;
 END //
 DELIMITER ;
@@ -29,12 +30,31 @@ CREATE PROCEDURE sp_search_tarifa_artista_por_provincia
 )
 BEGIN
 	SELECT 
-	T.idtarifario, T.precio, T.tipo_evento, PR.idprovincia, D.iddepartamento
+	T.idtarifario, T.precio, T.tipo_evento, NAC.idnacionalidad, NAC.pais, PR.idprovincia, D.iddepartamento
     FROM usuarios USU
     LEFT JOIN tarifario T ON T.idusuario = USU.idusuario
     LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
+    LEFT JOIN nacionalidades NAC ON NAC.idnacionalidad = T.idnacionalidad
     WHERE PR.idprovincia = _idprovincia AND USU.idusuario = _idusuario AND T.tipo_evento = _tipo_evento;
+END //
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS sp_obtener_tarifario_artista_pais;
+DELIMITER //
+CREATE PROCEDURE sp_obtener_tarifario_artista_pais
+(
+    IN _idusuario INT,
+    IN _idnacionalidad INT,
+	IN _tipo_evento INT
+)
+BEGIN
+	SELECT 
+	T.idtarifario, T.precio, T.tipo_evento, NAC.idnacionalidad, NAC.pais
+    FROM usuarios USU
+    LEFT JOIN tarifario T ON T.idusuario = USU.idusuario
+    LEFT JOIN nacionalidades NAC ON NAC.idnacionalidad = T.idnacionalidad
+    WHERE USU.idusuario = _idusuario AND NAC.idnacionalidad = _idnacionalidad AND T.tipo_evento = _tipo_evento;
 END //
 DELIMITER ;
 
@@ -63,7 +83,8 @@ CREATE PROCEDURE sp_registrar_tarifa
     IN _idusuario INT,
     IN _idprovincia int,
     IN _precio decimal(10,2),
-    IN _tipo_evento INT
+    IN _tipo_evento INT,
+    IN _idnacionalidad INT
 )
 BEGIN
 	DECLARE existe_error INT DEFAULT 0;
@@ -73,8 +94,8 @@ BEGIN
         SET existe_error = 1;
 	END;
     
-    INSERT INTO tarifario (idusuario, idprovincia, precio, tipo_evento)VALUES 
-		(_idusuario, _idprovincia, _precio, _tipo_evento);
+    INSERT INTO tarifario (idusuario, idprovincia, precio, tipo_evento, idnacionalidad)VALUES 
+		(_idusuario, nullif(_idprovincia, ''), _precio, _tipo_evento, nullif(_idnacionalidad , ''));
         
 	IF existe_error= 1 THEN
 		SET _idtarifario = -1;

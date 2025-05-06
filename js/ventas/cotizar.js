@@ -207,7 +207,18 @@ document.addEventListener('DOMContentLoaded', async function () {
     return data;
   }
 
+  async function obtenerTodosNacionalidades() { // EN REALIDAD ES OBTENER TODOS LOS PAISES
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerTodosNacionalidades");
+    const data = await getDatos(`${host}recurso.controller.php`, params);
+    $q("#nacionalidad2").innerHTML = "<option value=''>Selecciona</option>";
+    data.forEach(paises => {
+      $q("#nacionalidad2").innerHTML += `<option value="${paises.idnacionalidad}">${paises.pais}</option>`;
+    });
+    return data;
+  }
 
+  await obtenerTodosNacionalidades();
 
   /* async function obtenerCotizacion(iddetallepresentacion) {
     const params = new URLSearchParams();
@@ -343,7 +354,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
 
-  async function registrarDetalleEvento(idcliente, ncotizacion) {
+  async function registrarDetalleEvento(idcliente, ncotizacion, esExtranjero, idnacionalidad) {
     console.log("Hora final ->", $q("#horafinal").value.trim());
 
     const horainicio = $q("#horainicio").value.trim();
@@ -365,7 +376,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     detalle.append("operation", "registrarDetallePresentacion");
     detalle.append("idusuario", $q("#artista").value);
     detalle.append("idcliente", idcliente);
-    detalle.append("iddistrito", iddistrito2 || '');
+    detalle.append("iddistrito", iddistrito2 || null);
     detalle.append("ncotizacion", ncotizacion || '');
     detalle.append("fechapresentacion", fechapresentacion || '');
     detalle.append("horainicio", horainicio);
@@ -378,6 +389,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     detalle.append("modalidad", modalidad || '');
     detalle.append("validez", validez || '');
     detalle.append("igv", $q("#igv").checked ? 1 : 0);
+    detalle.append("esExtranjero", esExtranjero);
+    detalle.append("idnacionalidad", idnacionalidad || null);
 
     const fdetalle = await fetch(`${host}detalleevento.controller.php`, {
       method: "POST",
@@ -770,6 +783,22 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   })
 
+  $q("#nacionalidad2").addEventListener("change", async (e) => {
+    if (e.target.value !== "31") {
+      console.log("no es 31");
+      $q("#departamento2").disabled = true;
+      $q("#departamento2").value = '';
+      $q("#provincia2").disabled = true;
+      $q("#provincia2").value = '';
+      $q("#distrito2").disabled = true;
+      $q("#distrito2").value = '';
+    } else if (e.target.value == "31") {
+      console.log("son iguales q va");
+      $q("#departamento2").disabled = false;
+      $q("#provincia2").disabled = false;
+      $q("#distrito2").disabled = false;
+    }
+  })
 
   $q("#form-atencion-clientes").addEventListener("submit", async (e) => {
     try {
@@ -854,29 +883,57 @@ document.addEventListener('DOMContentLoaded', async function () {
                 ncotizacion = nuevoNCotizacion
 
                 if ($q("#modalidad").value == 1) {
-                  detalleevento = await registrarDetalleEvento(data.idcliente);
-                  /* const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
-                  console.log("repa registrado -> ", repaRegistrado); */
-                  // REGISTRAR NOTIFICACION
-                  const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
-                  mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
-                  const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
-                  console.log("notificacion registrada ? -> ", notificacionRegistrada)
-                  enviarWebsocket($q("#artista").value, "evento", mensaje)
-                  console.log(detalleevento);
+                  if ($q("#nacionalidad2").value !== "31") {
+                    detalleevento = await registrarDetalleEvento(data.idcliente, '', 1, $q("#nacionalidad2").value);
+                    /* const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                    console.log("repa registrado -> ", repaRegistrado); */
+                    // REGISTRAR NOTIFICACION
+                    const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                    mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
+                    const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+                    console.log("notificacion registrada ? -> ", notificacionRegistrada)
+                    enviarWebsocket($q("#artista").value, "evento", mensaje)
+                    console.log(detalleevento);
+                  } else if ($q("#nacionalidad2").value == "31") {
+                    detalleevento = await registrarDetalleEvento(data.idcliente, '', 0);
+                    /* const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                    console.log("repa registrado -> ", repaRegistrado); */
+                    // REGISTRAR NOTIFICACION
+                    const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                    mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
+                    const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+                    console.log("notificacion registrada ? -> ", notificacionRegistrada)
+                    enviarWebsocket($q("#artista").value, "evento", mensaje)
+                    console.log(detalleevento);
+                  }
                 } else if ($q("#modalidad").value == 2) {
-                  detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
-                  const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
-                  mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
-                  const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
-                  enviarWebsocket($q("#artista").value, "evento", mensaje)
-                  console.log("notificacion registrada ? -> ", notificacionRegistrada)
+                  if ($q("#nacionalidad2").value !== "31") {
+                    detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion, 1, $q("#nacionalidad2").value);
+                    const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                    mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
+                    const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+                    enviarWebsocket($q("#artista").value, "evento", mensaje)
+                    console.log("notificacion registrada ? -> ", notificacionRegistrada)
 
-                  console.log(detalleevento);
+                    console.log(detalleevento);
+                  } else if ($q("#nacionalidad2").value == "31") {
+                    detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion, 0);
+                    const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                    mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
+                    const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+                    enviarWebsocket($q("#artista").value, "evento", mensaje)
+                    console.log("notificacion registrada ? -> ", notificacionRegistrada)
+
+                    console.log(detalleevento);
+                  }
                 } else {
-                  detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion);
-                  console.log(detalleevento);
-                  // ACA NO SE REGISTRA POR QUE EL EVENTO ESTA INCOMPLETO
+                  if ($q("#nacionalidad2").value !== "31") {
+                    detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion, 1, $q("#nacionalidad2").value);
+                    console.log(detalleevento);
+                  } else if ($q("#nacionalidad2").value == "31") {
+                    detalleevento = await registrarDetalleEvento(data.idcliente, ncotizacion, 0);
+                    console.log(detalleevento);
+                  }
                 }
 
                 if (detalleevento.iddetalleevento > 0) {
@@ -900,35 +957,72 @@ document.addEventListener('DOMContentLoaded', async function () {
               ncotizacion = nuevoNCotizacion
 
               if ($q("#modalidad").value == 1) {
-                console.log("idcliente-> en valor 1 ", idcliente);
-                detalleevento = await registrarDetalleEvento(idcliente);
-                /* const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
-                console.log("repa registrado -> ", repaRegistrado); */
-                console.log(detalleevento);
-                const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
-                console.log("usuario -> ", usuario);
-                mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
-                console.log("artista ->", $q("#artista").value);
-                console.log("idusuariolgeado ->", idusuarioLogeado);
-                console.log("mensaje ->", mensaje);
+                if ($q("#nacionalidad2").value !== "31") {
+                  console.log("idcliente-> en valor 1 ", idcliente);
+                  detalleevento = await registrarDetalleEvento(idcliente, '', 1, $q("#nacionalidad2").value);
+                  /* const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                  console.log("repa registrado -> ", repaRegistrado); */
+                  console.log(detalleevento);
+                  const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                  console.log("usuario -> ", usuario);
+                  mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
+                  console.log("artista ->", $q("#artista").value);
+                  console.log("idusuariolgeado ->", idusuarioLogeado);
+                  console.log("mensaje ->", mensaje);
 
-                const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
-                enviarWebsocket($q("#artista").value, "evento", mensaje)
-                console.log("notificacion registrada ? -> ", notificacionRegistrada)
+                  const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+                  enviarWebsocket($q("#artista").value, "evento", mensaje)
+                  console.log("notificacion registrada ? -> ", notificacionRegistrada)
+                } else if ($q("#nacionalidad2").value == "31") {
+                  console.log("idcliente-> en valor 1 ", idcliente);
+                  detalleevento = await registrarDetalleEvento(idcliente, '', 0);
+                  /* const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                  console.log("repa registrado -> ", repaRegistrado); */
+                  console.log(detalleevento);
+                  const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                  console.log("usuario -> ", usuario);
+                  mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
+                  console.log("artista ->", $q("#artista").value);
+                  console.log("idusuariolgeado ->", idusuarioLogeado);
+                  console.log("mensaje ->", mensaje);
+
+                  const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+                  enviarWebsocket($q("#artista").value, "evento", mensaje)
+                  console.log("notificacion registrada ? -> ", notificacionRegistrada)
+                }
+
               } else if ($q("#modalidad").value == 2) {
-                console.log("idcliente-> en valor 2 ", idcliente);
-                detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
-                console.log(detalleevento);
-                const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
-                mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
-                const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
-                enviarWebsocket($q("#artista").value, "evento", mensaje)
-                console.log("notificacion registrada ? -> ", notificacionRegistrada)
+                if ($q("#nacionalidad2").value !== "31") {
+                  console.log("idcliente-> en valor 2 ", idcliente);
+                  detalleevento = await registrarDetalleEvento(idcliente, ncotizacion, 1, $q("#nacionalidad2").value);
+                  console.log(detalleevento);
+                  const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                  mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
+                  const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+                  enviarWebsocket($q("#artista").value, "evento", mensaje)
+                  console.log("notificacion registrada ? -> ", notificacionRegistrada)
+                } if ($q("#nacionalidad2").value == "31") {
+                  console.log("idcliente-> en valor 2 ", idcliente);
+                  detalleevento = await registrarDetalleEvento(idcliente, ncotizacion, 0);
+                  console.log(detalleevento);
+                  const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
+                  mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
+                  const notificacionRegistrada = await registrarNotificacion($q("#artista").value, idusuarioLogeado, 2, null, mensaje)
+                  enviarWebsocket($q("#artista").value, "evento", mensaje)
+                  console.log("notificacion registrada ? -> ", notificacionRegistrada)
+                }
+
               } else if ($q("#modalidad").value == -1) {
                 console.log("idcliente-> en valor -1 ", idcliente);
                 console.log("entrando a cuando no se selecciona ningun valor");
-                detalleevento = await registrarDetalleEvento(idcliente, ncotizacion);
-                console.log(detalleevento);
+                if ($q("#nacionalidad2").value !== "31") {
+                  detalleevento = await registrarDetalleEvento(idcliente, ncotizacion, 1, $q("#nacionalidad2").value);
+                  console.log(detalleevento);
+                } else if ($q("#nacionalidad2").value == "31") {
+                  detalleevento = await registrarDetalleEvento(idcliente, ncotizacion, 0);
+                  console.log(detalleevento);
+                }
+
               }
               console.log("detalle evento ->>>>>>", detalleevento);
               if (detalleevento.iddetalleevento > 0) {

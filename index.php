@@ -213,7 +213,7 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
       async function obtenerCorreoEmpresa() {
         const params = new URLSearchParams();
         params.append("operation", "obtenerCorreoEmpresa");
-        const data = await getDatos(`http://localhost/vega-erp/controllers/empresa.controller.php`, params);
+        const data = await getDatos(`${hostOnly}/controllers/empresa.controller.php`, params);
         return data
         //console.log("data -> ", data);
       }

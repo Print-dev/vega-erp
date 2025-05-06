@@ -52,7 +52,9 @@ CREATE PROCEDURE sp_registrar_detalle_presentacion (
 	IN _modotransporte	int,
     IN _modalidad int,
     IN _validez int,
-    IN _igv tinyint
+    IN _igv tinyint,
+    IN _esExtranjero TINYINT,
+	IN _idnacionalidad INT
 )
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
@@ -73,16 +75,26 @@ BEGIN
     INSERT INTO detalles_presentacion (
         idusuario, idcliente, iddistrito, ncotizacion, 
         fecha_presentacion, horainicio, horafinal, establecimiento, 
-        referencia, acuerdo, tipo_evento, modotransporte,modalidad, validez, igv
+        referencia, acuerdo, tipo_evento, modotransporte,modalidad, validez, igv, esExtranjero, idnacionalidad
     ) VALUES (
-        _idusuario, _idcliente, _iddistrito, NULLIF(_ncotizacion, ''), 
+        _idusuario, _idcliente, NULLIF(_iddistrito, ''), NULLIF(_ncotizacion, ''), 
         _fechapresentacion, _horainicio, _horafinal, NULLIF(_establecimiento, ''), 
-        NULLIF(_referencia, ''), NULLIF(_acuerdo, ''), nullif(_tipoevento,''), nullif(_modotransporte,''), nullif(_modalidad,''), _validez, _igv
+        NULLIF(_referencia, ''), NULLIF(_acuerdo, ''), nullif(_tipoevento,''), nullif(_modotransporte,''), nullif(_modalidad,''), _validez, _igv, _esExtranjero, nullif(_idnacionalidad,'')
     );
 
     SET _iddetalle_presentacion = LAST_INSERT_ID();
 END //
 DELIMITER ;
+
+CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,88,1183,'0044-2025','2025-05-21','19:00','03:00','oceania (segundo turno)', '', '', 1,1,2,7,0);
+CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,92, '','','2025-05-24','16:00','21:00','montevideo', '', '', 1,1,1,'',0, 1);
+
+select * from detalles_presentacion;
+select * from nacionalidades;
+SELECT * FROM usuarios WHERE idusuario = 8;
+SELECT * FROM clientes WHERE idcliente = 9;
+SELECT * FROM distritos WHERE iddistrito = 1183;
+
 
 drop procedure if exists sp_obtener_dp_porid;
 DELIMITER //
@@ -167,7 +179,9 @@ BEGIN
         CON.estado as estado_convenio,
         CO.estado as estado_contrato,
         DP.tienecaja,
-        DEDP.departamento, PRODP.provincia, DISDP.distrito
+        DEDP.departamento, PRODP.provincia, DISDP.distrito,
+        NAC.pais,
+        NAC.idnacionalidad
     FROM detalles_presentacion DP
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
@@ -178,6 +192,7 @@ BEGIN
     LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito
     LEFT JOIN provincias PRODP ON PRODP.idprovincia = DISDP.idprovincia
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
+    LEFT JOIN nacionalidades NAC ON NAC.idnacionalidad = DEDP.idnacionalidad
     WHERE 
     (DP.ncotizacion IS NULL OR DP.ncotizacion LIKE CONCAT('%', COALESCE(_ncotizacion, ''), '%'))
     AND (CLI.ndocumento LIKE CONCAT('%', COALESCE(_ndocumento, ''), '%') OR _ndocumento IS NULL)

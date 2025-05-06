@@ -40,6 +40,24 @@ class Tarifario extends ExecQuery
     }
   }
   
+  public function obtenerTarifaArtistaPorPais($params = []): array
+  {
+    try {
+      $sp = parent::execQ("CALL sp_obtener_tarifario_artista_pais(?,?,?) ");
+      $sp->execute(
+        array(    
+          $params['idusuario'],
+          $params['idnacionalidad'],
+          $params['tipoevento'],
+        )
+        
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+  
   public function filtrarTarifas($params = []): array
   {
     try {
@@ -60,13 +78,14 @@ class Tarifario extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_tarifa(@idtarifario,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_tarifa(@idtarifario,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idusuario'],
           $params['idprovincia'],
           $params['precio'],         
           $params['tipoevento'],         
+          $params['idnacionalidad'],         
         )
       );
 

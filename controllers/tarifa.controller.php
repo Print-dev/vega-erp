@@ -35,6 +35,15 @@ if(isset($_GET['operation'])){
         echo json_encode($tarifa->obtenerTarifaArtistaPorProvincia($cleanData));
         break;
     
+    case 'obtenerTarifaArtistaPorPais':
+        $cleanData = [
+          'idusuario' => $tarifa->limpiarCadena($_GET['idusuario']),
+          'idnacionalidad' => $tarifa->limpiarCadena($_GET['idnacionalidad']),
+          'tipoevento' => $tarifa->limpiarCadena($_GET['tipoevento']),
+        ];
+        echo json_encode($tarifa->obtenerTarifaArtistaPorPais($cleanData));
+        break;
+    
   }
 }
 
@@ -43,9 +52,10 @@ if (isset($_POST['operation'])) {
     case 'registrarTarifa':
       $cleanData = [
         'idusuario'   => $tarifa->limpiarCadena($_POST['idusuario']),
-        'idprovincia' => $tarifa->limpiarCadena($_POST['idprovincia']),
+        'idprovincia' => $tarifa->limpiarCadena($_POST['idprovincia']) ? $tarifa->limpiarCadena($_POST['idprovincia']) : '',
         'precio'   => $tarifa->limpiarCadena($_POST['precio']),
         'tipoevento'   => $tarifa->limpiarCadena($_POST['tipoevento']),
+        'idnacionalidad'   => $tarifa->limpiarCadena($_POST['idnacionalidad']) ? $tarifa->limpiarCadena($_POST['idnacionalidad']) : '',
       ];
 
       $respuesta = ['idtarifa' => -1];
