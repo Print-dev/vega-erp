@@ -31,3 +31,15 @@ ALTER TABLE tarifario
   
   ALTER TABLE detalles_presentacion
 DROP CONSTRAINT ck_tevento_dp;
+
+ALTER TABLE detalles_presentacion
+ADD COLUMN idnacionalidad INT NULL,
+ADD CONSTRAINT fk_idnacionalidad_dp FOREIGN KEY (idnacionalidad) REFERENCES nacionalidades(idnacionalidad);
+
+ALTER TABLE tarifario
+ADD COLUMN idnacionalidad INT NULL,
+ADD CONSTRAINT fk_idnacionalidad_tarifario FOREIGN KEY (idnacionalidad) REFERENCES nacionalidades(idnacionalidad);
+
+ALTER TABLE detalles_presentacion
+ADD COLUMN idnacionalidad INT NULL,
+ADD CONSTRAINT fk_idnacionalidad_dp FOREIGN KEY (idnacionalidad) REFERENCES nacionalidades(idnacionalidad);

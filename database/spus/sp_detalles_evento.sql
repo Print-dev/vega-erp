@@ -57,10 +57,7 @@ CREATE PROCEDURE sp_registrar_detalle_presentacion (
 	IN _idnacionalidad INT
 )
 BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
-    BEGIN
-        SET _iddetalle_presentacion = -1;
-    END;
+
 
     -- Si _horainicio es NULL, asignamos '00:00:01'
     IF _horainicio IS NULL THEN 
@@ -88,6 +85,7 @@ DELIMITER ;
 
 CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,88,1183,'0044-2025','2025-05-21','19:00','03:00','oceania (segundo turno)', '', '', 1,1,2,7,0);
 CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,92, '','','2025-05-24','16:00','21:00','montevideo', '', '', 1,1,1,'',0, 1);
+CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 5,17, '','0045-2025','2025-05-19','19:00','23:00','romano', '', '', 1,1,2,7,0, 1, 35);
 
 select * from detalles_presentacion;
 select * from nacionalidades;
@@ -181,7 +179,8 @@ BEGIN
         DP.tienecaja,
         DEDP.departamento, PRODP.provincia, DISDP.distrito,
         NAC.pais,
-        NAC.idnacionalidad
+        NAC.idnacionalidad,
+        DP.esExtranjero
     FROM detalles_presentacion DP
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
@@ -204,7 +203,6 @@ BEGIN
 END //
 
 DELIMITER ;
-
 drop procedure if exists sp_detalles_presentacion_por_modalidad;
 DELIMITER //
 CREATE PROCEDURE `sp_detalles_presentacion_por_modalidad`(

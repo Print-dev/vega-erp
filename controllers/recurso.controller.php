@@ -61,6 +61,9 @@ if (isset($_GET['operation'])) {
     case 'obtenerTodosNacionalidades':
       echo json_encode($recurso->obtenerTodosNacionalidades());
       break;
+    case 'obtenerNacionalidadPorId':
+      echo json_encode($recurso->obtenerNacionalidadPorId(["idnacionalidad" => $recurso->limpiarCadena($_GET['idnacionalidad'])]));
+      break;
 
     
   }

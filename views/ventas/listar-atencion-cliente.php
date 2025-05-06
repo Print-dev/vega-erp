@@ -75,6 +75,7 @@
                                         <th>Cliente</th>
                                         <th>Tipo evento</th>
                                         <th>Modalidad</th>
+                                        <th>País</th>
                                         <th>Lugar</th>
                                         <th>Ubigeo</th>
                                         <th>Fecha presentacion</th>

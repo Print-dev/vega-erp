@@ -38,6 +38,8 @@
                                             <tr>
                                                 <th>#</th>
                                                 <th>Artista</th>
+                                                <th>Tipo</th>
+                                                <th>País</th>
                                                 <th>Departamento</th>
                                                 <th>Provincia</th>
                                                 <th>Precio</th>

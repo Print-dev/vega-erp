@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     detalle.append("operation", "registrarDetallePresentacion");
     detalle.append("idusuario", $q("#artista").value);
     detalle.append("idcliente", idcliente);
-    detalle.append("iddistrito", iddistrito2 || null);
+    detalle.append("iddistrito", iddistrito2 || '');
     detalle.append("ncotizacion", ncotizacion || '');
     detalle.append("fechapresentacion", fechapresentacion || '');
     detalle.append("horainicio", horainicio);
@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     detalle.append("validez", validez || '');
     detalle.append("igv", $q("#igv").checked ? 1 : 0);
     detalle.append("esExtranjero", esExtranjero);
-    detalle.append("idnacionalidad", idnacionalidad || null);
+    detalle.append("idnacionalidad", idnacionalidad || '');
 
     const fdetalle = await fetch(`${host}detalleevento.controller.php`, {
       method: "POST",
@@ -959,6 +959,7 @@ document.addEventListener('DOMContentLoaded', async function () {
               if ($q("#modalidad").value == 1) {
                 if ($q("#nacionalidad2").value !== "31") {
                   console.log("idcliente-> en valor 1 ", idcliente);
+                  console.log("nacionadlidad 2 value -> ", $q("#nacionalidad2").value);
                   detalleevento = await registrarDetalleEvento(idcliente, '', 1, $q("#nacionalidad2").value);
                   /* const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
                   console.log("repa registrado -> ", repaRegistrado); */
@@ -994,6 +995,8 @@ document.addEventListener('DOMContentLoaded', async function () {
               } else if ($q("#modalidad").value == 2) {
                 if ($q("#nacionalidad2").value !== "31") {
                   console.log("idcliente-> en valor 2 ", idcliente);
+                  console.log("nacionalidad 2 value -> ",  $q("#nacionalidad2").value);
+                  console.log("nueva n de cotizacion ->",ncotizacion); // ME QUEDE ACA
                   detalleevento = await registrarDetalleEvento(idcliente, ncotizacion, 1, $q("#nacionalidad2").value);
                   console.log(detalleevento);
                   const usuario = await obtenerUsuarioPorId(idusuarioLogeado)

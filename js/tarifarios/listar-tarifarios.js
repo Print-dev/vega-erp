@@ -100,9 +100,11 @@ document.addEventListener("DOMContentLoaded", async () => {
               <tr>
                 <td>${x.idtarifario}</td>
                 <td>${x.nom_usuario}</td>
-                <td>${x.departamento}</td>
-                <td>${x.provincia}</td>                                                                                             
-                <td>${x.precio}</td>                                                                                             
+                <td>${x.tipo_evento == 1 ? "Público" : "Privado"}</td>
+                <td>${x.provincia ? "Perú" : x.pais}</td>
+                <td>${x.departamento ?? "No aplica"}</td>
+                <td>${x.provincia ?? "No aplica"}</td>                                                                                             
+                <td>${x.precio ?? "No aplica"}</td>                                                                                             
               </tr>
               `;
         });

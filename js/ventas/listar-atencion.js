@@ -858,7 +858,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     for (const x of data) {
-
+      console.log("pais -> ", x.pais);
       tbody.innerHTML += `
             <tr>
                 <td>${x.ncotizacion ? x.ncotizacion : 'no aplica'}</td>
@@ -867,8 +867,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${x.razonsocial ? x.razonsocial : ''}</td>
                 <td>${x.tipo_evento == 1 ? "Público" : x.tipo_evento == 2 ? "Privado" : ``}</td>
                 <td>${x.modalidad == 1 ? "Convenio" : x.modalidad == 2 ? "Contrato" : ``}</td>
+                <td>${ x.pais}</td>
                 <td>${x.establecimiento ? x.establecimiento : ``}</td>
-                <td>${x.departamento}/${x.provincia}/${x.distrito}</td>
+                <td>${ x.departamento ? x.departamento + "/" + x.provincia + "/" + x.distrito : "No aplica"}</td>
                 <td>${x.fecha_presentacion}</td>                        
                 <td>${x.estado == 1 ? 'Activo' : x.estado == 2 ? 'Caducado' : x.estado == 3 ? 'Cancelado' : ''}</td>                        
                 <td>${x.estado_convenio == 2 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/402906/white-heavy-check-mark.svg" style="width: 24px; height: 24px;" title="Aprobado">' : x.estado_convenio == 3 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/292061/multiply-cross.svg" style="width: 24px; height: 24px;" title="Desaprobado">' : x.estado == 3 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/317774/time-capsule-done.svg" style="width: 24px; height: 24px;" title="Pendiente">' : x.modalidad == 2 ? "No aplica" : 'Pendiente'}</td>                        

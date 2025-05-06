@@ -66,11 +66,12 @@ CREATE PROCEDURE sp_search_tarifa_artista
 )
 BEGIN
 	SELECT 
-    T.idtarifario, USU.nom_usuario, D.departamento, PR.provincia, T.precio
+    T.idtarifario, USU.nom_usuario, D.departamento, PR.provincia, T.precio, NAC.pais, T.tipo_evento
     FROM tarifario T
     LEFT JOIN usuarios USU ON USU.idusuario = T.idusuario 
     LEFT JOIN provincias PR ON PR.idprovincia = T.idprovincia
     LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
+	LEFT JOIN nacionalidades NAC ON NAC.idnacionalidad = T.idnacionalidad
     WHERE USU.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%');
 END //
 DELIMITER ;
@@ -104,7 +105,8 @@ BEGIN
 	END IF;
 END //
 DELIMITER ;
-
+select*from tarifario;
+CALL sp_registrar_tarifa (@_idtarifario, 5, '', 333, 1, 31);
 DROP PROCEDURE IF EXISTS sp_actualizar_tarifa;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_tarifa

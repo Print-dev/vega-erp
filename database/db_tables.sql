@@ -189,6 +189,8 @@ select * from tarifario;
 -- ALTER TABLE tarifario
 	-- ADD COLUMN idnacionalidad INT NULL,
 	-- ADD CONSTRAINT fk_idnacionalidad_tarifario FOREIGN KEY (idnacionalidad) REFERENCES nacionalidades(idnacionalidad);
+-- ALTER TABLE tarifario
+ -- MODIFY COLUMN idprovincia INT NULL;
 
 -- SELECT * FROM tarifario WHERE idprovincia = 1 and tipo_evento = 2;
 CREATE TABLE permisos (
@@ -252,8 +254,8 @@ CREATE table detalles_presentacion (
     constraint uk_idp 					UNIQUE(iddetalle_presentacion)
 )engine=innodb;
 select * from detalles_presentacion;
--- ALTER TABLE detalles_presentacion ADD COLUMN esExtranjero TINYINT;
--- ALTER TABLE detalles_presentacion ADD COLUMN idnacionalidad TINYINT;
+SHOW CREATE TABLE detalles_presentacion
+-- ALTER TABLE detalles_presentacion ADD COLUMN esExtranjero TINYINT AFTER created_at;
 -- ALTER TABLE detalles_presentacion
 -- ADD COLUMN idnacionalidad INT NULL,
 -- ADD CONSTRAINT fk_idnacionalidad_dp FOREIGN KEY (idnacionalidad) REFERENCES nacionalidades(idnacionalidad);

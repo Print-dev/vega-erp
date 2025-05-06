@@ -127,6 +127,17 @@ class Recurso extends ExecQuery
       }
     }
 
+    public function obtenerNacionalidadPorId($params = []): array
+    {
+      try {
+        $cmd = parent::execQ("SELECT * FROM nacionalidades where idnacionalidad = ?");
+        $cmd->execute(array($params['idnacionalidad']));
+        return $cmd->fetchAll(PDO::FETCH_ASSOC);
+      } catch (Exception $e) {
+        die($e->getMessage());
+      }
+    }
+
     public function buscarCorreo($params = []): array
     {
       try {
