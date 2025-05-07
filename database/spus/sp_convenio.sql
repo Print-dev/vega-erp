@@ -21,7 +21,10 @@ BEGIN
         DP.igv,
 		C.abono_garantia, C.abono_publicidad,
         C.porcentaje_vega, C.porcentaje_promotor,
-        USU.marcaagua
+        USU.marcaagua,
+        NAC.pais,
+        NAC.idnacionalidad,
+        DP.esExtranjero
 	FROM convenios C
 	LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = C.iddetalle_presentacion
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
@@ -32,6 +35,7 @@ BEGIN
 	LEFT JOIN provincias PRODP ON PRODP.idprovincia = DISDP.idprovincia
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
     LEFT JOIN usuarios	USU ON USU.idusuario = DP.idusuario
+	LEFT JOIN nacionalidades NAC ON NAC.idnacionalidad = DP.idnacionalidad
     WHERE C.idconvenio = _idconvenio; -- me quede aca
 END //
 DELIMITER ;

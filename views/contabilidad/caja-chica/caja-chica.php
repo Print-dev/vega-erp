@@ -11,7 +11,7 @@
                 </div>
                 <div class="col-md-6 text-end contenedor-btn-nuevacaja">
                     <button type="button" class="btn btn-info" id="btnMontoCajaChica" data-bs-toggle="modal" data-bs-target="#modal-monto-cajachica">Monto Caja Chica</button>
-                    <a href="<?= $hostOnlyHeader ?> /views/contabilidad/caja-chica/registrar-caja" class="btn btn-primary" id="btnNuevaCaja">Abrir Nueva Caja</a>
+                    <a href="<?= $hostOnlyHeader ?>/views/contabilidad/caja-chica/registrar-caja" class="btn btn-primary" id="btnNuevaCaja">Abrir Nueva Caja</a>
                 </div>
             </div>
             <div class="row">

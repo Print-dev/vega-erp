@@ -252,7 +252,13 @@ $monto_texto = numeroATexto($monto_numerico);
                 con domicilio en <?= $cotizacion[0]['direccion'] ?>, con celular N° <?= $cotizacion[0]['telefono'] ?>,
                 en calidad de Organizador(a) del evento a realizarse en día <?= $fecha_formateada ?>, con hora de
                 inicio <?= $hora_inicio_formateada ?> horas, y hora de termino <?= $hora_final_formateada ?>, haciendo un total de <?= restarHoras($horainicio, $horafinal); ?>, en el local/sector/urb.
-                <?= $cotizacion[0]['establecimiento'] ?>, en el distrito de <?= $cotizacion[0]['distrito_evento'] ?>, provincia de <?= $cotizacion[0]['provincia_evento'] ?>, departamento de <?= $cotizacion[0]['departamento_evento'] ?>.
+                <?php if ($cotizacion[0]['esExtranjero'] == 1) {
+                                echo  $cotizacion[0]['establecimiento'] . '/' . $cotizacion[0]['pais'];
+                            } else {
+                                echo $cotizacion[0]['establecimiento'] . ", en el distrito de " . $cotizacion[0]['distrito_evento'] . ", provincia de " . $cotizacion[0]['provincia_evento'] . ", departamento de " . $cotizacion[0]['departamento_evento']. " .";
+                            }
+                            ?>
+                
             </td>
         </tr>
         <tr>
