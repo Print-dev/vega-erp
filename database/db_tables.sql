@@ -213,6 +213,9 @@ CREATE table detalles_presentacion (
     constraint uk_idp 					UNIQUE(iddetalle_presentacion)
 )engine=innodb;
 select * from detalles_presentacion;
+UPDATE detalles_presentacion
+SET esExtranjero = 0,
+    idnacionalidad = 31;
 -- ALTER TABLE detalles_presentacion ADD COLUMN esExtranjero TINYINT AFTER created_at;
 -- ALTER TABLE detalles_presentacion
 -- ADD COLUMN idnacionalidad INT NULL,

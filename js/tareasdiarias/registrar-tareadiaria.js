@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 btn.innerHTML = 'Agregar Tarea'; // Reemplaza con el texto original
             }, 1000);
 
-            window.location.href = `${host}/views/utilitario/tareasdiarias/listar-tareasdiarias`
+            window.location.href = `${hostOnly}/views/utilitario/tareasdiarias/listar-tareasdiarias`
 
         } catch (error) {
             showToast("Un error ha ocurrido!", "ERROR");

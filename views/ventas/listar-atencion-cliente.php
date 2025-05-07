@@ -12,7 +12,7 @@
 -webkit-box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);
 -moz-box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);">
         <div class="card-body">
-            <div class="row">
+            <div class="row mb-3">
                 <div class="col-md-6">
                     <h1>Atención al cliente</h1>
                 </div>
@@ -22,7 +22,7 @@
             </div>
             <div class="row">
                 <div class="card border-0">
-                    <div class="card-body">
+                    <div class="card-body" hidden>
                         <div class="row g-0 mb-3">
                             <div class="card border-0">
                                 <div class="card-body border-0">
@@ -67,20 +67,21 @@
                     <div class="row g-1">
                         <div class="table-responsive">
                             <table class="table" id="table-atenciones">
-                                <thead class="text-center">
+                                <thead class="text-center" style="background-color:rgb(255, 250, 230);">
                                     <tr>
+                                        <th>#</th>
                                         <th>N° Cotizacion</th>
                                         <th>Artista</th>
-                                        <th>N° Documento/RUC</th>
+                                        <!-- <th>N° Documento/RUC</th>
                                         <th>Cliente</th>
                                         <th>Tipo evento</th>
                                         <th>Modalidad</th>
-                                        <th>País</th>
+                                        <th>País</th> -->
                                         <th>Lugar</th>
                                         <th>Ubigeo</th>
                                         <th>Fecha presentacion</th>
-                                        <th>Estado</th>
-                                        <th>Estado propuesta</th>
+                                        <!-- <th>Estado</th>
+                                        <th>Estado propuesta</th> -->
                                         <th>Opciones</th>
                                     </tr>
                                 </thead>
@@ -216,47 +217,47 @@
                         <span class="text-danger">Antes de generar contrato llena los datos del cliente</span>
                         <div class="row g-2 mt-2">
                             <div class="col-md-4">
-                                <div class="form-floating">
+                                <div class="form-floating border border-danger rounded">
                                     <input type="text" id="ndocumentocli" name="ndocumentocli"
                                         class="form-control">
-                                    <label for="ndocumentocli" class="form-label">N° Documento</label>
+                                    <label for="ndocumentocli" class="form-label">N° Documento <span class="text-danger">(*)</span></label>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="form-floating">
+                                <div class="form-floating  border border-danger rounded">
                                     <select name="nacionalidad" id="nacionalidad" class="form-select" required>
                                         <option value="" selected>Selecciona</option>
                                         <option value="31">Peruana</option>
                                     </select>
-                                    <label for="nacionalidad" class="form-label">Nacionalidad</label>
+                                    <label for="nacionalidad" class="form-label">Nacionalidad <span class="text-danger">(*)</span></label>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="form-floating">
+                                <div class="form-floating border border-danger rounded">
                                     <select name="departamento" id="departamento" class="form-select" required>
                                     </select>
-                                    <label for="departamento" class="form-label">Departamento</label>
+                                    <label for="departamento" class="form-label">Departamento <span class="text-danger">(*)</span></label>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="form-floating">
+                                <div class="form-floating border border-danger rounded">
                                     <select name="provincia" id="provincia" class="form-select" required>
                                     </select>
-                                    <label for="provincia" class="form-label">Provincia</label>
+                                    <label for="provincia" class="form-label">Provincia <span class="text-danger">(*)</span></label>
                                 </div>
                             </div>
                             <div class="col-md-3 ">
-                                <div class="form-floating">
+                                <div class="form-floating border border-danger rounded">
                                     <select name="distrito" id="distrito" class="form-select" required>
                                     </select>
-                                    <label for="distrito" class="form-label">Distrito</label>
+                                    <label for="distrito" class="form-label">Distrito <span class="text-danger">(*)</span></label>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-floating">
+                                <div class="form-floating border border-danger rounded">
                                     <input type="text" id="razonsocial" name="razonsocial"
                                         class="form-control">
-                                    <label for="razonsocial" class="form-label">Razon social/Nombre</label>
+                                    <label for="razonsocial" class="form-label">Razon social/Nombre <span class="text-danger">(*)</span></label>
                                 </div>
                             </div>
                             <div class="col-md-4" id="container-representantelegal" hidden>
@@ -281,10 +282,10 @@
                                 </div>
                             </div>
                             <div class="col-md-5">
-                                <div class="form-floating">
+                                <div class="form-floating border border-danger rounded">
                                     <input type="text" id="direccion" name="direccion"
                                         class="form-control">
-                                    <label for="direccion" class="form-label">Direccion</label>
+                                    <label for="direccion" class="form-label">Direccion <span class="text-danger">(*)</span></label>
                                 </div>
                             </div>
                         </div>

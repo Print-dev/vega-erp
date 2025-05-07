@@ -110,6 +110,8 @@
             margin: 2px;
         }
     }
+
+    
 </style>
 
 
@@ -237,7 +239,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalacuerdo">Acuerdo</h1>
+                <h1 class="modal-title fs-5" id="modalacuerdo">Observación</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -325,15 +327,14 @@
 <?php require_once '../footer.php' ?>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js"></script>
 <!-- Importar idioma español -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js"></script>
 
-<!-- <script>
-    const idusuarioLogeado = "<?php echo $_SESSION['login']['idusuario']; ?>"
-    const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
-</script> -->
-
+<!-- Tippy.js (para popover) -->
+<!-- <link href="https://unpkg.com/tippy.js@6/animations/scale.css" rel="stylesheet">
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script> -->
 <script src="<?= $hostWithAppName ?>/js/agenda/obtencion-agenda-nivel.js"></script>
 <script src="<?= $hostWithAppName ?>/js/agenda/listar-agenda-artista.js"></script>
 

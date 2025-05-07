@@ -144,6 +144,7 @@ END //
 
 DELIMITER ;
 
+CALL sp_obtener_detalles_evento (null,null,null,null,null);
 drop procedure if exists sp_obtener_detalles_evento;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_detalles_evento`(
@@ -198,11 +199,12 @@ BEGIN
     AND (USU.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%') OR _nom_usuario IS NULL)
     AND (DP.establecimiento LIKE CONCAT('%', COALESCE(_establecimiento, ''), '%') OR _establecimiento IS NULL)
     AND (DP.fecha_presentacion LIKE CONCAT('%', COALESCE(_fecha_presentacion, ''), '%') OR _fecha_presentacion IS NULL)
-    GROUP BY DP.iddetalle_presentacion, CO.idcontrato;
+    GROUP BY DP.iddetalle_presentacion, CO.idcontrato
+    ORDER BY iddetalle_presentacion DESC;
 
 END //
 
-select * from detalles_presentacion;
+select * from detalles_presentacion ORDER BY iddetalle_presentacion DESC;
 select * from nacionalidades;
 select * from contratos;
 DELIMITER ;

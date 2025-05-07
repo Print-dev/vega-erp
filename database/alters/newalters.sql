@@ -92,3 +92,17 @@ UPDATE nacionalidades SET pais = 'Uruguay' WHERE idnacionalidad = 35;
 UPDATE nacionalidades SET pais = 'Venezuela' WHERE idnacionalidad = 36;
 
  ALTER TABLE tarifario ADD COLUMN precioExtranjero DECIMAL (10,2) null;
+
+ALTER TABLE usuarios
+MODIFY COLUMN nom_usuario VARCHAR(120) NOT NULL;
+
+select * from usuariosw
+select * from tarifario
+
+-- ******************** LUEGO DE HABERSE SUBIDO AL HOSTINGER ************************************
+SET SQL_SAFE_UPDATES = 0;
+
+
+UPDATE detalles_presentacion
+SET esExtranjero = 0,
+    idnacionalidad = 31;

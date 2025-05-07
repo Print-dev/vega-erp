@@ -9,6 +9,15 @@ const obtenerFechaHoraPeru = () => {
   return soloFecha;
 };
 
+function formatearFecha(fechaStr) {
+  const partes = fechaStr.split("-");
+  const anio = partes[0];
+  const mes = partes[1].padStart(2, "0");
+  const dia = partes[2].padStart(2, "0");
+
+  return `${dia}-${mes}-${anio}`;
+}
+
 
 function generarCorrelativo(serie, correlativo) {
   // Convertir el correlativo a un número y añadir ceros si es necesario

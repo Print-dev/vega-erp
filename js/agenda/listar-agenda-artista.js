@@ -937,7 +937,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 )}</div>
     
         ${nivelacceso == "Administrador" ? `
-          <label ><strong>Acuerdos:</strong></label>
+          <label ><strong>Observaciones:</strong></label>
           <div id="text-acuerdo" class="mt-1" style="
         background: #fff; 
         padding: 5px; 
@@ -947,7 +947,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         white-space: normal;
       ">
         ${arg.event.extendedProps.acuerdo ||
-                  "Sin acuerdos registrados"
+                  "Sin Observaciones."
                   }
       </div>
           ` : ''}
@@ -958,7 +958,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
             ${nivelacceso == "Administrador" ? `
               <button class="btn btn-primary" id="btnAsignarFilmmaker" style="flex: 1;" data-iddp="${arg.event.extendedProps?.iddetalle_presentacion}">Filmmaker</button>
-              <button class="btn btn-primary" id="btnEditarAcuerdo" style="flex: 1;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}">Acuerdo</button>
+              <button class="btn btn-primary" id="btnEditarAcuerdo" style="flex: 1;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}">Observaciones</button>
             ` : ``}
     
             ${nivelacceso == "Artista" ? `
@@ -1156,7 +1156,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const filmmakersDP = await obtenerFilmmakersDP(iddp)
       $q("#filmmaker").innerHTML = "<option value=''>Selecciona</option>"
       filmmakers.forEach(filmmaker => {
-        $q("#filmmaker").innerHTML += `<option value="${filmmaker.idusuario}">${filmmaker.nom_usuario}</option>`
+        $q("#filmmaker").innerHTML += `<option value="${filmmaker.idusuario}">${filmmaker.nombres} ${filmmaker.apellidos}</option>`
       })
       console.log(" filmmakersDP ->", filmmakersDP);
       if (filmmakersDP.length > 0) {

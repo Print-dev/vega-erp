@@ -73,7 +73,7 @@
                             <div class="row g-1">
                                 <div class="table-responsive">
                                     <table class="table" id="table-usuarios">
-                                        <thead class="text-center">
+                                        <thead class="text-center" style="background-color:rgb(255, 250, 230);">
                                             <tr>
                                                 <th>#</th>
                                                 <th>Nivel/Rol</th>

@@ -87,8 +87,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const montoCaja = await obtenerMontoCajaChica();
   console.log("obtenerMontoCajaChica -> ", montoCaja);
-  $q("#txtMontoCajaChica").innerHTML = `C.C.Inicial: ${montoCaja[0].monto}`;
-  ccinicial = parseFloat(montoCaja[0].monto);
+  $q("#txtMontoCajaChica").innerHTML = `C.C.Inicial: ${montoCaja[0]?.monto}`;
+  ccinicial = parseFloat(montoCaja[0]?.monto);
   /*   $q("#btnGuardarMontoCajaChica").addEventListener("click", async () => {
       const montoCaja = await obtenerMontoCajaChica();
       console.log("obtenerMontoCajaChica -> ", montoCaja);

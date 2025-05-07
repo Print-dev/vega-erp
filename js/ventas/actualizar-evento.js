@@ -83,6 +83,55 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
+    async function obtenerDepartamentos() {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerDepartamentos");
+        params.append("idnacionalidad", $q("#nacionalidad2").value);
+        const data = await getDatos(`${host}recurso.controller.php`, params);
+        return data
+    }
+
+    async function obtenerProvincias() {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerProvincias");
+        params.append("iddepartamento", $q("#departamento2").value);
+        const data = await getDatos(`${host}recurso.controller.php`, params);
+        return data
+    }
+
+    async function obtenerDistritos() {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerDistritos");
+        params.append("idprovincia", $q("#provincia2").value);
+        const data = await getDatos(`${host}recurso.controller.php`, params);
+        return data
+    }
+
+    $q("#nacionalidad2").addEventListener("change", async () => {
+        const departamentos = await obtenerDepartamentos();
+        $q("#departamento2").innerHTML = "<option value=''>Selecciona</option>";
+        departamentos.forEach(dpa => {
+            $q("#departamento2").innerHTML += `<option value="${dpa.iddepartamento}">${dpa.departamento}</option>`;
+        });
+    });
+
+    $q("#departamento2").addEventListener("change", async () => {
+        const provincias = await obtenerProvincias();
+        $q("#provincia2").innerHTML = "<option value=''>Selecciona</option>";
+        provincias.forEach(prv => {
+            $q("#provincia2").innerHTML += `<option value="${prv.idprovincia}">${prv.provincia}</option>`;
+        });
+    });
+
+    $q("#provincia2").addEventListener("change", async () => {
+        const distritos = await obtenerDistritos();
+        $q("#distrito2").innerHTML = "<option value=''>Selecciona</option>";
+        distritos.forEach(dst => {
+            $q("#distrito2").innerHTML += `<option value="${dst.iddistrito}">${dst.distrito}</option>`;
+        });
+    });
+
+
     async function cargarUbigeoDesdeDistrito(idDistrito) {
         try {
             // 1️⃣ Obtener datos del distrito

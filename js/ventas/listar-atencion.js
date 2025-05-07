@@ -776,10 +776,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return data == 1 ? "Activo" : data == 2 ? "Caducado" : "";
               }
             },
-            { data: "opciones", orderable: false, searchable: false }
+            { data: "opciones", orderable: false, searchable: true }
           ],
           lengthMenu: [5, 10, 15, 20],
-          pageLength: 5,
+          pageLength: 10,
           language: {
             lengthMenu: "Mostrar _MENU_ filas por página",
             paginate: {
@@ -875,18 +875,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     for (const x of data) {
       tbody.innerHTML += `
             <tr>
+                <td>${x.iddetalle_presentacion}</td>
                 <td>${x.ncotizacion ? x.ncotizacion : 'no aplica'}</td>
                 <td>${x.nom_usuario ? x.nom_usuario : ''}</td>
-                <td>${x.ndocumento ? x.ndocumento : ''}</td>
-                <td>${x.razonsocial ? x.razonsocial : ''}</td>
-                <td>${x.tipo_evento == 1 ? "Público" : x.tipo_evento == 2 ? "Privado" : ``}</td>
-                <td>${x.modalidad == 1 ? "Convenio" : x.modalidad == 2 ? "Contrato" : ``}</td>
-                <td>${x.pais ?? "Perú"}</td>
+
+
                 <td>${x.establecimiento ? x.establecimiento : ``}</td>
-                <td>${x.departamento ? x.departamento + "/" + x.provincia + "/" + x.distrito : "No aplica"}</td>
-                <td>${x.fecha_presentacion}</td>                        
-                <td>${x.estado == 1 ? 'Activo' : x.estado == 2 ? 'Caducado' : x.estado == 3 ? 'Cancelado' : ''}</td>                        
-                <td>${x.estado_convenio == 2 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/402906/white-heavy-check-mark.svg" style="width: 24px; height: 24px;" title="Aprobado">' : x.estado_convenio == 3 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/292061/multiply-cross.svg" style="width: 24px; height: 24px;" title="Desaprobado">' : x.estado == 3 ? '<img class="hidden-event-icon" src="https://www.svgrepo.com/show/317774/time-capsule-done.svg" style="width: 24px; height: 24px;" title="Pendiente">' : x.modalidad == 2 ? "No aplica" : 'Pendiente'}</td>                        
+                <td>${x.departamento ? x.departamento + "/" + x.provincia + "/" + x.distrito : x.establecimiento + "/" + x.pais}</td>
+                <td>${formatearFecha(x.fecha_presentacion)}</td>                        
+                
                 <td>
                     ${x.estado_convenio == 3 ? 'Desaprobado' : x.estado == 3 ? '' : `
                         ${x.estado == 2 ? '' : parseInt(x.estado_convenio) == 2 ? `
@@ -1001,9 +998,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Inicializa DataTable si no ha sido inicializado antes
         myTable = $("#table-atenciones").DataTable({
           paging: true,
-          searching: false,
+          searching: true,
           lengthMenu: [5, 10, 15, 20],
-          pageLength: 5,
+          pageLength: 10,
           language: {
             lengthMenu: "Mostrar _MENU_ filas por página",
             paginate: {
@@ -1238,7 +1235,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const convenio = await obtenerConvenioPorId(convenioExiste[0]?.idconvenio)
     console.log("CONVEIO OBTENIDO: ", convenio)
     if (convenio.length > 0) {
-      if (convenio[0]?.estado == 2) {
+      if (convenio[0]?.estado == 2) { // SI EL CONVENIO YA ESTA APROBADO
         const datosIncompletos = await verificarDatosIncompletosCliente(dp[0]?.idcliente);
         idcliente = dp[0]?.idcliente
         console.log("datosIncompletos -> ", datosIncompletos);
@@ -1254,15 +1251,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         for (const clave in datosCliente) {
           if (datosCliente[clave] === null || datosCliente[clave] === "") {
-            if (!(datosCliente.tipodoc == 1 && clave === "representantelegal")) {
-              console.log("DATOS CLIENTE incompleto")
+            // Campos que siempre son opcionales
+            const esCampoOpcional = ["telefono", "correo", "representantelegal"].includes(clave);
+
+            if (!esCampoOpcional) {
+              console.log("DATOS CLIENTE incompleto");
               incompleto = true;
               break;
             }
           }
         }
+
         console.log("incompleto? ??? : ", incompleto)
         if (incompleto) {
+          console.log("datosCliente?.tipodoc -> ", datosCliente?.tipodoc);
           if (datosCliente?.tipodoc == 1) {
             $q("#container-representantelegal").hidden = true;
             modalDatosClienteIncompleto = new bootstrap.Modal(
@@ -1314,11 +1316,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           return
         })
 
-      } else if (convenio[0]?.estado == 3) {
+      } else if (convenio[0]?.estado == 3) { // SI EL CONVENIO FUE DESAPROBADO
         showToast("La propuesta ha sido desaprobada", "ERROR");
         return
       }
-      else {
+      else { // SI AUN ESTA PENDIENTE LA APROBACION
         showToast("Aun no ha sido aprobada la propuesta del cliente", "ERROR");
         return
       }
@@ -1393,6 +1395,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function buttonCotizar(e) {
     idcotizar = e.target.getAttribute("data-id");
     nacionalidadObtenida = e.target.getAttribute("data-idnacionalidad")
+    console.log("nacionalidadObtenida -> ", nacionalidadObtenida);
     await renderizarUbigeoPresentacion(idcotizar);
     modalPreviaCotizacion = new bootstrap.Modal($q("#modal-previacotizacion"));
     modalPreviaCotizacion.show();

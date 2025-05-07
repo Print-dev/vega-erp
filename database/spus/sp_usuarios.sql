@@ -132,7 +132,7 @@ DELIMITER //
 CREATE PROCEDURE sp_actualizar_usuario (
 	IN _idsucursal INT,
 	IN _idusuario INT,
-    IN _nom_usuario VARCHAR(30),
+    IN _nom_usuario VARCHAR(120),
     IN _claveacceso VARBINARY(255),
     IN _color	CHAR(7),
     IN _porcentaje INT,
