@@ -298,7 +298,7 @@ create table pagos_contrato (
     constraint ck_tipopago_pc	check (tipo_pago IN (1,2)),
     constraint ck_estado_pc	check (estado IN (1, 3))
 ) engine = innodb;
-
+select * from pagos_contrato;
 -- cambiar este camp
 create table reservas (
 	idreserva		int auto_increment primary key,

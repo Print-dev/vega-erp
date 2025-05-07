@@ -204,7 +204,7 @@ END //
 
 select * from detalles_presentacion;
 select * from nacionalidades;
-
+select * from contratos;
 DELIMITER ;
 drop procedure if exists sp_detalles_presentacion_por_modalidad;
 DELIMITER //

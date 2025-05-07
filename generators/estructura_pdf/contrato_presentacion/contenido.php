@@ -245,7 +245,13 @@ $monto_texto = numeroATexto($monto_numerico); */
                 <strong>PRIMERO: EL ORGANIZADOR</strong> contrata los servicios artísticos de <strong><?= $contratoPresentacion[0]['nom_usuario'] ?></strong> Y
                 ORQUESTA para una presentación para el día <strong><?= $fecha_formateada ?></strong>, por <strong><?= restarHoras($horainicio, $horafinal); ?> </strong> de SHOW
                 de <?php echo $hora_inicio_formateada . ' a ' . $hora_final_formateada ?> , (que por la dificultad de la ruta puede variar como máximo
-                1 hora posterior) en la localidad <?= $contratoPresentacion[0]['distrito_evento'] ?>, provincia de <?= $contratoPresentacion[0]['provincia_evento'] ?>, departamento de <?= $contratoPresentacion[0]['departamento_evento'] ?>.
+                1 hora posterior) en la localidad <?php 
+                if($contratoPresentacion[0]['esExtranjero'] == 1){
+                    echo $contratoPresentacion[0]['establecimiento'] . "/" . $tarifaArtista[0]['pais'];
+                }else{
+                    echo $contratoPresentacion[0]['distrito_evento'] . ", provincia de " . $contratoPresentacion[0]['provincia_evento'] . ", departamento de " . $contratoPresentacion[0]['departamento_evento'];
+                }
+                ?>
             </td>
         </tr>
         <tr>
@@ -303,7 +309,7 @@ $monto_texto = numeroATexto($monto_numerico); */
         <tr>
             <td class="label" colspan="5" style="border: none;">
                 <strong>EL ORGANIZADOR</strong> deberá abonar dichos montos en efectivo o por transacción bancaria
-                a la cuenta <strong> BCP N° 1929842849014</strong> o <strong>CCI N° 00219200984284901432</strong> a nombre de EL
+                a la cuenta <strong> <?= $infoEmpresa[0]['banco']; ?> N° <?= $infoEmpresa[0]['ncuenta']; ?></strong> o <strong>CCI N° <?= $infoEmpresa[0]['ncci']; ?></strong> a nombre de EL
                 REPRESENTANTE, dándose por cancelado con la exhibición y validación de los váuchers
                 o constancia de pago correspondientes.
             </td>

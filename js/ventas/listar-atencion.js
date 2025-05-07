@@ -1535,7 +1535,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               $q("#btnGenerarDocumento").addEventListener("click", async () => {
                 window.open(
                   `${hostOnly}/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0]?.idcontrato
-                  }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${calcularDificultadPrecio?.costoDificultad}&idsucursal=${idsucursal}`
+                  }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${calcularDificultadPrecio?.costoDificultad}&idsucursal=${idsucursal}&idnacionalidad=${nacionalidadObtenida}&tipoevento=${tipoevento}`
                 );
                 return
               })
@@ -1671,7 +1671,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               $q("#btnGenerarDocumento").addEventListener("click", async () => {
                 window.open(
                   `${hostOnly}/generators/generadores_pdf/contrato_presentacion/contratopresentacion.php?idcontrato=${contratoExiste[0]?.idcontrato
-                  }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${tarifa[0]?.precioExtranjero}&idsucursal=${idsucursal}`
+                  }&idprovincia=${idprovincia}&idusuario=${idartista}&precio=${tarifa[0]?.precioExtranjero}&idsucursal=${idsucursal}&idnacionalidad=${nacionalidadObtenida}&tipoevento=${tipoevento}`
                 );
                 return
               })
@@ -2425,29 +2425,47 @@ document.addEventListener("DOMContentLoaded", async () => {
     let precioFinal = -1;
     let precio25 = -1;
     let precio50 = -1;
+    let tarifa;
+    let precioBase;
+    let precioExtra;
 
     console.log("adasddadsadds");
     console.log("el tipo de evento al guardarse el monto a pagar : ", tipoevento);
 
-    const tarifa = await obtenerTarifaArtistaPorProvincia(
-      idprovincia,
-      idartista,
-      tipoevento
-    );
+    if (nacionalidadObtenida == "31") {
+      tarifa = await obtenerTarifaArtistaPorProvincia(idprovincia, idartista, tipoevento);
+      precioExtra = calcularDificultadPrecio?.costoDificultad || 0;
+    } else {
+      tarifa = await obtenerTarifaArtistaPorPais(idartista, nacionalidadObtenida, tipoevento);
+      precioExtra = parseFloat(tarifa[0]?.precioExtranjero) || 0;
+    }
 
+    console.log("tarifa ->", tarifa);
 
-
-    console.log("tarifa->", tarifa);
+    precioBase = parseFloat(tarifa[0]?.precio) || 0;
 
     if (igv == 0) {
-      precioFinal = parseFloat(tarifa[0]?.precio) + calcularDificultadPrecio?.costoDificultad;
-    } else if (igv == 1) {
-      precioFinal = (parseFloat(tarifa[0]?.precio) + calcularDificultadPrecio?.costoDificultad) * 1.18; // Se multiplica por 1.18 para agregar IGV
+      precioFinal = precioBase + precioExtra;
+    } else {
+      precioFinal = (precioBase + precioExtra) * 1.18;
     }
+
+    /*     console.log("tarifa->", tarifa);
+    
+        if (igv == 0) {
+          precioFinal = parseFloat(tarifa[0]?.precio) + calcularDificultadPrecio?.costoDificultad;
+        } else if (igv == 1) {
+          precioFinal = (parseFloat(tarifa[0]?.precio) + calcularDificultadPrecio?.costoDificultad) * 1.18; // Se multiplica por 1.18 para agregar IGV
+        } */
 
     precio25 = precioFinal * 0.25;
     precio50 = precioFinal * 0.5;
-
+    console.log("totalPagado hasta ahora -> ", totalPagado);
+    console.log("monto pagaado valor -> ", totalPagado);
+    console.log("precio 25 -> ", precio25);
+    console.log("precio 50 -> ", precio50);
+    console.log("el monto valor pagado + el total pagado es IGUAL o MAYOR al precio50 ? ", (parseFloat($q("#montopagado").value) + totalPagado) >= precio50);
+    console.log("el monto valor pagado + el total pagado es IGUAL o MAYOR al precio25 ? ", (parseFloat($q("#montopagado").value) + totalPagado) >= precio25);
     try {
       if ($q("#montopagado").value > 0) {
         if ((parseFloat($q("#montopagado").value) + totalPagado) >= precio50) {

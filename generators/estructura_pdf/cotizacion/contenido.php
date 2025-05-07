@@ -407,7 +407,13 @@ echo $hora_final_formateada;
         </tr>
         <tr>
             <td>2</td>
-            <td>Puesto en la locacion de <?php echo $provincia; ?></td>
+            <td>Puesto en la locacion de <?php 
+            if($cotizacion[0]['esExtranjero'] == 1){
+                echo $cotizacion[0]['pais'];
+            }else{
+                echo $provincia; 
+            }
+            ?></td>
             <td></td>
             <td><?php
                 if ($cotizacion[0]['esExtranjero'] == 1) {

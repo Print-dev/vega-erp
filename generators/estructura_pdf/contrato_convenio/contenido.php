@@ -1,8 +1,8 @@
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contrato convenio <?= $convenioContrato[0]['nom_usuario'] ?></title>
-  <link rel="icon" type="image/png" href="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrato convenio <?= $convenioContrato[0]['nom_usuario'] ?></title>
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dynpy0r4v/image/upload/v1742818076/vegaimagenes/esawybumfjhhujupw5pa.png">
 </head>
 <style>
     html,
@@ -231,13 +231,19 @@ $monto_texto = numeroATexto($monto_numerico);
                 para una presentación para el día <?= $fecha_formateada ?>,
                 por <?= restarHoras($horainicio, $horafinal); ?> de SHOW a las
                 <?= $hora_inicio_formateada ?> a <?= $hora_final_formateada ?> en <strong>“<?= strtoupper($convenioContrato[0]['establecimiento']) ?>”</strong>,
-                provincia de <?= strtoupper($convenioContrato[0]['provincia_evento']) ?>, departamento de <?= strtoupper($convenioContrato[0]['departamento_evento'] ) ?>.
+                <?php
+                if ($convenioContrato[0]['esExtranjero'] == 1) {
+                    echo $convenioContrato[0]['pais'];
+                } else {
+                    echo 'provincia de ' . strtoupper($convenioContrato[0]['provincia_evento']) . ', departamento de ' . strtoupper($convenioContrato[0]['departamento_evento']);
+                }
+                ?>
             </td>
         </tr>
         <tr>
             <td class="label" colspan="5" style="border: none;">
                 <strong>SEGUNDO:</strong> Que EL REPRESENTANTE en forma de Convenio, acuerda con EL ORGANIZADOR que
-                el objeto del presente será ejecutado en porcentajes <strong>(<?= strtoupper($convenioContrato[0]['porcentaje_vega']) . '% VEGA Y '. strtoupper($convenioContrato[0]['porcentaje_promotor']) . '% PROMOTOR'?>)</strong> iguales a beneficio de
+                el objeto del presente será ejecutado en porcentajes <strong>(<?= strtoupper($convenioContrato[0]['porcentaje_vega']) . '% VEGA Y ' . strtoupper($convenioContrato[0]['porcentaje_promotor']) . '% PROMOTOR' ?>)</strong> iguales a beneficio de
                 ambos <?php if ($convenioContrato[0]['igv'] == 1): ?>
                     con
                 <?php elseif ($convenioContrato[0]['igv'] == 0): ?>
@@ -309,13 +315,13 @@ $monto_texto = numeroATexto($monto_numerico);
                         <td colspan="5">Representado por</td>
                     </tr>
                     <tr>
-                        <td colspan="5"><?php 
-                        if(isset($representante[0])){
-                            echo $representante[0]['nombres'] . ' '. $representante[0]['apellidos'];
-                        }else{
-                            echo "No hay representante asignado aun.";
-                        }
-                        ?></td>
+                        <td colspan="5"><?php
+                                        if (isset($representante[0])) {
+                                            echo $representante[0]['nombres'] . ' ' . $representante[0]['apellidos'];
+                                        } else {
+                                            echo "No hay representante asignado aun.";
+                                        }
+                                        ?></td>
                     </tr>
                     <tr>
                         <td colspan="5">EL REPRESENTANTE</td>
