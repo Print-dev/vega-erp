@@ -535,7 +535,7 @@ BEGIN
     LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento;
 END //
 DELIMITER ;
-
+select * from agenda_edicion;
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_edicion_por_editor_y_general;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_agenda_edicion_por_editor_y_general`(
