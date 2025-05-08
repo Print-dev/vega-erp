@@ -1235,7 +1235,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const convenio = await obtenerConvenioPorId(convenioExiste[0]?.idconvenio)
     console.log("CONVEIO OBTENIDO: ", convenio)
     if (convenio.length > 0) {
-      if (convenio[0]?.estado == 2) { // SI EL CONVENIO YA ESTA APROBADO
+      if (convenio[0]?.estado == 2 || convenio[0]?.estado == 1) { // SI EL CONVENIO YA ESTA APROBADO
         const datosIncompletos = await verificarDatosIncompletosCliente(dp[0]?.idcliente);
         idcliente = dp[0]?.idcliente
         console.log("datosIncompletos -> ", datosIncompletos);

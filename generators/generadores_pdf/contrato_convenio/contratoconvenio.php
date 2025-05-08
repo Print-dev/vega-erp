@@ -38,6 +38,7 @@ $precio = isset($_GET['precio']) && $_GET['precio'] !== "" ? $detalleevento->lim
 //EJECUTAR FUNCION
 $convenioContrato = $convenio->obtenerContratoConvenio(['idconvenio' => $idconvenio]);
 $representante = $sucursal->obtenerRepresentanteEmpresa(['idsucursal' => $sucursal->limpiarCadena($_GET['idsucursal'])]); // OBTENER EL REPRESENTANTES DESDE LA TABLA SUCURSALES
+//die(print_r($representante));
 // die(json_encode($representante));
 /* $cotizacion = $detalleevento->obtenerCotizacion(['iddetallepresentacion' => $iddetallepresentacion]);
 $tarifaArtista = $tarifario->obtenerTarifaArtistaPorProvincia(['idprovincia' => $idprovincia, 'idusuario' => $idusuario]);

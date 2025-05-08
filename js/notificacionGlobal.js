@@ -423,8 +423,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#btnAprobar")?.addEventListener("click", async () => {
       const convenioEstadoActualizado = await actualizarEstadoConvenio(notificacion.idconvenio, 2)
       console.log("estado convenio actualizdao ? -> ", convenioEstadoActualizado);
-      const agendaEdicionRegistrada = await registrarAgendaEdicion(notificacion.iddetalle_presentacion)
-      console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
+      /* const agendaEdicionRegistrada = await registrarAgendaEdicion(notificacion.iddetalle_presentacion)
+      console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada); */
 
       /* const params = new URLSearchParams();
       params.append("operation", "aprobarPropuesta");

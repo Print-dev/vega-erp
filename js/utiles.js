@@ -97,10 +97,10 @@ function generarCorrelativoNotaVenta(ultimaCorrelativo, añoCorrelativo) {
     return `0001-${añoActual}`;
   }
 
-/*   const ncorrelativoAnterior = ultimaCorrelativo.correlativo; // "0002-2025" || "2025-0000000001"
-  console.log("ncorrelativoAnterior", ncorrelativoAnterior); */
-/*   const [numeroAnterior, añoAnterior] = ncorrelativoAnterior.split("-");
- */
+  /*   const ncorrelativoAnterior = ultimaCorrelativo.correlativo; // "0002-2025" || "2025-0000000001"
+    console.log("ncorrelativoAnterior", ncorrelativoAnterior); */
+  /*   const [numeroAnterior, añoAnterior] = ncorrelativoAnterior.split("-");
+   */
   let nuevoNumero;
   if (parseInt(añoCorrelativo) === añoActual) {
     // Mismo año, incrementar el número

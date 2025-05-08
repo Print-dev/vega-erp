@@ -130,8 +130,8 @@ CREATE TABLE usuarios (
 )  ENGINE=INNODB;
 
 -- ALTER TABLE usuarios
--- MODIFY COLUMN marcaagua VARCHAR(80) NULL,
--- MODIFY COLUMN firma VARCHAR(80) NULL;
+-- MODIFY COLUMN marcaagua VARCHAR(120) NULL,
+-- MODIFY COLUMN firma VARCHAR(120) NULL;
 
 -- ALTER TABLE usuarios ADD COLUMN idsucursal int not null;
 CREATE TABLE tarifario (

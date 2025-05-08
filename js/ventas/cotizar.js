@@ -866,7 +866,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (permitirRegistrar) {
           // Código para proceder con el registro...
           console.log("✅ Registro permitido.");
-          if (idcliente == -1) {
+          if (idcliente == -1) { //SI EL CLIENTE DETALLADO AUN NO EXISTE SE REGISTRA AHI MISMO
             if (permitirRegistrar) {
               console.log("✅ SE PERMITIÓ REGISTRAR: Evento vencido o sin conflicto de horario. Cliente nuevo.");
               const data = await registrarCliente();

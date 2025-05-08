@@ -83,9 +83,9 @@ BEGIN
 END //
 DELIMITER ;
 
-CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,88,1183,'0044-2025','2025-05-21','19:00','03:00','oceania (segundo turno)', '', '', 1,1,2,7,0);
-CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,92, '','','2025-05-24','16:00','21:00','montevideo', '', '', 1,1,1,'',0, 1);
-CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,17, '','0044-2025','2025-05-16','19:00','23:00','coliseo', '', '', 1,1,2,7,0, 1, 35);
+-- CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,88,1183,'0044-2025','2025-05-21','19:00','03:00','oceania (segundo turno)', '', '', 1,1,2,7,0);
+-- CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,92, '','','2025-05-24','16:00','21:00','montevideo', '', '', 1,1,1,'',0, 1);
+-- CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,17, '','0044-2025','2025-05-16','19:00','23:00','coliseo', '', '', 1,1,2,7,0, 1, 35);
 
 select * from detalles_presentacion;
 select * from nacionalidades;
