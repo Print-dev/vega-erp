@@ -535,8 +535,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     clienteAct.append("ndocumento", $q("#ndocumentocli").value ? $q("#ndocumentocli").value : '');
     clienteAct.append("razonsocial", $q("#razonsocial").value);
     clienteAct.append("representantelegal", $q("#representantelegal").value ? $q("#representantelegal").value : '');
-    clienteAct.append("telefono", $q("#telefono").value);
-    clienteAct.append("correo", $q("#correo").value);
+    clienteAct.append("telefono", $q("#telefono").value ? $q("#telefono").value : '');
+    clienteAct.append("correo", $q("#correo").value ? $q("#correo").value : '');
     clienteAct.append("direccion", $q("#direccion").value);
 
     const fclienteAct = await fetch(`${host}cliente.controller.php`, {
@@ -999,7 +999,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         myTable = $("#table-atenciones").DataTable({
           paging: true,
           searching: true,
-          lengthMenu: [5, 10, 15, 20],
+          lengthMenu: [20, 10, 15, 20],
           pageLength: 10,
           language: {
             lengthMenu: "Mostrar _MENU_ filas por página",

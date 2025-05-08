@@ -60,7 +60,7 @@ if (isset($_POST['operation'])) {
     case 'registrarCliente':
       $cleanData = [
         'tipodoc'   => $cliente->limpiarCadena($_POST['tipodoc']) ? $cliente->limpiarCadena($_POST['tipodoc']) : '',
-        'iddistrito'   => $cliente->limpiarCadena($_POST['iddistrito']) ? $cliente->limpiarCadena($_POST['iddistrito']) : '',
+        'iddistrito'   => $cliente->limpiarCadena($_POST['iddistrito']) ? $cliente->actualizarCliente($_POST['iddistrito']) : '',
         'ndocumento' => $cliente->limpiarCadena($_POST['ndocumento']) ? $cliente->limpiarCadena($_POST['ndocumento']) : '',
         'razonsocial'   => $cliente->limpiarCadena($_POST['razonsocial']) ? $cliente->limpiarCadena($_POST['razonsocial']) : '',
         'representantelegal'   => $cliente->limpiarCadena($_POST['representantelegal']) ? $cliente->limpiarCadena($_POST['representantelegal']) : '',
@@ -88,8 +88,8 @@ if (isset($_POST['operation'])) {
           'ndocumento' => $cliente->limpiarCadena($_POST['ndocumento']) ? $cliente->limpiarCadena($_POST['ndocumento']) : '',
           'razonsocial' => $cliente->limpiarCadena($_POST['razonsocial']),
           'representantelegal' => $cliente->limpiarCadena($_POST['representantelegal']) ? $cliente->limpiarCadena($_POST['representantelegal']) : '',
-          'telefono' => $cliente->limpiarCadena($_POST['telefono']),
-          'correo' => $cliente->limpiarCadena($_POST['correo']),
+          'telefono' => $cliente->limpiarCadena($_POST['telefono']) ? $cliente->limpiarCadena($_POST['telefono']) : '',
+          'correo' => $cliente->limpiarCadena($_POST['correo']) ? $cliente->limpiarCadena($_POST['correo']) :'',
           'direccion' => $cliente->limpiarCadena($_POST['direccion']),
         ];
     

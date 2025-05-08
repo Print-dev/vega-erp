@@ -101,8 +101,8 @@ BEGIN
     ndocumento = nullif(_ndocumento, ''),
     razonsocial = _razonsocial,
     representantelegal = nullif(_representantelegal, ''),
-    telefono = _telefono,
-    correo = _correo,
+    telefono = nullif(_telefono, ''),
+    correo = nullif(_correo, ''),
     direccion = _direccion
     WHERE idcliente = _idcliente;
 END //
