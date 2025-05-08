@@ -102,6 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         body.append("direccion", $q("#direccion").value     ? $q("#direccion").value.trim() : '');
         body.append("web", $q("#web").value ? $q("#web").value.trim() : '');
         body.append("email", $q("#email").value ? $q("#email").value.trim() : '');
+        body.append("ubigeo", $q("#ubigeo").value ? $q("#ubigeo").value.trim() : '');
 
         const fbody = await fetch(`${host}sucursal.controller.php`, {
             method: "POST",

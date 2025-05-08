@@ -17,7 +17,7 @@
                     <h1>Facturas Emitidas</h1>
                 </div>
                 <div class="col-md-6 text-end contenedor-btn-nuevacaja">
-                    <a href="<?= $hostOnlyHeader ?> /views/comprobantes/facturas/registrar-factura" class="btn btn-primary" id="btnNuevaCaja">Emitir Factura</a>
+                    <a href="<?= $hostOnlyHeader ?>/views/comprobantes/facturas/registrar-factura" class="btn btn-primary" id="btnNuevaCaja">Emitir Factura</a>
                 </div>
             </div>
             <div class="row">

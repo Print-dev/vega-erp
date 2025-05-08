@@ -22963,6 +22963,7 @@ textarea.form-control-lg {
 @media (min-width: 768px) {
     .sidebar.contracted + .content {
         margin-left: 95px;
+        padding: 0;
     }
 }
 
@@ -22988,19 +22989,21 @@ textarea.form-control-lg {
 
 .content {
     overflow: hidden;
-    padding: 0 1rem 0 1rem;
-    transition: all 0.3s;
+/*     padding: 0 1rem 0 1rem;
+ */    transition: all 0.3s;
 }
 
 @media (prefers-reduced-motion: reduce) {
     .content {
         transition: none;
+        padding: 0;
     }
 }
 
 @media (min-width: 992px) {
     .content {
         margin-left: 260px;
+        padding: 0;
     }
 }
 

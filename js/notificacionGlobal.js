@@ -423,6 +423,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#btnAprobar")?.addEventListener("click", async () => {
       const convenioEstadoActualizado = await actualizarEstadoConvenio(notificacion.idconvenio, 2)
       console.log("estado convenio actualizdao ? -> ", convenioEstadoActualizado);
+
+      // POSIBLEMENTE LUEGO SE DESCOMENTE LA PARTE DE REGISTRAR AGENDA EDICION CUANDO SE APRUEBE LA PROPUESTA 
       /* const agendaEdicionRegistrada = await registrarAgendaEdicion(notificacion.iddetalle_presentacion)
       console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada); */
 

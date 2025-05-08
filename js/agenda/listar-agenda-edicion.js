@@ -344,8 +344,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     calendar = new FullCalendar.Calendar(calendarEl, {
-        height: 700,
+        height: "90%",
+        aspectRatio: 2,
         initialView: "dayGridMonth", // Vista inicial: mes
+        dayMaxEvents: 5,
         headerToolbar: {
             left: "prev,next today",
             center: "title",
@@ -353,7 +355,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         },
         events: [], // Aquí se cargarán los eventos dinámicamente
         locale: "es",
-        dayMaxEvents: 1, // Muestra hasta 3 eventos antes de colapsar
         eventLimitClick: "popover", // Muestra un popover con los eventos restantes
         eventClick: async function (evento) {
             console.log("evento -> ", evento)
@@ -473,7 +474,32 @@ document.addEventListener("DOMContentLoaded", async () => {
                 window.localStorage.setItem("iddp", evento.event.extendedProps.iddetalle_presentacion)
                 window.location.href = `${host}/views/ventas/actualizar-atencion-cliente`
             } */
+
+
         },
+        eventDidMount: function (info) {
+            const content = document.createElement('div');
+            content.innerHTML = `
+                <div class="tooltip-content">
+                    <h5>🎤 ${info.event.title}</h5>
+                    <p><strong>🕒</strong> ${calculateDuration(info.event.extendedProps.horainicio, info.event.extendedProps.horafinal)}</p>
+                    <p><strong📍></strong> Sin lugar</p>
+                    <p><strong>📝</strong> Sin descripción</p>
+                    <button class="btn-ver-alerta" onclick="alert('¡Alerta personalizada!')">Ver alerta</button>
+                </div>
+                `;
+
+
+            const instance = tippy(info.el, {
+                content: content,
+                interactive: true,
+                trigger: "click",
+                allowHTML: true,
+                theme: "custom", // usamos tema personalizado
+                placement: "auto",
+            });
+        }
+
     });
     calendar.render();
     calendar.setOption("locale", "es");
@@ -594,97 +620,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log("ENTRANDO ANTES DE RENDERIZAR TODO");
             return {
                 html: `
-                  ${arg.event.extendedProps.estadoBadge?.text == "Incompleto" ?
-                        `
-                    <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
-                      <div>00:00 - 00:00</div>
-                      <div>${badgeHtml}</div>
-                    </div>
-                    <div style="padding: 8px; word-wrap: break-word; 
-                  overflow-wrap: break-word;
-                  white-space: normal;">
-                    <div style="font-size: 20px; font-weight: bold;">${arg.event.title
-                        }</div>
-                  <div><strong>Click aqui para editar</strong>
-                  </div>
-                    ` :
-                        arg.event.extendedProps.estado == 3 || arg.event.extendedProps.estado == 2 ? `
-                    <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
-                    <div>${horaInicio} - ${horaFinal}</div>
-                    <div>${badgeHtml}</div>
-                  </div>
                   <div style="padding: 8px; word-wrap: break-word; 
                   overflow-wrap: break-word;
                   white-space: normal;">
-                    <div style="font-size: 20px; font-weight: bold;">${arg.event.title
-                            }</div>
-                      <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
-                            }</div>
-                      <div><strong>Tiempo:</strong> ${calculateDuration(
-                                arg.event.extendedProps.horainicio,
-                                arg.event.extendedProps.horafinal
-                            )}</div>` : arg.event.extendedProps.idagendaedicion !== null ? `
-                    <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
-                    <div>${horaInicio} - ${horaFinal}</div>
-                    <div>${badgeHtml}</div>
-                  </div>
-                  <div style="padding: 8px; word-wrap: break-word; 
-                  overflow-wrap: break-word;
-                  white-space: normal;">
-                    <div style="font-size: 20px; font-weight: bold;">${arg.event.title
-                                }</div>
-                      <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
-                                }</div>
-                      <div><strong>Tiempo:</strong> ${calculateDuration(
-                                    arg.event.extendedProps.horainicio,
-                                    arg.event.extendedProps.horafinal
-                                )}</div>
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
-                      <button class="btn btn-primary" id="btnAsignarEditor" style="flex: 1;" data-idagendaeditor="${arg.event.extendedProps?.idagendaeditor}" data-idagendaedicion="${arg.event.extendedProps?.idagendaedicion}" data-idagendaeditor="${arg.event.extendedProps?.idagendaeditor}">Asignar</button>
-                      <button class="btn btn-primary" id="btnVerProgreso" style="flex: 1;" data-idagendaedicion="${arg.event.extendedProps?.idagendaedicion}" data-idagendaeditor="${arg.event.extendedProps?.idagendaeditor}">Ver progreso</button>
-                    </div>
-                    `
-                            :
-                            `
-                    <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
-                    <div>${horaInicio} - ${horaFinal}</div>
-                    <div>${badgeHtml}</div>
-                  </div>
-                  <div style="padding: 8px; word-wrap: break-word; 
-                  overflow-wrap: break-word;
-                  white-space: normal;">
-                    <div style="font-size: 20px; font-weight: bold;">${arg.event.title
-                            }</div>
-                      <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
-                            }</div>
-                      <div><strong>Tiempo:</strong> ${calculateDuration(
-                                arg.event.extendedProps.horainicio,
-                                arg.event.extendedProps.horafinal
-                            )}</div>
-      
-                  ${nivelacceso == "Administrador" ? `
-                    <label ><strong>Acuerdos:</strong></label>
-                    <div id="text-acuerdo" class="mt-1" style="
-                  background: #fff; 
-                  padding: 5px; 
-                  border-radius: 5px; 
-                  word-wrap: break-word; 
-                  overflow-wrap: break-word;
-                  white-space: normal;
-                ">
-                  ${arg.event.extendedProps.acuerdo ||
-                                "Sin acuerdos registrados"
-                                }
-                </div>
-                    ` : ''}                    
-              
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">                                                
-              
-                      ${nivelacceso == "Artista" ? `
-                        <button class="btn btn-primary" id="btnVerMontos" style="flex: 1;" data-idcontrato="${arg.event.extendedProps?.idcontrato}" data-idconvenio="${arg.event.extendedProps?.idconvenio}">Ver Monto</button>
-                      ` : ''}
-                    </div>
-                    `}
+                    <span class="titulo-card">${arg.event.title
+                    } - ${arg.event.extendedProps.establecimiento || "No definido"
+                    } ( ${calculateDuration(
+                        arg.event.extendedProps.horainicio,
+                        arg.event.extendedProps.horafinal
+                    )} )</span>    
               `,
             };
         });
@@ -741,9 +685,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <div style="font-size: 20px; font-weight: bold;">${arg.event.title}</div>
                     <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"}</div>
                     <div><strong>Tiempo:</strong> ${calculateDuration(
-                        arg.event.extendedProps.horainicio,
-                        arg.event.extendedProps.horafinal
-                    )}</div>
+                    arg.event.extendedProps.horainicio,
+                    arg.event.extendedProps.horafinal
+                )}</div>
                     <div><strong>Tarea:</strong> ${arg.event.extendedProps.tarea || "No definido"}</div>
                   ${nivelacceso == "Administrador" || nivelacceso == "Community Manager" ? `
                     <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">

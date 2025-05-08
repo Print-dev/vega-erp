@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let montoLetra
     let idsucursalObtenido
     let idclienteObtenido
+    let ubigeoObtenido
     // empresa
     let direccionEmisorObtenido
     let distritoEmisorObtenido
@@ -479,6 +480,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         departamentoEmisorObtenido = sucursalObt[0]?.departamento
         provinciaEmisorObtenido = sucursalObt[0]?.provincia
         distritoEmisorObtenido = sucursalObt[0]?.distrito
+        ubigeoObtenido = sucursalObt[0]?.ubigeo
     })
 
     $q("#cliente").addEventListener("change", async (e) => {
@@ -495,7 +497,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             $q("#cliente").value == "" ||
             $q("#tipooperacion").value == "" ||
             $q("#tipomoneda").value == "" ||
-            $q("#ubigeo").value == "" ||
+            //$q("#ubigeo").value == "" ||
             $q("#evento").value == ""
         ) {
             showToast("Por favor, completa todos los campos obligatorios.", "ERROR")
@@ -556,7 +558,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 departamentoEmisorObtenido,
                 provinciaEmisorObtenido,
                 distritoEmisorObtenido,
-                $q("#ubigeo").value,
+                //$q("#ubigeo").value,
+                ubigeoObtenido,
                 ndocumentoClienteObtenido,
                 razonsocialClienteObtenido,
                 'F001',
@@ -613,7 +616,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 departamentoEmisorObtenido,
                 provinciaEmisorObtenido,
                 distritoEmisorObtenido,
-                $q("#ubigeo").value,
+                //$q("#ubigeo").value,
+                ubigeoObtenido,
                 ndocumentoClienteObtenido,
                 razonsocialClienteObtenido,
                 nuevoCorrelativo.serie,

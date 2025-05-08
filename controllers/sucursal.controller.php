@@ -59,6 +59,7 @@ if (isset($_POST['operation'])) {
         'telefono'   => $sucursal->limpiarCadena($_POST['telefono']) ?  $sucursal->limpiarCadena($_POST['telefono']) : '',
         'direccion'   => $sucursal->limpiarCadena($_POST['direccion']) ?  $sucursal->limpiarCadena($_POST['direccion']) : '',
         'email'   => $sucursal->limpiarCadena($_POST['email']) ?  $sucursal->limpiarCadena($_POST['email']) : '',
+        'ubigeo'   => $sucursal->limpiarCadena($_POST['ubigeo']) ?  $sucursal->limpiarCadena($_POST['ubigeo']) : '',
       ];
 
       $rpt = $sucursal->registrarSucursal($cleanData);
@@ -77,6 +78,7 @@ if (isset($_POST['operation'])) {
         'telefono'   => $sucursal->limpiarCadena($_POST['telefono']) ?  $sucursal->limpiarCadena($_POST['telefono']) : '',
         'direccion'   => $sucursal->limpiarCadena($_POST['direccion']) ?  $sucursal->limpiarCadena($_POST['direccion']) : '',
         'email'   => $sucursal->limpiarCadena($_POST['email']) ?  $sucursal->limpiarCadena($_POST['email']) : '',
+        'ubigeo'   => $sucursal->limpiarCadena($_POST['ubigeo']) ?  $sucursal->limpiarCadena($_POST['ubigeo']) : '',
       ];
 
       $rpt = $sucursal->actualizarSucursal($cleanData);

@@ -413,6 +413,8 @@ CREATE TABLE agenda_edicion ( -- tabla que envuelve la tabla agenda editores
     iddetalle_presentacion INT NOT NULL,  -- Relación con la agenda del evento
     constraint fk_iddp_ag_edicion foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 );
+select * from detalles_presentacion;
+select * from agenda_edicion;
 
 CREATE TABLE tipotarea (
 	idtipotarea	int auto_increment primary key,

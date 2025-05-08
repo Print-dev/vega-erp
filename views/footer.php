@@ -56,7 +56,6 @@
 
 <!-- Notificaciones js -->
 
-<script src="<?= $hostOnly ?>/js/notificacionGlobal.js"></script>
 <!-- Core -->
 <script
   src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -72,11 +71,20 @@
 <script src="<?= $hostOnly ?>/js/swalcustom.js"></script>
 <!-- Archivo para obtener fecha y hora de peru -->
 <script src="<?= $hostOnly ?>/js/utiles.js"></script>
+<script src="<?= $hostOnly ?>/js/notificacionGlobal.js"></script>
+
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <!-- JQUERY -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+
+<!-- Tippy.js CSS -->
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+
+<!-- Tippy.js JS -->
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
 
 <!-- <script src="<?= $hostOnly ?>/js/calcularFechaProgramadaTarea.js"></script> -->
 <script>

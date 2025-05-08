@@ -281,6 +281,18 @@ document.addEventListener('DOMContentLoaded', async function () {
   });
 
   // ****************************** REGISTRAR DATOS ****************************** //
+  async function registrarAgendaEdicion(iddetallepresentacion) {
+    const body = new FormData();
+    body.append("operation", "registrarAgendaEdicion");
+    body.append("iddetallepresentacion", iddetallepresentacion);
+
+    const fbody = await fetch(`${host}agenda.controller.php`, {
+      method: "POST",
+      body: body,
+    });
+    const rbody = await fbody.json();
+    return rbody;
+  }
 
   async function registrarCliente() {
     const ndocumento = $q("#ndocumento").value.trim();
@@ -322,7 +334,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     return rcliente;
   }
 
-  /* async function registrarReparticion(iddetallepresentacion) {
+  async function registrarReparticion(iddetallepresentacion) {
     const reparticion = new FormData();
     reparticion.append("operation", "registrarReparticion");
     reparticion.append("iddetallepresentacion", iddetallepresentacion);
@@ -333,7 +345,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
     const rreparticion = await freparticion.json();
     return rreparticion;
-  } */
+  }
 
   async function registrarNotificacion(artista, idusuariorem, tipo, idreferencia, mensaje) {
     const viatico = new FormData();
@@ -885,8 +897,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                 if ($q("#modalidad").value == 1) {
                   if ($q("#nacionalidad2").value !== "31") {
                     detalleevento = await registrarDetalleEvento(data.idcliente, '', 1, $q("#nacionalidad2").value);
-                    /* const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
-                    console.log("repa registrado -> ", repaRegistrado); */
+
+                    const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                    console.log("repa registrado -> ", repaRegistrado);
                     // REGISTRAR NOTIFICACION
                     const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
                     mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
@@ -896,8 +909,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                     console.log(detalleevento);
                   } else if ($q("#nacionalidad2").value == "31") {
                     detalleevento = await registrarDetalleEvento(data.idcliente, '', 0, $q("#nacionalidad2").value);
-                    /* const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
-                    console.log("repa registrado -> ", repaRegistrado); */
+                    const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                    console.log("repa registrado -> ", repaRegistrado);
                     // REGISTRAR NOTIFICACION
                     const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
                     mensaje = `${usuario[0]?.dato} Te ha asignado a un nuevo evento para el ${formatDate(fechaSeleccionada)}!, revisa tu agenda.`
@@ -937,6 +950,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                 }
 
                 if (detalleevento.iddetalleevento > 0) {
+                  console.log("ACA SIEMPRE LEGARA Y SE REGISTRARA EN LA AGENDA DE EDICION (ESTOY EN LA PARTE DE QUE SE REGISTRE EL CLIENTE AHI MISMO SI AUN NO EXISTE");
+                  console.log("el id del detalle evento registrado -> ", detalleevento.iddetalleevento);
+                  const agendaEdicionRegistrada = await registrarAgendaEdicion(detalleevento.iddetalleevento)
+                  console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
                   window.location.href = `${hostOnly}/views/ventas/listar-atencion-cliente`
                 } else {
                   showToast("Hubo un error al registrar la atencion", "ERROR");
@@ -961,8 +978,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                   console.log("idcliente-> en valor 1 ", idcliente);
                   console.log("nacionadlidad 2 value -> ", $q("#nacionalidad2").value);
                   detalleevento = await registrarDetalleEvento(idcliente, '', 1, $q("#nacionalidad2").value);
-                  /* const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
-                  console.log("repa registrado -> ", repaRegistrado); */
+                  const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                  console.log("repa registrado -> ", repaRegistrado);
                   console.log(detalleevento);
                   const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
                   console.log("usuario -> ", usuario);
@@ -977,8 +994,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                 } else if ($q("#nacionalidad2").value == "31") {
                   console.log("idcliente-> en valor 1 ", idcliente);
                   detalleevento = await registrarDetalleEvento(idcliente, '', 0, $q("#nacionalidad2").value);
-                  /* const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
-                  console.log("repa registrado -> ", repaRegistrado); */
+                  const repaRegistrado = await registrarReparticion(detalleevento.iddetalleevento)
+                  console.log("repa registrado -> ", repaRegistrado);
                   console.log(detalleevento);
                   const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
                   console.log("usuario -> ", usuario);
@@ -995,8 +1012,8 @@ document.addEventListener('DOMContentLoaded', async function () {
               } else if ($q("#modalidad").value == 2) {
                 if ($q("#nacionalidad2").value !== "31") {
                   console.log("idcliente-> en valor 2 ", idcliente);
-                  console.log("nacionalidad 2 value -> ",  $q("#nacionalidad2").value);
-                  console.log("nueva n de cotizacion ->",ncotizacion); // ME QUEDE ACA
+                  console.log("nacionalidad 2 value -> ", $q("#nacionalidad2").value);
+                  console.log("nueva n de cotizacion ->", ncotizacion); // ME QUEDE ACA
                   detalleevento = await registrarDetalleEvento(idcliente, ncotizacion, 1, $q("#nacionalidad2").value);
                   console.log(detalleevento);
                   const usuario = await obtenerUsuarioPorId(idusuarioLogeado)
@@ -1029,6 +1046,10 @@ document.addEventListener('DOMContentLoaded', async function () {
               }
               console.log("detalle evento ->>>>>>", detalleevento);
               if (detalleevento.iddetalleevento > 0) {
+                console.log("ACA SIEMPRE LEGARA Y SE REGISTRARA EN LA AGENDA DE EDICION (ESTOY EN LA PARTE QUE EL CLIENTE YA EXISTE");
+                console.log("el id del detalle evento registrado -> ", detalleevento.iddetalleevento);
+                const agendaEdicionRegistrada = await registrarAgendaEdicion(detalleevento.iddetalleevento)
+                console.log("agendaEdicionRegistrada->", agendaEdicionRegistrada);
                 window.location.href = `${hostOnly}/views/ventas/listar-atencion-cliente`
               } else {
                 showToast("Hubo un error al registrar la atencion", "ERROR");

@@ -50,7 +50,7 @@
                             <label for="cliente" class="form-label">Cliente</label>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="form-floating">
                             <select name="sucursal" id="sucursal" class="form-select" required>
                                 <option value="" selected>Selecciona</option>
@@ -58,12 +58,12 @@
                             <label for="sucursal" class="form-label">Sucursal</label>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <!-- <div class="col-md-3">
                         <div class="form-floating">
                             <input type="number" id="ubigeo" name="ubigeo" class="form-control" placeholder="Ubigeo" required>
                             <label for="ubigeo">Ubigeo</label>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="text-center my-4 position-relative">
                         <hr>
                         <span class="position-absolute top-50 start-50 translate-middle bg-white px-3">

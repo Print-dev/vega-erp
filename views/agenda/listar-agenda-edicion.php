@@ -12,9 +12,14 @@
 
     .fc-event {
         min-height: 50px;
-        /* Ajusta la altura mínima para mejorar la visualización */
-        padding: 5px;
+
         font-size: 14px;
+    }
+
+    .titulo-card {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .fc-daygrid-event {
@@ -26,6 +31,15 @@
         /* Muestra "..." cuando el texto es muy largo */
         max-width: 100%;
         /* Ajusta al ancho disponible */
+    }
+
+    .tippy-box[data-theme~='custom'] {
+        background-color:rgb(210, 237, 249);
+        /* fondo transparente para usar el de tu div */
+        padding: 0;
+        max-width: none;
+        z-index: 99999999;
+        /* para evitar límites de tamaño */
     }
 
     .contenedor-calendario {
@@ -54,7 +68,7 @@
         width: auto;
         max-width: 400px;
         max-height: 530px;
-        overflow-y: auto;
+        /* overflow-y: auto; */
         background: white;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         border-radius: 10px;
@@ -110,9 +124,19 @@
             margin: 2px;
         }
     }
+
+    .tippy-box[data-theme~='mi-tema'] {
+        background-color: #f9f3d2;
+        /* color personalizado */
+        color: #000;
+        border: 1px solid #ccc;
+        padding: 8px;
+        font-size: 14px;
+        border-radius: 6px;
+    }
 </style>
 
-<div class="row g-0 mb-3 contenedor-filtros-agenda">
+<div class="row g-0 mb-3 contenedor-filtros-agenda" hidden>
     <div class="card border-0">
         <div class="card-body border-0">
             <label for="">Filtros</label>
@@ -134,15 +158,13 @@
                     </div>
                 </div>
             </div>
-            <!--  <div class="text-end">
-            <a href="<?= $hostWithAppName ?>/views/utilitario/tareasdiarias/listar-tareasdiarias" class="btn btn-primary" id="btnAsignarTareaDiaria">Asignar Tarea Diaria</a>
-        </div> -->
+
         </div>
 
     </div>
 </div>
 
-<div class="container-fluid">
+<div class="">
     <div class="contenedor-calendario">
         <div id='calendar'></div>
     </div>
@@ -390,6 +412,10 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <!-- Importar idioma español -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js"></script>
+<!-- Tippy.js (para popover) -->
+<!-- <link href="https://unpkg.com/tippy.js@6/animations/scale.css" rel="stylesheet">
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script> -->
 
 <!-- <script>
     const idusuarioLogeado = "<?php echo $_SESSION['login']['idusuario']; ?>"

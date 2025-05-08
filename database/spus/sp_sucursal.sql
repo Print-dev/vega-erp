@@ -35,11 +35,12 @@ CREATE PROCEDURE sp_registrar_sucursal(
     IN _ruc char(11),
     IN _telefono char(20),
     IN _direccion varchar(120),
-    IN _email varchar(120)
+    IN _email varchar(120),
+	IN _ubigeo CHAR(6)
 )
 BEGIN
-    INSERT INTO sucursales (idempresa, iddistrito, idresponsable, nombre, ruc, telefono, direccion, email)
-    VALUES (_idempresa, _iddistrito, nullif(_idresponsable, ''), nullif(_nombre, ''), _ruc, nullif(_telefono, ''), _direccion, nullif(_email, ''));
+    INSERT INTO sucursales (idempresa, iddistrito, idresponsable, nombre, ruc, telefono, direccion, email, ubigeo)
+    VALUES (_idempresa, _iddistrito, nullif(_idresponsable, ''), nullif(_nombre, ''), _ruc, nullif(_telefono, ''), _direccion, nullif(_email, ''), nullif(_ubigeo, ''));
 END //
 DELIMITER ;
 
@@ -54,7 +55,8 @@ CREATE PROCEDURE sp_actualizar_sucursal (
     IN _ruc char(11),
     IN _telefono CHAR(20),
     IN _direccion VARCHAR(120),
-    IN _email VARCHAR(120)
+    IN _email VARCHAR(120),
+    IN _ubigeo CHAR(6)
 )
 BEGIN
 		UPDATE sucursales SET
@@ -65,7 +67,8 @@ BEGIN
     ruc = _ruc,
     telefono = _telefono,
     direccion = _direccion,
-    email = _email
+    email = _email,
+    ubigeo = _ubigeo
     WHERE idsucursal = _idsucursal; 
 END //
 DELIMITER ;

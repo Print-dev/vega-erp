@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         $q("#web").value = sucursalInfo[0]?.web
         $q("#email").value = sucursalInfo[0]?.email
         $q("#direccion").value = sucursalInfo[0]?.direccion
+        $q("#ubigeo").value = sucursalInfo[0]?.ubigeo
 
         if (sucursalInfo[0]?.iddistrito) {
             await cargarUbigeoDesdeDistrito(sucursalInfo[0]?.iddistrito);
@@ -122,6 +123,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         body.append("direccion", $q("#direccion").value ? $q("#direccion").value.trim() : '');
         body.append("web", $q("#web").value ? $q("#web").value.trim() : '');
         body.append("email", $q("#email").value ? $q("#email").value.trim() : '');
+        body.append("ubigeo", $q("#ubigeo").value ? $q("#ubigeo").value.trim() : '');
 
         const fbody = await fetch(`${host}sucursal.controller.php`, {
             method: "POST",

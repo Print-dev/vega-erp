@@ -46,10 +46,16 @@
                                 <label for="email">Correo Electrónico</label>
                             </div>
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-md-4">
                             <div class="form-floating">
                                 <input type="text" id="direccion" name="direccion" class="form-control" placeholder="Dirección" autocomplete="off">
                                 <label for="direccion">Dirección</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" id="ubigeo" name="ubigeo" class="form-control" placeholder="Ubigeo" required>
+                                <label for="ubigeo">Ubigeo</label>
                             </div>
                         </div>
                     </div>
@@ -96,7 +102,7 @@
                                 <label for="idresponsable">Responsable</label>
                             </div>
                         </div>
-                        
+
 
                     </div>
 

@@ -40,7 +40,7 @@ class Sucursal extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_sucursal(?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_sucursal(?,?,?,?,?,?,?,?,?)');
       $rpt = $cmd->execute(
         array(
           $params['idempresa'],
@@ -50,7 +50,8 @@ class Sucursal extends ExecQuery
           $params['ruc'],
           $params['telefono'],
           $params['direccion'],
-          $params['email']
+          $params['email'],
+          $params['ubigeo'],
         )
       );
 
@@ -65,7 +66,7 @@ class Sucursal extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_actualizar_sucursal(?,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_actualizar_sucursal(?,?,?,?,?,?,?,?,?,?)');
       $rpt = $cmd->execute(
         array(
           $params['idsucursal'],
@@ -76,7 +77,8 @@ class Sucursal extends ExecQuery
           $params['ruc'],
           $params['telefono'],
           $params['direccion'],
-         $params['email']
+          $params['email'],
+          $params['ubigeo'],
         )
       );
 
@@ -103,7 +105,7 @@ class Sucursal extends ExecQuery
       die($e->getMessage());
     }
   }
-  
+
   public function obtenerSucursalesPorEmpresa($params = []): array
   {
     try {
