@@ -344,7 +344,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     calendar = new FullCalendar.Calendar(calendarEl, {
-        height: "90%",
+        height: "99%",
         aspectRatio: 2,
         initialView: "dayGridMonth", // Vista inicial: mes
         dayMaxEvents: 5,
@@ -478,15 +478,109 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         },
         eventDidMount: function (info) {
+            console.log("info ->", info);
+            let horaInicio = info.event.extendedProps.horainicio
+                ? formatHour(info.event.extendedProps.horainicio)
+                : "Hora no definida";
+            let horaFinal = info.event.extendedProps.horafinal
+                ? formatHour(info.event.extendedProps.horafinal)
+                : "Hora no definida";
+
+            let estado = info.event.extendedProps?.estadoBadge;
+            let badgeHtml = `<span class="${estado?.class}">${estado?.text}</span>`;
             const content = document.createElement('div');
             content.innerHTML = `
-                <div class="tooltip-content">
-                    <h5>🎤 ${info.event.title}</h5>
-                    <p><strong>🕒</strong> ${calculateDuration(info.event.extendedProps.horainicio, info.event.extendedProps.horafinal)}</p>
-                    <p><strong📍></strong> Sin lugar</p>
-                    <p><strong>📝</strong> Sin descripción</p>
-                    <button class="btn-ver-alerta" onclick="alert('¡Alerta personalizada!')">Ver alerta</button>
-                </div>
+            ${info.event.extendedProps.estadoBadge?.text == "Incompleto" ?
+                    `
+            <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
+              <div>00:00 - 00:00</div>
+              <div>${badgeHtml}</div>
+            </div>
+            <div style="padding: 8px; word-wrap: break-word; 
+          overflow-wrap: break-word;
+          white-space: normal;">
+            <div style="font-size: 20px; font-weight: bold;">${info.event.extendedProps?.title
+                    }</div>
+          <div><strong>Click aqui para editar</strong>
+          </div>
+            ` :
+                    info.event.extendedProps.estado == 3 || info.event.extendedProps.estado == 2 ? `
+            <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
+            <div>${horaInicio} - ${horaFinal}</div>
+            <div>${badgeHtml}</div>
+          </div>
+          <div style="padding: 8px; word-wrap: break-word; 
+          overflow-wrap: break-word;
+          white-space: normal;">
+            <div style="font-size: 20px; font-weight: bold;">${info.event.extendedProps?.title
+                        }</div>
+              <div><strong>Local:</strong> ${info.event.extendedProps.establecimiento || "No definido"
+                        }</div>
+              <div><strong>Tiempo:</strong> ${calculateDuration(
+                            info.event.extendedProps.horainicio,
+                            info.event.extendedProps.horafinal
+                        )}</div>` : info.event.extendedProps.idagendaedicion !== null ? `
+            <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
+            <div>${horaInicio} - ${horaFinal}</div>
+            <div>${badgeHtml}</div>
+          </div>
+          <div style="padding: 8px; word-wrap: break-word; 
+          overflow-wrap: break-word;
+          white-space: normal;">
+            <div style="font-size: 20px; font-weight: bold;">${info.event.extendedProps?.title
+                            }</div>
+              <div><strong>Local:</strong> ${info.event.extendedProps.establecimiento || "No definido"
+                            }</div>
+              <div><strong>Tiempo:</strong> ${calculateDuration(
+                                info.event.extendedProps.horainicio,
+                                info.event.extendedProps.horafinal
+                            )}</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+              <button class="btn btn-primary" id="btnAsignarEditor" style="flex: 1;" data-idagendaeditor="${info.event.extendedProps?.idagendaeditor}" data-idagendaedicion="${info.event.extendedProps?.idagendaedicion}" data-idagendaeditor="${info.event.extendedProps?.idagendaeditor}">Asignar</button>
+              <button class="btn btn-primary" id="btnVerProgreso" style="flex: 1;" data-idagendaedicion="${info.event.extendedProps?.idagendaedicion}" data-idagendaeditor="${info.event.extendedProps?.idagendaeditor}">Ver progreso</button>
+            </div>
+            `
+                        :
+                        `
+            <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
+            <div>${horaInicio} - ${horaFinal}</div>
+            <div>${badgeHtml}</div>
+          </div>
+          <div style="padding: 8px; word-wrap: break-word; 
+          overflow-wrap: break-word;
+          white-space: normal;">
+            <div style="font-size: 20px; font-weight: bold;">${info.event.extendedProps?.title
+                        }</div>
+              <div><strong>Local:</strong> ${info.event.extendedProps.establecimiento || "No definido"
+                        }</div>
+              <div><strong>Tiempo:</strong> ${calculateDuration(
+                            info.event.extendedProps.horainicio,
+                            info.event.extendedProps.horafinal
+                        )}</div>
+
+          ${nivelacceso == "Administrador" ? `
+            <label ><strong>Acuerdos:</strong></label>
+            <div id="text-acuerdo" class="mt-1" style="
+          background: #fff; 
+          padding: 5px; 
+          border-radius: 5px; 
+          word-wrap: break-word; 
+          overflow-wrap: break-word;
+          white-space: normal;
+        ">
+          ${info.event.extendedProps.acuerdo ||
+                            "Sin acuerdos registrados"
+                            }
+        </div>
+            ` : ''}                    
+      
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">                                                
+      
+              ${nivelacceso == "Artista" ? `
+                <button class="btn btn-primary" id="btnVerMontos" style="flex: 1;" data-idcontrato="${info.event.extendedProps?.idcontrato}" data-idconvenio="${info.event.extendedProps?.idconvenio}">Ver Monto</button>
+              ` : ''}
+            </div>
+            `}
                 `;
 
 
@@ -581,6 +675,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     textColor: "black",
                     extendedProps: {
                         estadoBadge,
+                        title: evento.nom_usuario,
                         horainicio: evento.horainicio,
                         horafinal: evento.horafinal,
                         establecimiento: evento.establecimiento,
