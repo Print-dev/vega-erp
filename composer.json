@@ -5,6 +5,7 @@
         "greenter/core": "^5.1",
         "greenter/lite": "^5.1",
         "cloudinary/cloudinary_php": "^3.1",
-        "phpmailer/phpmailer": "^6.10"
+        "phpmailer/phpmailer": "^6.10",
+        "pusher/pusher-php-server": "^7.2"
     }
 }

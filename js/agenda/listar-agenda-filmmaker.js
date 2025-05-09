@@ -539,7 +539,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
             console.log("evento -> ", evento)
-            
+
             if (evento.event.extendedProps.estadoBadge.text == "Incompleto") {
                 if (nivelacceso == "Artista" || nivelacceso == "Filmmaker") {
                     return
@@ -555,6 +555,134 @@ document.addEventListener("DOMContentLoaded", async () => {
             modalInfoAgenda = new bootstrap.Modal($q("#modal-infoagendaartista"));
             modalInfoAgenda.show(); */
         },
+        eventDidMount: function (info) {
+            console.log("info ->", info);
+            let horaInicio = info.event.extendedProps.horainicio
+                ? formatHour(info.event.extendedProps.horainicio)
+                : "Hora no definida";
+            let horaFinal = info.event.extendedProps.horafinal
+                ? formatHour(info.event.extendedProps.horafinal)
+                : "Hora no definida";
+
+            let estado = info.event.extendedProps?.estadoBadge;
+            let badgeHtml = `<span class="${estado?.class}">${estado?.text}</span>`;
+            const content = document.createElement('div');
+            //if(nivelacceso == "Edicion ")
+            content.innerHTML = `
+                <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between;">
+                      <div>${horaInicio} - ${horaFinal}</div>
+                      <div>${badgeHtml}</div>
+                    </div>
+        <div style="padding: 8px; word-wrap: break-word; 
+                    overflow-wrap: break-word;
+                    white-space: normal;">
+            <div style="font-size: 20px; font-weight: bold;">${info.event.extendedProps?.title
+                }</div>
+            <div><strong>Local:</strong> ${info.event.extendedProps?.establecimiento || "No definido"
+                }</div>
+            <div><strong>Tiempo:</strong> ${calculateDuration(
+                    info.event.extendedProps?.horainicio,
+                    info.event.extendedProps?.horafinal
+                )}</div>
+
+            ${nivelacceso == "Administrador" ? `
+                      <label ><strong>Acuerdos:</strong></label>
+                      <div id="text-acuerdo" class="mt-1" style="
+                    background: #fff; 
+                    padding: 5px; 
+                    border-radius: 5px; 
+                    word-wrap: break-word; 
+                    overflow-wrap: break-word;
+                    white-space: normal;
+                  ">
+                    ${info.event.extendedProps?.acuerdo ||
+                    "Sin acuerdos registrados"
+                    }
+                  </div>
+                      ` : ''}
+            ${nivelacceso == "Administrador" ? `
+                        <div class="mt-2"><strong>FILMMAKER:</strong> ${info.event.extendedProps?.filmmaker ? info.event.extendedProps?.filmmaker : 'No asignado'}</div>
+                      ` : ''}
+
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+                ${nivelacceso == "Administrador" ? `
+                          <button class="btn btn-primary" id="btnVerViatico" style="flex: 1;" data-iddp="${info.event.extendedProps?.iddetalle_presentacion}" data-idusuarioFilmmaker="${info.event.extendedProps?.idusuariofilmmaker}" data-iddp="${info.event.extendedProps?.iddetalle_presentacion}" data-idviatico="${info.event.extendedProps?.idviatico}">Ver Viatico</button>
+                        ` : ``}
+
+                ${info.event.extendedProps?.estadoBadge.text == "Incompleto" || info.event.extendedProps?.estadoBadge.text == "No Confirmado" ? '<div class="mt-2 bg-white"><strong>Pendiente a ser aprobado</strong></div>' : nivelacceso == "Filmmaker" ? `
+                          <button class="btn btn-primary" id="btnViatico" style="flex: 1;" data-iddp="${info.event.extendedProps?.iddetalle_presentacion}" data-idviatico="${info.event.extendedProps?.idviatico}" data-iddepartamento="${info.event.extendedProps?.iddepartamento}">Reportar Viático</button>
+                        ` : ''}
+
+                ${nivelacceso == "Artista" ? `
+                          <button class="btn btn-primary" id="btnVerMontos" style="flex: 1;" data-idcontrato="${info.event.extendedProps?.idcontrato}" data-idconvenio="${info.event.extendedProps?.idconvenio}">Ver Monto</button>
+                        ` : ''}
+            </div>
+              `;
+
+            const instance = tippy(info.el, {
+                content: content,
+                interactive: true,
+                trigger: "click",
+                allowHTML: true,
+                theme: "custom", // usamos tema personalizado
+                placement: "auto",
+                onShow(instance) {
+                    // Espera un pequeño tiempo para que el DOM esté listo
+                    setTimeout(() => {
+                        const btnViatico = $q("#btnViatico");
+                        const btnVerViatico = $q("#btnVerViatico");
+                        if (btnViatico) {
+                            btnViatico.addEventListener("click", async (e) => {
+                                iddp = btnViatico.getAttribute("data-iddp");
+                                iddepartamento = btnViatico.getAttribute("data-iddepartamento");
+                                idusuarioFilmmaker = btnViatico.getAttribute("data-idusuarioFilmmaker");
+                                console.log("ID DEPARTAMENTO ELEGIDO -> ", iddepartamento)
+                                console.log("iddetalle_repsentacion elegida -> ", iddp)
+
+                                let isLima = false;
+                                const departamento = await obtenerDepartamentoPorId(iddepartamento)
+                                console.log("departamento -> ", departamento)
+                                if (departamento[0].iddepartamento == 15) { // LIMA
+                                    isLima = true;
+                                }
+
+                                console.log("isLima ??", isLima)
+                                if (isLima) {
+/*                     $q(".contenedor-viatico-viaje").hidden = true
+ */                    showToast("No se puede reportar viatico para eventos en lima", "ERROR")
+                                    return
+                                } else {
+/*                     $q(".contenedor-viatico-viaje").hidden = false
+ */                    modalViatico = new bootstrap.Modal($q("#modal-viatico"));
+                                    modalViatico.show()
+                                }
+                            });
+                        }
+                        if (btnVerViatico) {
+                            btnVerViatico.addEventListener("click", async (e) => {
+                                console.log("clbikc a btn");
+
+                                idusuarioFilmmaker = parseInt(btnVerViatico.getAttribute("data-idusuarioFilmmaker"))
+                                iddp = parseInt(btnVerViatico.getAttribute("data-iddp"))
+                                //const viaticoExiste = await obtenerViatico(idusuarioFilmmaker)
+                                //console.log("viaticoExiste ->",viaticoExiste);
+                                modalNotificacion = new bootstrap.Modal($q("#modal-notificacion")); //
+                                modalNotificacion.show();
+                                console.log("idusuarioFilmmaker -> ", idusuarioFilmmaker);
+                                const infoViatico = await obtenerInfoViatico(iddp, idusuarioFilmmaker)
+                                console.log("infoviatico -< ", infoViatico);
+                                const usuarioFilmmakerObtenido = await obtenerUsuarioPorId(idusuarioFilmmaker)
+                                console.log("usuarioFilmmakerObtenido -> ", usuarioFilmmakerObtenido);
+                                cargarViaticoFilmmaker(null, usuarioFilmmakerObtenido[0], infoViatico.at(-1))
+                            });
+                        }
+                    }, 10);
+                },
+            });
+        }
+
+
+
     });
 
     calendar.render();
@@ -643,23 +771,26 @@ document.addEventListener("DOMContentLoaded", async () => {
                     title: evento.nom_usuario,
                     start: evento.fecha_presentacion,
                     iddetalle_presentacion: evento.iddetalle_presentacion,
-                    backgroundColor: `${evento.color}`,
-                    borderColor: `${evento.color}`,
+                    backgroundColor: `rgb(252, 249, 246)`,
+                    borderColor: `rgb(252, 249, 246)`,
                     textColor: "black",
                     extendedProps: {
                         estadoBadge,
                         horainicio: evento.horainicio,
                         horafinal: evento.horafinal,
+                        backgroundColor: evento.color,
+                        title: evento.nom_usuario,
                         establecimiento: evento.establecimiento,
                         iddepartamento: evento.iddepartamento,
-                        filmmaker: evento.filmmaker || "No asignado",
                         idusuario: evento.idusuario,
                         acuerdo: evento.acuerdo,
-                        idusuariofilmmaker: evento.idusuarioAgenda,
                         idcontrato: evento.idcontrato,
                         idconvenio: evento.idconvenio,
                         estado: evento.estado,
-                        idviatico: evento.idviatico
+                        idviatico: evento.idviatico,
+                        idusuariofilmmaker: evento.idusuarioAgenda,
+                        filmmaker: evento.filmmaker || "No asignado",
+
                         //idagendaedicion: evento.idagendaedicion
                     },
                 });
@@ -682,62 +813,43 @@ document.addEventListener("DOMContentLoaded", async () => {
                 ? formatHour(arg.event.extendedProps.horafinal)
                 : "Hora no definida";
 
-            let estado = arg.event.extendedProps.estadoBadge;
-            let badgeHtml = `<span class="${estado.class}">${estado.text}</span>`;
+            let estado = arg.event.extendedProps?.estadoBadge;
+            let badgeHtml = `<span class="${estado?.class}">${estado?.text}</span>`;
             console.log("ENTRANDO ANTES DE RENDERIZAR TODO");
+            let establecimiento = arg.event.extendedProps.establecimiento || '';
+            let maxLength = 5;
+
+            if (establecimiento.length > maxLength) {
+                establecimiento = establecimiento.substring(0, maxLength) + '...';
+            }
             return {
                 html:
                     `
-                      <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
-                      <div>${horaInicio} - ${horaFinal}</div>
-                      <div>${badgeHtml}</div>
-                    </div>
-                    <div style="padding: 8px; word-wrap: break-word; 
-                    overflow-wrap: break-word;
-                    white-space: normal;">
-                      <div style="font-size: 20px; font-weight: bold;">${arg.event.title
-                    }</div>
-                        <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
-                    }</div>
-                        <div><strong>Tiempo:</strong> ${calculateDuration(
-                        arg.event.extendedProps.horainicio,
-                        arg.event.extendedProps.horafinal
-                    )}</div>
-        
-                    ${nivelacceso == "Administrador" ? `
-                      <label ><strong>Acuerdos:</strong></label>
-                      <div id="text-acuerdo" class="mt-1" style="
-                    background: #fff; 
-                    padding: 5px; 
-                    border-radius: 5px; 
-                    word-wrap: break-word; 
-                    overflow-wrap: break-word;
-                    white-space: normal;
-                  ">
-                    ${arg.event.extendedProps.acuerdo ||
-                        "Sin acuerdos registrados"
-                        }
-                  </div>
-                      ` : ''}
-                      ${nivelacceso == "Administrador" ? `
-                        <div class="mt-2"><strong>FILMMAKER:</strong> ${arg.event.extendedProps.filmmaker ? arg.event.extendedProps.filmmaker : 'No asignado'}</div>
-                      ` : ''}
-                
-                      <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
-                        ${nivelacceso == "Administrador" ? `
-                          <button class="btn btn-primary" id="btnVerViatico" style="flex: 1;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}" data-idusuarioFilmmaker="${arg.event.extendedProps.idusuariofilmmaker}" data-iddp="${arg.event.extendedProps?.iddetalle_presentacion}" data-idviatico="${arg.event.extendedProps?.idviatico}">Ver Viatico</button>
-                        ` : ``}
-                
-                        ${arg.event.extendedProps.estadoBadge.text == "Incompleto" || arg.event.extendedProps.estadoBadge.text == "No Confirmado" ? '<div class="mt-2 bg-white"><strong>Pendiente a ser aprobado</strong></div>' : nivelacceso == "Filmmaker" ? `
-                          <button class="btn btn-primary" id="btnViatico" style="flex: 1;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}" data-idviatico="${arg.event.extendedProps.idviatico}" data-iddepartamento="${arg.event.extendedProps.iddepartamento}">Reportar Viático</button>
-                        ` : ''}
-                
-                        ${nivelacceso == "Artista" ? `
-                          <button class="btn btn-primary" id="btnVerMontos" style="flex: 1;" data-idcontrato="${arg.event.extendedProps?.idcontrato}" data-idconvenio="${arg.event.extendedProps?.idconvenio}">Ver Monto</button>
-                        ` : ''}
-                      </div>
-                      
-                `,
+                     <div style="
+            ${arg.event.extendedProps.estadoBadge.text == "Incompleto" ? `background-color: rgb(255, 83, 83);` : ''}
+            padding: 4px 6px; 
+            word-wrap: break-word; 
+            overflow-wrap: break-word; 
+            white-space: normal; 
+            max-width: 220px; 
+            font-size: 12px; 
+            display: flex; 
+            align-items: center;
+            gap: 6px;
+            ">
+            <div style="
+                width: 10px; 
+                height: 10px; 
+                border-radius: 50%; 
+                background-color: ${arg.event.extendedProps.backgroundColor || '#28a745'};
+                flex-shrink: 0;
+            "></div>
+            <span class="titulo-card">
+                ${arg.event.title}
+                - ${establecimiento || "No definido"}
+            </span>
+            </div>
+            `,
             };
         });
     }

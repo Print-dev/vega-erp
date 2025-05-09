@@ -8,6 +8,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   let lonOrigen
   let calcularDificultadPrecio = []
   let idUsuario
+  let costoDificultad
+  let idnacionalidadObtenido
+  let precioTarifaArtista
+  let tarifaArtista = []
   let usuarioSelect = $q("#usuario")
 
   navigator.geolocation.getCurrentPosition(function (position) {
@@ -211,6 +215,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const Fdata = await fetch(`https://nominatim.openstreetmap.org/search?q=${provincia}&format=json`)
     const data = await Fdata.json()
+    return data
+  }
+  async function obtenerTarifaArtistaPorPais(idusuario, idnacionalidad, tipoevento) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerTarifaArtistaPorPais");
+    params.append("idusuario", idusuario);
+    params.append("idnacionalidad", idnacionalidad);
+    params.append("tipoevento", tipoevento);
+    const data = await getDatos(`${host}tarifa.controller.php`, params);
     return data
   }
 
@@ -470,7 +483,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   const calendar = new FullCalendar.Calendar(calendarEl, {
-    height: 700,
+    height: "95%",
     initialView: "dayGridMonth", // Vista inicial: mes
     headerToolbar: {
       left: "prev,next today",
@@ -708,6 +721,255 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.href = `${hostOnly}/views/ventas/actualizar-atencion-cliente`
       }
     },
+    eventDidMount: function (info) {
+      console.log("info ->", info);
+      let horaInicio = info.event.extendedProps.horainicio
+        ? formatHour(info.event.extendedProps.horainicio)
+        : "Hora no definida";
+      let horaFinal = info.event.extendedProps.horafinal
+        ? formatHour(info.event.extendedProps.horafinal)
+        : "Hora no definida";
+
+      let estado = info.event.extendedProps?.estadoBadge;
+      let badgeHtml = `<span class="${estado?.class}">${estado?.text}</span>`;
+      const content = document.createElement('div');
+      //if(nivelacceso == "Edicion ")
+      content.innerHTML = `
+      ${info.event.extendedProps?.text == "Incompleto" && nivelacceso == "Administrador" ?
+          `
+          <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
+            <div>00:00 - 00:00</div>
+            <div>${badgeHtml}</div>
+          </div>
+          <div style="padding: 8px; word-wrap: break-word; 
+          overflow-wrap: break-word;
+          white-space: normal;">
+            <div style="font-size: 20px; font-weight: bold;">${info.event.extendedProps?.title
+          }</div>
+          <div><strong>Click aqui para editar</strong>
+          </div>
+          ` : info.event.extendedProps?.text == "Incompleto" && nivelacceso == "Artista" ? `
+            <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
+            <div>00:00 - 00:00</div>
+            <div>${badgeHtml}</div>
+          </div>
+          <div style="padding: 8px; word-wrap: break-word; 
+          overflow-wrap: break-word;
+          white-space: normal;">
+            <div style="font-size: 20px; font-weight: bold;">Este evento esta siendo editado por el encargado.</div>
+          
+          ` :
+            info.event.extendedProps?.estado == 3 || info.event.extendedProps?.estado == 2 ? `
+          <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
+          <div>${horaInicio} - ${horaFinal}</div>
+          <div>${badgeHtml}</div>
+        </div>
+        <div style="padding: 8px; word-wrap: break-word; 
+        overflow-wrap: break-word;
+        white-space: normal;">
+          <div style="font-size: 20px; font-weight: bold;">${info.event.extendedProps?.title
+              }</div>
+            <div><strong>Local:</strong> ${info.event.extendedProps?.establecimiento || "No definido"
+              }</div>
+            <div><strong>Tiempo:</strong> ${calculateDuration(
+                info.event.extendedProps?.horainicio,
+                info.event.extendedProps?.horafinal
+              )}</div>` :
+              `
+          <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
+          <div>${horaInicio} - ${horaFinal}</div>
+          <div>${badgeHtml}</div>
+        </div>
+        <div style="padding: 8px; word-wrap: break-word; 
+        overflow-wrap: break-word;
+        white-space: normal;">
+          <div style="font-size: 20px; font-weight: bold;">${info.event.extendedProps?.title
+              }</div>
+            <div><strong>Local:</strong> ${info.event.extendedProps?.establecimiento || "No definido"
+              }</div>
+            <div><strong>Tiempo:</strong> ${calculateDuration(
+                info.event.extendedProps?.horainicio,
+                info.event.extendedProps?.horafinal
+              )}</div>
+    
+        ${nivelacceso == "Administrador" ? `
+          <label ><strong>Observaciones:</strong></label>
+          <div id="text-acuerdo" class="mt-1" style="
+        background: #fff; 
+        padding: 5px; 
+        border-radius: 5px; 
+        word-wrap: break-word; 
+        overflow-wrap: break-word;
+        white-space: normal;
+      ">
+        ${info.event.extendedProps?.acuerdo ||
+                "Sin Observaciones."
+                }
+      </div>
+          ` : ''}
+          ${nivelacceso == "Administrador" ? `
+            <div><strong>FILMMAKERS:</strong> ${info.event.extendedProps?.filmmaker}</div>
+          ` : ''}
+    
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+            ${nivelacceso == "Administrador" ? `
+              <button class="btn btn-primary" id="btnAsignarFilmmaker" style="flex: 1;" data-iddp="${info.event.extendedProps?.iddetalle_presentacion}">Filmmaker</button>
+              <button class="btn btn-primary" id="btnEditarAcuerdo" style="flex: 1;" data-iddp="${info.event.extendedProps?.iddetalle_presentacion}">Observaciones</button>
+            ` : ``}
+    
+            ${nivelacceso == "Artista" ? `
+              <button type="button" class="btn btn-primary" id="btnVerMontos" style="flex: 1;" data-idcontrato="${info.event.extendedProps?.idcontrato}" data-idconvenio="${info.event.extendedProps?.idconvenio}">Ver Monto gaaa</button>
+              <button type="button" class="btn btn-primary" id="btnReportarSalida" style="flex: 1;" data-iddp="${info.event.extendedProps?.iddetalle_presentacion}">Reportar Salida</button>
+              <button type="button" class="btn btn-primary" id="btnReportarRetorno" style="flex: 1;" data-iddp="${info.event.extendedProps?.iddetalle_presentacion}">Reportar Retorno</button>
+            ` : ''}
+          </div>
+          `}
+      `;
+
+      const instance = tippy(info.el, {
+        content: content,
+        interactive: true,
+        trigger: "click",
+        allowHTML: true,
+        theme: "custom", // usamos tema personalizado
+        placement: "auto",
+        onShow(instance) {
+          // Espera un pequeño tiempo para que el DOM esté listo
+          setTimeout(() => {
+            const btnVerMontos = $q("#btnVerMontos");
+            if (btnVerMontos) {
+              btnVerMontos.addEventListener("click", async (e) => {
+                console.log("CLICK EN VER MONTOS");
+                console.log("e -> ", e);
+                const idcontrato = e.target.getAttribute("data-idcontrato");
+                const idconvenio = e.target.getAttribute("data-idconvenio");
+                console.log("idcontrato -> ", idcontrato);
+                console.log("idconvenio -> ", idconvenio);
+                $q(".contenedor-monto").innerHTML = ''
+                modalMonto = new bootstrap.Modal($q("#modal-monto"));
+                modalMonto.show();
+
+
+                //let monto = 0;
+                if (idcontrato != "null") {  // Verifica si idcontrato tiene un valor válido
+                  const contrato = await obtenerContrato(idcontrato);
+                  console.log("contrato -> ", contrato);
+
+
+                  //await renderizarUbigeoPresentacion(contrato[0]?.iddetalle_presentacion);
+                  const dp = await obtenerDPporId(contrato[0]?.iddetalle_presentacion);
+                  console.log(dp);
+
+                  if (dp[0]?.idnacionalidad == 31) {
+                    const tarifaArtista = await obtenerTarifaArtistaPorProvincia(
+                      contrato[0]?.idprovincia_evento,
+                      contrato[0]?.idusuario,
+                      contrato[0]?.tipo_evento
+                    );
+                    console.log("tarifaArtista -> ", tarifaArtista);
+                    const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
+                    console.log("longlatCiudad->>>", longlatCiudad)
+                    const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
+                    console.log("infoRecorrido -> ", infoRecorrido);
+                    const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
+                    calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
+                    costoDificultad = calcularDificultadPrecio?.costoDificultad // PRECIO POR VIAJE
+                    idnacionalidadObtenido = dp[0]?.idnacionalidad
+                    precioTarifaArtista = tarifaArtista[0]?.precio
+
+
+                  } else {
+                    const tarifaArtista = await obtenerTarifaArtistaPorPais(dp[0]?.idusuario, dp[0]?.idnacionalidad, dp[0]?.tipo_evento)
+                    costoDificultad = tarifaArtista[0]?.precio
+                    idnacionalidadObtenido = tarifaArtista[0]?.idnacionalidad
+                    precioTarifaArtista = tarifaArtista[0]?.precioExtranjero
+
+                  }
+
+                  //const precioArtista = precioTarifaArtista; // PRECIO POR PRESENTACION
+                  //const costoDificultad = parseFloat(calcularDificultadPrecio?.costoDificultad) || 0; // VIAJE
+                  const igv = (precioTarifaArtista + costoDificultad) * 0.18;
+                  const total = contrato[0]?.igv == 0
+                    ? precioTarifaArtista + costoDificultad
+                    : precioTarifaArtista + costoDificultad + igv;
+
+
+
+                  $q(".contenedor-monto").innerHTML = `
+                    <div class="table-responsive d-flex justify-content-center">
+                      <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
+                        <thead class="table-dark">
+                          <tr>
+                            <th>Descripción</th>
+                            <th>Tiempo</th>
+                            <th>Costo</th>
+                            <th>Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Presentacion artistica de ${contrato[0]?.nom_usuario}</td>
+                            <td>${calculateDuration(contrato[0]?.horainicio, contrato[0]?.horafinal)}</td>
+                            <td>S/. ${tarifaArtista[0]?.precio || 0}</td>
+                            <td>S/. ${tarifaArtista[0]?.precio || 0}</td>
+                          </tr>
+                          <tr>
+                            <td>Puesto en la locacion de ${contrato[0]?.provincia}</td>
+                            <td>${calcularDificultadPrecio?.horasEstimadas}</td>
+                            <td>S/. ${calcularDificultadPrecio?.costoDificultad}</td>
+                            <td>S/. ${calcularDificultadPrecio?.costoDificultad}</td>
+                          </tr>
+                          <tr>
+                            <td colspan="2" class="text-end">(Opcional)</td>
+                            <td colspan="1">IGV (18%)</td>
+                            <td>${contrato[0]?.igv == 0 ? 'No incluye' : contrato[0]?.igv == 1 ? `S/. ${igv.toFixed(2)}` : ''}</td>
+                          </tr>
+                          <tr>
+                            <td colspan="3" class="text-end">TOTAL</td>
+                            <td><strong>S/. ${total.toFixed(2)}</strong></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div >
+                  `;
+                } else if (idconvenio != "null") {  // Solo entra aquí si idcontrato NO es válido
+                  $q(".contenedor-monto").innerHTML = "";
+
+                  const convenio = await obtenerContratoConvenio(idconvenio);
+                  console.log("convenio -> ", convenio);
+                  $q(".contenedor-monto").innerHTML = `
+                    <div class="table-responsive d-flex justify-content-center">
+                      <table class="table table-striped table-hover text-center align-middle w-auto mx-auto">
+                        <thead class="table-dark">
+                          <tr>
+                            <th>Concepto</th>
+                            <th>Porcentaje</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Promotor</td>
+                            <td>${convenio[0]?.porcentaje_promotor || 0}%</td>
+                          </tr>
+                          <tr>
+                            <td>Vega</td>
+                            <td>${convenio[0]?.porcentaje_vega || 0}%</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div >
+                  `;
+                }// ... tu lógica para mostrar el modal y renderizar el monto
+                else {
+                  $q(".contenedor-monto").innerHTML = "Aun no hay nada para mostrar";
+                }
+              });
+            }
+          }, 10);
+        },
+      });
+    }
+
   });
   calendar.render();
   calendar.setOption("locale", "es");
@@ -825,13 +1087,15 @@ document.addEventListener("DOMContentLoaded", async () => {
           title: evento.nom_usuario,
           start: evento.fecha_presentacion,
           iddetalle_presentacion: evento.iddetalle_presentacion,
-          backgroundColor: `${evento.color}`,
-          borderColor: `${evento.color}`,
+          backgroundColor: `rgb(252, 249, 246)`,
+          borderColor: `rgb(252, 249, 246)`,
           textColor: "black",
           extendedProps: {
             estadoBadge,
             horainicio: evento.horainicio,
             horafinal: evento.horafinal,
+            title: evento.nom_usuario,
+            backgroundColor: evento.color,
             establecimiento: evento.establecimiento,
             iddepartamento: evento.iddepartamento,
             filmmaker: filmmakersTexto,
@@ -874,101 +1138,42 @@ document.addEventListener("DOMContentLoaded", async () => {
         ? formatHour(arg.event.extendedProps.horafinal)
         : "Hora no definida";
 
-      let estado = arg.event.extendedProps.estadoBadge;
-      let badgeHtml = `<span class="${estado.class}">${estado.text}</span>`;
+      let estado = arg.event.extendedProps?.estadoBadge;
+      let badgeHtml = `<span class="${estado?.class}">${estado?.text}</span>`;
       console.log("ENTRANDO ANTES DE RENDERIZAR TODO");
+      let establecimiento = arg.event.extendedProps.establecimiento || '';
+      let maxLength = 5;
+
+      if (establecimiento.length > maxLength) {
+        establecimiento = establecimiento.substring(0, maxLength) + '...';
+      }
       return {
         html: `
-          ${arg.event.extendedProps.estadoBadge.text == "Incompleto" && nivelacceso == "Administrador" ?
-            `
-          <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
-            <div>00:00 - 00:00</div>
-            <div>${badgeHtml}</div>
-          </div>
-          <div style="padding: 8px; word-wrap: break-word; 
-          overflow-wrap: break-word;
-          white-space: normal;">
-            <div style="font-size: 20px; font-weight: bold;">${arg.event.title
-            }</div>
-          <div><strong>Click aqui para editar</strong>
-          </div>
-          ` : arg.event.extendedProps.estadoBadge.text == "Incompleto" && nivelacceso == "Artista" ? `
-            <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
-            <div>00:00 - 00:00</div>
-            <div>${badgeHtml}</div>
-          </div>
-          <div style="padding: 8px; word-wrap: break-word; 
-          overflow-wrap: break-word;
-          white-space: normal;">
-            <div style="font-size: 20px; font-weight: bold;">Este evento esta siendo editado por el encargado.</div>
-          
-          ` :
-              arg.event.extendedProps.estado == 3 || arg.event.extendedProps.estado == 2 ? `
-          <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
-          <div>${horaInicio} - ${horaFinal}</div>
-          <div>${badgeHtml}</div>
-        </div>
-        <div style="padding: 8px; word-wrap: break-word; 
-        overflow-wrap: break-word;
-        white-space: normal;">
-          <div style="font-size: 20px; font-weight: bold;">${arg.event.title
-                }</div>
-            <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
-                }</div>
-            <div><strong>Tiempo:</strong> ${calculateDuration(
-                  arg.event.extendedProps.horainicio,
-                  arg.event.extendedProps.horafinal
-                )}</div>` :
-                `
-          <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
-          <div>${horaInicio} - ${horaFinal}</div>
-          <div>${badgeHtml}</div>
-        </div>
-        <div style="padding: 8px; word-wrap: break-word; 
-        overflow-wrap: break-word;
-        white-space: normal;">
-          <div style="font-size: 20px; font-weight: bold;">${arg.event.title
-                }</div>
-            <div><strong>Local:</strong> ${arg.event.extendedProps.establecimiento || "No definido"
-                }</div>
-            <div><strong>Tiempo:</strong> ${calculateDuration(
-                  arg.event.extendedProps.horainicio,
-                  arg.event.extendedProps.horafinal
-                )}</div>
-    
-        ${nivelacceso == "Administrador" ? `
-          <label ><strong>Observaciones:</strong></label>
-          <div id="text-acuerdo" class="mt-1" style="
-        background: #fff; 
-        padding: 5px; 
-        border-radius: 5px; 
-        word-wrap: break-word; 
-        overflow-wrap: break-word;
-        white-space: normal;
-      ">
-        ${arg.event.extendedProps.acuerdo ||
-                  "Sin Observaciones."
-                  }
-      </div>
-          ` : ''}
-          ${nivelacceso == "Administrador" ? `
-            <div><strong>FILMMAKERS:</strong> ${arg.event.extendedProps.filmmaker}</div>
-          ` : ''}
-    
-          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
-            ${nivelacceso == "Administrador" ? `
-              <button class="btn btn-primary" id="btnAsignarFilmmaker" style="flex: 1;" data-iddp="${arg.event.extendedProps?.iddetalle_presentacion}">Filmmaker</button>
-              <button class="btn btn-primary" id="btnEditarAcuerdo" style="flex: 1;" data-iddp="${arg.event.extendedProps.iddetalle_presentacion}">Observaciones</button>
-            ` : ``}
-    
-            ${nivelacceso == "Artista" ? `
-              <button type="button" class="btn btn-primary" id="btnVerMontos" style="flex: 1;" data-idcontrato="${arg.event.extendedProps?.idcontrato}" data-idconvenio="${arg.event.extendedProps?.idconvenio}">Ver Monto</button>
-              <button type="button" class="btn btn-primary" id="btnReportarSalida" style="flex: 1;" data-iddp="${arg.event.extendedProps?.iddetalle_presentacion}">Reportar Salida</button>
-              <button type="button" class="btn btn-primary" id="btnReportarRetorno" style="flex: 1;" data-iddp="${arg.event.extendedProps?.iddetalle_presentacion}">Reportar Retorno</button>
-            ` : ''}
-          </div>
-          `}
-        `,
+          <div style="
+            ${arg.event.extendedProps.estadoBadge.text == "Incompleto" ? `background-color: rgb(255, 83, 83);` : ''}
+            padding: 4px 6px; 
+            word-wrap: break-word; 
+            overflow-wrap: break-word; 
+            white-space: normal; 
+            max-width: 220px; 
+            font-size: 12px; 
+            display: flex; 
+            align-items: center;
+            gap: 6px;
+            ">
+            <div style="
+                width: 10px; 
+                height: 10px; 
+                border-radius: 50%; 
+                background-color: ${arg.event.extendedProps.backgroundColor || '#28a745'};
+                flex-shrink: 0;
+            "></div>
+            <span class="titulo-card">
+                ${arg.event.title}
+                - ${establecimiento || "No definido"}
+            </span>
+            </div>
+      `,
       };
     });
   }
@@ -1052,13 +1257,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     await manejadorAgendaPorNivel("6")
   });
 
-
-
   document.addEventListener("click", async (e) => {
+    console.log("clickaaa", e);
     if (e.target && e.target.id === "btnVerProgreso") {
       /* window.localStorage.clear()
       window.localStorage.setItem("idagendaedicion", idagendaedicion)
-      window.location.href = `${host}/views/agenda/asignar-agenda-edicion` */
+      window.location.href = `${ host } /views/agenda / asignar - agenda - edicion` */
       idagendaedicion = e.target.getAttribute("data-idagendaedicion");
 
       modalProgresoEdicion = new bootstrap.Modal($q("#modal-progresoedicion"));
@@ -1070,7 +1274,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       editoresAsignados.forEach(editor => {
 
         $q(".contenedor-tareas-edicion-pendientes").innerHTML += `
-          <tr>
+        < tr >
               <td>${editor.fecha_entrega}</td>
               <td>${editor.nombres}</td>
               <td>${editor.tipotarea == 1 ? 'Flayer' : editor.tipotarea == 2 ? 'Saludos' : editor.tipotarea == 3 ? 'Reels' : editor.tipotarea == 4 ? 'Fotos' : editor.tipotarea == 5 ? 'Contenido' : 'No especificado'}</td>
@@ -1084,8 +1288,8 @@ document.addEventListener("DOMContentLoaded", async () => {
               <td>
                   <button type="button" class="btn btn-primary" id="btnAbrirModalSubir" data-idagendaeditor="${editor.idagendaeditor}">Ver</button>
               </td>        
-          </tr>       
-          `
+          </tr >
+    `
       });
       $all("#btnAbrirModalSubir").forEach(btn => {
         btn.addEventListener("click", (e) => {
@@ -1093,7 +1297,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           console.log("id agenda edicion -> ", idagendaeditor);
           window.localStorage.clear()
           window.localStorage.setItem("idagendaeditor", idagendaeditor)
-          window.location.href = `${hostOnly}/views/agenda/subir-contenido-edicion`
+          window.location.href = `${hostOnly} /views/agenda / subir - contenido - edicion`
           return
         })
       })
@@ -1101,7 +1305,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.target && e.target.id === "btnAsignarEditor") {
       /* window.localStorage.clear()
       window.localStorage.setItem("idagendaedicion", idagendaedicion)
-      window.location.href = `${host}/views/agenda/asignar-agenda-edicion` */
+      window.location.href = `${ host } /views/agenda / asignar - agenda - edicion` */
       idagendaedicion = e.target.getAttribute("data-idagendaedicion");
 
       modalAsignarEditor = new bootstrap.Modal($q("#modal-asignareditor"));
@@ -1113,15 +1317,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       editoresAsignados.forEach(editor => {
 
         $q(".contenedor-asignados").innerHTML = `
-          <tr>
+    < tr >
               <td>${editor.nombres && editor.tipotarea == 1 ? editor.nombres : 'No asignado'}</td>
               <td>${editor.nombres && editor.tipotarea == 2 ? editor.nombres : 'No asignado'}</td>
               <td>${editor.nombres && editor.tipotarea == 3 ? editor.nombres : 'No asignado'}</td>
               <td>${editor.nombres && editor.tipotarea == 4 ? editor.nombres : 'No asignado'}</td>
               <td>${editor.nombres && editor.tipotarea == 5 ? editor.nombres : 'No asignado'}</td>
               
-          </tr>       
-          `
+          </tr >
+    `
       });
     }
 
@@ -1156,27 +1360,27 @@ document.addEventListener("DOMContentLoaded", async () => {
       const filmmakersDP = await obtenerFilmmakersDP(iddp)
       $q("#filmmaker").innerHTML = "<option value=''>Selecciona</option>"
       filmmakers.forEach(filmmaker => {
-        $q("#filmmaker").innerHTML += `<option value="${filmmaker.idusuario}">${filmmaker.nombres} ${filmmaker.apellidos}</option>`
+        $q("#filmmaker").innerHTML += `<option value="${filmmaker.idusuario}"> ${filmmaker.nombres} ${filmmaker.apellidos}</option>`
       })
       console.log(" filmmakersDP ->", filmmakersDP);
       if (filmmakersDP.length > 0) {
         $q(".contenedor-filmmakers-asignados").innerHTML = ''
         filmmakersDP.forEach(filmmakerDP => {
           $q(".contenedor-filmmakers-asignados").innerHTML += `
-          <div class="d-flex justify-content-around align-items-center mb-3" style="background-color:rgb(212, 212, 212);" data-idasignacion="${filmmakerDP?.idasignacion}">
+    <div class="d-flex justify-content-around align-items-center mb-3" style = "background-color:rgb(212, 212, 212);" data-idasignacion="${filmmakerDP?.idasignacion}">
               <label for="">${filmmakerDP.nombres} ${filmmakerDP.apellidos} - (${filmmakerDP.nom_usuario})</label>
               <i class="fa-solid fa-trash btnQuitarFilmmaker p-3" data-idasignacion="${filmmakerDP?.idasignacion}" title="Quitar Filmmaker" style="cursor: pointer; color: white; background-color: red"></i>
           </div>
-          `
+    `
         })
       } else {
         $q(".contenedor-filmmakers-asignados").innerHTML = `
-        <div class="container">
-                    <div class="text-center">
-                        <p>sin filmmakers asignados.</p>
-                    </div>
+    <div class="container">
+      <div class="text-center">
+        <p>sin filmmakers asignados.</p>
+      </div>
                 </div>
-        `
+    `
       }
 
 
@@ -1187,7 +1391,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const filmmakerDPeliminado = await eliminarFilmmakerDP(idasignacion)
           console.log("filmmaker dp eliminado -> ", filmmakerDPeliminado);
           if (filmmakerDPeliminado) {
-            const divFilmmaker = document.querySelector(`.contenedor-filmmakers-asignados [data-idasignacion="${idasignacion}"]`);
+            const divFilmmaker = document.querySelector(`.contenedor-filmmakers-asignados[data-idasignacion="${idasignacion}"]`);
             if (divFilmmaker) divFilmmaker.remove();
             showToast("Filmmaker removido!", "SUCCESS")
             return
@@ -1238,72 +1442,72 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
         $q(".contenedor-monto").innerHTML = `
-            <div class="table-responsive d-flex justify-content-center">
-              <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
-                <thead class="table-dark">
-                  <tr>
-                    <th>Descripción</th>
-                    <th>Tiempo</th>
-                    <th>Costo</th>
-                    <th>Total</th>  
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Presentacion artistica de ${contrato[0]?.nom_usuario}</td>
-                    <td>${calculateDuration(contrato[0]?.horainicio, contrato[0]?.horafinal)}</td>
-                    <td>S/. ${tarifaArtista[0]?.precio || 0}</td>
-                    <td>S/. ${tarifaArtista[0]?.precio || 0}</td>
-                  </tr>
-                  <tr>
-                    <td>Puesto en la locacion de ${contrato[0]?.provincia}</td>
-                    <td>${calcularDificultadPrecio?.horasEstimadas}</td>
-                    <td>S/. ${calcularDificultadPrecio?.costoDificultad}</td>
-                    <td>S/. ${calcularDificultadPrecio?.costoDificultad}</td>
-                  </tr>
-                  <tr>
-                    <td colspan="2" class="text-end">(Opcional)</td>                  
-                    <td colspan="1">IGV (18%)</td>                  
-                    <td>${contrato[0]?.igv == 0 ? 'No incluye' : contrato[0]?.igv == 1 ? `S/. ${igv.toFixed(2)}` : ''}</td>                  
-                  </tr>
-                  <tr>
-                    <td colspan="3" class="text-end">TOTAL</td>                  
-                    <td><strong>S/. ${total.toFixed(2)}</strong></td>                                    
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          `;
+    <div class="table-responsive d-flex justify-content-center">
+      <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
+        <thead class="table-dark">
+          <tr>
+            <th>Descripción</th>
+            <th>Tiempo</th>
+            <th>Costo</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Presentacion artistica de ${contrato[0]?.nom_usuario}</td>
+            <td>${calculateDuration(contrato[0]?.horainicio, contrato[0]?.horafinal)}</td>
+            <td>S/. ${tarifaArtista[0]?.precio || 0}</td>
+            <td>S/. ${tarifaArtista[0]?.precio || 0}</td>
+          </tr>
+          <tr>
+            <td>Puesto en la locacion de ${contrato[0]?.provincia}</td>
+            <td>${calcularDificultadPrecio?.horasEstimadas}</td>
+            <td>S/. ${calcularDificultadPrecio?.costoDificultad}</td>
+            <td>S/. ${calcularDificultadPrecio?.costoDificultad}</td>
+          </tr>
+          <tr>
+            <td colspan="2" class="text-end">(Opcional)</td>
+            <td colspan="1">IGV (18%)</td>
+            <td>${contrato[0]?.igv == 0 ? 'No incluye' : contrato[0]?.igv == 1 ? `S/. ${igv.toFixed(2)}` : ''}</td>
+          </tr>
+          <tr>
+            <td colspan="3" class="text-end">TOTAL</td>
+            <td><strong>S/. ${total.toFixed(2)}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+            </div >
+    `;
       } else if (idconvenio != "null") {  // Solo entra aquí si idcontrato NO es válido
         $q(".contenedor-monto").innerHTML = "";
 
         const convenio = await obtenerContratoConvenio(idconvenio);
         console.log("convenio -> ", convenio);
         $q(".contenedor-monto").innerHTML = `
-            <div class="table-responsive d-flex justify-content-center">
-              <table class="table table-striped table-hover text-center align-middle w-auto mx-auto">
-                <thead class="table-dark">
-                  <tr>
-                    <th>Concepto</th>
-                    <th>Porcentaje</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Promotor</td>
-                    <td>${convenio[0]?.porcentaje_promotor || 0}%</td>
-                  </tr>
-                  <tr>
-                    <td>Vega</td>
-                    <td>${convenio[0]?.porcentaje_vega || 0}%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          `;
+    <div class="table-responsive d-flex justify-content-center">
+      <table class="table table-striped table-hover text-center align-middle w-auto mx-auto">
+        <thead class="table-dark">
+          <tr>
+            <th>Concepto</th>
+            <th>Porcentaje</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Promotor</td>
+            <td>${convenio[0]?.porcentaje_promotor || 0}%</td>
+          </tr>
+          <tr>
+            <td>Vega</td>
+            <td>${convenio[0]?.porcentaje_vega || 0}%</td>
+          </tr>
+        </tbody>
+      </table>
+            </div >
+    `;
       }
 
-      //      showToast(`El monto a pagar es de S/. ${monto}`, "INFO")
+      //      showToast(`El monto a pagar es de S /.${ monto } `, "INFO")
     }
     /* if (e.target && e.target.id === "btnReportarSalida") {
       modalSalida = new bootstrap.Modal($q("#modal-salida"))

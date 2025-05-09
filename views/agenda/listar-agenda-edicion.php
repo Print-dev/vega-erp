@@ -2,44 +2,29 @@
 
 <style>
     /* Evita que el texto de la tarea sea opacado por el bloque */
-    .fc-event-title {
-        white-space: normal !important;
-        /* Permite que el texto se divida en varias líneas */
-        overflow: visible !important;
+    .fc .fc-daygrid-event {
+        padding: 1px 4px;
+        font-size: 11px;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
         text-overflow: ellipsis;
-        word-wrap: break-word;
     }
 
+    /* Reduce el margen vertical entre eventos */
+    .fc-daygrid-event-harness {
+        margin-bottom: 1px !important;
+    }
+
+    /* Opcional: achica los bordes de los eventos */
     .fc-event {
-        min-height: 50px;
-
-        font-size: 14px;
+        border-radius: 3px;
     }
 
-    .titulo-card {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .fc-daygrid-event {
-        white-space: nowrap;
-        /* Evita que los eventos se expandan en varias líneas */
-        overflow: hidden;
-        /* Oculta el contenido extra */
-        text-overflow: ellipsis;
-        /* Muestra "..." cuando el texto es muy largo */
-        max-width: 100%;
-        /* Ajusta al ancho disponible */
-    }
-
-    .tippy-box[data-theme~='custom'] {
-        background-color:rgb(210, 237, 249);
-        /* fondo transparente para usar el de tu div */
-        padding: 0;
-        max-width: none;
-        z-index: 99999999;
-        /* para evitar límites de tamaño */
+    /* Aumenta el alto del contenedor para permitir más eventos */
+    .fc-daygrid-day-frame {
+        min-height: 100px;
+        /* puedes ajustar este valor */
     }
 
     .contenedor-calendario {
@@ -62,23 +47,21 @@
         /* Hace que el calendario ocupe toda la altura del contenedor */
     }
 
-    .fc-popover {
-        position: absolute !important;
-        z-index: 9999 !important;
-        width: auto;
-        max-width: 400px;
-        max-height: 530px;
-        /* overflow-y: auto; */
-        background: white;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-        border-radius: 10px;
+    .tippy-box[data-theme~='custom'] {
+        max-width: none;
+        /* para que no lo limite */
+        width: 350px;
+        /* o el tamaño que desees */
+        background-color: rgb(252, 249, 246);
+        /* tu color personalizado */
+        color: black;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        padding: 10px;
+
+        /* para evitar límites de tamaño */
     }
 
-    .fc .fc-more-popover .fc-popover-body {
-        min-width: 300px;
-    }
-
-    /* Estilo para el botón "+X more" */
     .fc .fc-more-link {
         background-color: #007bff;
         /* Color azul */
@@ -345,7 +328,7 @@
                     </div>                    
                 </div> -->
                 <div class="p-3">
-                    <div class="row g-3">
+                    <div class="container-fluid overflow-auto">
                         <table class="table table-striped table-hover text-center align-middle w-auto mx-auto" id="table-tarifarios">
                             <thead class="table-dark">
                                 <tr>

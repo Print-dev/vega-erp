@@ -1,7 +1,7 @@
 -- DROP DATABASE IF EXISTS vega_producciones_erp;
 -- CREATE DATABASE vega_producciones_erp;
 -- USE vega_producciones_erp;
-
+select * from nivelaccesos;
 CREATE TABLE nacionalidades (
     idnacionalidad INT AUTO_INCREMENT PRIMARY KEY,
     nacionalidad VARCHAR(100) NOT NULL
