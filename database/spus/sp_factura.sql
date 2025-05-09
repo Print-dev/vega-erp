@@ -19,11 +19,6 @@ CREATE PROCEDURE sp_registrar_comprobante(
 BEGIN
 	    DECLARE existe_error INT DEFAULT 0;
     
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-    BEGIN
-        SET existe_error = 1;
-    END;
-    
     -- Insertar la notificación
     INSERT INTO comprobantes (iddetallepresentacion, idsucursal, idcliente, idtipodoc, tipopago, nserie, correlativo, tipomoneda , monto, tieneigv, noperacion)
     VALUES (_iddetallepresentacion, _idsucursal, _idcliente, _idtipodoc, _tipopago, _nserie, _correlativo, _tipomoneda, _monto, _tieneigv, nullif(_noperacion,''));
@@ -36,6 +31,10 @@ BEGIN
 END //
 
 DELIMITER ;
+
+select * from comprobantes;
+select * from detalles_comprobante;
+CALL sp_registrar_comprobante (@idcomprobante, 132, 1, 17, '01', 1, 'F001', '00000001', 'PEN', 1309.8, 1, '');
 
 DROP PROCEDURE IF EXISTS `sp_registrar_item_comprobante`;
 DELIMITER //

@@ -11,6 +11,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     let montoLetra
     let idsucursalObtenido
     let idclienteObtenido
+    let tarifaArtista
+    let precioTarifaArtista
+    let idnacionalidadObtenido
     // empresa
     let direccionEmisorObtenido
     let distritoEmisorObtenido
@@ -119,6 +122,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         return fpersona
     }
 
+    async function obtenerTarifaArtistaPorPais(idusuario, idnacionalidad, tipoevento) {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerTarifaArtistaPorPais");
+        params.append("idusuario", idusuario);
+        params.append("idnacionalidad", idnacionalidad);
+        params.append("tipoevento", tipoevento);
+        const data = await getDatos(`${host}tarifa.controller.php`, params);
+        return data
+    }
+
     async function obtenerSucursalPorId(idsucursal) {
         const params = new URLSearchParams();
         params.append("operation", "obtenerSucursalPorId");
@@ -166,23 +179,30 @@ document.addEventListener("DOMContentLoaded", async () => {
         provincia = dp[0]?.provincia;
         iddetalleevento = dp[0]?.iddetalle_presentacion;
 
+        if (dp[0]?.idnacionalidad == "31") {
+            const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
+            console.log("longlatCiudad->>>", longlatCiudad)
+            const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
+            const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
+            calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
+            costoDificultad = calcularDificultadPrecio?.costoDificultad
+            idnacionalidadObtenido = dp[0]?.idnacionalidad
+        } else {
+            const tarifaArtista = await obtenerTarifaArtistaPorPais(idartista, dp[0]?.idnacionalidad, dp[0]?.tipo_evento)
+            costoDificultad = tarifaArtista[0]?.precio
+            idnacionalidadObtenido = tarifaArtista[0]?.idnacionalidad
 
-        const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
-        console.log("longlatCiudad->>>", longlatCiudad)
-        const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
-        const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
-        calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
+        }
+
 
         $q("#tablaProductos tbody").innerHTML = `
             <tr>
                 <td></td>
-                <td>Puesto en la locación de ${dp[0]?.provincia}</td>
-                <td>S/ ${calcularDificultadPrecio?.costoDificultad}</td>
-                <td>S/ ${calcularDificultadPrecio?.costoDificultad}</td>
+                <td>Puesto en la locación de ${dp[0]?.provincia || dp[0]?.establecimiento}</td>
+                <td>S/ ${costoDificultad}</td>
+                <td>S/ ${costoDificultad}</td>
             </tr>
         `
-
-        costoDificultad = calcularDificultadPrecio?.costoDificultad
         provinciaDestino = dp[0]?.provincia
         /* $q("#tInfoCotizacion").innerHTML = "";
         $q("#tInfoCotizacion").innerHTML = `
@@ -312,25 +332,37 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
         
             `
-
+        tarifaArtista = []
+        precioTarifaArtista = 0
         eventosSelect.disabled = true
         iddp = e.target.value
         const dp = await obtenerDPporId(iddp)
         await renderizarUbigeoPresentacion(iddp)
-        const tarifaArtista = await obtenerTarifaArtistaPorProvincia(dp[0]?.idprovincia, dp[0]?.idusuario, dp[0]?.tipo_evento)
+        console.log("dp -> ", dp);
+        if (dp[0]?.idnacionalidad == 31) {
+            tarifaArtista = await obtenerTarifaArtistaPorProvincia(dp[0]?.idprovincia, dp[0]?.idusuario, dp[0]?.tipo_evento)
+            //precioTarifaArtista = tarifaArtista
+            console.log("tarifa artista cuando es de peru ->", tarifaArtista);
+            precioTarifaArtista = tarifaArtista[0]?.precio
+
+        } else {
+            tarifaArtista = await obtenerTarifaArtistaPorPais(dp[0]?.idusuario, dp[0]?.idnacionalidad, dp[0]?.tipo_evento)
+            console.log("tarifa artista cuando es extranjroe ->", tarifaArtista);
+            precioTarifaArtista = tarifaArtista[0]?.precioExtranjero
+        }
         console.log("tarifaartista-> ", tarifaArtista);
         console.log("dp info -> ", dp);
         $q("#tablaProductos tbody").innerHTML += `
             <tr>
                 <td></td>
                 <td>Presentación artística de ${dp[0]?.nom_usuario}</td>
-                <td>S/ ${tarifaArtista[0]?.precio ?? "Sin tarifa"}</td>
-                <td>S/ ${tarifaArtista[0]?.precio ?? "Sin tarifa"}</td>
+                <td>S/ ${precioTarifaArtista ?? "Sin tarifa"}</td>
+                <td>S/ ${precioTarifaArtista ?? "Sin tarifa"}</td>
             </tr>
         `
 
         // CALCULOS
-        let precioTarifa = tarifaArtista[0]?.precio
+        let precioTarifa = precioTarifaArtista
         let precioViaje = costoDificultad
         // Calcular el total gravado (sin IGV)
         totalGravado = parseFloat(precioTarifa) + parseFloat(precioViaje);
@@ -355,7 +387,7 @@ totalConIgv = totalGravado + igvTotal; */
                         showToast("Los contratos sin IGV deben emitirse mediante una nota de venta", "INFO")
                         limpiarContenidoDetalleProducto() */
         }
-        if(isNaN(totalConIgv)){
+        if (isNaN(totalConIgv)) {
             $q("#txtImporteTotal").innerHTML = "0.00"
             return
         }
@@ -370,12 +402,12 @@ totalConIgv = totalGravado + igvTotal; */
 
         montoLetra = $q("#importeletra").value
 
-        console.log("igv de presentacion artista -> ", parseFloat((tarifaArtista[0]?.precio * 0.18).toFixed(2)));
+        console.log("igv de presentacion artista -> ", parseFloat((precioTarifaArtista * 0.18).toFixed(2)));
         console.log("puesto en la loccacion (precio) -> ", parseFloat((parseFloat(costoDificultad) * 0.18).toFixed(2)));
         // RELLENAR LA LISTA DETALLES (DE PRODUCTOS)
         // -> tarifa de artista
         // ****************************** PARA LA TARIFA DE ARTISTA **************************
-        const valorUnitarioTarifa = parseFloat(tarifaArtista[0]?.precio); // sin IGV
+        const valorUnitarioTarifa = parseFloat(precioTarifaArtista); // sin IGV
         const igvTarifa = parseFloat((valorUnitarioTarifa * 0.18).toFixed(2));  // IGV 18%
 
         igvObtenido = dp[0]?.igv
@@ -459,7 +491,7 @@ totalConIgv = totalGravado + igvTotal; */
             $q("#cliente").value == "" ||
             $q("#tipooperacion").value == "" ||
             $q("#tipomoneda").value == "" ||
-            $q("#ubigeo").value == "" ||
+            //$q("#ubigeo").value == "" ||
             $q("#evento").value == ""
         ) {
             showToast("Por favor, completa todos los campos obligatorios.", "ERROR")
@@ -482,7 +514,7 @@ totalConIgv = totalGravado + igvTotal; */
             console.log("nuevo comprobante -> ", nuevoComprobante);
             console.log("detalle > ", detalle);
             if (nuevoComprobante?.idcomprobante) {
-                showToast("Nota de venta registrada", "SUCCESS", 3000,  `${hostOnly}/views/comprobantes/notasdeventa/listar-notasdeventa`)
+                showToast("Nota de venta registrada", "SUCCESS", 3000, `${hostOnly}/views/comprobantes/notasdeventa/listar-notasdeventa`)
                 detalle.forEach(async item => {
                     const itemRegistrado = await registrarItemComprobante(nuevoComprobante?.idcomprobante, item?.descripcion, item?.valorunitario, item?.preciounitario)
                     console.log("item registrado -> ", itemRegistrado);
@@ -501,7 +533,7 @@ totalConIgv = totalGravado + igvTotal; */
             console.log("nuevo comprobante -> ", nuevoComprobante);
             console.log("detalle > ", detalle);
             if (nuevoComprobante?.idcomprobante) {
-                showToast("Nota de venta registrada", "SUCCESS", 3000,  `${hostOnly}/views/comprobantes/notasdeventa/listar-notasdeventa`)
+                showToast("Nota de venta registrada", "SUCCESS", 3000, `${hostOnly}/views/comprobantes/notasdeventa/listar-notasdeventa`)
                 detalle.forEach(async item => {
                     const itemRegistrado = await registrarItemComprobante(nuevoComprobante?.idcomprobante, item?.descripcion, item?.valorunitario, item?.preciounitario)
                     console.log("item registrado -> ", itemRegistrado);

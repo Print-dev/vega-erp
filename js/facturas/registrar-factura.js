@@ -18,6 +18,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     let idsucursalObtenido
     let idclienteObtenido
     let ubigeoObtenido
+    let idnacionalidadObtenido
+    let tarifaArtista
+    let precioTarifaArtista
     // empresa
     let direccionEmisorObtenido
     let distritoEmisorObtenido
@@ -91,6 +94,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data;
     }
 
+    async function obtenerTarifaArtistaPorPais(idusuario, idnacionalidad, tipoevento) {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerTarifaArtistaPorPais");
+        params.append("idusuario", idusuario);
+        params.append("idnacionalidad", idnacionalidad);
+        params.append("tipoevento", tipoevento);
+        const data = await getDatos(`${host}tarifa.controller.php`, params);
+        return data
+    }
+
     async function obtenerSucursalesPorEmpresa() {
         const params = new URLSearchParams();
         params.append("operation", "obtenerSucursalesPorEmpresa");
@@ -154,7 +167,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         params.append("operation", "obtenerUltimoSerieCorrelativo");
         const ultimaSerie = await getDatos(`${host}comprobante.controller.php`, params)
         //return fpersona
-        $q("#nserie").value = ultimaSerie[0]?.nserie 
+        $q("#nserie").value = ultimaSerie[0]?.nserie
         let correlativoActual = ultimaSerie[0]?.correlativo
         let correlativoNumero = parseInt(correlativoActual, 10) + 1;
         let nuevoCorrelativo = correlativoNumero.toString().padStart(8, '0');
@@ -185,23 +198,34 @@ document.addEventListener("DOMContentLoaded", async () => {
         provincia = dp[0]?.provincia;
         iddetalleevento = dp[0]?.iddetalle_presentacion;
 
+        if (dp[0]?.idnacionalidad == "31") {
+            const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
+            console.log("longlatCiudad->>>", longlatCiudad)
+            const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
+            const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
+            calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
+            costoDificultad = calcularDificultadPrecio?.costoDificultad
+            idnacionalidadObtenido = dp[0]?.idnacionalidad
+        } else {
+            const tarifaArtista = await obtenerTarifaArtistaPorPais(idartista, dp[0]?.idnacionalidad, dp[0]?.tipo_evento)
+            console.log("tarifaArtista -> ", tarifaArtista);
+            costoDificultad = tarifaArtista[0]?.precio
+            idnacionalidadObtenido = tarifaArtista[0]?.idnacionalidad
+            //calcularDificultadPrecio = 
+        }
 
-        const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
-        console.log("longlatCiudad->>>", longlatCiudad)
-        const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
-        const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
-        calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
+
 
         $q("#tablaProductos tbody").innerHTML = `
             <tr>
                 <td></td>
-                <td>Puesto en la locación de ${dp[0]?.provincia}</td>
-                <td>S/ ${calcularDificultadPrecio?.costoDificultad}</td>
-                <td>S/ ${calcularDificultadPrecio?.costoDificultad}</td>
+                <td>Puesto en la locación de ${dp[0]?.provincia || dp[0]?.establecimiento}</td>
+                <td>S/ ${costoDificultad}</td>
+                <td>S/ ${costoDificultad}</td>
             </tr>
         `
 
-        costoDificultad = calcularDificultadPrecio?.costoDificultad
+
         provinciaDestino = dp[0]?.provincia
         /* $q("#tInfoCotizacion").innerHTML = "";
         $q("#tInfoCotizacion").innerHTML = `
@@ -350,23 +374,36 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         eventosSelect.disabled = true
         iddp = e.target.value
+        tarifaArtista = []
+        precioTarifaArtista = 0
         const dp = await obtenerDPporId(iddp)
         await renderizarUbigeoPresentacion(iddp)
-        const tarifaArtista = await obtenerTarifaArtistaPorProvincia(dp[0]?.idprovincia, dp[0]?.idusuario, dp[0]?.tipo_evento)
+        console.log("idnacionalidadObtenido ->",idnacionalidadObtenido);
+        if (idnacionalidadObtenido == 31) {
+            tarifaArtista = await obtenerTarifaArtistaPorProvincia(dp[0]?.idprovincia, dp[0]?.idusuario, dp[0]?.tipo_evento)
+            console.log("tarifa artista cuando ya le tqe ->",tarifaArtista);
+            precioTarifaArtista = tarifaArtista[0]?.precio
+        }else{
+            tarifaArtista = await obtenerTarifaArtistaPorPais(dp[0]?.idusuario, idnacionalidadObtenido, dp[0]?.tipo_evento)
+            precioTarifaArtista = tarifaArtista[0]?.precioExtranjero
+            
+        }
+
         console.log("tarifaartista-> ", tarifaArtista);
+        console.log("precio tarifa artista o bien puede ser precio extranjero -> ", precioTarifaArtista);
         console.log("dp info -> ", dp);
         $q("#tablaProductos tbody").innerHTML += `
             <tr>
                 <td></td>
                 <td>Presentación artística de ${dp[0]?.nom_usuario}</td>
-                <td>S/ ${tarifaArtista[0]?.precio ?? "Sin Tarifa"}</td>
-                <td>S/ ${tarifaArtista[0]?.precio ?? "Sin Tarifa"}</td>
+                <td>S/ ${precioTarifaArtista ?? "Sin Tarifa"}</td>
+                <td>S/ ${precioTarifaArtista ?? "Sin Tarifa"}</td>
             </tr>
         `
 
 
         // CALCULOS
-        let precioTarifa = tarifaArtista[0]?.precio
+        let precioTarifa = precioTarifaArtista
         let precioViaje = costoDificultad
         // Calcular el total gravado (sin IGV)
         totalGravado = parseFloat(precioTarifa) + parseFloat(precioViaje);
@@ -406,12 +443,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         montoLetra = $q("#importeletra").value
 
-        console.log("igv de presentacion artista -> ", parseFloat((tarifaArtista[0]?.precio * 0.18).toFixed(2)));
+        console.log("igv de presentacion artista -> ", parseFloat((precioTarifaArtista * 0.18).toFixed(2)));
         console.log("puesto en la loccacion (precio) -> ", parseFloat((parseFloat(costoDificultad) * 0.18).toFixed(2)));
         // RELLENAR LA LISTA DETALLES (DE PRODUCTOS)
         // -> tarifa de artista
         // ****************************** PARA LA TARIFA DE ARTISTA **************************
-        const valorUnitarioTarifa = parseFloat(tarifaArtista[0]?.precio); // sin IGV
+        const valorUnitarioTarifa = parseFloat(precioTarifaArtista); // sin IGV
         const igvTarifa = parseFloat((valorUnitarioTarifa * 0.18).toFixed(2));  // IGV 18%
 
         igvObtenido = dp[0]?.igv
