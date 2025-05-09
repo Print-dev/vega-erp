@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    alert("holaaa")
     let contadorCuotas = 1;
     let cuotas = []
     let nuevaCuota
