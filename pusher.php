@@ -1,5 +1,8 @@
 <?php
+date_default_timezone_set('America/Lima'); // o tu zona horaria correcta
+
 require __DIR__ . '/vendor/autoload.php';
+header('Content-Type: application/json');
 
 $pusher = new Pusher\Pusher(
     'a42e1daecb05c59ee961',
@@ -11,5 +14,14 @@ $pusher = new Pusher\Pusher(
     ]
 );
 
+// Obtener los datos del cliente (ej. con fetch POST)
+$data = json_decode(file_get_contents("php://input"), true);
+
 // Enviar evento
-$pusher->trigger('canal-demo', 'evento-demo', ['mensaje' => '¡Hola desde PHP!']);
+// Lógica: canal general "canal-notificaciones", tipo de evento como nombre de evento
+$pusher->trigger('canal-notificaciones', $data['type'], [
+    'idusuario' => $data['idusuario'],
+    'mensaje' => $data['mensaje']
+]);
+
+echo json_encode(['status' => 'ok']);

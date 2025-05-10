@@ -18,19 +18,40 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   }
 
-  (async () => {
-    ws = new WebSocket(`ws://localhost:8000`);
+  // Inicializar Pusher
+  const pusher = new Pusher('a42e1daecb05c59ee961', {
+    cluster: 'us2',
+    encrypted: true
+  });
 
-    ws.onopen = () => {
-      wsReady = true;
-      console.log("WebSocket abierto pe");
-    };
+  // Suscribirte a un canal general
+  const channel = pusher.subscribe('canal-notificaciones');
 
-    ws.onclose = () => {
-      wsReady = false;
-      console.log("WebSocket cerrado pe");
-    };
-  })();
+  // Lista de tipos de eventos que quieres escuchar
+  const tiposEventos = [
+    'evento',
+    'viatico',
+    'asignacion filmmaker',
+    'notificacion',
+    'propuesta',
+    'entradas',
+    ''
+  ];
+  /*   (async () => {
+      ws = new WebSocket(`ws://localhost:8000`);
+  
+      ws.onopen = () => {
+        wsReady = true;
+        console.log("WebSocket abierto pe");
+      };
+  
+      ws.onclose = () => {
+        wsReady = false;
+        console.log("WebSocket cerrado pe");
+      };
+    })();
+  
+   */
 
 
 
@@ -64,9 +85,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // ********************************************* WEBSCOKETS **********************************************************
+  // ********************************************* WEBSCOKETS (AHORA PUSHER) **********************************************************
   console.log("antes de entrar al webscoekt!!!!!!!!!!!!!!!!!");
-  ws.onmessage = async (event) => {
+
+  tiposEventos.forEach(tipo => {
+    channel.bind(tipo, async function (data) {
+      console.log(`📢 Nueva notificación tipo ${tipo}:`, data);
+      recibirNotificacionAPI(data?.idusuario, data?.mensaje, tipo);
+      $q(".contenedor-notificacion").innerHTML = '';
+      await obtenerNotificaciones();
+      // alert(`🔔 ${data.mensaje}`); // si deseas notificar con popup
+    });
+  });
+  /* ws.onmessage = async (event) => {
     try {
       console.log("antes de obtener la noti");
       //console.log("data solo con event -< ", JSON.parse(event));
@@ -130,7 +161,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       console.error("Error al procesar el mensaje WebSocket:", error);
     }
-  };
+  }; */
 
   // ******************************************* ACTUALIZACION DE DATO **********************************************
 
@@ -216,6 +247,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     return fpersona
   }
 
+  async function obtenerNotificacionDPIndividual(idreferencia) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerNotificacionDPIndividual");
+    params.append("idreferencia", idreferencia ? idreferencia : '');
+    const fpersona = await getDatos(`${host}detalleevento.controller.php`, params)
+    console.log(fpersona);
+    return fpersona
+  }
+
   async function obtenerNotificacionPropuesta(idreferencia) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerNotificacionPropuesta");
@@ -283,10 +323,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           console.log("id referencia .> ", idNotificacion);
           modalNotificacion = new bootstrap.Modal($q("#modal-notificacion"))
           modalNotificacion.show() // AQUI ABRE EL MODAL 
-
-          const notificacionDP = await obtenerNotificacionDP(idNotificacion)
+          const notificacionDP = await obtenerNotificacionDPIndividual(idNotificacion)
+          //const notificacionDP = await obtenerNotificacionDP(idNotificacion)
           console.log("notiifacion dp clickeada -> ", notificacionDP);
-          cargarNotificacionDpEnModal(notificacionDP[0])
+          cargarNotificacionDpIndividualEnModal(notificacionDP[0])
 
         }
         else if (notificacion.tipo == 4) { // esto sera para propuestas
@@ -300,7 +340,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           cargarNotificacionPropuestaEnModal(notificacionPropuesta[0])
 
         }
-        /* else if (notificacion.tipo == 2) { // esto sera para eventos / detalles_presentacion
+        else if (notificacion.tipo == 6) { // esto sera para eventos / detalles_presentacion
           console.log("id referencia .> ", idNotificacion);
           modalNotificacion = new bootstrap.Modal($q("#modal-notificacion"))
           modalNotificacion.show() // AQUI ABRE EL MODAL 
@@ -309,14 +349,14 @@ document.addEventListener("DOMContentLoaded", async () => {
           console.log("notiifacion dp clickeada -> ", notificacionDP);
           cargarNotificacionDpEnModal(notificacionDP[0])
 
-        } */ // ME QUEDE ACA FALTA LISTAR LA S NOTIFICACIOINES PARA ASIGNACIONS FILMMAKER
+        } // ME QUEDE ACA FALTA LISTAR LA S NOTIFICACIOINES PARA ASIGNACIONS FILMMAKER
       });
 
       contenedor.appendChild(notificacionElemento);
     });
   }
 
-  function cargarNotificacionEnModal(notificacion, usuario, viatico) {
+  function cargarNotificacionEnModal(notificacion, usuario, viatico) { // VIATICOS
     const fechahoraSeparada = notificacion?.fecha.split(" ")
     const contenedorModal = $q(".contenedor-notificacion");
     contenedorModal.innerHTML = `
@@ -358,7 +398,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     return parseFloat(valor || 0).toFixed(2);
   }
 
-  function cargarNotificacionDpEnModal(notificacion) {
+  function cargarNotificacionDpIndividualEnModal(notificacion) {
+    const ubicacion = notificacion?.esExtranjero == 0 ? notificacion?.departamento +"/"+ notificacion?.provincia +"/"+ notificacion?.distrito : notificacion?.establecimiento +"/"+ notificacion?.pais
+    console.log("notificacion en dp modal _> ", notificacion);
+    const contenedorModal = $q(".contenedor-notificacion");
+    contenedorModal.innerHTML = `
+      <div class="mt-3">
+            <h4 class="fw-bold">Detalles evento:</h4><br>
+            <label class="fw-bold">Artista:</label> <span id="noti-pasaje">${notificacion.nom_usuario?.toUpperCase() ? notificacion.nom_usuario?.toUpperCase() : ''}</span> <br>
+            <label class="fw-bold">Lugar:</label> <span id="noti-comida">${notificacion.establecimiento?.toUpperCase() ? notificacion.establecimiento?.toUpperCase() : ''}</span> <br>
+            <label class="fw-bold">Fecha:</label> <span id="noti-viaje">${formatDate(notificacion?.fecha_presentacion) ? formatDate(notificacion?.fecha_presentacion) : ''}</span> <br>
+            <label class="fw-bold">Desde - hasta:</label> <span id="noti-viaje">${formatHour(notificacion?.horainicio) ?? "0:00"} - ${formatHour(notificacion?.horafinal) ?? "0:00"}</span> <br>
+            <label class="fw-bold">Tiempo:</label> <span id="noti-viaje">${calculateDuration(notificacion?.horainicio ?? "0:00", notificacion?.horafinal ?? "0:00")}</span> <br>
+            <label class="fw-bold">Ubicacion:</label> <span id="noti-viaje">${ubicacion}</span>
+          </div>    
+    `;
+  }
+  function cargarNotificacionDpEnModal(notificacion) { // PARA SALIDAS Y RETORNO DE ARTISTAS
+    console.log("notificacion en dp modal _> ", notificacion);
     const contenedorModal = $q(".contenedor-notificacion");
     contenedorModal.innerHTML = `
       <p class="text-muted mb-2"><strong>Fecha y hora de ${notificacion.tipo == 1 ? 'Salida' : 'Retorno'} - ${formatDate(notificacion.fecha)} - ${formatHour(notificacion.hora)})</strong></p>

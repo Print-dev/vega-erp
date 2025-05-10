@@ -71,6 +71,8 @@
 <script src="<?= $hostOnly ?>/js/swalcustom.js"></script>
 <!-- Archivo para obtener fecha y hora de peru -->
 <script src="<?= $hostOnly ?>/js/utiles.js"></script>
+<script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+
 <script src="<?= $hostOnly ?>/js/notificacionGlobal.js"></script>
 
 

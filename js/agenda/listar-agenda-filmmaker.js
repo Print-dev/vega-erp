@@ -28,37 +28,53 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
-    (async () => {
-        ws = new WebSocket("ws://localhost:8000");
+    /*     (async () => {
+            ws = new WebSocket("ws://localhost:8000");
+    
+            ws.onopen = () => {
+                wsReady = true;
+                console.log("WebSocket abierto pe");
+            };
+    
+            ws.onclose = () => {
+                wsReady = false;
+                console.log("WebSocket cerrado pe");
+            };
+        })(); */
 
-        ws.onopen = () => {
-            wsReady = true;
-            console.log("WebSocket abierto pe");
-        };
+    /*     function enviarPusher(idusuario, type, mensaje) {
+            if (wsReady) {
+                ws.send(JSON.stringify({
+                    idusuario: idusuario,
+                    type: type,
+                    mensaje: mensaje
+                }));
+    
+                console.log("Notificación enviada por WebSocket.");
+            } else {
+                console.warn("WebSocket no está listo para enviar notificaciones.");
+            }
+        } */
 
-        ws.onclose = () => {
-            wsReady = false;
-            console.log("WebSocket cerrado pe");
-        };
-    })();
-
-    function enviarWebsocket(idusuario, type, mensaje) {
-        if (wsReady) {
-            ws.send(JSON.stringify({
+    function enviarPusher(idusuario, type, mensaje) {
+        fetch(`${hostOnly}/pusher.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
                 idusuario: idusuario,
-                type: type, // Tipo de mensaje WebSocket
-                /* idusuariodest: idusuariodest, // Usuario destinatario
-                idusuariorem: idusuariorem, // Usuario remitente
-                tipo: tipo,
-                idreferencia: idviatico, // ID del viático */
+                type: type, // evento, viatico, etc.
                 mensaje: mensaje
-            }));
-
-            console.log("Notificación enviada por WebSocket.");
-        } else {
-            console.warn("WebSocket no está listo para enviar notificaciones.");
-        }
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Notificación enviada por Pusher.", data);
+            })
+            .catch(err => {
+                console.error("Error al enviar notificación:", err);
+            });
     }
+
 
 
     const usuariosAdmin = await obtenerUsuariosPorNivel("3")
@@ -432,7 +448,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 console.log("registrando viatic..");
                 const notificacionRegistrada = await registrarNotificacion(idAdmin, idusuarioLogeado, 1, viaticoRegistrado.idviatico, mensaje);
                 console.log(`Notificación enviada a ${idAdmin}:`, notificacionRegistrada);
-                enviarWebsocket(idAdmin, "viatico", mensaje)
+                enviarPusher(idAdmin, "viatico", mensaje)
             }
 
             document.querySelectorAll(".chkAdmin").forEach(checkbox => {

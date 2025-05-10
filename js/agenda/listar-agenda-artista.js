@@ -20,20 +20,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log(`Tu ubicación: ${latOrigen},${lonOrigen}`);
   });
 
-  (async () => {
-    ws = new WebSocket("ws://localhost:8000");
-
-    ws.onopen = () => {
-      wsReady = true;
-      console.log("WebSocket abierto pe");
-    };
-
-    ws.onclose = () => {
-      wsReady = false;
-      console.log("WebSocket cerrado pe");
-    };
-  })();
-
+  /*   (async () => {
+      ws = new WebSocket("ws://localhost:8000");
+  
+      ws.onopen = () => {
+        wsReady = true;
+        console.log("WebSocket abierto pe");
+      };
+  
+      ws.onclose = () => {
+        wsReady = false;
+        console.log("WebSocket cerrado pe");
+      };
+    })();
+   */
 
   //VARIABLES
   let agenda = [];
@@ -348,22 +348,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rviatico;
   }
 
-  function enviarWebsocket(idusuario, type, mensaje) {
-    if (wsReady) {
-      ws.send(JSON.stringify({
-        idusuario: idusuario,
-        type: type, // Tipo de mensaje WebSocket
-        /* idusuariodest: idusuariodest, // Usuario destinatario
-        idusuariorem: idusuariorem, // Usuario remitente
-        tipo: tipo,
-        idreferencia: idviatico, // ID del viático */
-        mensaje: mensaje
-      }));
+  /*   function enviarPusher(idusuario, type, mensaje) {
+      if (wsReady) {
+        ws.send(JSON.stringify({
+          idusuario: idusuario,
+          type: type,
+          mensaje: mensaje
+        }));
+  
+        console.log("Notificación enviada por WebSocket.");
+      } else {
+        console.warn("WebSocket no está listo para enviar notificaciones.");
+      }
+    } */
 
-      console.log("Notificación enviada por WebSocket.");
-    } else {
-      console.warn("WebSocket no está listo para enviar notificaciones.");
-    }
+  function enviarPusher(idusuario, type, mensaje) {
+    fetch(`${hostOnly}/pusher.php`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        idusuario: idusuario,
+        type: type, // evento, viatico, etc.
+        mensaje: mensaje
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log("Notificación enviada por Pusher.", data);
+      })
+      .catch(err => {
+        console.error("Error al enviar notificación:", err);
+      });
   }
 
   async function registrarNotificacion(idusuariodest, idusuariorem, tipo, idviatico, mensaje) {
@@ -664,7 +679,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           for (const admins of usuariosAdmin) {
             console.log("admins -> ", admins);
             const notificacionSalida = await registrarNotificacion(admins.idusuario, idusuarioLogeado, 2, reporteRegistradoEventoArt.idreporte, mensaje)
-            enviarWebsocket(admins.idusuario, "notificacion", mensaje)
+            enviarPusher(admins.idusuario, "notificacion", mensaje)
             console.log("notificacion salida -> ", notificacionSalida);
           }
           //modalSalida.hide()
@@ -699,7 +714,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           for (const admins of usuariosAdmin) {
             console.log("admins -> ", admins);
             const notificacionRetorno = await registrarNotificacion(admins.idusuario, idusuarioLogeado, 2, reporteRegistradoEventoArt.idreporte, mensaje)
-            enviarWebsocket(admins.idusuario, "notificacion", mensaje)
+            enviarPusher(admins.idusuario, "notificacion", mensaje)
             console.log("notificacion retorno -> ", notificacionRetorno);
           }
           setTimeout(() => {
@@ -837,6 +852,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           // Espera un pequeño tiempo para que el DOM esté listo
           setTimeout(() => {
             const btnVerMontos = $q("#btnVerMontos");
+            const btnReportarSalida = $q("#btnReportarSalida")
+            const btnReportarRetorno = $q("#btnReportarRetorno")
             if (btnVerMontos) {
               btnVerMontos.addEventListener("click", async (e) => {
                 console.log("CLICK EN VER MONTOS");
@@ -964,6 +981,75 @@ document.addEventListener("DOMContentLoaded", async () => {
                   $q(".contenedor-monto").innerHTML = "Aun no hay nada para mostrar";
                 }
               });
+            }
+            if (btnReportarSalida) {
+              btnReportarSalida.addEventListener("click", async (e) => {
+                iddetallepresentacion = e.target.getAttribute("data-iddp")
+                const { fecha, hora } = obtenerSoloFechaHoraPeruSeparadaFormatoMysql();
+                console.log("Fecha Perú (MySQL):", fecha);
+                console.log("Hora Perú:", hora);
+
+                btnReportarSalida.disabled = true;
+                btnReportarSalida.innerHTML = '<i class="fas fa-save"></i> Reportando...'; // Cambia al icono de disquete o uno similar
+                const usuariosAdmin = await obtenerUsuarios("3")
+                const usuarioLogeado = await obtenerUsuarioPorId(idusuarioLogeado)
+                console.log("usuarioLogeado -> ", usuarioLogeado);
+                const mensaje = `${usuarioLogeado[0]?.nom_usuario} ha acaba de salir el ${formatDate(fecha)} a las ${formatHour(hora)}, click para mas detalles`
+                console.log("usuariosAdmin -> ", usuariosAdmin);
+
+                const reporteRegistradoEventoArt = await reportarSalidaRetornoArtista(iddetallepresentacion, 1, fecha, hora)
+                //const destinoBusAsignado = await asignarLugarDestinoBus(iddetallepresentacion)
+                //console.log("destino bus asignado ? ", destinoBusAsignado);
+                console.log("reporte de registro de salida del arrtista-> ", reporteRegistradoEventoArt);
+                if (reporteRegistradoEventoArt.idreporte) {
+                  showToast("Salida Reportada!", "SUCCESS")
+                  for (const admins of usuariosAdmin) {
+                    console.log("admins -> ", admins);
+                    const notificacionSalida = await registrarNotificacion(admins.idusuario, idusuarioLogeado, 6, reporteRegistradoEventoArt.idreporte, mensaje)
+                    enviarPusher(admins.idusuario, "notificacion", mensaje)
+                    console.log("notificacion salida -> ", notificacionSalida);
+                  }
+                  //modalSalida.hide()
+                  setTimeout(() => {
+                    btnReportarSalida.disabled = false;
+                    btnReportarSalida.innerHTML = 'Reportar Salida'; // Reemplaza con el texto original
+                  }, 2500);
+                  return
+                }
+              })
+            }
+            if (btnReportarRetorno) {
+              btnReportarRetorno.addEventListener("click", async (e) => {
+                const iddetallepresentacion = e.target.getAttribute("data-iddp")
+                const { fecha, hora } = obtenerSoloFechaHoraPeruSeparadaFormatoMysql();
+                console.log("Fecha Perú (MySQL):", fecha);
+                console.log("Hora Perú:", hora);
+
+                btnReportarRetorno.disabled = true;
+                btnReportarRetorno.innerHTML = '<i class="fas fa-save"></i> Reportando...'; // Cambia al icono de disquete o uno similar
+                const usuariosAdmin = await obtenerUsuarios("3")
+                const usuarioLogeado = await obtenerUsuarioPorId(idusuarioLogeado)
+                console.log("usuarioLogeado -> ", usuarioLogeado);
+                const mensaje = `${usuarioLogeado[0]?.nom_usuario} ha acaba de retornar el ${formatDate(fecha)} a las ${formatHour(hora)}, click para mas detalles`
+                console.log("usuariosAdmin -> ", usuariosAdmin);
+                const reporteRegistradoEventoArt = await reportarSalidaRetornoArtista(iddetallepresentacion, 2, fecha, hora)
+
+                console.log("reporte de registro de retorno del arrtista-> ", reporteRegistradoEventoArt);
+                if (reporteRegistradoEventoArt.idreporte) {
+                  showToast("Retorno Reportada!", "SUCCESS")
+                  for (const admins of usuariosAdmin) {
+                    console.log("admins -> ", admins);
+                    const notificacionRetorno = await registrarNotificacion(admins.idusuario, idusuarioLogeado, 6, reporteRegistradoEventoArt.idreporte, mensaje)
+                    enviarPusher(admins.idusuario, "notificacion", mensaje)
+                    console.log("notificacion retorno -> ", notificacionRetorno);
+                  }
+                  setTimeout(() => {
+                    btnReportarRetorno.disabled = false;
+                    btnReportarRetorno.innerHTML = 'Reportar Retorno'; // Reemplaza con el texto original
+                  }, 2500);
+                  return
+                }
+              })
             }
           }, 10);
         },
@@ -1614,7 +1700,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       showToast("Filmmaker asignado correctamente", "SUCCESS")
       const notiAsigFilm = await registrarNotificacion($q("#filmmaker").value, idusuarioLogeado, 3, filmmakerAsignado.idasignacion, "Has sido asignado a un nuevo evento, revisa tu agenda")
       console.log("noti asig film -< ", notiAsigFilm);
-      enviarWebsocket($q("#filmmaker").value, "asignacion filmmaker", "Has sido asignado a un nuevo evento, revisa tu agenda")
+      enviarPusher($q("#filmmaker").value, "asignacion filmmaker", "Has sido asignado a un nuevo evento, revisa tu agenda")
       /*       const agendaUsuario = await obtenerAgenda(idUsuario);
             console.log("agendaUsuario todo obtenido ->", agendaUsuario);
       

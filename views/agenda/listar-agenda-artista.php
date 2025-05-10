@@ -153,7 +153,7 @@
     </div>
 </div>
 
-<div class="container-fluid">
+<div class="">
     <div class="contenedor-calendario">
         <div id="calendar"></div>
     </div>

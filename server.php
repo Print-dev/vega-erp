@@ -1,6 +1,7 @@
 
 <?php
 // servidor.php
+date_default_timezone_set('America/Lima'); // o tu zona horaria correcta
 error_reporting(E_ALL);
 set_time_limit(0);
 ob_implicit_flush();

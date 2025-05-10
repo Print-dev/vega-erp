@@ -401,10 +401,23 @@ class DetalleEvento extends ExecQuery
     }
   }
 
-  public function obtenerNotificacionDP($params = []): array
+  public function obtenerNotificacionDP($params = []): array // SOLO PARA NOTIFICACIONES DE SALIDA Y RETORNO DE ARTISTA
   {
     try {
       $cmd = parent::execQ("CALL sp_obtener_notificacion_dp (?)");
+      $cmd->execute(array(
+        $params['idreferencia']
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerNotificacionDPIndividual($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_notificacion_dp_individual (?)");
       $cmd->execute(array(
         $params['idreferencia']
       ));

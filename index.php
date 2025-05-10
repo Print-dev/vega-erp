@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('America/Lima'); // o tu zona horaria correcta
 session_start();
 
 $hostOnly = "http://localhost/vega-erp";

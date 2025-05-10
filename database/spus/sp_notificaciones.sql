@@ -83,10 +83,32 @@ BEGIN
     LEFT JOIN distritos DIS ON DIS.iddistrito = DP.iddistrito
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
     LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
+    WHERE NOTIF.idreferencia = _idreferencia AND NOTIF.tipo = 6;
+END //
+DELIMITER ;
+CALL sp_obtener_notificacion_dp (175);
+
+DROP PROCEDURE IF EXISTS sp_obtener_notificacion_dp_individual;
+DELIMITER //
+CREATE PROCEDURE sp_obtener_notificacion_dp_individual
+(
+    IN _idreferencia INT
+)
+BEGIN
+	SELECT 
+		NOTIF.idnotificacion, DP.iddetalle_presentacion, DP.fecha_presentacion, USU.nom_usuario, DP.horainicio, DP.horafinal, DP.establecimiento, DP.modalidad, DP.tipo_evento, DIS.distrito, PRO.provincia, DEP.departamento, DP.esExtranjero,NAC.pais, NAC.idnacionalidad
+    FROM notificaciones NOTIF
+    LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = NOTIF.idreferencia
+    LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+    LEFT JOIN distritos DIS ON DIS.iddistrito = DP.iddistrito
+    LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
+    LEFT JOIN departamentos DEP ON DEP.iddepartamento = PRO.iddepartamento
+	LEFT JOIN nacionalidades NAC ON NAC.idnacionalidad = DP.idnacionalidad
     WHERE NOTIF.idreferencia = _idreferencia AND NOTIF.tipo = 2;
 END //
 DELIMITER ;
-
+select * from detalles_presentacion;
+select * from nacionalidades;
 DROP PROCEDURE IF EXISTS sp_obtener_notificacion_propuesta;
 DELIMITER //
 CREATE PROCEDURE sp_obtener_notificacion_propuesta

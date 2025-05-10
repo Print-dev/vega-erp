@@ -57,7 +57,7 @@ if (isset($_GET['operation'])) {
       ];
       echo json_encode($detalleevento->filtrarAtenciones($cleanData));
       break;
-      
+
     case 'obtenerDetallesPresentacionPorModalidad':
       $cleanData = [
         'modalidad' => $_GET['modalidad'] === "" ? null : $detalleevento->limpiarCadena($_GET['modalidad']),
@@ -65,15 +65,20 @@ if (isset($_GET['operation'])) {
       ];
       echo json_encode($detalleevento->obtenerDetallesPresentacionPorModalidad($cleanData));
       break;
-      
+
     case 'obtenerNotificacionDP':
       $cleanData = [
         'idreferencia' => $_GET['idreferencia'] === "" ? null : $detalleevento->limpiarCadena($_GET['idreferencia'])
       ];
       echo json_encode($detalleevento->obtenerNotificacionDP($cleanData));
       break;
-      
 
+    case 'obtenerNotificacionDPIndividual':
+      $cleanData = [
+        'idreferencia' => $_GET['idreferencia'] === "" ? null : $detalleevento->limpiarCadena($_GET['idreferencia'])
+      ];
+      echo json_encode($detalleevento->obtenerNotificacionDPIndividual($cleanData));
+      break;
   }
 }
 if (isset($_POST['operation'])) {
@@ -258,7 +263,7 @@ if (isset($_POST['operation'])) {
       echo json_encode($rpt);
       break;
 
-    /* case 'asignarLugarDestinoBus':
+      /* case 'asignarLugarDestinoBus':
       $cleanData = [
         'iddetallepresentacion' => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']),
         'lugardestino' => $detalleevento->limpiarCadena($_POST['lugardestino']),

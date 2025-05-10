@@ -111,8 +111,7 @@ BEGIN
     WHERE DP.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
 END //
 DELIMITER ;
-select * from detalles_presentacion
-select * from nacionalidades;
+
 DROP DATABASE IF EXISTS `sp_obtener_dps`
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_dps`(
