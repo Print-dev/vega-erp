@@ -501,8 +501,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     height: "95%",
     initialView: "dayGridMonth", // Vista inicial: mes
     headerToolbar: {
-      left: "prev,next today",
-      center: "title",
+      left: "today",
+      center: "prev title next",
       right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth", // Filtros de vista
     },
     events: [], // Aquí se cargarán los eventos dinámicamente

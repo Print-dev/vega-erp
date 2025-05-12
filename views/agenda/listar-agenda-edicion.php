@@ -117,9 +117,34 @@
         font-size: 14px;
         border-radius: 6px;
     }
+
+    /* Centra el grupo central (prev, title, next) en una sola línea */
+    .fc-header-toolbar .fc-toolbar-chunk {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Ajusta el margen entre los botones y el título */
+    .fc-toolbar-title {
+        margin: 0 10px;
+        white-space: nowrap;
+    }
+
+    /* Evita que los botones salten de línea */
+    .fc .fc-button {
+        flex-shrink: 0;
+        margin: 0;
+    }
+
+    /* Asegura que todo esté alineado correctamente */
+    .fc .fc-toolbar.fc-header-toolbar {
+        flex-wrap: nowrap !important;
+        gap: 0;
+    }
 </style>
 
-<div class="row g-0 mb-3 contenedor-filtros-agenda" hidden>
+<div class="row g-0 mb-3 contenedor-filtros-agenda">
     <div class="card border-0">
         <div class="card-body border-0">
             <label for="">Filtros</label>
