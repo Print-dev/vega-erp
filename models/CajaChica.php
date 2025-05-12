@@ -89,14 +89,14 @@ class CajaChica extends ExecQuery
     public function filtrarCajasChicas($params = []): array
     {
         try {
-            $cmd = parent::execQ("CALL sp_filtrar_cajachica(?,?,?,?,?)");
+            $cmd = parent::execQ("CALL sp_filtrar_cajachica(?,?,?,?,?,?)");
             $cmd->execute([
                 $params['fechaapertura'],
                 $params['fechacierre'],
                 $params['mes'],
                 $params['año_semana'],
                 $params['busqueda_general'],
-                
+                $params['creadopor'],                
             ]);
             return $cmd->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
@@ -109,7 +109,7 @@ class CajaChica extends ExecQuery
     {
         try {
             $pdo = parent::getConexion();
-            $cmd = $pdo->prepare('CALL sp_registrar_cajachica(@idcajachica,?,?,?,?,?,?)');
+            $cmd = $pdo->prepare('CALL sp_registrar_cajachica(@idcajachica,?,?,?,?,?,?,?)');
             $cmd->execute(
                 array(
                     $params['iddetallepresentacion'],
@@ -117,7 +117,8 @@ class CajaChica extends ExecQuery
                     $params['ccinicial'],
                     $params['incremento'],
                     $params['decremento'],
-                    $params['ccfinal']
+                    $params['ccfinal'],
+                    $params['creadopor'],
                 )
             );
 

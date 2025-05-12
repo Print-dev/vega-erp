@@ -49,6 +49,7 @@ if (isset($_GET['operation'])) {
         'mes' => empty($_GET['mes']) ? null : (int) $_GET['mes'],
         'año_semana' => empty($_GET['año_semana']) ? null : intval($_GET['año_semana']),
         'busqueda_general' => $_GET['busqueda_general'] === "" ? null : $cajachica->limpiarCadena($_GET['busqueda_general']),
+        'creadopor' => $_GET['creadopor'] === "" ? null : $cajachica->limpiarCadena($_GET['creadopor']),
       ];
       echo json_encode($cajachica->filtrarCajasChicas($cleanData));
       break;
@@ -65,6 +66,7 @@ if (isset($_POST['operation'])) {
         'incremento' => $cajachica->limpiarCadena($_POST['incremento']),
         'decremento' => $cajachica->limpiarCadena($_POST['decremento']),
         'ccfinal'   => $cajachica->limpiarCadena($_POST['ccfinal']),
+        'creadopor'   => $cajachica->limpiarCadena($_POST['creadopor']),
       ];
 
       $respuesta = ['idcajachica' => -1];

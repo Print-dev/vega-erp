@@ -83,6 +83,9 @@ $accesos = [
     // DATOS DE EMPRESA
     ['modulo' => 'empresa', 'ruta' => 'datos-empresa', 'subruta' => '', 'texto' => 'Datos de empresa', 'visible' => true, 'icono' => 'fa-solid fa-building'],
 
+    // REGISTRO DE PROVEEDORES
+   // ['modulo' => 'proveedores', 'ruta' => 'proveedores', 'subruta' => '', 'texto' => 'Proveedores', 'visible' => true, 'icono' => 'fa-solid fa-building'],
+
   ],
   "Artista" => [
     ['modulo' => 'agenda', 'ruta' => '', 'texto' => 'Agenda', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],

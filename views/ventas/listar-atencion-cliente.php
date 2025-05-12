@@ -6,6 +6,94 @@
         height: auto;
         min-height: 100vh;
     }
+
+    h1 {
+        font-size: 2rem;
+        color: #000;
+    }
+
+    /* Ajustar el tamaño de la tabla principal */
+    #table-atenciones {
+        font-size: 12px;
+        /* Reducir el tamaño de la fuente */
+        width: 100%;
+        border-collapse: collapse;
+        /* Unir bordes para ahorrar espacio */
+    }
+
+    /* Ajustar el padding de las celdas */
+    #table-atenciones th,
+    #table-atenciones td {
+        padding: 4px 8px;
+        /* Reducir el espacio interno */
+        text-align: left;
+        white-space: nowrap;
+        /* Evitar saltos de línea */
+    }
+
+    /* Ajustar el ancho de columnas específicas */
+    #table-atenciones th:nth-child(1),
+    #table-atenciones td:nth-child(1) {
+        width: 5%;
+    }
+
+    /* # */
+    #table-atenciones th:nth-child(2),
+    #table-atenciones td:nth-child(2) {
+        width: 10%;
+    }
+
+    /* N° Cotización */
+    #table-atenciones th:nth-child(3),
+    #table-atenciones td:nth-child(3) {
+        width: 15%;
+    }
+
+    /* Artista */
+    #table-atenciones th:nth-child(4),
+    #table-atenciones td:nth-child(4) {
+        width: 20%;
+    }
+
+    /* Lugar */
+    #table-atenciones th:nth-child(5),
+    #table-atenciones td:nth-child(5) {
+        width: 15%;
+    }
+
+    /* Ubigeo */
+    #table-atenciones th:nth-child(6),
+    #table-atenciones td:nth-child(6) {
+        width: 10%;
+    }
+
+    /* Fecha Presentación */
+    #table-atenciones th:nth-child(7),
+    #table-atenciones td:nth-child(7) {
+        width: 10%;
+    }
+
+    /* Opciones */
+
+    /* Ajustar el contenedor de la tabla para evitar desbordamientos */
+    .table-responsive {
+        overflow-x: auto;
+        /* Habilitar scroll horizontal si es necesario */
+        max-width: 100%;
+    }
+
+    /* Reducir el tamaño del título */
+    h1 {
+        font-size: 1.5rem !important;
+        /* Título más compacto */
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* Ajustar el botón "Nueva Atención" */
+    .btn .btn-primary {
+        padding: 0.10rem 0.5rem;
+        font-size: 0.875rem;
+    }
 </style>
 <div class=" contenedor-general">
     <div class="card" style="border-color: #f2f4f7; box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);
@@ -27,7 +115,7 @@
                             <div class="card border-0">
                                 <div class="card-body border-0">
                                     <label for="">Filtros</label>
-                                    <div class="row">
+                                    <div class="row" style="font-size: 0.5rem;">
                                         <div class="col-md-2">
                                             <div class="form-floating">
                                                 <input type="text" class="form-control filter" id="ncotizacion" autocomplete="off">
@@ -199,6 +287,23 @@
                 <!--                 <button type="button" class="btn btn-primary btnGuardarContrato" id="close-mdl-cotizacion">Guardar y cerrar</button>
  -->
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-infoevento" tabindex="-1" aria-labelledby="modalinfoevento" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalinfoevento">Informacion evento</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="contenedor-infoevento p-3">
+
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

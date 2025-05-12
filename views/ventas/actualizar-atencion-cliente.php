@@ -106,6 +106,9 @@
                                     <label for="distrito2" class="form-label">Distrito</label>
                                 </div>
                             </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-primary" id="btnEditarCliente">Editar Cliente</button>
+                            </div>
 
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="igv">

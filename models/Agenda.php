@@ -19,6 +19,20 @@ class Agenda extends ExecQuery
     }
   }
 
+  public function obtenerFechaOcupadaArtista($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_obtener_fecha_ocupada_artista(?,?)");
+      $cmd->execute(array(
+        $params['idusuario'],
+        $params['fechapresentacion'],
+      ));
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function obtenerAgenda($params = []): array
   {
     try {

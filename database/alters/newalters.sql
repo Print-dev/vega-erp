@@ -140,3 +140,6 @@ FROM posibles_id
 WHERE id NOT IN (SELECT iddetalle_presentacion FROM detalles_presentacion);
 
 ALTER TABLE sucursales ADD COLUMN ubigeo CHAR(6) NULL;
+
+ALTER TABLE cajachica ADD COLUMN creadopor INT NULL;
+ALTER TABLE cajachica ADD CONSTRAINT fk_idusuario_abierto foreign key (creadopor) references usuarios (idusuario);

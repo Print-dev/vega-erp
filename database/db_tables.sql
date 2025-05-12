@@ -95,7 +95,7 @@ CREATE TABLE personas
     CONSTRAINT 	  uk_correo			  UNIQUE(correo),
     constraint	  fk_iddistrito 	  foreign key (iddistrito) references distritos (iddistrito)
 )ENGINE=INNODB;
-
+select*from usuarios;
 CREATE TABLE nivelaccesos
 (
 	idnivelacceso INT AUTO_INCREMENT PRIMARY KEY,
@@ -345,6 +345,11 @@ CREATE TABLE cajachica (
     constraint fk_iddp_cajachicaa foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
     constraint fk_idmonto_caja foreign key (idmonto) references montoCajaChica (idmonto)
 ) engine = innodb;
+-- ALTER TABLE cajachica DROP COLUMN abiertopor;
+-- ALTER TABLE cajachica DROP FOREIGN KEY fk_idusuario_abiertopor;
+-- ALTER TABLE cajachica ADD COLUMN creadopor INT NULL;
+-- ALTER TABLE cajachica ADD CONSTRAINT fk_idusuario_abierto foreign key (creadopor) references usuarios (idusuario);
+-- select * from cajachica;
 CREATE TABLE gastos_cajachica (
 	idgasto		int auto_increment primary key,
     idcajachica		int not null,

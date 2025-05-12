@@ -101,13 +101,14 @@ CREATE PROCEDURE `sp_obtener_dp_porid`(
 )
 BEGIN
 	SELECT 		
-		DP.iddetalle_presentacion, USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.tipo_evento, DP.idnacionalidad
+		DP.iddetalle_presentacion, USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.tipo_evento, DP.idnacionalidad, NAC.pais, NAC.idnacionalidad, CLI.telefono , CLI.razonsocial
 	FROM detalles_presentacion DP
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
 	LEFT JOIN distritos DIS ON DIS.iddistrito = DP.iddistrito
     LEFT JOIN provincias PRO ON PRO.idprovincia = DIS.idprovincia
     LEFT JOIN departamentos DE ON DE.iddepartamento = PRO.iddepartamento
+	LEFT JOIN nacionalidades NAC ON NAC.idnacionalidad = DP.idnacionalidad
     WHERE DP.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
 END //
 DELIMITER ;
@@ -254,6 +255,32 @@ BEGIN
 END //
 DELIMITER ;
 
+
+DROP PROCEDURE IF EXISTS sp_obtener_fecha_ocupada_artista;
+DELIMITER //
+CREATE PROCEDURE `sp_obtener_fecha_ocupada_artista`(
+    IN _idusuario INT, 
+    IN _fecha_presentacion DATE
+)
+BEGIN
+    SELECT 
+        *
+    FROM detalles_presentacion DP
+    LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
+    LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
+    LEFT JOIN contratos CO ON CO.iddetalle_presentacion = DP.iddetalle_presentacion
+    LEFT JOIN convenios CON ON CON.iddetalle_presentacion = DP.iddetalle_presentacion
+    LEFT JOIN distritos DISDP ON DISDP.iddistrito = DP.iddistrito
+    LEFT JOIN provincias PRODP ON PRODP.idprovincia = DISDP.idprovincia
+    LEFT JOIN departamentos DEDP ON DEDP.iddepartamento = PRODP.iddepartamento
+    WHERE 
+        (_idusuario IS NULL OR USU.idusuario = _idusuario) AND
+        (_fecha_presentacion IS NULL OR DP.fecha_presentacion = _fecha_presentacion);
+END //
+DELIMITER ;
+-- CALL sp_obtener_fecha_ocupada_artista (2, '2025-04-19');
+-- select*from usuarios where idusuario = 2;
+
 DROP PROCEDURE IF EXISTS sp_obtener_agenda_artista;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_agenda_artista`(
@@ -317,6 +344,8 @@ BEGIN
         (_iddetalle_presentacion IS NULL OR DP.iddetalle_presentacion = _iddetalle_presentacion);
 END //
 DELIMITER ;
+
+
 
 DROP PROCEDURE IF EXISTS sp_obtener_agenda;
 DELIMITER //

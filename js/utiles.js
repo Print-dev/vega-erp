@@ -254,9 +254,13 @@ print_r($resultado);
  */
 
 function calcularTiempoTranscurrido(fechaString) {
-  const fecha = new Date(fechaString);
   const ahora = new Date();
-  const diferencia = Math.floor((ahora - fecha) / 1000); // Diferencia en segundos
+
+  // Convertir fecha de entrada y fecha actual a UTC-5 (hora de Lima)
+  const fecha = new Date(new Date(fechaString).toLocaleString("en-US", { timeZone: "America/Lima" }));
+  const actual = new Date(ahora.toLocaleString("en-US", { timeZone: "America/Lima" }));
+
+  const diferencia = Math.floor((actual - fecha) / 1000); // en segundos
 
   if (diferencia < 60) {
     return `hace ${diferencia} segundos`;

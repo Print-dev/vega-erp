@@ -203,6 +203,15 @@ document.addEventListener('DOMContentLoaded', async function () {
     return data;
   }
 
+  async function obtenerFechaOcupadaArtista(idusuario, fechapresentacion) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerFechaOcupadaArtista");
+    params.append("idusuario", idusuario ? idusuario : "");
+    params.append("fechapresentacion", fechapresentacion ? fechapresentacion : "");
+    const data = await getDatos(`${host}agenda.controller.php`, params);
+    return data;
+  }
+
   async function obtenerUsuarioPorId(idusuario) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerUsuarioPorId");
@@ -452,6 +461,34 @@ document.addEventListener('DOMContentLoaded', async function () {
     const rcontrato = await fcontrato.json();
     return rcontrato;
   } */
+
+  /*   async function registrarCajaChica(
+      iddetallepresentacion,
+      idmonto,
+      ccinicial,
+      incremento,
+      decremento,
+      ccfinal
+    ) {
+      const cajachica = new FormData();
+      cajachica.append("operation", "registrarCajaChica");
+      cajachica.append(
+        "iddetallepresentacion",
+        iddetallepresentacion ? iddetallepresentacion : ""
+      );
+      cajachica.append("idmonto", idmonto);
+      cajachica.append("ccinicial", ccinicial);
+      cajachica.append("incremento", incremento); // id artista
+      cajachica.append("decremento", decremento); // id artista
+      cajachica.append("ccfinal", ccfinal);
+  
+      const fcajachica = await fetch(`${host}cajachica.controller.php`, {
+        method: "POST",
+        body: cajachica,
+      });
+      const rcajachica = await fcajachica.json();
+      return rcajachica;
+    } */
 
   // ************************************* FUNCIONES DE VALIDACION ************************************* //
 
@@ -728,15 +765,24 @@ document.addEventListener('DOMContentLoaded', async function () {
   // ************************************* EVENTOS ************************************* //
 
   $q("#btnConsultarFecha").addEventListener("click", async () => {
-    modalAgendaFechas = new bootstrap.Modal($q("#modal-fechasagenda"))
-    modalAgendaFechas.show()
+    /* modalAgendaFechas = new bootstrap.Modal($q("#modal-fechasagenda"))
+    modalAgendaFechas.show() */
     console.log("artista value -> ", $q("#artista").value)
-    const agenda = await obtenerAgendaArtista($q("#artista").value, null)
-    console.log("AGENDAAAA-> ", agenda)
+    //const agenda = await obtenerAgendaArtista($q("#artista").value, null) // CAMBIAR ACA 
+    const fechaOcupada = await obtenerFechaOcupadaArtista($q("#artista").value, $q("#fechapresentacion").value)
+    console.log("fecah ocupado -> ", fechaOcupada)
     $q(".contenedor-fechasocupadas").innerHTML = ''
     // ACA PRIMERO OBTENER SI LA FECHA SELCCIONADA ES IGUAL A UUNA FECHA YA OCUPADA
-    if (agenda.length > 0) {
-      agenda.forEach((age, x) => {
+    if (fechaOcupada.length > 0) {
+      $q(".container-ocupado").innerHTML = `
+      <div class="bg-danger text-white text-center py-4 ">
+        <h1 class="h4 mb-1">Fecha ocupada</h1>
+        <p class="mb-0">${fechaOcupada[0]?.departamento + "/" + fechaOcupada[0]?.provincia + "/" + fechaOcupada[0]?.distrito}</p>
+        <p class="mb-0">${formatHour(fechaOcupada[0]?.horainicio) + " - " + formatHour(fechaOcupada[0]?.horafinal)}</p>
+      </div>        
+      `
+      //alert("esta ocuado > ")
+      /* fechaOcupada.forEach((age, x) => {
         if (age.estadoContrato == 2 || age.estado_convenio == 2) {
           if (age.estado == 1) {
             $q(".contenedor-fechasocupadas").innerHTML += `
@@ -756,9 +802,14 @@ document.addEventListener('DOMContentLoaded', async function () {
         `
           }
         }
-      });
+      }); */
     } else {
-      $q(".contenedor-fechasocupadas").innerHTML = '<strong>Sin fechas proximas</strong>'
+      $q(".container-ocupado").innerHTML = `
+      <div class="bg-success text-white text-center py-4 ">
+        <h1 class="h4 mb-1">Fecha Libre</h1>        
+      </div>        
+      `
+      //$q(".contenedor-fechasocupadas").innerHTML = '<strong>Sin fechas proximas</strong>'
     }
   })
 

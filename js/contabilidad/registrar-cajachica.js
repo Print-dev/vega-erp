@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     ccinicial,
     incremento,
     decremento,
-    ccfinal
+    ccfinal    
   ) {
     const cajachica = new FormData();
     cajachica.append("operation", "registrarCajaChica");
@@ -215,6 +215,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     cajachica.append("incremento", incremento); // id artista
     cajachica.append("decremento", decremento); // id artista
     cajachica.append("ccfinal", ccfinal);
+    cajachica.append("creadopor", idusuarioLogeado);
 
     const fcajachica = await fetch(`${host}cajachica.controller.php`, {
       method: "POST",

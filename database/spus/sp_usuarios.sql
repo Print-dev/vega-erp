@@ -87,7 +87,8 @@ BEGIN
         US.estado,
         NA.nivelacceso,
         NA.idnivelacceso,
-        PER.nombres
+        PER.nombres,
+        PER.apellidos
 		FROM usuarios US
         INNER JOIN nivelaccesos NA ON US.idnivelacceso = NA.idnivelacceso
         LEFT JOIN personas PER ON PER.idpersona = US.idpersona

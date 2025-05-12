@@ -130,12 +130,18 @@
                                 </div>
                             </div>
                             <div class="col-md-2">
-                                <div class="form-floating">
-                                    <input type="date" class="form-control" id="fechapresentacion" autocomplete="off">
-                                    <label for="fechapresentacion" class="form-label">Fecha de evento</label>
+                                <div class="d-flex align-items-stretch gap-2">
+                                    <div class="form-floating flex-grow-1">
+                                        <input type="date" class="form-control" id="fechapresentacion" autocomplete="off" placeholder="Fecha de evento">
+                                        <label for="fechapresentacion">Fecha de evento</label>
+                                    </div>
+                                    <button class="btn btn-primary d-flex align-items-center justify-content-center px-3" type="button" id="btnConsultarFecha">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                    </button>
                                 </div>
-
                             </div>
+
+
 
                             <div class="col-md-2">
                                 <div class="form-floating">
@@ -205,7 +211,7 @@
                                 <div class="form-floating">
                                     <select name="nacionalidad2" id="nacionalidad2" class="form-select" ">
                                         <!-- <option value="">Selecciona</option>
-                                        <option value="31">Peru</option> -->
+                                        <option value=" 31">Peru</option> -->
                                     </select>
                                     <label for="nacionalidad2" class="form-label">País</label>
                                 </div>
@@ -245,6 +251,11 @@
                         </div>
                     </div>
                 </div>
+                <div class="container-ocupado">
+
+                </div>
+
+
                 <div class="card-footer d-flex justify-content-end">
                     <div class="d-flex gap-2">
                         <button type="submit" id="btnGuardarAC" class="btn btn-primary">
@@ -253,8 +264,7 @@
                             <i class="fa-solid fa-eraser px-2"></i>Limpiar</button>
                         <a href="<?= $hostOnlyHeader ?>/views/ventas/listar-atencion-cliente" id="btnRegresarAC" class="btn btn-primary">
                             <i class="fa-solid fa-circle-left px-2"></i>Regresar</a>
-                        <button class="btn btn-primary" type="button" id="btnConsultarFecha">
-                            <i class="fa-solid fa-magnifying-glass"></i> Consultar fechas reservadas</button>
+
                     </div>
                 </div>
             </div>

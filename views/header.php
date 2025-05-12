@@ -19,7 +19,7 @@ if (!isset($_SESSION['login']) || $_SESSION['login']['estado'] == false) {
   //die(var_dump($totalElementos));
 
   //Verificando el permiso
-  
+
   $encontrado = false;
   $i = 0;
 
@@ -220,6 +220,10 @@ switch ($_SESSION['login']['nivelacceso']) {
   #options-sidebar::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
+
+  #sidebarMenu {
+    transition: all 0.3s ease;
+  }
 </style>
 <div class="beta-banner">Vega Producciones V.1.0</div>
 
@@ -246,10 +250,8 @@ switch ($_SESSION['login']['nivelacceso']) {
   <!-- BOTON HAMBURGUESA EN RESPONSIVE-->
 
   <!-- SIDEBAR -->
-  <nav
-    id="sidebarMenu"
-    class="sidebar d-lg-block bg-white text-white collapse "
-    data-simplebar>
+  <nav id="sidebarMenu" class="sidebar bg-white text-white sidebar-visible" data-simplebar>
+
     <div class=" px-4 pt-3"> <!-- sidebar-inner -->
       <div
         class="d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
@@ -476,6 +478,36 @@ switch ($_SESSION['login']['nivelacceso']) {
             }
             echo "</ul>";
           }
+           else if ($access['modulo'] === "proveedores" && $access['visible']) {
+            echo "
+              <li class='sidebar-item nav-item'>
+                <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#proveedores'
+                  aria-expanded='false' aria-controls='proveedores'>
+                  <i class='{$access['icono']}'></i>
+                  <span class='sidebar-text mx-2'>{$access['texto']}</span>
+                  <i class='fa-solid fa-angle-down ms-auto mt-2 toggle-icon'></i>
+                </a>              
+              </li> 
+              <ul id='proveedores' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#proveedores'>";
+
+            foreach ($listaAcceso as $subAccess) {
+              $rutaCompleta = "{$hostOnlyHeader}/views/{$subAccess['modulo']}/";
+              if (!empty($subAccess['subruta'])) {
+                $rutaCompleta .= "{$subAccess['subruta']}/";
+              }
+              $rutaCompleta .= "{$subAccess['ruta']}";
+              if (!$subAccess['visible'] && $subAccess['modulo'] === "proveedores" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
+                echo "
+                <li class='sidebar-item nav-item list-proveedores'>
+                  <a href='{$rutaCompleta}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                    <i class='{$subAccess['icono']}'></i>
+                    <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
+                  </a>
+                </li>";
+              }
+            }
+            echo "</ul>";
+          }
         }
         ?>
 
@@ -494,7 +526,14 @@ switch ($_SESSION['login']['nivelacceso']) {
         <div
           class="d-flex justify-content-between w-100"
           id="navbarSupportedContent">
-          <div class="d-flex align-items-center"></div>
+          <div class="d-flex align-items-center">
+            <!-- Botón para colapsar sidebar en escritorio -->
+            <button id="toggleSidebar" class="btn btn-sm btn-outline-dark d-none d-lg-inline-block me-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M3 6h18M3 18h18" />
+              </svg>
+            </button>
+          </div>
           <!-- Navbar links (PERFIL USUARIO) -->
           <ul class="navbar-nav align-items-center">
             <!-- LOGO NOTIFICACION -->
@@ -613,6 +652,17 @@ switch ($_SESSION['login']['nivelacceso']) {
 
     <!-- /NAVBAR-HEADER -->
     <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const toggleBtn = document.getElementById("toggleSidebar");
+        const sidebar = document.getElementById("sidebarMenu");
+
+        toggleBtn.addEventListener("click", function() {
+          sidebar.classList.toggle("d-none");
+        });
+      });
+    </script>
+
+    <script>
       const idusuarioLogeado = "<?php echo $_SESSION['login']['idusuario']; ?>"
       const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"
       const rucEmpresa = "<?php echo $_SESSION['login']['ruc']; ?>"
@@ -663,5 +713,4 @@ switch ($_SESSION['login']['nivelacceso']) {
       /* document.querySelector("#show-all-notificaciones").addEventListener("click", ()=>{
 
       }) */
-
     </script>

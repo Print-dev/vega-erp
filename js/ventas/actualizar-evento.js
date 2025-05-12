@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
     let iddp = window.localStorage.getItem("iddp")
     let idartista = -1
+let idcliente = -1
 
     function $q(object = null) {
         return document.querySelector(object);
@@ -63,6 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const infoDp = await obtenerInfoDPporId(iddp)
         console.log("info dp -> ", infoDp);
         idartista = infoDp[0]?.idusuario
+        idcliente = infoDp[0]?.idcliente
         $q("#fechapresentacion").value = infoDp[0]?.fecha_presentacion
         $q("#horainicio").value = infoDp[0]?.horainicio
         $q("#horafinal").value = infoDp[0]?.horafinal
@@ -163,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log("NACIONALIDADES TODAS OBTENIDAS : ", nacionalidades)
             let nacionalidadSeleccionada = nacionalidades.find(n => n.idnacionalidad === departamentoSeleccionado.idnacionalidad);
             $q("#nacionalidad2").innerHTML = nacionalidades.map(n =>
-                `<option value="${n.idnacionalidad}" ${n.idnacionalidad === departamentoSeleccionado.idnacionalidad ? "selected" : ""}>${n.nacionalidad}</option>`
+                `<option value="${n.idnacionalidad}" ${n.idnacionalidad === departamentoSeleccionado.idnacionalidad ? "selected" : ""}>${n.pais}</option>`
             ).join("");
 
             // 5️⃣ Obtener todos los distritos y seleccionar el correcto
@@ -263,5 +265,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             showToast("Un error ha ocurrido", "ERROR");
         }
     });
+
+    $q("#btnEditarCliente").addEventListener("click", () => {
+        window.localStorage.clear()
+        window.localStorage.setItem("idcliente", idcliente);
+        window.location.href = `${hostOnly}/views/utilitario/clientes/actualizar-cliente`;
+    })
 
 })

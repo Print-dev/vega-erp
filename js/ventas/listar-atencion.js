@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let modalPropuestaCliente
   let modalpreviageneracion
   let modalPreviaCotizacion
+  let modalInfoEvento
 
   // LISTAS
   let pagosExistentes = []
@@ -57,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data.json();
   }
 
-
+  console.log("idusuaro logeado -> ", idusuarioLogeado);
   /*   (async () => {
       ws = new WebSocket("ws://localhost:8000");
   
@@ -758,6 +759,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       } else {
         // Inicializa DataTable si no ha sido inicializado antes
         myTable = $("#table-atenciones").DataTable({
+          pageLength: 10,
+          responsive: true,
+          dom: '<"top"f>rt<"bottom"lip><"clear">',
+          initComplete: function () {
+            $(".dataTables_filter input").addClass('form-control form-control-sm');
+          },
           processing: true, // Muestra un indicador de carga
           serverSide: true, // Activa la paginación en el servidor
           ajax: {
@@ -903,7 +910,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${formatearFecha(x.fecha_presentacion)}</td>                        
                 
                 <td>
-                    ${x.estado_convenio == 3 ? 'Desaprobado' : x.estado == 3 ? '' : `
+                    ${idusuarioLogeado == 22 ? `
+                      <button type="button" class="btn btn-sm btn-secondary btn-precioentrada" data-id=${x.iddetalle_presentacion} title="Precios de entrada">
+                          Precios de entrada
+                        </button>                      
+                      <button type="button" class="btn btn-sm btn-primary btn-infoevento" data-id=${x.iddetalle_presentacion} title="Precios de entrada">
+                          Info
+                        </button>                      
+                      ` : x.estado_convenio == 3 ? 'Desaprobado' : x.estado == 3 ? '' : `
                         ${x.estado == 2 ? '' : parseInt(x.estado_convenio) == 2 ? `
                         <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-idusuario="${x.idusuario}" data-fechapresentacion="${x.fecha_presentacion}" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
                             Detalles Propuesta
@@ -1080,6 +1094,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (e.target.classList.contains("btn-precioentrada")) {
             await buttonPrecioEntrada(e);
           }
+          if (e.target.classList.contains("btn-infoevento")) {
+            await buttonInfoEvento(e);
+          }
           /* if(e.target.classList.contains("show-espec")){//abre el sidebar
           await btnSBUpdateActivo(e);
         }
@@ -1094,6 +1111,35 @@ document.addEventListener("DOMContentLoaded", async () => {
    * Abre el modal de asignar Area
    * @param {*} e evento del boton
    */
+
+  async function buttonInfoEvento(e) {
+    iddp = e.target.getAttribute("data-id")
+    modalInfoEvento = new bootstrap.Modal($q("#modal-infoevento"))
+    modalInfoEvento.show()
+
+    const dpInfo = await obtenerDPporId(iddp)
+    console.log("dpInfo -> ", dpInfo);
+    const ubicacion = dpInfo[0]?.esExtranjero == 0 ? dpInfo[0]?.departamento + "/" + dpInfo[0]?.provincia + "/" + dpInfo[0]?.distrito : dpInfo[0]?.establecimiento + "/" + dpInfo[0]?.pais
+
+    const contenedorModal = $q(".contenedor-infoevento");
+    contenedorModal.innerHTML = `
+       <div class="mt-3">
+            <h4 class="fw-bold">Promotor:</h4><br>
+             <label class="fw-bold">Nombre/Razon Social:</label> <span id="noti-pasaje">${dpInfo[0]?.razonsocial ? dpInfo[0]?.razonsocial.toUpperCase() : ''}</span> <br>
+             <label class="fw-bold">Celular:</label> <span id="noti-pasaje">${dpInfo[0]?.telefono ? dpInfo[0]?.telefono : 'Sin celular/telefono'}</span> <br>
+
+             <h4 class="fw-bold">Detalles evento:</h4><br>
+             <label class="fw-bold">Artista:</label> <span id="noti-pasaje">${dpInfo[0]?.nom_usuario ? dpInfo[0]?.nom_usuario?.toUpperCase() : ''}</span> <br>
+             <label class="fw-bold">Lugar:</label> <span id="noti-comida">${dpInfo[0]?.establecimiento ? dpInfo[0]?.establecimiento.toUpperCase() : ''}</span> <br>
+             <label class="fw-bold">Fecha:</label> <span id="noti-viaje">${formatDate(dpInfo[0]?.fecha_presentacion) ? formatDate(dpInfo[0]?.fecha_presentacion) : ''}</span> <br>
+             <label class="fw-bold">Desde - hasta:</label> <span id="noti-viaje">${formatHour(dpInfo[0]?.horainicio) ?? "0:00"} - ${formatHour(dpInfo[0]?.horafinal) ?? "0:00"}</span> <br>
+             <label class="fw-bold">Tiempo:</label> <span id="noti-viaje">${calculateDuration(dpInfo[0]?.horainicio ?? "0:00", dpInfo[0]?.horafinal ?? "0:00")}</span> <br>
+             <label class="fw-bold">Ubicacion:</label> <span id="noti-viaje">${ubicacion}</span>
+           </div>    
+     `;
+  }
+
+
 
   async function buttonCaja(e) {
     iddp = e.target.getAttribute("data-id")

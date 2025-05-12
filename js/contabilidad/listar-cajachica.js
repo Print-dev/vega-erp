@@ -186,6 +186,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data;
   }
 
+  async function obtenerUsuariosPorNivel(idnivelacceso) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerUsuarioPorNivel");
+    params.append("idnivelacceso", idnivelacceso);
+
+    try {
+      const data = await getDatos(`${host}usuario.controller.php`, params);
+
+      console.log(data);
+      return data // Verifica la estructura de los datos en la consola
+    } catch (error) {
+      console.error("Error al obtener los usuarios:", error);
+    }
+  }
+
+  const usuariosAdmins = await obtenerUsuariosPorNivel("3")
+  console.log("usuariosAdmins -> ", usuariosAdmins);
+  $q("#creador").innerHTML = `
+    <option value="">Todos</option>
+    `
+  if (idusuarioLogeado == 22) {
+    $q(".contenedor-creador-cajachica").hidden = true
+  }
+  else {
+    $q(".contenedor-creador-cajachica").hidden = false
+    if (usuariosAdmins.length > 0) {
+      usuariosAdmins.forEach(usuario => {
+        $q("#creador").innerHTML += `
+        <option value="${usuario.idusuario}">${usuario.nombres} ${usuario.apellidos}</option>
+      `
+      })
+
+    }
+  }
+
   function createTable(data) {
     let rows = $("#tb-body-cajachica").find("tr");
     ////console.log(rows.length);
@@ -239,6 +274,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           await dataFilters();
         });
       }
+
     });
   }
 
@@ -256,6 +292,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     params.append("año_semana", semana || "");
     params.append("busqueda_general", $q("#busqueda_general").value ? $q("#busqueda_general").value : '');
+    params.append("creadopor", idusuarioLogeado == 22 ? 1 : $q("#creador").value ? $q("#creador").value : '');
 
     const data = await getDatos(`${host}cajachica.controller.php`, params);
     console.log("data -> ", data);

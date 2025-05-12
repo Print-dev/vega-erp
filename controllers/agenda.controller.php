@@ -18,6 +18,14 @@ if (isset($_GET['operation'])) {
       echo json_encode($agenda->obtenerAgendaArtista($cleanData));
       break;
 
+    case 'obtenerFechaOcupadaArtista':
+      $cleanData = [
+        'idusuario' => $_GET['idusuario'] === "" ? null : $agenda->limpiarCadena($_GET['idusuario']),
+        'fechapresentacion' => $_GET['fechapresentacion'] === "" ? null : $agenda->limpiarCadena($_GET['fechapresentacion'])
+      ];
+      echo json_encode($agenda->obtenerFechaOcupadaArtista($cleanData));
+      break;
+
     case 'obtenerAgenda':
       $cleanData = [
         'idusuario' => $_GET['idusuario'] === "" ? null : $agenda->limpiarCadena($_GET['idusuario']),
