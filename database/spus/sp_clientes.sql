@@ -96,15 +96,17 @@ CREATE PROCEDURE sp_actualizar_cliente
 )
 BEGIN 
 	UPDATE clientes SET
-    tipodoc = _tipodoc,
-    iddistrito = _iddistrito,
+    tipodoc = nullif(_tipodoc,''),
+    iddistrito = nullif(_iddistrito,''),
     ndocumento = nullif(_ndocumento, ''),
-    razonsocial = _razonsocial,
+    razonsocial = nullif(_razonsocial,''),
     representantelegal = nullif(_representantelegal, ''),
     telefono = nullif(_telefono, ''),
     correo = nullif(_correo, ''),
-    direccion = _direccion
+    direccion = nullif(_direccion,'')
     WHERE idcliente = _idcliente;
 END //
+
+select * from clientes
 
 -- CALL sp_actualizar_cliente(2, 74, '72754752', 'ROYER ALEXIS AVLOS ROMEO', '', '938439212', 'alex@gmail.com', 'mi haus 69');

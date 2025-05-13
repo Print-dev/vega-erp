@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   $q("#creador").innerHTML = `
     <option value="">Todos</option>
     `
-  if (idusuarioLogeado == 22) {
+  if (idusuarioLogeado == 1) {
     $q(".contenedor-creador-cajachica").hidden = true
   }
   else {
@@ -292,7 +292,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     params.append("año_semana", semana || "");
     params.append("busqueda_general", $q("#busqueda_general").value ? $q("#busqueda_general").value : '');
-    params.append("creadopor", idusuarioLogeado == 22 ? 1 : $q("#creador").value ? $q("#creador").value : '');
+    params.append("creadopor", idusuarioLogeado == 1 ? 1 : $q("#creador").value ? $q("#creador").value : '');
 
     const data = await getDatos(`${host}cajachica.controller.php`, params);
     console.log("data -> ", data);

@@ -396,6 +396,8 @@ switch ($_SESSION['login']['nivelacceso']) {
             }
             echo "</ul>";
           } else if ($access['modulo'] === "contabilidad" && $access['visible']) {
+            $moduloContabilidadMostrado = false;
+
             echo "
               <li class='sidebar-item nav-item'>
                 <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#contabilidad'
@@ -409,22 +411,48 @@ switch ($_SESSION['login']['nivelacceso']) {
 
             foreach ($listaAcceso as $subAccess) {
               $rutaCompleta = "{$hostOnlyHeader}/views/{$subAccess['modulo']}/";
+
               if (!empty($subAccess['subruta'])) {
                 $rutaCompleta .= "{$subAccess['subruta']}/";
               }
               $rutaCompleta .= "{$subAccess['ruta']}";
-              if (!$subAccess['visible'] && $subAccess['modulo'] === "contabilidad" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
-                echo "
-                <li class='sidebar-item nav-item list-contabilidad'>
-                  <a href='{$rutaCompleta}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
-                    <i class='{$subAccess['icono']}'></i>
-                    <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
-                  </a>
-                </li>";
+              if (!$subAccess['visible'] && $subAccess['modulo'] === "contabilidad" && !empty($subAccess['texto']) && !empty($subAccess['icono']) && !$moduloContabilidadMostrado) {
+                $moduloContabilidadMostrado = true;
+
+                if ($_SESSION['login']['idusuario'] == 1): ?>
+                  <!-- Solo mostrar cajachica -->
+                  <li class='sidebar-item nav-item list-contabilidad'>
+                    <a href='<?= $hostOnly ?>/views/contabilidad/caja-chica/caja-chica' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                      <i class='<?= $subAccess['icono'] ?>'></i>
+                      <span class='sidebar-text mx-2'>Caja Chica</span>
+                    </a>
+                  </li>
+                <?php else: ?>
+                  <!-- Mostrar todos los submódulos -->
+                  <li class='sidebar-item nav-item list-contabilidad'>
+                    <a href='<?= $hostOnly ?>/views/contabilidad/caja-chica/caja-chica' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                      <i class='<?= $subAccess['icono'] ?>'></i>
+                      <span class='sidebar-text mx-2'>Caja Chica</span>
+                    </a>
+                  </li>
+                  <li class='sidebar-item nav-item list-contabilidad'>
+                    <a href='<?= $hostOnly ?>/views/contabilidad/reparticion/listar-reparticion' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                      <i class='<?= $subAccess['icono'] ?>'></i>
+                      <span class='sidebar-text mx-2'>Repartición</span>
+                    </a>
+                  </li>
+                  <li class='sidebar-item nav-item list-contabilidad'>
+                    <a href='<?= $hostOnly ?>/views/contabilidad/pagos/listar-pagos' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                      <i class='<?= $subAccess['icono'] ?>'></i>
+                      <span class='sidebar-text mx-2'>Pagos</span>
+                    </a>
+                  </li>
+                <?php endif;
               }
             }
             echo "</ul>";
           } else if ($access['modulo'] === "agenda" && $access['visible']) {
+            $moduloAgendaMostrado = false;
             echo "
               <li class='sidebar-item nav-item'>
                 <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#agenda'
@@ -437,14 +465,44 @@ switch ($_SESSION['login']['nivelacceso']) {
               <ul id='agenda' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#agenda'>";
 
             foreach ($listaAcceso as $subAccess) {
-              if (!$subAccess['visible'] && $subAccess['modulo'] === "agenda" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
-                echo "
-                <li class='sidebar-item nav-item list-agenda'>
-                  <a href='{$hostOnlyHeader}/views/{$subAccess['modulo']}/{$subAccess['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
-                    <i class='{$subAccess['icono']}'></i>
-                    <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
-                  </a>
-                </li>";
+              if (!$subAccess['visible'] && $subAccess['modulo'] === "agenda" && !empty($subAccess['texto']) && !empty($subAccess['icono']) && !$moduloAgendaMostrado) {
+                $moduloAgendaMostrado = true;
+
+                if ($_SESSION['login']['idusuario'] == 1): ?>
+                  <!-- Solo mostrar cajachica -->
+                  <li class='sidebar-item nav-item list-agenda'>
+                    <a href='<?= $hostOnly ?>/views/agenda/listar-agenda-artista' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                      <i class='<?= $subAccess['icono'] ?>'></i>
+                      <span class='sidebar-text mx-2'>Artista</span>
+                    </a>
+                  </li>
+                <?php else: ?>
+                  <!-- Mostrar todos los submódulos -->
+                  <li class='sidebar-item nav-item list-agenda'>
+                    <a href='<?= $hostOnly ?>/views/agenda/listar-agenda-artista' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                      <i class='<?= $subAccess['icono'] ?>'></i>
+                      <span class='sidebar-text mx-2'>Artista</span>
+                    </a>
+                  </li>
+                  <li class='sidebar-item nav-item list-agenda'>
+                    <a href='<?= $hostOnly ?>/views/agenda/listar-agenda-edicion' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                      <i class='<?= $subAccess['icono'] ?>'></i>
+                      <span class='sidebar-text mx-2'>Edición</span>
+                    </a>
+                  </li>
+                  <li class='sidebar-item nav-item list-agenda'>
+                    <a href='<?= $hostOnly ?>/views/agenda/listar-agenda-filmmaker' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                      <i class='<?= $subAccess['icono'] ?>'></i>
+                      <span class='sidebar-text mx-2'>Filmmaker</span>
+                    </a>
+                  </li>
+                  <li class='sidebar-item nav-item list-agenda'>
+                    <a href='<?= $hostOnly ?>/views/agenda/listar-agenda-cmanager' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                      <i class='<?= $subAccess['icono'] ?>'></i>
+                      <span class='sidebar-text mx-2'>Com. Manager</span>
+                    </a>
+                  </li>
+                <?php endif;                
               }
             }
             echo "</ul>";
@@ -477,8 +535,7 @@ switch ($_SESSION['login']['nivelacceso']) {
               }
             }
             echo "</ul>";
-          }
-           else if ($access['modulo'] === "proveedores" && $access['visible']) {
+          } else if ($access['modulo'] === "proveedores" && $access['visible']) {
             echo "
               <li class='sidebar-item nav-item'>
                 <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#proveedores'

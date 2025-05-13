@@ -129,6 +129,19 @@ CREATE TABLE usuarios (
         REFERENCES sucursales (idsucursal)
 )  ENGINE=INNODB;
 
+CREATE TABLE proveedores (
+    idproveedor INT AUTO_INCREMENT PRIMARY KEY,
+    empresa	VARCHAR(120) NULL,
+    nombre VARCHAR(120) NULL,
+    contacto INT NULL,
+    correo VARCHAR(120) NULL,
+    dni char(15) NULL,
+    banco VARCHAR(120) NULL,
+    ctabancaria INT NULL,
+    servicio VARCHAR(120) NULL,
+    nproveedor VARCHAR(40) NULL    
+)  ENGINE=INNODB;
+SELECT * FROM proveedores order by idproveedor DESC;
 -- ALTER TABLE usuarios
 -- MODIFY COLUMN marcaagua VARCHAR(120) NULL,
 -- MODIFY COLUMN firma VARCHAR(120) NULL;

@@ -74,12 +74,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     async function mostrarDatos(data) {
-        $q("#ndocumento").value = data.ndocumento;
-        $q("#razonsocial").value = data.razonsocial;
-        $q("#representantelegal").value = data.representantelegal ?? "";
-        $q("#telefono").value = data.telefono;
-        $q("#correo").value = data.correo;
-        $q("#direccion").value = data.direccion;
+        console.log("data clietes-> ", data);
+        $q("#ndocumento").value = data?.ndocumento ?? "";
+        $q("#razonsocial").value = data?.razonsocial ?? "";
+        $q("#representantelegal").value = data?.representantelegal ?? "";
+        $q("#telefono").value = data?.telefono ?? "";
+        $q("#correo").value = data?.correo ?? "";
+        $q("#direccion").value = data?.direccion ?? "";
         if ($q("#ndocumento").value.length == 8) {
             $q("#container-representantelegal").hidden = true;
         } else if ($q("#ndocumento").value.length == 11) {
@@ -171,7 +172,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const clienteAct = new FormData();
         clienteAct.append("operation", "actualizarCliente");
         clienteAct.append("idcliente", idcliente);
-        clienteAct.append("tipodoc", tipodocu);
+        clienteAct.append("tipodoc", tipodocu ? tipodocu : '');
         clienteAct.append("iddistrito", $q("#distrito").value ? $q("#distrito").value : '');
         clienteAct.append("ndocumento", $q("#ndocumento").value ? $q("#ndocumento").value : '');
         clienteAct.append("razonsocial", $q("#razonsocial").value ? $q("#razonsocial").value : '');

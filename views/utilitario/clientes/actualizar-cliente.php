@@ -16,14 +16,14 @@
                             <div class="col-md-2">
                                 <div class="form-floating">
                                     <input type="text" id="ndocumento" name="ndocumento"
-                                        class="form-control" placeholder="Nª Documento / RUC." required>
+                                        class="form-control" placeholder="Nª Documento / RUC." >
                                     <label for="ndocumento" class="form-label">Nª Documento / RUC.</label>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating">
                                     <input type="text" id="razonsocial" name="razonsocial"
-                                        class="form-control" required>
+                                        class="form-control" >
                                     <label for="razonsocial" class="form-label">Razon social/Nombre</label>
                                 </div>
                             </div>
@@ -37,20 +37,20 @@
                             <div class="col-md-2">
                                 <div class="form-floating">
                                     <input type="number" id="telefono" name="telefono" maxlength="9"
-                                        class="form-control" required>
+                                        class="form-control" >
                                     <label for="telefono" class="form-label">Telefono</label>
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-floating">
                                     <input type="text" id="correo" name="correo"
-                                        class="form-control" required>
+                                        class="form-control" >
                                     <label for="correo" class="form-label">Correo</label>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating">
-                                    <select name="nacionalidad" id="nacionalidad" class="form-select" required>
+                                    <select name="nacionalidad" id="nacionalidad" class="form-select" >
                                         <option value="" selected>Selecciona</option>
                                         <option value="31">Peruana</option>
                                     </select>
@@ -59,21 +59,21 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating">
-                                    <select name="departamento" id="departamento" class="form-select" required>
+                                    <select name="departamento" id="departamento" class="form-select" >
                                     </select>
                                     <label for="departamento" class="form-label">Departamento</label>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating">
-                                    <select name="provincia" id="provincia" class="form-select" required>
+                                    <select name="provincia" id="provincia" class="form-select" >
                                     </select>
                                     <label for="provincia" class="form-label">Provincia</label>
                                 </div>
                             </div>
                             <div class="col-md-3 ">
                                 <div class="form-floating">
-                                    <select name="distrito" id="distrito" class="form-select" required>
+                                    <select name="distrito" id="distrito" class="form-select" >
                                     </select>
                                     <label for="distrito" class="form-label">Distrito</label>
                                 </div>
@@ -81,7 +81,7 @@
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <input type="text" id="direccion" name="direccion"
-                                        class="form-control" required>
+                                        class="form-control" >
                                     <label for="direccion" class="form-label">Direccion</label>
                                 </div>
                             </div>

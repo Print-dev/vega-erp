@@ -916,8 +916,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                         </button>                      
                       <button type="button" class="btn btn-sm btn-primary btn-infoevento" data-id=${x.iddetalle_presentacion} title="Precios de entrada">
                           Info
-                        </button>                      
-                      ` : x.estado_convenio == 3 ? 'Desaprobado' : x.estado == 3 ? '' : `
+                        </button> 
+                        <button type="button" class="btn btn-sm btn-primary btn-actualizar" data-id=${x.iddetalle_presentacion} title="Actualizar Evento">
+                        Actualizar
+                      </button>                     
+                      ` : x.estado_convenio == 3 ? 'Desaprobado' : x.estado == 3 ? 'Cancelado' : `
                         ${x.estado == 2 ? '' : parseInt(x.estado_convenio) == 2 ? `
                         <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-idusuario="${x.idusuario}" data-fechapresentacion="${x.fecha_presentacion}" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
                             Detalles Propuesta
@@ -961,7 +964,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                       <button type="button" class="btn btn-sm btn-secondary btn-responsables" data-id=${x.iddetalle_presentacion} title="Elegir Responsables">
                           Responsables
                         </button>
-                      
+                       <button type="button" class="btn btn-sm btn-primary btn-infoevento" data-id=${x.iddetalle_presentacion} title="Precios de entrada">
+                          Info
+                        </button> 
                     <button type="button" class="btn btn-sm btn-primary btn-actualizar" data-id=${x.iddetalle_presentacion} title="Actualizar Evento">
                         Actualizar
                       </button>

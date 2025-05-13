@@ -181,6 +181,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data
   }
 
+  async function obtenerUsuariosPorNivel(idnivelacceso) {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerUsuarioPorNivel");
+    params.append("idnivelacceso", idnivelacceso);
+
+    try {
+      const data = await getDatos(`${host}usuario.controller.php`, params);
+
+      console.log(data);
+      return data // Verifica la estructura de los datos en la consola
+    } catch (error) {
+      console.error("Error al obtener los usuarios:", error);
+    }
+  }
+
+
   async function obtenerTarifaArtistaPorProvincia(idprovincia, idusuario, tipoevento) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerTarifaArtistaPorProvincia");
@@ -1441,7 +1457,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("iddp -> ", iddp)
       modalFilmmaker = new bootstrap.Modal($q("#modal-filmmaker"));
       modalFilmmaker.show();
-      const filmmakers = await obtenerFilmmakers()
+      const filmmakers = await obtenerUsuariosPorNivel("11")
       console.log("filmmakers -> ", filmmakers)
       const filmmakersDP = await obtenerFilmmakersDP(iddp)
       $q("#filmmaker").innerHTML = "<option value=''>Selecciona</option>"
