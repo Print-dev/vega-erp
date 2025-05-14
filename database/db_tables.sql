@@ -245,6 +245,7 @@ CREATE TABLE responsables_boleteria_contratoreservasreservas (
     constraint fk_idusuario_contrato foreign key (idusuarioContrato) references usuarios (idusuario)
 ) ENGINE = INNODB;
 
+
 -- ESTA TABLA SOLO SERA PARA EVENTOS DE TIPO CONVENIO
 CREATE TABLE precios_entrada_evento ( 
 	idprecioentradaevento	int auto_increment primary key,
@@ -369,7 +370,7 @@ CREATE TABLE gastos_cajachica (
     fecha_gasto	datetime default now(),
     concepto	varchar(250) not null,
     monto		double (10,2) not null,
-    constraint fk_idcaja_gastos foreign key (idcajachica) references cajachica (idcajachica)
+    constraint fk_idcaja_gastos foreign key (idcajachica) references cajachica (idcajachica) ON DELETE CASCADE
 ) engine = innodb;
 
 CREATE TABLE notificaciones_viatico (
@@ -416,7 +417,7 @@ CREATE TABLE ingresos_evento (
     noperacion	varchar(15) null,	
     constraint fk_idreparticion_ing foreign key (idreparticion) references reparticion_ingresos (idreparticion)
 ) engine = innodb;
-ALTER TABLE ingresos_evento ADD COLUMN     medio		varchar(30) null;
+-- ALTER TABLE ingresos_evento ADD COLUMN     medio		varchar(30) null;
 
 CREATE TABLE egresos_evento (
 	idegreso	int auto_increment primary key,
@@ -560,3 +561,45 @@ CREATE TABLE pagos_cuota (
     noperacion	varchar(20) null,
     constraint 	fk_idcuotacomprobante_pago	foreign key (idcuotacomprobante) references cuotas_comprobante (idcuotacomprobante)
 ) ENGINE = INNODB;
+
+-- ***************************************************** SECCION RECURSOS HUMANOS ************************************************************************
+CREATE TABLE areas (
+    idarea INT AUTO_INCREMENT PRIMARY KEY,
+    area VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE colaboradores (
+    idcolaborador INT AUTO_INCREMENT PRIMARY KEY,
+    idpersona INT NOT NULL,
+    fechaingreso DATE NOT NULL,
+    idarea INT,
+    activo TINYINT DEFAULT 1,
+    CONSTRAINT fk_idpersona_colaborador foreign key (idpersona) references personas (idpersona),
+    CONSTRAINT fk_idarea_colaborador foreign key (idarea) references areas (idarea)
+) ENGINE = INNODB;
+
+CREATE TABLE salarios (
+    idsalario INT AUTO_INCREMENT PRIMARY KEY,
+    idcolaborador INT NOT NULL,
+    salario	DECIMAL (10,2) NOT NULL,
+    costohora DECIMAL(10, 2) NOT NULL,
+    fechainicio DATE NOT NULL,
+    fechafin DATE DEFAULT NULL,
+    CONSTRAINT fk_idcolaborador_salario FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador)
+) ENGINE = INNODB;
+
+CREATE TABLE nomina (
+    idnomina INT AUTO_INCREMENT PRIMARY KEY,
+    idcolaborador INT NOT NULL,
+    periodo INT NOT NULL, -- 1: Semanal. 2: Quincenal. 3: Mensual
+    fechainicio DATE NOT NULL,
+    fechafin DATE NOT NULL,
+    horas INT NOT NULL,
+    costohora DECIMAL(10,2) NOT NULL,
+    salario  DECIMAL(10,2) NOT NULL,
+    tiempo DECIMAL(10,2) NOT NULL,
+    rendimiento DECIMAL(10,2) NOT NULL,
+    proporcion DECIMAL(10,2) not null,
+    acumulado DECIMAL(10,2) not null,
+    CONSTRAINT fk_idempleado_nomina FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador)
+)ENGINE = INNODB;

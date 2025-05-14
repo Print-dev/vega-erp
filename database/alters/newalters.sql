@@ -143,3 +143,132 @@ ALTER TABLE sucursales ADD COLUMN ubigeo CHAR(6) NULL;
 
 ALTER TABLE cajachica ADD COLUMN creadopor INT NULL;
 ALTER TABLE cajachica ADD CONSTRAINT fk_idusuario_abierto foreign key (creadopor) references usuarios (idusuario);
+
+-- 1. Eliminar la restricción actual
+ALTER TABLE gastos_cajachica
+DROP FOREIGN KEY fk_idcaja_gastos;
+
+-- 2. Agregar nuevamente la restricción con ON DELETE CASCADE
+ALTER TABLE gastos_cajachica
+ADD CONSTRAINT fk_idcaja_gastos
+FOREIGN KEY (idcajachica)
+REFERENCES cajachica(idcajachica)
+ON DELETE CASCADE;
+
+
+ALTER TABLE responsables_boleteria_contratoreservasreservas
+ADD CONSTRAINT fk_iddetalle_presentacion_rbc
+FOREIGN KEY (iddetalle_presentacion)
+REFERENCES detalles_presentacion(iddetalle_presentacion)
+ON DELETE CASCADE;
+
+-- 1. Eliminar la clave foránea existente
+ALTER TABLE precios_entrada_evento
+DROP FOREIGN KEY fk_iddp_entrada_convenio;
+
+-- 2. Volver a agregarla con ON DELETE CASCADE
+ALTER TABLE precios_entrada_evento
+ADD CONSTRAINT fk_iddp_entrada_convenio
+FOREIGN KEY (iddetalle_presentacion)
+REFERENCES detalles_presentacion(iddetalle_presentacion)
+ON DELETE CASCADE;
+
+-- 1. Eliminar la clave foránea actual
+ALTER TABLE convenios
+DROP FOREIGN KEY fk_dp_cv;
+
+-- 2. Re-crear la clave foránea con ON DELETE CASCADE
+ALTER TABLE convenios
+ADD CONSTRAINT fk_dp_cv
+FOREIGN KEY (iddetalle_presentacion)
+REFERENCES detalles_presentacion(iddetalle_presentacion)
+ON DELETE CASCADE;
+
+-- 1. Eliminar la clave foránea actual
+ALTER TABLE contratos
+DROP FOREIGN KEY fk_dp_cs;
+
+-- 2. Agregar nuevamente la clave foránea con ON DELETE CASCADE
+ALTER TABLE contratos
+ADD CONSTRAINT fk_dp_cs
+FOREIGN KEY (iddetalle_presentacion)
+REFERENCES detalles_presentacion(iddetalle_presentacion)
+ON DELETE CASCADE;
+
+-- 1. Eliminar la clave foránea actual
+ALTER TABLE pagos_contrato
+DROP FOREIGN KEY fk_idcontrato;
+
+-- 2. Volver a crearla con ON DELETE CASCADE
+ALTER TABLE pagos_contrato
+ADD CONSTRAINT fk_idcontrato
+FOREIGN KEY (idcontrato)
+REFERENCES contratos(idcontrato)
+ON DELETE CASCADE;
+
+-- 1. Eliminar la clave foránea actual
+ALTER TABLE reservas
+DROP FOREIGN KEY fk_idpagocontrato_res;
+
+-- 2. Agregarla nuevamente con ON DELETE CASCADE
+ALTER TABLE reservas
+ADD CONSTRAINT fk_idpagocontrato_res
+FOREIGN KEY (idpagocontrato)
+REFERENCES pagos_contrato(idpagocontrato)
+ON DELETE CASCADE;
+
+-- 1. Eliminar la clave foránea actual
+ALTER TABLE viaticos
+DROP FOREIGN KEY fk_iddp_viatico;
+
+-- 2. Agregarla nuevamente con ON DELETE CASCADE
+ALTER TABLE viaticos
+ADD CONSTRAINT fk_iddp_viatico
+FOREIGN KEY (iddetalle_presentacion)
+REFERENCES detalles_presentacion(iddetalle_presentacion)
+ON DELETE CASCADE;
+
+-- 1. Eliminar la clave foránea actual
+ALTER TABLE reparticion_ingresos
+DROP FOREIGN KEY fk_rep_ing;
+
+-- 2. Volver a agregarla con ON DELETE CASCADE
+ALTER TABLE reparticion_ingresos
+ADD CONSTRAINT fk_rep_ing
+FOREIGN KEY (iddetalle_presentacion)
+REFERENCES detalles_presentacion(iddetalle_presentacion)
+ON DELETE CASCADE;
+
+-- 1. Eliminar la clave foránea actual
+ALTER TABLE ingresos_evento
+DROP FOREIGN KEY fk_idreparticion_ing;
+
+-- 2. Volver a agregarla con ON DELETE CASCADE
+ALTER TABLE ingresos_evento
+ADD CONSTRAINT fk_idreparticion_ing
+FOREIGN KEY (idreparticion)
+REFERENCES reparticion_ingresos(idreparticion)
+ON DELETE CASCADE;
+
+-- 1. Eliminar la clave foránea actual
+ALTER TABLE egresos_evento
+DROP FOREIGN KEY fk_idreparticion_egre;
+
+-- 2. Volver a agregarla con ON DELETE CASCADE
+ALTER TABLE egresos_evento
+ADD CONSTRAINT fk_idreparticion_egre
+FOREIGN KEY (idreparticion)
+REFERENCES reparticion_ingresos(idreparticion)
+ON DELETE CASCADE;
+
+-- 1. Eliminar la clave foránea actual
+ALTER TABLE agenda_edicion
+DROP FOREIGN KEY fk_iddp_ag_edicion;
+
+-- 2. Volver a agregarla con ON DELETE CASCADE
+ALTER TABLE agenda_edicion
+ADD CONSTRAINT fk_iddp_ag_edicion
+FOREIGN KEY (iddetalle_presentacion)
+REFERENCES detalles_presentacion(iddetalle_presentacion)
+ON DELETE CASCADE;
+
