@@ -69,7 +69,7 @@
                                         <div class="col-md-2 contenedor-creador-cajachica">
                                             <div class="form-floating">
                                                 <select id="creador" class="form-control filter">
-                                                    
+
                                                 </select>
                                                 <label for="creador">Creador</label>
                                             </div>
@@ -242,6 +242,8 @@
 
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js" integrity="sha512-dlPw+ytv/6JyepmelABrgeYgHI0O+frEwgfnPdXDTOIZz+eDgfW07QXG02/O8COfivBdGNINy+Vex+lYmJ5rxw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/exceljs.min.js"></script>
+
     <script src="<?= $hostOnlyHeader ?>/js/contabilidad/listar-cajachica.js"></script>
 
     </body>

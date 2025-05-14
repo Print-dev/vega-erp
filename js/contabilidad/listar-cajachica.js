@@ -548,7 +548,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // Definir encabezados del CSV
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Caja Chica");
+
     const headers = [
       "Fecha Apertura",
       "Fecha Cierre",
@@ -560,34 +562,62 @@ document.addEventListener("DOMContentLoaded", async () => {
       "Estado"
     ];
 
-    // Convertir los datos en formato CSV
-    const rows = listCajas.map(caja => [
-      caja.fecha_apertura,
-      caja.fecha_cierre || "Aún no cerrado",
-      caja.evento,
-      caja.montoinicial,
-      caja.incremento,
-      caja.decremento,
-      caja.ccfinal,
-      caja.estado === 1 ? "Abierta" : "Cerrada"
-    ]);
+    // Agrega encabezados
+    worksheet.addRow(headers);
 
-    // Crear el contenido del CSV
-    const csvContent = [
-      headers.join(","), // Encabezados
-      ...rows.map(row => row.join(",")) // Filas de datos
-    ].join("\n");
+    // Agrega los datos
+    listCajas.forEach((caja) => {
+      worksheet.addRow([
+        caja.fecha_apertura,
+        caja.fecha_cierre || "Aún no cerrado",
+        caja.evento,
+        caja.montoinicial,
+        caja.incremento,
+        caja.decremento,
+        caja.ccfinal,
+        caja.estado === 1 ? "Abierta" : "Cerrada"
+      ]);
+    });
 
-    // Crear el blob con el contenido CSV
-    const bom = "\uFEFF"; // BOM para UTF-8 (para evitar problemas con caracteres especiales)
-    const blob = new Blob([bom + csvContent], { type: "text/csv;charset=utf-8;" });
+    // Estilo: encabezados en negrita y centrados
+    worksheet.getRow(1).eachCell((cell) => {
+      cell.font = { bold: true };
+      cell.alignment = { horizontal: 'center' };
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'D9EAD3' } // Verde claro
+      };
+      cell.border = {
+        top: { style: 'thin' },
+        bottom: { style: 'thin' },
+        left: { style: 'thin' },
+        right: { style: 'thin' }
+      };
+    });
 
-    // Crear URL del blob
+    // Ajustar ancho de columnas automáticamente
+    worksheet.columns.forEach((column) => {
+      let maxLength = 10;
+      column.eachCell({ includeEmpty: true }, (cell) => {
+        const length = cell.value ? cell.value.toString().length : 0;
+        if (length > maxLength) maxLength = length;
+      });
+      column.width = maxLength + 2;
+    });
+
+    // Descargar archivo en navegador
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
     const url = URL.createObjectURL(blob);
 
-    // Configurar el enlace para descargar
-    $q("#btnGenerarExcelCaja").setAttribute("href", url);
-    $q("#btnGenerarExcelCaja").setAttribute("download", "cajachica.csv");
-    return
-  })
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "caja_chica.xlsx";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
 });

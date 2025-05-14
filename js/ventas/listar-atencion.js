@@ -1975,12 +1975,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     tipoevento = dp[0]?.tipo_evento
     console.log("nacionaldiad obtenida -> ", nacionalidadObtenida);
     if (nacionalidadObtenida == "31") {
-      const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
+      /* const longlatCiudad = await obtenerLongLatPorCiudad(dp[0]?.departamento + ',' + dp[0]?.provincia)
       console.log("longlatCiudad->>>", longlatCiudad)
       const infoRecorrido = await obtenerDuracionDeViaje(lonOrigen, latOrigen, longlatCiudad[0]?.lon, longlatCiudad[0]?.lat)
       const duracionTiempoCrudo = infoRecorrido.routes[0]?.duration
-      calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo)
-
+      calcularDificultadPrecio = calcularPrecio(duracionTiempoCrudo) */
+      calcularDificultadPrecio = calcularPrecio(3600)
+      console.log("calcularDificultadPrecio -> ", calcularDificultadPrecio);
       const cotizacion = await obtenerCotizacion(iddetalleevento)
       console.log("cotizacion -> ", cotizacion);
       const tarifaArtista = await obtenerTarifaArtistaPorProvincia(idprovincia, idartista, tipoevento)
