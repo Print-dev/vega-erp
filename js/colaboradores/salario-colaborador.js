@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         nomina.append("idsalario", idsalario);
         nomina.append("salario", $q("#salarioactualizar").value || '');
         nomina.append("costohora", $q("#costohoraactualizar").value || '');
-        nomina.append("fechaingreso", $q("#fechaingresoactualizar").value || '');
+        nomina.append("fechainicio", $q("#fechainicioactualizar").value || '');
 
         const fnomina = await fetch(`${host}nomina.controller.php`, {
             method: "POST",
@@ -309,10 +309,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function buttonActualizar(e) {
         idsalario = e.target.getAttribute("data-idsalario");
-        const salarioObt = await obtenerSalarioPorId()
+        const salarioObt = await obtenerSalarioPorId(idsalario)
+        console.log("salarioObt .> ", salarioObt);
         $q("#salarioactualizar").value = salarioObt[0].salario;
         $q("#costohoraactualizar").value = salarioObt[0].costohora;
-        $q("#fechaingresoactualizar").value = salarioObt[0].fechaingreso;
+        $q("#fechainicioactualizar").value = salarioObt[0].fechainicio;
         modalActualizarSalario.show()
     }
 

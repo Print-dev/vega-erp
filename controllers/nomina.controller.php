@@ -159,7 +159,7 @@ if (isset($_POST['operation'])) {
             $cleanData = [
                 'idcolaborador'   => $nomina->limpiarCadena($_POST['idcolaborador']) ? $nomina->limpiarCadena($_POST['idcolaborador']) : '',
                 'idsucursal'   => $nomina->limpiarCadena($_POST['idsucursal']) ? $nomina->limpiarCadena($_POST['idsucursal']) : '',
-                'fechaingreso' => $nomina->limpiarCadena($_POST['fechaingreso']) ? $nomina->limpiarCadena($_POST['fechaingreso']) :'',
+                'fechainicio' => $nomina->limpiarCadena($_POST['fechainicio']) ? $nomina->limpiarCadena($_POST['fechainicio']) :'',
                 'idarea'   => $nomina->limpiarCadena($_POST['idarea']) ? $nomina->limpiarCadena($_POST['idarea']) : '',
             ];
 

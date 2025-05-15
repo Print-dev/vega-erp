@@ -57,7 +57,7 @@ class Nomina extends ExecQuery
           $params['idsalario'],
           $params['salario'],
           $params['costohora'],
-          $params['fechaingreso']
+          $params['fechainicio']
         )
       );
 

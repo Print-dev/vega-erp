@@ -143,8 +143,8 @@
                     </div>
                     <div class="col-md-12 mb-3">
                         <div class="form-floating">
-                            <input type="date" id="fechaingresoactualizar" name="fechaingresoactualizar" class="form-control" placeholder="Fecha de ingreso">
-                            <label for="fechaingresoactualizar" class="form-label">Fecha de ingreso</label>
+                            <input type="date" id="fechainicioactualizar" name="fechainicioactualizar" class="form-control" placeholder="Fecha de ingreso">
+                            <label for="fechainicioactualizar" class="form-label">Fecha de ingreso</label>
                         </div>
                     </div>
                     <!-- <div class="col-md-12 mb-3">

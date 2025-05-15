@@ -79,13 +79,13 @@ CREATE PROCEDURE sp_actualizar_salario (
 	IN _idsalario INT,
     IN _salario DECIMAL(10,2),
     IN _costohora DECIMAL(10,2),
-    IN _fechaingreso DATE
+    IN _fechainicio DATE
 )
 BEGIN
 		UPDATE salarios SET
         salario = nullif(_salario,''),
         costohora = nullif(_costohora, ''),
-        fechaingreso = nullif(_fechaingreso, '')
+        fechainicio = nullif(_fechainicio, '')
     WHERE idsalario = _idsalario; 
 END //
 DELIMITER ;
