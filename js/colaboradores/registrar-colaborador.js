@@ -82,24 +82,24 @@ document.addEventListener("DOMContentLoaded", async () => {
    */
   /* ************************************* OBTENER RECURSOS ******************************************************* */
 
-  await obtenerSucursales()
+  /*   await obtenerSucursales()
+  
+    async function obtenerSucursales() {
+      const params = new URLSearchParams();
+      params.append("operation", "obtenerSucursales");
+      const data = await getDatos(`${host}sucursal.controller.php`, params);
+      console.log("data de succursales -> ", data);
+      $q("#sucursal").innerHTML = "<option value=''>Seleccione</option>"
+      data.forEach((sucursal) => {
+        $q("#sucursal").innerHTML += `<option value="${sucursal.idsucursal}">${sucursal.nombre}</option>`;
+      });
+      //return data;
+    }
+   */
 
-  async function obtenerSucursales() {
-    const params = new URLSearchParams();
-    params.append("operation", "obtenerSucursales");
-    const data = await getDatos(`${host}sucursal.controller.php`, params);
-    console.log("data de succursales -> ", data);
-    $q("#sucursal").innerHTML = "<option value=''>Seleccione</option>"
-    data.forEach((sucursal) => {
-      $q("#sucursal").innerHTML += `<option value="${sucursal.idsucursal}">${sucursal.nombre}</option>`;
-    });
-    //return data;
-  }
 
-
-
-  async function obtenerNiveles() {
-    const data = await getDatos(`${host}recurso.controller.php`, "operation=obtenerNiveles");
+  async function obtenerAreas() {
+    const data = await getDatos(`${host}nomina.controller.php`, "operation=obtenerAreas");
     console.log(data);
 
     return data
@@ -151,21 +151,28 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ME QUEDE ACA, FALTA IMPLEMENTAR EL USUARIO, SOLO LO COPIE DE OTRO CODIGO por el momento
-  async function registrarUsuario(idsucursal, idpersona, imagenMarcaAgua, imagenFirma) {
+  async function registrarColaborador(idpersona) {
     //const perfilData = await getPerfil(parseInt(selector("perfil").value));
     const params = new FormData();
-    params.append("operation", "registrarUsuario");
-    params.append("idsucursal", idsucursal);
+    params.append("operation", "registrarColaborador");
     params.append("idpersona", idpersona);
-    params.append("nom_usuario", $q("#nom_usuario").value.trim());
-    params.append("claveacceso", $q("#claveacceso").value);
-    params.append("color", $q("#color")?.value ? $q("#color")?.value : '');
-    params.append("porcentaje", $q("#porcentaje")?.value ? $q("#porcentaje")?.value : '');
-    params.append("marcaagua", imagenMarcaAgua ? imagenMarcaAgua : '');
-    params.append("firma", imagenFirma ? imagenFirma : '');
-    //params.append("esRepresentante", $q("#esrepresentante").checked ? 1 : 0);
-    params.append("idnivelacceso", $q("#idnivelacceso").value);
-    const resp = await fetch(`${host}usuario.controller.php`, {
+    params.append("fechaingreso", $q("#fechaingreso").value);
+    params.append("area", $q("#area").value);
+    const resp = await fetch(`${host}nomina.controller.php`, {
+      method: 'POST',
+      body: params
+    });
+    const data = await resp.json();
+    return data;
+  }
+
+  async function registrarArea() {
+    //const perfilData = await getPerfil(parseInt(selector("perfil").value));
+    const params = new FormData();
+    params.append("operation", "registrarArea");
+    params.append("area", $q("#areanueva").value.trim());
+
+    const resp = await fetch(`${host}nomina.controller.php`, {
       method: 'POST',
       body: params
     });
@@ -174,11 +181,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
 
-  async function obtenerPersonaPorDoc() {
+  async function obtenerPersonaNumDocColaborador() {
     const params = new URLSearchParams();
-    params.append("operation", "obtenerPersonaPorDoc");
-    params.append("num_doc", $q("#num_doc").value.trim());
-    const fpersona = await getDatos(`${host}usuario.controller.php`, params)
+    params.append("operation", "obtenerPersonaNumDocColaborador");
+    params.append("numdoc", $q("#num_doc").value.trim());
+    const fpersona = await getDatos(`${host}nomina.controller.php`, params)
     console.log(fpersona);
     return fpersona
   }
@@ -220,11 +227,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#departamento").disabled = isblock;
     $q("#provincia").disabled = isblock;
     $q("#distrito").disabled = isblock;
-    $q("#nom_usuario").disabled = isblock;
+    $q("#fechaingreso").disabled = isblock;
+    $q("#area").disabled = isblock;
+    /* $q("#nom_usuario").disabled = isblock;
     $q("#sucursal").disabled = isblock;
     $q("#claveacceso").disabled = isblock;
     $q("#upload_widget_firma").disabled = isblock;
-    $q("#idnivelacceso").disabled = isblock;
+    $q("#idnivelacceso").disabled = isblock; */
     //selector("externo").disabled = isblock
   }
 
@@ -243,10 +252,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#departamento").value = data.iddepartamento;
     $q("#provincia").value = data.idprovincia;
     $q("#distrito").value = data.iddistrito;
-    $q("#nom_usuario").value = data.nom_usuario;
-    $q("#sucursal").value = data.idsucursal;
-    $q("#claveacceso").value = 'no visible';
-    $q("#idnivelacceso").value = data.idnivelacceso;
+    /*     $q("#nom_usuario").value = data.nom_usuario;
+        $q("#sucursal").value = data.idsucursal;
+        $q("#claveacceso").value = 'no visible';
+        $q("#idnivelacceso").value = data.idnivelacceso; */
   }
 
   //resetea los campos
@@ -262,10 +271,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#departamento").value = '';
     $q("#provincia").value = '';
     $q("#distrito").value = '';
-    $q("#sucursal").value = '';
-    $q("#nom_usuario").value = '';
-    $q("#claveacceso").value = '';
-    $q("#idnivelacceso").value = '';
+    $q("#fechaingreso").value = '';
+    $q("#area").value = '';
+    /*     $q("#sucursal").value = '';
+        $q("#nom_usuario").value = '';
+        $q("#claveacceso").value = '';
+        $q("#idnivelacceso").value = ''; */
   }
 
   function validateData() {
@@ -282,9 +293,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       $q("#departamento").value = '',
       $q("#provincia").value = '',
       $q("#distrito").value = '',
-      $q("#nom_usuario").value = '',
-      $q("#claveacceso").value = '',
-      $q("#idnivelacceso").value = '',
+
+      /*       $q("#nom_usuario").value = '',
+            $q("#claveacceso").value = '',
+            $q("#idnivelacceso").value = '', */
     ];
 
     const dataNumber = [];
@@ -302,12 +314,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const validaNumDoc = $q("#num_doc").value.length === 8 || $q("#num_doc").value.length === 20 ? true : false;
 
     //if ($q("#num_doc").value !== "" && isNumeric && minLength && validaNumDoc) {
-    const data = await obtenerPersonaPorDoc();
+    const data = await obtenerPersonaNumDocColaborador(); // ESTO SOLO SERVIRA PARA colaboadores
     const isblock = (data.length > 0); // confirma si la persona ya existe y bloquea los campos 
     bloquearCampos(isblock);
 
     console.log(isblock);
-    console.log(data);
+    console.log("persona vinculada a colaborador -> ", data);
 
     $q("#btnEnviar").disabled = false;
     if (isblock) {
@@ -400,34 +412,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  await obtenerNiveles()
+  await obtenerAreas()
 
 
   // ********************************* EVENTOS Y CARGA DE DATOS *********************************
 
-  $q("#idnivelacceso").addEventListener("change", async (e) => {
-    console.log("valor -> ", e.target.value);
-    if (e.target.value == "6") {
-      $q(".contenedor-color").hidden = false
-      $q(".contenedor-porcentaje").hidden = false
-      $q(".contenedor-marcaagua").hidden = false
-      //$q(".contenedor-representante").hidden = true
-    }
-    else if (e.target.value == "3") {
-      //$q(".contenedor-representante").hidden = false
-      $q(".contenedor-color").hidden = true
-      $q(".contenedor-porcentaje").hidden = true
-      $q(".contenedor-marcaagua").hidden = true
-    }
-    else {
-      // $q(".contenedor-representante").hidden = true
-      $q(".contenedor-color").hidden = true
-      $q(".contenedor-porcentaje").hidden = true
-      //$q(".contenedor-representante").hidden = true
-      $q(".contenedor-marcaagua").hidden = true
-    }
-  })
-
+  /*   $q("#idnivelacceso").addEventListener("change", async (e) => {
+      console.log("valor -> ", e.target.value);
+      if (e.target.value == "6") {
+        $q(".contenedor-color").hidden = false
+        $q(".contenedor-porcentaje").hidden = false
+        $q(".contenedor-marcaagua").hidden = false
+        //$q(".contenedor-representante").hidden = true
+      }
+      else if (e.target.value == "3") {
+        //$q(".contenedor-representante").hidden = false
+        $q(".contenedor-color").hidden = true
+        $q(".contenedor-porcentaje").hidden = true
+        $q(".contenedor-marcaagua").hidden = true
+      }
+      else {
+        // $q(".contenedor-representante").hidden = true
+        $q(".contenedor-color").hidden = true
+        $q(".contenedor-porcentaje").hidden = true
+        //$q(".contenedor-representante").hidden = true
+        $q(".contenedor-marcaagua").hidden = true
+      }
+    })
+   */
   $q("#search").addEventListener("click", async () => {
     await validateNumDoc();
   });
@@ -458,15 +470,28 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function cargarDatosPorDefecto() {
     //niveles de acceso / rol
-    const data = await obtenerNiveles()
-    $q("#idnivelacceso").innerHTML = "<option value=''>Selecciona</option>";
+    const data = await obtenerAreas()
+    console.log("data -> ", data);
+    $q("#area").innerHTML = "<option value=''>Selecciona</option>";
     data.forEach(niveles => {
-      $q("#idnivelacceso").innerHTML += `<option value="${niveles.idnivelacceso}">${niveles.nivelacceso}</option>`;
+      $q("#area").innerHTML += `<option value="${niveles.idarea}">${niveles.area}</option>`;
     });
   }
 
 
   // ********************************* REGISTROS *********************************
+
+  $q("#btnGuardarNuevaArea").addEventListener("click", async () => {
+    const arearegistrada = await registrarArea()
+    console.log("area registrada -> ", arearegistrada);
+    if (arearegistrada) {
+      showToast("Area registrada correctamente", "SUCCESS");
+      $q("#area").value = '';
+      await cargarDatosPorDefecto()
+    } else {
+      showToast("Error al registrar el area", "ERROR");
+    }
+  })
 
   $q("#form-person-user").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -480,10 +505,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const unikeEmail = await existeCorreo($q("#correo").value);
     console.log("email encontrado -> ", unikeEmail);
 
-    const imagenInputMarcaAgua = $q("#upload_widget_marcaagua");
+/*     const imagenInputMarcaAgua = $q("#upload_widget_marcaagua");
     const fileMarcaAgua = imagenInputMarcaAgua.files[0];
     const imagenInputFirma = $q("#upload_widget_firma");
-    const fileFirma = imagenInputFirma.files[0];
+    const fileFirma = imagenInputFirma.files[0]; */
 
     //const existResp = await existeResponsable(parseInt($q("#area").value)); //valida que no exista un responsable en el area elegida
     //if (parseInt($q("#nivel").value) === 2 && isNaN(parseInt($q("#area").value))) { selectArea = false; }
@@ -497,11 +522,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log(data);
         //alert("registrando persona")
         if (data.idpersona > 0) {
-          const usuario = await registrarUsuario($q("#sucursal").value, data.idpersona, fileMarcaAgua, fileFirma);
-          console.log(usuario);
+          console.log("persona registrada -> ", data);
+          const colaborador = await registrarColaborador(data.idpersona);
+          console.log(colaborador);
 
-          if (usuario.idusuario > 0) {
-            showToast("Se ha registrado correctamente al usuario", "SUCCESS", 1000, '');
+          if (colaborador.idcolaborador > 0) {
+            showToast("Se ha registrado correctamente al colaborador", "SUCCESS", 1000, '');
             isReset = false;
             resetUI();
             $q("#num_doc").value = "";
@@ -509,7 +535,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             $q("#btnEnviar").disabled = true;
             $q("#num_doc").focus();
           } else {
-            showToast("Hubo un error al registrar los datos del usuario", "ERROR");
+            showToast("Hubo un error al registrar los datos del colaborador", "ERROR");
           }
         } else {
           showToast("Hubo un error al registrar los datos de la persona", "ERROR");
@@ -524,44 +550,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       //if (unikeEmail.length > 0) { message = "El correo electronico ya existe"; }
       showToast(message, "ERROR");
     }
-  });
+  })
 
-  $q("#upload_widget_marcaagua").addEventListener("change", function (e) {
-    console.log("cambiando...");
-    const file = e.target.files[0];
-    console.log("file de imagen event -> ", file);
-    const preview = $q("#previewImagenMarcaAgua");
-
-    if (file && file.type.startsWith("image/")) {
-      console.log("renderizando ,,,,");
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        preview.src = e.target.result;
-        preview.style.display = "block";
-      };
-      reader.readAsDataURL(file);
-    } else {
-      preview.src = "";
-      preview.style.display = "none";
-    }
-  });
-
-
-  $q("#upload_widget_firma").addEventListener("change", function (e) {
-    const file = e.target.files[0];
-    console.log("file de imagen event -> ", file);
-    const preview = $q("#previewImagenFirma");
-    
-    if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        preview.src = e.target.result;
-        preview.style.display = "block";
-      };
-      reader.readAsDataURL(file);
-    } else {
-      preview.src = "";
-      preview.style.display = "none";
-    }
-  });
 });

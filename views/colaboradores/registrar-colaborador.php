@@ -135,23 +135,20 @@
             <h5>Datos de Colaborador</h5>
             <label for="fechaingreso" class="col-sm-1 form-label size-label mt-3">Fecha ingreso:</label>
             <div class="col-sm-5">
-              <input type="text" id="fechaingreso" class="form-control" autocomplete="off" required>
+              <input type="date" id="fechaingreso" class="form-control" autocomplete="off" required>
             </div>
           </div>
           <div class="row align-items-center g-2 mt-3">
-    <label for="area" class="col-sm-1 col-form-label">Área:</label>
-    
-    <div class="col-sm-5 d-flex align-items-center">
-        <select name="area" id="area" class="form-select me-2 filters" required>
-            <option value="">Seleccione</option>
-        </select>
-        <i class="bi bi-plus-circle fs-4 text-primary" role="button" title="Agregar área" title="Nueva Área"></i>
-    </div>
-</div>
-                  
+            <label for="area" class="col-sm-1 col-form-label">Área:</label>
 
+            <div class="col-sm-5 d-flex align-items-center">
+              <select name="area" id="area" class="form-select me-2 filters" required>
+                <option value="">Seleccione</option>
+              </select>
+              <i class="bi bi-plus-circle fs-4 text-primary" role="button" title="Agregar área" title="Nueva Área" data-bs-toggle="modal" data-bs-target="#modal-nuevaarea"></i>
+            </div>
+          </div>
       </div>
-
     </div>
 
     <div class="row mt-3">
@@ -165,6 +162,33 @@
   </div>
 </div>
 </div>
+</div>
+
+<div class="modal fade" id="modal-nuevaarea" tabindex="-1" aria-labelledby="modalnuevaarea" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h1 class="modal-title fs-5" id="modalnuevaarea">Nueva Area</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="row justify-content-center">
+              <div class="col-md-12">
+                <div class=" mb-3">
+                  <label for="areanueva">Área</label>
+                  <input type="text" class="form-control" id="areanueva" placeholder="Área">
+                </div>
+                <button type="button" class="btn btn-primary w-100" id="btnGuardarNuevaArea">Guardar</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <?php require_once '../footer.php' ?>
 <script src="<?= $hostOnlyHeader ?>/js/colaboradores/registrar-colaborador.js"></script>

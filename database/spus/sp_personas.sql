@@ -54,3 +54,26 @@ BEGIN
     WHERE P.num_doc = _num_doc;
 END //
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS sp_buscar_persona_por_numdoc_colaborador;
+DELIMITER //
+CREATE PROCEDURE sp_buscar_persona_por_numdoc_colaborador
+(
+	IN _num_doc VARCHAR(20)
+)
+BEGIN
+	SELECT 
+*
+    FROM colaboradores CO
+    LEFT JOIN personas P ON P.idpersona = CO.idpersona 
+    LEFT JOIN distritos DI ON DI.iddistrito = P.iddistrito
+    LEFT JOIN provincias PR ON PR.idprovincia = DI.idprovincia
+    LEFT JOIN departamentos D ON D.iddepartamento = PR.iddepartamento
+    LEFT JOIN nacionalidades NA ON NA.idnacionalidad = D.idnacionalidad
+    LEFT JOIN areas AR ON AR.idarea = CO.idarea
+    WHERE P.num_doc = _num_doc;
+END //
+DELIMITER ;
+
+CALL sp_buscar_persona_por_numdoc_colaborador ('72765632');
+select * from personas;

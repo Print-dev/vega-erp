@@ -1,5 +1,5 @@
 <?php
-require_once '../models/Nomina.php.php';
+require_once '../models/Nomina.php';
 header("Access-Control-Allow-Origin: *");
 header("Content-type: application/json; charset=utf-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // Métodos permitidos
@@ -10,21 +10,18 @@ $nomina = new Nomina();
 if (isset($_GET['operation'])) {
     switch ($_GET['operation']) {
 
-        /* case 'obtenerNotificaciones':
-            $cleanData = [
-                'idusuariodest'   => $notificacion->limpiarCadena($_GET['idusuariodest']),
-            ];
-            echo json_encode($notificacion->obtenerNotificaciones($cleanData));
+        case 'obtenerAreas':
+            echo json_encode($nomina->obtenerAreas());
             break;
 
-        case 'obtenerTodasLasNotificaciones':
+        case 'obtenerPersonaNumDocColaborador':
             $cleanData = [
-                'idusuariodest'   => $notificacion->limpiarCadena($_GET['idusuariodest']),
+                'numdoc'   => $nomina->limpiarCadena($_GET['numdoc']),
             ];
-            echo json_encode($notificacion->obtenerTodasLasNotificaciones($cleanData));
+            echo json_encode($nomina->obtenerPersonaNumDocColaborador($cleanData));
             break;
 
-        case 'obtenerNotificacionPropuesta':
+            /* case 'obtenerNotificacionPropuesta':
             $cleanData = [
                 'idreferencia'   => $notificacion->limpiarCadena($_GET['idreferencia']),
             ];
@@ -66,7 +63,6 @@ if (isset($_POST['operation'])) {
                 'idpersona'   => $nomina->limpiarCadena($_POST['idpersona']),
                 'fechaingreso'   => $nomina->limpiarCadena($_POST['fechaingreso']),
                 'area' => $nomina->limpiarCadena($_POST['area']),
-                'nivel'   => $nomina->limpiarCadena($_POST['nivel']) ? $nomina->limpiarCadena($_POST['idreferencia']) : '',
             ];
 
             $respuesta = ['idcolaborador' => -1];
@@ -81,7 +77,7 @@ if (isset($_POST['operation'])) {
             break;
         case 'registrarArea':
             $cleanData = [
-                'area'   => $nomina->limpiarCadena($_POST['area']),               
+                'area'   => $nomina->limpiarCadena($_POST['area']),
             ];
 
             $rpt = $nomina->registrarArea($cleanData);

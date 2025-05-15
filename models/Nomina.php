@@ -25,6 +25,18 @@ class Nomina extends ExecQuery
             return -1;
         }
     } */
+
+  public function obtenerAreas(): array
+  {
+    try {
+      $sp = parent::execQ("SELECT * FROM areas");
+      $sp->execute();
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function registrarArea($params = []): bool
   {
     try {
@@ -42,17 +54,17 @@ class Nomina extends ExecQuery
       return -1;
     }
   }
+
   public function registrarColaborador($params = []): int
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_colaborador(@idcolaborador,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_colaborador(@idcolaborador,?,?,?)');
       $cmd->execute(
         array(
           $params['idpersona'],
           $params['fechaingreso'],
-          $params['area'],
-          $params['nivel']
+          $params['area']
         )
       );
 
@@ -123,13 +135,13 @@ class Nomina extends ExecQuery
       die($e->getMessage());
     }
   } */
-  public function obtenerNotificaciones($params = []): array
+  public function obtenerPersonaNumDocColaborador($params = []): array
   {
     try {
-      $sp = parent::execQ("SELECT * FROM notificaciones WHERE idusuariodest = ? ORDER BY idnotificacion DESC LIMIT 4");
+      $sp = parent::execQ("CALL sp_buscar_persona_por_numdoc_colaborador(?)");
       $sp->execute(
         array(
-          $params["idusuariodest"]
+          $params["numdoc"]
         )
       );
       return $sp->fetchAll(PDO::FETCH_ASSOC);
@@ -138,7 +150,7 @@ class Nomina extends ExecQuery
     }
   }
 
-/*   public function obtenerNotificaciones($params = []): array
+  /*   public function obtenerNotificaciones($params = []): array
   {
     try {
       $sp = parent::execQ("SELECT * FROM notificaciones WHERE idusuariodest = ? ORDER BY idnotificacion DESC LIMIT 4");

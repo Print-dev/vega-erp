@@ -8,19 +8,18 @@ CREATE PROCEDURE sp_registrar_colaborador(
     OUT _idcolaborador INT,
     IN _idpersona INT,
     IN _fechaingreso DATE,
-    IN _area int
+    IN _idarea int
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
-    
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+        DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
     BEGIN
         SET existe_error = 1;
     END;
     
     -- Insertar la notificación
-    INSERT INTO colaboradores (idpersona, fechaingreso, area)
-    VALUES (_idpersona, _fechaingreso , _area);
+    INSERT INTO colaboradores (idpersona, fechaingreso, idarea)
+    VALUES (_idpersona, _fechaingreso , _idarea);
 
     IF existe_error = 1 THEN
         SET _idcolaborador = -1;
@@ -29,7 +28,7 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
-
+-- CALL sp_registrar_colaborador (@idcolaborador,15, '2025-05-10', 3)
 
 DROP PROCEDURE IF EXISTS `sp_registrar_salario`;
 DELIMITER //

@@ -14,7 +14,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h1>Nóminas</h1>
+                    <h1>Colaboradores</h1>
                 </div>
                 <div class="col-md-6 text-end">
                     <a href="<?= $hostOnlyHeader ?>/views/nominas/registrar-colaborador" class="btn btn-info" id="btnNuevoColaborador" data-bs-toggle="modal" data-bs-target="#modal-nuevo-colaborador">Nuevo Colaborador</a>
