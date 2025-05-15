@@ -17,7 +17,7 @@
                     <h1>Nóminas</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a href="<?= $hostOnlyHeader ?>/views/nominas/registrar-colaborador" class="btn btn-info" id="btnNuevoColaborador" data-bs-toggle="modal" data-bs-target="#modal-nuevo-colaborador">Nuevo Colaborador</a>
+                    <button class="btn btn-info" id="btnNuevoColaboradorNomina" data-bs-toggle="modal" data-bs-target="#modal-nuevo-colaborador-nomina">Asignar Colaborador</button>
                 </div>
             </div>
             <div class="row">
@@ -80,27 +80,97 @@
 </div>
 
 <!-- MODAL PARA COTIZAR DE MANERA CONTRATO -->
-<!-- <div class="modal fade" id="modal-fechasagenda" tabindex="-1" aria-labelledby="modalfechasagenda" aria-hidden="true">
+<div class="modal fade" id="modal-nuevo-colaborador-nomina" tabindex="-1" aria-labelledby="modalcolaboradornomina" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalfechasagenda">Fechas ocupadas</h1>
+                <h1 class="modal-title fs-5" id="modalcolaboradornomina">Asignar Colaborador a nómina</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <table class="table rounded">
-                    <div class="contenedor-fechasocupadas">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <select name="colaborador" id="colaborador" class="form-select filter" placeholder="Colaboradores">
 
+                            </select>
+                            <label for="colaborador" class="form-label">Colaboradores <span class="text-danger">(*)</span></label>
+                        </div>
                     </div>
-                </table>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <select name="colaborador" id="colaborador" class="form-select filter" placeholder="Periódo">
+                                <option value="">Seleccione</option>
+                                <option value="1">Semanal</option>
+                                <option value="2">Quincenal</option>
+                                <option value="3">Mensual</option>
+                            </select>
+                            <label for="colaborador" class="form-label">Periódo <span class="text-danger">(*)</span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <input type="date" id="fechainicio" name="fechainicio" class="form-control" placeholder="Fecha de inicio">
+                            <label for="fechainicio" class="form-label">Fecha de inicio <span class="text-danger">(*)</span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <input type="date" id="fechafin" name="fechafin" class="form-control" placeholder="Fecha finalizado">
+                            <label for="fechafin" class="form-label">Fecha finalizado <span class="text-danger">(*)</span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <input type="number" id="horas" name="horas" class="form-control" placeholder="Horas trabajadas">
+                            <label for="horas" class="form-label">Horas trabajadas <span class="text-danger">(*)</span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <input type="number" id="costohora" name="costohora" class="form-control" placeholder="Costo x Hora">
+                            <label for="costohora" class="form-label">Costo x Hora (S/.) <span class="text-danger">(*)</span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <input type="number" id="salario" name="salario" class="form-control" placeholder="Salario">
+                            <label for="salario" class="form-label">Salario (S/.) <span class="text-danger">(*)</span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <input type="number" id="tiempo" name="tiempo" class="form-control" placeholder="Tiempo">
+                            <label for="tiempo" class="form-label">Tiempo <span class="text-danger">(*)</span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <input type="number" id="rendimiento" name="rendimiento" class="form-control" placeholder="Rendimiento">
+                            <label for="rendimiento" class="form-label">Rendimiento <span class="text-danger">(*)</span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <input type="number" id="proporcion" name="proporcion" class="form-control" placeholder="Proporción">
+                            <label for="proporcion" class="form-label">Proporción <span class="text-danger">(*)</span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <input type="number" id="proporcion" name="proporcion" class="form-control" placeholder="Acumulado">
+                            <label for="proporcion" class="form-label">Acumulado <span class="text-danger">(*)</span></label>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary btnGuardarContrato" id="close-mdl-fechasagenda" data-bs-dismiss="modal" aria-label="Close">Cerrar</button>
+                <button type="button" class="btn btn-primary btnGuardarNomina" id="close-mdl-colaboradornomina" data-bs-dismiss="modal" aria-label="Close">Guardar</button>
             </div>
         </div>
     </div>
-</div> -->
-
+</div>
+<!-- 
 <div class="modal fade" id="modal-nuevo-proveedor" tabindex="-1" aria-labelledby="modalnuevo-proveedor" aria-hidden="true">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
@@ -171,8 +241,8 @@
         </div>
     </div>
 </div>
-
-<div class="modal fade" id="modal-actualizar-proveedor" tabindex="-1" aria-labelledby="modalactualizar-proveedor" aria-hidden="true">
+ -->
+<!-- <div class="modal fade" id="modal-actualizar-proveedor" tabindex="-1" aria-labelledby="modalactualizar-proveedor" aria-hidden="true">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
@@ -243,12 +313,12 @@
     </div>
 </div>
 
-
+ -->
 <?php require_once '../footer.php' ?>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script src="<?= $hostOnlyHeader ?>/js/nominas/listar-nominas.js"></script>
-<script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
+<!-- <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script> -->
 
 </body>
 

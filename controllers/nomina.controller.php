@@ -21,6 +21,44 @@ if (isset($_GET['operation'])) {
             echo json_encode($nomina->obtenerPersonaNumDocColaborador($cleanData));
             break;
 
+        case 'obtenerColaboradorPorId':
+            $cleanData = [
+                'idcolaborador'   => $nomina->limpiarCadena($_GET['idcolaborador']),
+            ];
+            echo json_encode($nomina->obtenerColaboradorPorId($cleanData));
+            break;
+        
+        case 'obtenerSalarioPorId':
+            $cleanData = [
+                'idsalario'   => $nomina->limpiarCadena($_GET['idsalario']),
+            ];
+            echo json_encode($nomina->obtenerSalarioPorId($cleanData));
+            break;
+        
+
+        case 'filtrarColaboradores':
+            $cleanData = [
+                'numdoc' => empty($_GET['numdoc']) ? null : $nomina->limpiarCadena($_GET['numdoc']),
+                'idarea' => empty($_GET['idarea']) ? null : $nomina->limpiarCadena($_GET['idarea']),
+            ];
+            echo json_encode($nomina->filtrarColaboradores($cleanData));
+            break;
+
+        case 'filtrarNominas':
+            /* $cleanData = [
+                'numdoc' => empty($_GET['numdoc']) ? null : $nomina->limpiarCadena($_GET['numdoc']),
+                'idarea' => empty($_GET['idarea']) ? null : $nomina->limpiarCadena($_GET['idarea']),
+            ]; */
+            echo json_encode($nomina->filtrarNominas());
+            break;
+
+        case 'filtrarSalarios':
+            $cleanData = [
+                'idcolaborador' => empty($_GET['idcolaborador']) ? null : $nomina->limpiarCadena($_GET['idcolaborador'])
+            ];
+            echo json_encode($nomina->filtrarSalarios($cleanData));
+            break;
+
             /* case 'obtenerNotificacionPropuesta':
             $cleanData = [
                 'idreferencia'   => $notificacion->limpiarCadena($_GET['idreferencia']),
@@ -61,6 +99,7 @@ if (isset($_POST['operation'])) {
         case 'registrarColaborador':
             $cleanData = [
                 'idpersona'   => $nomina->limpiarCadena($_POST['idpersona']),
+                'idsucursal'   => $nomina->limpiarCadena($_POST['idsucursal']),
                 'fechaingreso'   => $nomina->limpiarCadena($_POST['fechaingreso']),
                 'area' => $nomina->limpiarCadena($_POST['area']),
             ];
@@ -87,22 +126,46 @@ if (isset($_POST['operation'])) {
 
         case 'registrarSalario':
             $cleanData = [
-                'idpersona'   => $nomina->limpiarCadena($_POST['idpersona']),
-                'fechaingreso'   => $nomina->limpiarCadena($_POST['fechaingreso']),
-                'area' => $nomina->limpiarCadena($_POST['area']),
-                'nivel'   => $nomina->limpiarCadena($_POST['nivel']) ? $nomina->limpiarCadena($_POST['idreferencia']) : '',
-                'mensaje'   => $nomina->limpiarCadena($_POST['mensaje']),
+                'idcolaborador'   => $nomina->limpiarCadena($_POST['idcolaborador']),
+                'salario'   => $nomina->limpiarCadena($_POST['salario']),
+                'costohora'   => $nomina->limpiarCadena($_POST['costohora']),
             ];
 
             $respuesta = ['idsalario' => -1];
 
-            $idsalario = $salario->registrarSalario($cleanData);
+            $idsalario = $nomina->registrarSalario($cleanData);
 
             if ($idsalario > 0) {
                 $respuesta['idsalario'] = $idsalario;
             }
 
             echo json_encode($respuesta);
+            break;
+
+        case 'actualizarColaborador':
+            $cleanData = [
+                'idcolaborador'   => $nomina->limpiarCadena($_POST['idcolaborador']) ? $nomina->limpiarCadena($_POST['idcolaborador']) : '',
+                'idsucursal'   => $nomina->limpiarCadena($_POST['idsucursal']) ? $nomina->limpiarCadena($_POST['idsucursal']) : '',
+                'fechaingreso' => $nomina->limpiarCadena($_POST['fechaingreso']) ? $nomina->limpiarCadena($_POST['fechaingreso']) :'',
+                'idarea'   => $nomina->limpiarCadena($_POST['idarea']) ? $nomina->limpiarCadena($_POST['idarea']) : '',
+            ];
+
+            $rpt = $nomina->actualizarColaborador($cleanData);
+
+            echo json_encode($rpt);
+            break;
+
+        case 'actualizarSalario':
+            $cleanData = [
+                'idcolaborador'   => $nomina->limpiarCadena($_POST['idcolaborador']) ? $nomina->limpiarCadena($_POST['idcolaborador']) : '',
+                'idsucursal'   => $nomina->limpiarCadena($_POST['idsucursal']) ? $nomina->limpiarCadena($_POST['idsucursal']) : '',
+                'fechaingreso' => $nomina->limpiarCadena($_POST['fechaingreso']) ? $nomina->limpiarCadena($_POST['fechaingreso']) :'',
+                'idarea'   => $nomina->limpiarCadena($_POST['idarea']) ? $nomina->limpiarCadena($_POST['idarea']) : '',
+            ];
+
+            $rpt = $nomina->actualizarSalario($cleanData);
+
+            echo json_encode($rpt);
             break;
 
         case 'registrarNomina':
@@ -112,6 +175,9 @@ if (isset($_POST['operation'])) {
                 'fechainicio' => $nomina->limpiarCadena($_POST['fechainicio']),
                 'fechafin' => $nomina->limpiarCadena($_POST['fechafin']),
                 'horas' => $nomina->limpiarCadena($_POST['horas']),
+                'costohora' => $nomina->limpiarCadena($_POST['costohora']),
+                'salario' => $nomina->limpiarCadena($_POST['salario']),
+                'tiempo' => $nomina->limpiarCadena($_POST['tiempo']),
                 'rendimiento' => $nomina->limpiarCadena($_POST['rendimiento']),
                 'proporcion' => $nomina->limpiarCadena($_POST['proporcion']),
                 'acumulado'   => $nomina->limpiarCadena($_POST['acumulado']),

@@ -7,6 +7,7 @@ DELIMITER //
 CREATE PROCEDURE sp_registrar_colaborador(
     OUT _idcolaborador INT,
     IN _idpersona INT,
+    IN _idsucursal INT,
     IN _fechaingreso DATE,
     IN _idarea int
 )
@@ -18,8 +19,8 @@ BEGIN
     END;
     
     -- Insertar la notificación
-    INSERT INTO colaboradores (idpersona, fechaingreso, idarea)
-    VALUES (_idpersona, _fechaingreso , _idarea);
+    INSERT INTO colaboradores (idpersona, idsucursal, fechaingreso, idarea)
+    VALUES (_idpersona, _idsucursal, _fechaingreso , _idarea);
 
     IF existe_error = 1 THEN
         SET _idcolaborador = -1;
@@ -30,26 +31,39 @@ END //
 DELIMITER ;
 -- CALL sp_registrar_colaborador (@idcolaborador,15, '2025-05-10', 3)
 
+DROP PROCEDURE if exists sp_actualizar_colaborador;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_colaborador (
+	IN _idcolaborador int,
+	IN _idsucursal INT,
+    IN _fechaingreso DATE,
+    IN _idarea INT
+)
+BEGIN
+		UPDATE colaboradores 
+    SET 
+		idsucursal = NULLIF(_idsucursal, ''),
+        fechaingreso = NULLIF(_fechaingreso, ''),
+        idarea = NULLIF(_idarea, '')
+    WHERE idcolaborador = _idcolaborador;
+
+END //
+DELIMITER ;
+
 DROP PROCEDURE IF EXISTS `sp_registrar_salario`;
 DELIMITER //
 CREATE PROCEDURE sp_registrar_salario(
     OUT _idsalario INT,
     IN _idcolaborador int,
     IN _salario DECIMAL(10,2),
-    IN _costohora DECIMAL(10,2),
-    IN _fechainicio DATE
+    IN _costohora DECIMAL(10,2)
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
     
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-    BEGIN
-        SET existe_error = 1;
-    END;
-    
     -- Insertar la notificación
-    INSERT INTO colaboradores (idcolaborador, salario, costohora, fechainicio)
-    VALUES (_idcolaborador, _salario , _costohora, _fechainicio);
+    INSERT INTO salarios (idcolaborador, salario, costohora)
+    VALUES (_idcolaborador, _salario , _costohora);
 
     IF existe_error = 1 THEN
         SET _idsalario = -1;
@@ -59,6 +73,25 @@ BEGIN
 END //
 DELIMITER ;
 
+DROP PROCEDURE if exists sp_actualizar_salario;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_salario (
+	IN _idsalario INT,
+    IN _salario DECIMAL(10,2),
+    IN _costohora DECIMAL(10,2),
+    IN _fechaingreso DATE
+)
+BEGIN
+		UPDATE salarios SET
+        salario = nullif(_salario,''),
+        costohora = nullif(_costohora, ''),
+        fechaingreso = nullif(_fechaingreso, '')
+    WHERE idsalario = _idsalario; 
+END //
+DELIMITER ;
+
+
+-- CALL sp_registrar_salario(@idsalario, 1, 1200, 30)
 DROP PROCEDURE IF EXISTS `sp_registrar_nomina`;
 DELIMITER //
 CREATE PROCEDURE sp_registrar_nomina(
@@ -82,7 +115,7 @@ BEGIN
     
     -- Insertar la notificación
     INSERT INTO nomina (idcolaborador, periodo, fechainicio, fechafin ,horas, rendimiento, proporcion,acumulado)
-    VALUES (_idcolaborador, _periodo , _fechainicio, _fechafin, _horas, _rendimiento, _proporcion, _acumulado);
+    VALUES (_idcolaborador, _periodo , _fechainicio, nullif(_fechafin, ''), _horas, _rendimiento, _proporcion, _acumulado);
 
     IF existe_error = 1 THEN
         SET _idnomina = -1;
@@ -92,3 +125,42 @@ BEGIN
 END //
 DELIMITER ;
 
+SELECT*FROM personas;
+DROP PROCEDURE IF EXISTS sp_filtrar_nominas;
+DELIMITER //
+CREATE PROCEDURE sp_filtrar_nominas(
+	-- IN _nombres VARCHAR(100),
+	-- IN _num_doc VARCHAR(20)
+)
+BEGIN
+	SELECT 
+	NOM.idnomina, COL.idcolaborador, PE.nombres, PE.apellidos, NOM.periodo, NOM.fechainicio, NOM.fechafin, NOM.horas, NOM.costohora, NOM.salario, AR.area, AR.idarea
+    FROM nomina NOM
+	LEFT JOIN colaboradores	COL ON COL.idcolaborador = NOM.idcolaborador
+	left JOIN personas PE ON PE.idpersona = COL.idpersona
+    LEFT JOIN areas AR ON AR.idarea = COL.idarea
+    -- WHERE (PE.num_doc LIKE CONCAT('%', COALESCE(_num_doc, ''), '%') OR PE.num_doc IS NULL) AND
+	-- (PE.nombres LIKE CONCAT('%', COALESCE(_nombres, ''), '%') OR PE.nombres IS NULL)
+    ORDER BY idcolaborador DESC;
+END //
+
+CALL sp_filtrar_nominas (null,null)
+
+
+DROP PROCEDURE IF EXISTS sp_filtrar_salarios;
+DELIMITER //
+CREATE PROCEDURE sp_filtrar_salarios(
+	IN _idcolaborador INT
+	-- IN _nombres VARCHAR(100),
+	-- IN _num_doc VARCHAR(20)
+)
+BEGIN
+	SELECT 
+	*
+    FROM salarios NOM
+	LEFT JOIN colaboradores	COL ON COL.idcolaborador = NOM.idcolaborador
+    WHERE (_idcolaborador IS NULL OR COL.idcolaborador = _idcolaborador)
+    ORDER BY idsalario DESC;
+END //
+
+CALL sp_filtrar_salarios(1)

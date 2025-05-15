@@ -75,5 +75,5 @@ BEGIN
 END //
 DELIMITER ;
 
-CALL sp_buscar_persona_por_numdoc_colaborador ('72765632');
-select * from personas;
+-- CALL sp_buscar_persona_por_numdoc_colaborador ('72765632');
+-- select * from personas;

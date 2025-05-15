@@ -26,6 +26,122 @@ class Nomina extends ExecQuery
         }
     } */
 
+  public function actualizarColaborador($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_actualizar_colaborador(?,?,?,?)");
+      $act = $cmd->execute(
+        array(
+          $params['idcolaborador'],
+          $params['idsucursal'],
+          $params['fechaingreso'],
+          $params['idarea']
+        )
+      );
+
+      return $act;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+
+  public function actualizarSalario($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_actualizar_salario(?,?,?,?)");
+      $act = $cmd->execute(
+        array(
+          $params['idsalario'],
+          $params['salario'],
+          $params['costohora'],
+          $params['fechaingreso']
+        )
+      );
+
+      return $act;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+
+  public function filtrarColaboradores($params = []): array
+  {
+    try {
+      $sp = parent::execQ("CALL sp_filtrar_colaboradores(?,?)");
+      $sp->execute(
+        array(
+          $params["numdoc"],
+          $params["idarea"]
+        )
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+  
+  public function filtrarNominas($params = []): array
+  {
+    try {
+      $sp = parent::execQ("CALL sp_filtrar_nominas");
+      $sp->execute(
+        array(
+          /* $params["nombres"],
+          $params["numdoc"] */
+        )
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+  public function filtrarSalarios($params = []): array
+  {
+    try {
+      $sp = parent::execQ("CALL sp_filtrar_salarios(?)");
+      $sp->execute(
+        array(
+          $params["idcolaborador"]
+        )
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerColaboradorPorId($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("SELECT * FROM colaboradores where idcolaborador = ?");
+      $cmd->execute(
+        array($params['idcolaborador'])
+      );
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return [];
+    }
+  }
+
+  public function obtenerSalarioPorId($params = []): array
+  {
+    try {
+      $cmd = parent::execQ("SELECT * FROM salarios where idsalario = ?");
+      $cmd->execute(
+        array($params['idsalario'])
+      );
+      return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return [];
+    }
+  }
+
   public function obtenerAreas(): array
   {
     try {
@@ -59,10 +175,11 @@ class Nomina extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_colaborador(@idcolaborador,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_colaborador(@idcolaborador,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idpersona'],
+          $params['idsucursal'],
           $params['fechaingreso'],
           $params['area']
         )
@@ -80,13 +197,12 @@ class Nomina extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_salario(@idsalario,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_salario(@idsalario,?,?,?)');
       $cmd->execute(
         array(
           $params['idcolaborador'],
           $params['salario'],
           $params['costohora'],
-          $params['fechainicio']
         )
       );
 
@@ -102,7 +218,7 @@ class Nomina extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_nomina(@idnomina,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_nomina(@idnomina,?,?,?,?,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idcolaborador'],
@@ -110,6 +226,9 @@ class Nomina extends ExecQuery
           $params['fechainicio'],
           $params['fechafin'],
           $params['horas'],
+          $params['costohora'],
+          $params['salario'],
+          $params['tiempo'],
           $params['rendimiento'],
           $params['proporcion'],
           $params['acumulado'],

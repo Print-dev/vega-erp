@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let idproveedor
     let modalNuevoProvedor = new bootstrap.Modal($q("#modal-nuevo-proveedor"))
     let modalActualizarProveedor = new bootstrap.Modal($q("#modal-actualizar-proveedor"))
+    let idcolaborador
 
     function $q(object = null) {
         return document.querySelector(object);
@@ -17,6 +18,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
+
+    async function obtenerAreas() {
+        const data = await getDatos(`${host}nomina.controller.php`, "operation=obtenerAreas");
+        console.log(data);
+        $q("#idarea").innerHTML = `<option value="">Seleccione</option>`
+        data.forEach((x) => {
+            $q("#idarea").innerHTML += `
+                <option value="${x.idarea}">${x.area}</option>
+            `;
+        }
+        );
+
+        return data
+    }
+
+    await obtenerAreas()
 
     // ************************************ REGISTRAR DATOS ********************************
 
@@ -74,7 +91,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function createTable(data) {
-        let rows = $("#tb-body-proveedor").find("tr");
+        let rows = $("#tb-body-colaborador").find("tr");
         ////console.log(rows.length);
         if (data.length > 0) {
             if (myTable) {
@@ -85,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             } else {
                 // Inicializa DataTable si no ha sido inicializado antes
-                myTable = $("#table-proveedores").DataTable({
+                myTable = $("#table-colaboradores").DataTable({
                     paging: true,
                     searching: false,
                     lengthMenu: [5, 10, 15, 20],
@@ -116,9 +133,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function changeByFilters() {
         const filters = $all(".filter");
-        $q("#table-proveedores tbody").innerHTML = "";
+        $q("#table-colaboradores tbody").innerHTML = "";
         filters.forEach((x) => {
             x.addEventListener("input", async () => {
+                await dataFilters();
+            });
+            x.addEventListener("change", async () => {
                 await dataFilters();
             });
             /* if (x.id === "ndocumento") {
@@ -143,17 +163,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function dataFilters() {
         const params = new URLSearchParams();
-        params.append("operation", "filtrarProveedores");
-        params.append("nombre", $q("#nombre").value || "");
-        params.append("dni", $q("#dni").value || "");
+        params.append("operation", "filtrarColaboradores");
+        params.append("numdoc", $q("#num_doc").value || "");
+        params.append("idarea", $q("#idarea").value || "");
 
-        const data = await getDatos(`${host}proveedor.controller.php`, params);
+        const data = await getDatos(`${host}nomina.controller.php`, params);
         console.log("data -> ", data);
 
-        $q("#table-proveedores tbody").innerHTML = "";
+        $q("#table-colaboradores tbody").innerHTML = "";
 
         if (data.length === 0) {
-            $q("#table-proveedores tbody").innerHTML = `
+            $q("#table-colaboradores tbody").innerHTML = `
             <tr>
                 <td colspan="9">Sin resultados</td>
             </tr>
@@ -164,20 +184,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         data.forEach((x) => {
 
-            $q("#table-proveedores tbody").innerHTML += `
+            $q("#table-colaboradores tbody").innerHTML += `
             <tr>
-                <td>${x.empresa ?? ''}</td>
-                <td>${x.nombre ?? ''}</td>
-                <td>${x.contacto ?? ''}</td>
-                <td>${x.correo ?? "no aplica"}</td>
-                <td>${x.dni ?? ''}</td>
-                <td>${x.banco ?? ''}</td>
-                <td>${x.ctabancaria ?? ''}</td>
-                <td>${x.servicio ?? ''}</td>
-                <td>${x.nproveedor ?? ''}</td>
+                <td>${x.num_doc ?? ''}</td>
+                <td>${x.nombres ?? ''}</td>
+                <td>${x.apellidos ?? ''}</td>
+                <td>${x.fechaingreso ?? "no aplica"}</td>
+                <td>${x.area ?? ''}</td>
                 <td>
-                    <button class="btn btn-sm btn-primary btn-actualizar" data-idproveedor="${x.idproveedor}">Actualizar</button>
-                    <button class="btn btn-sm btn-danger btn-deshabilitar" data-idproveedor="${x.idproveedor}">Deshabilitar</button>
+                    <button class="btn btn-sm btn-primary btn-salario" data-idcolaborador="${x.idcolaborador}">Salario</button>
+                    <button class="btn btn-sm btn-primary btn-actualizar" data-idcolaborador="${x.idcolaborador}">Actualizar</button>
+                    <button class="btn btn-sm btn-danger btn-deshabilitar" data-idcolaborador="${x.idcolaborador}">Deshabilitar</button>
                 </td>
             </tr>
         `;
@@ -186,7 +203,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function createTable(data) {
-        let rows = $("#tb-body-proveedor").find("tr");
+        let rows = $("#tb-body-colaborador").find("tr");
         ////console.log(rows.length);
         if (data.length > 0) {
             if (myTable) {
@@ -197,7 +214,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             } else {
                 // Inicializa DataTable si no ha sido inicializado antes
-                myTable = $("#table-proveedores").DataTable({
+                myTable = $("#table-colaboradores").DataTable({
                     paging: true,
                     searching: false,
                     lengthMenu: [5, 10, 15, 20],
@@ -233,6 +250,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }
                     if (e.target.classList.contains("btn-deshabilitar")) {
                         buttonDeshabilitar(e);
+                    }
+                    if (e.target.classList.contains("btn-salario")) {
+                        buttonSalario(e);
                     }
                     /* if (e.target.classList.contains("btn-cerrar")) {
                         buttonCerrarCaja(e);
@@ -270,8 +290,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
 
     async function buttonActualizar(e) {
-        idproveedor = e.target.getAttribute("data-idproveedor");
-        console.log("idproveedor -> ", idproveedor);
+        idcolaborador = e.target.getAttribute("data-idcolaborador");
+        window.localStorage.clear()
+        window.localStorage.setItem("idcolaborador", idcolaborador);
+        window.location.href = `${hostOnly}/views/colaboradores/actualizar-colaborador`;
+        /* console.log("idproveedor -> ", idproveedor);
         const proveedorObtenido = await obtenerProveedorPorId(idproveedor)
         console.log("proveedorObtenido -> ", proveedorObtenido);
         await obtenerProveedorPorId(idproveedor).then((data) => {
@@ -285,12 +308,19 @@ document.addEventListener("DOMContentLoaded", async () => {
             $q("#ctabancariaactualizar").value = data[0].ctabancaria ?? '';
             $q("#servicioactualizar").value = data[0].servicio ?? '';
             $q("#nproveedoractualizar").value = data[0].nproveedor ?? '';
-        });
+        }); */
         modalActualizarProveedor.show()
     }
 
-    function buttonDeshabilitar(e) {
+/*     function buttonDeshabilitar(e) {
         idproveedor = e.target.getAttribute("data-idproveedor");
         console.log("idproveedor -> ", idproveedor);
+    }
+ */
+    function buttonSalario(e) {
+        idcolaborador = e.target.getAttribute("data-idcolaborador");
+        window.localStorage.clear()
+        window.localStorage.setItem("idcolaborador", idcolaborador);
+        window.location.href = `${hostOnly}/views/colaboradores/salarios-colaborador`;
     }
 })

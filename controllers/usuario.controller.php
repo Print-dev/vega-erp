@@ -90,12 +90,14 @@ $accesos = [
     ['modulo' => 'nominas', 'ruta' => 'listar-nominas', 'subruta' => '', 'texto' => 'Nóminas', 'visible' => true, 'icono' => 'fa-solid fa-building'],
 
     // REGISTRO DE COLABORADORES
-    ['modulo' => 'colaboradores', 'ruta' => '', 'texto' => 'Colaboradores', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
+    ['modulo' => 'colaboradores', 'ruta' => '', 'texto' => 'Colaboradores', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-users'],
 
-    ['modulo' => 'colaboradores', 'ruta' => 'listar-colaboradores', 'subruta' => '', 'texto' => 'Colaboradores Registrados', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'colaboradores', 'ruta' => 'listar-colaboradores', 'subruta' => '', 'texto' => 'Registrados', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'colaboradores', 'ruta' => 'registrar-colaborador', 'subruta' => '', 'texto' => 'Nuevo Colaborador', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'colaboradores', 'ruta' => 'actualizar-colaborador', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'colaboradores', 'ruta' => 'salarios-colaborador', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
 
-
+    // REGISTRO DE SALARIOS
   ],
   "Artista" => [
     ['modulo' => 'agenda', 'ruta' => '', 'texto' => 'Agenda', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],

@@ -1,9 +1,11 @@
 document.addEventListener("DOMContentLoaded", async () => {
     let myTable = null;
-    let idproveedor
-    /*     let modalNuevoProvedor = new bootstrap.Modal($q("#modal-nuevo-proveedor"))
-        let modalActualizarProveedor = new bootstrap.Modal($q("#modal-actualizar-proveedor"))
-     */
+    //let idproveedor
+    let modalActualizarSalario = new bootstrap.Modal($q("#modal-actualizar-salario"))
+    //let modalActualizarProveedor = new bootstrap.Modal($q("#modal-actualizar-proveedor")) 
+    let idcolaborador = window.localStorage.getItem("idcolaborador") || -1;
+
+
     function $q(object = null) {
         return document.querySelector(object);
     }
@@ -18,50 +20,56 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
+    /*     async function obtenerAreas() {
+            const data = await getDatos(`${host}nomina.controller.php`, "operation=obtenerAreas");
+            console.log(data);
+            $q("#idarea").innerHTML = `<option value="">Seleccione</option>`
+            data.forEach((x) => {
+                $q("#idarea").innerHTML += `
+                    <option value="${x.idarea}">${x.area}</option>
+                `;
+            }
+            );
+    
+            return data
+        }
+    
+        await obtenerAreas() */
+
     // ************************************ REGISTRAR DATOS ********************************
 
-    async function obtenerColaboradores() {
-        const params = new URLSearchParams();
-        params.append("operation", "filtrarColaboradores");
-        params.append("numdoc", "");
-        params.append("idarea", "");
+    async function registrarSalario(idcolaborador) {
+        const nomina = new FormData();
+        nomina.append("operation", "registrarSalario");
+        nomina.append("idcolaborador", idcolaborador);
+        nomina.append("salario", $q("#salario").value || '');
+        nomina.append("costohora", $q("#costohora").value || '');
 
-        const data = await getDatos(`${host}nomina.controller.php`, params);
-        console.log("data -> ", data);
-        $q("#colaborador").innerHTML = `<option value="">Seleccione</option>`;
-        data.forEach(nomina => {
-            $q("#colaborador").innerHTML += `
-            <option value="${nomina.idpersona}">${nomina.nombres} ${nomina.apellidos}</option>
-        `;
-        });
-    }
-
-    async function registrarNomina() {
-        const colaborador = new FormData();
-        colaborador.append("operation", "registrarNomina");
-        colaborador.append("idcolaborador", $q("#colaborador").value || '');
-        colaborador.append("periodo", $q("#periodo").value || '');
-        colaborador.append("fechainicio", $q("#fechainicio").value || '');
-        colaborador.append("fechafin", $q("#fechafin").value || '');
-        colaborador.append("horas", $q("#horas").value || '');
-        colaborador.append("costohora", $q("#costohora").value || '');
-        colaborador.append("salario", $q("#salario").value || '');
-        colaborador.append("tiempo", $q("#tiempo").value || '');
-        colaborador.append("rendimiento", $q("#rendimiento").value || '');
-        colaborador.append("proporcion", $q("#proporcion").value || '');
-        colaborador.append("acumulado", $q("#acumulado").value || '');
-
-        const fcolaborador = await fetch(`${host}nomina.controller.php`, {
+        const fnomina = await fetch(`${host}nomina.controller.php`, {
             method: "POST",
-            body: colaborador,
+            body: nomina,
         });
-        const rcolaborador = await fcolaborador.json();
-        return rcolaborador;
+        const rnomina = await fnomina.json();
+        return rnomina;
     }
 
+    async function actualizarSalario(idsalario) {
+        const nomina = new FormData();
+        nomina.append("operation", "actualizarSalario");
+        nomina.append("idsalario", idsalario);
+        nomina.append("salario", $q("#salarioactualizar").value || '');
+        nomina.append("costohora", $q("#costohoraactualizar").value || '');
+        nomina.append("fechaingreso", $q("#fechaingresoactualizar").value || '');
 
-
-    /*     async function actualizarProveedor(idproveedor) {
+        const fnomina = await fetch(`${host}nomina.controller.php`, {
+            method: "POST",
+            body: nomina,
+        });
+        const rnomina = await fnomina.json();
+        return rnomina;
+    }
+    /* 
+        async function actualizarProveedor(idproveedor) {
             const proveedor = new FormData();
             proveedor.append("operation", "actualizarProveedor");
             proveedor.append("idproveedor", idproveedor);
@@ -93,8 +101,18 @@ document.addEventListener("DOMContentLoaded", async () => {
             return data;
         } */
 
+
+    async function obtenerSalarioPorId(idsalario) {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerSalarioPorId");
+        params.append("idsalario", idsalario);
+        const data = await getDatos(`${host}nomina.controller.php`, params);
+        return data;
+    }
+
+
     function createTable(data) {
-        let rows = $("#tb-body-nomina").find("tr");
+        let rows = $("#tb-body-salario").find("tr");
         ////console.log(rows.length);
         if (data.length > 0) {
             if (myTable) {
@@ -105,7 +123,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             } else {
                 // Inicializa DataTable si no ha sido inicializado antes
-                myTable = $("#table-nominas").DataTable({
+                myTable = $("#table-salarios").DataTable({
                     paging: true,
                     searching: false,
                     lengthMenu: [5, 10, 15, 20],
@@ -136,9 +154,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function changeByFilters() {
         const filters = $all(".filter");
-        $q("#table-nominas tbody").innerHTML = "";
+        $q("#table-salarios tbody").innerHTML = "";
         filters.forEach((x) => {
             x.addEventListener("input", async () => {
+                await dataFilters();
+            });
+            x.addEventListener("change", async () => {
                 await dataFilters();
             });
             /* if (x.id === "ndocumento") {
@@ -163,17 +184,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function dataFilters() {
         const params = new URLSearchParams();
-        params.append("operation", "filtrarNominas");
-        /*         params.append("nombre", $q("#nombre").value || "");
-                params.append("dni", $q("#dni").value || ""); */
-
+        params.append("operation", "filtrarSalarios");
+        params.append("idcolaborador", idcolaborador);
         const data = await getDatos(`${host}nomina.controller.php`, params);
         console.log("data -> ", data);
 
-        $q("#table-nominas tbody").innerHTML = "";
+        $q("#table-salarios tbody").innerHTML = "";
 
         if (data.length === 0) {
-            $q("#table-nominas tbody").innerHTML = `
+            $q("#table-salarios tbody").innerHTML = `
             <tr>
                 <td colspan="9">Sin resultados</td>
             </tr>
@@ -184,20 +203,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         data.forEach((x) => {
 
-            $q("#table-nominas tbody").innerHTML += `
+            $q("#table-salarios tbody").innerHTML += `
             <tr>
-                <td>${x.nombres ?? ''}</td>
-                <td>${x.apellidos ?? ''}</td>
-                <td>${x.periodo ?? ''}</td>
-                <td>${x.fehainicio ?? "no aplica"}</td>
-                <td>${x.fechafin ?? ''}</td0>
-                <td>${x.horas ?? ''}</td>
-                <td>${x.costohora ?? ''}</td>
+                <td>${x.idsalario ?? ''}</td>
                 <td>${x.salario ?? ''}</td>
-                <td>${x.nproveedor ?? ''}</td>
+                <td>${x.costohora ?? ''}</td>
+                <td>${x.fechainicio ?? ''}</td>
+                <td>${x.fechafin ?? ""}</td>
                 <td>
-                    <button class="btn btn-sm btn-primary btn-actualizar" data-nomina="${x.idnomina}">Actualizar</button>
-                    <button class="btn btn-sm btn-danger btn-historial" data-nomina="${x.idnomina}">Historial</button>
+                    <button class="btn btn-sm btn-primary btn-actualizar" data-idsalario="${x.idsalario}">Actualizar</button>
+                    <button class="btn btn-sm btn-danger btn-borrar" data-idsalario="${x.idsalario}">Borrar</button>
                 </td>
             </tr>
         `;
@@ -206,7 +221,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function createTable(data) {
-        let rows = $("#tb-body-nomina").find("tr");
+        let rows = $("#tb-body-salario").find("tr");
         ////console.log(rows.length);
         if (data.length > 0) {
             if (myTable) {
@@ -217,7 +232,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             } else {
                 // Inicializa DataTable si no ha sido inicializado antes
-                myTable = $("#table-nominas").DataTable({
+                myTable = $("#table-salarios").DataTable({
                     paging: true,
                     searching: false,
                     lengthMenu: [5, 10, 15, 20],
@@ -251,8 +266,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (e.target.classList.contains("btn-actualizar")) {
                         await buttonActualizar(e);
                     }
-                    if (e.target.classList.contains("btn-historial")) {
-                        buttonHistorial(e);
+                    if (e.target.classList.contains("btn-borrar")) {
+                        buttonBorrar(e);
+                    }
+                    if (e.target.classList.contains("btn-salario")) {
+                        buttonSalario(e);
                     }
                     /* if (e.target.classList.contains("btn-cerrar")) {
                         buttonCerrarCaja(e);
@@ -275,8 +293,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#formProveedor").reset();
                 await dataFilters();
             }
-        })
-    
+        }) */
+    /* 
         $q("#formActualizarProveedor").addEventListener("submit", async (e) => {
             e.preventDefault();
             const proveedorActualizado = await actualizarProveedor(idproveedor);
@@ -287,40 +305,51 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#formActualizarProveedor").reset();
                 await dataFilters();
             }
-        })
-    
-        async function buttonActualizar(e) {
-            idproveedor = e.target.getAttribute("data-idproveedor");
-            console.log("idproveedor -> ", idproveedor);
-            const proveedorObtenido = await obtenerProveedorPorId(idproveedor)
-            console.log("proveedorObtenido -> ", proveedorObtenido);
-            await obtenerProveedorPorId(idproveedor).then((data) => {
-                console.log("data -> ", data);
-                $q("#empresaactualizar").value = data[0].empresa ?? '';
-                $q("#nombreempresaactualizar").value = data[0].nombre ?? '';
-                $q("#contactoactualizar").value = data[0].contacto ?? '';
-                $q("#correoactualizar").value = data[0].correo ?? '';
-                $q("#dniempresaactualizar").value = data[0].dni ?? '';
-                $q("#bancoactualizar").value = data[0].banco ?? '';
-                $q("#ctabancariaactualizar").value = data[0].ctabancaria ?? '';
-                $q("#servicioactualizar").value = data[0].servicio ?? '';
-                $q("#nproveedoractualizar").value = data[0].nproveedor ?? '';
-            });
-            modalActualizarProveedor.show()
-        }
-    
-        function buttonDeshabilitar(e) {
-            idproveedor = e.target.getAttribute("data-idproveedor");
-            console.log("idproveedor -> ", idproveedor);
-        } */
+        }) */
 
-    $q("#btnNuevoColaboradorNomina").addEventListener("click", async () => {
-        console.log("butttoooon");
-        await obtenerColaboradores();
+    async function buttonActualizar(e) {
+        idsalario = e.target.getAttribute("data-idsalario");
+        const salarioObt = await obtenerSalarioPorId()
+        $q("#salarioactualizar").value = salarioObt[0].salario;
+        $q("#costohoraactualizar").value = salarioObt[0].costohora;
+        $q("#fechaingresoactualizar").value = salarioObt[0].fechaingreso;
+        modalActualizarSalario.show()
+    }
+
+    $q("#btnActualizarSalario").addEventListener("click", async (e) => {
+
+        const salarioActualzado = await actualizarSalario(idsalario)
+        console.log("salario actualizado -> ", salarioActualzado);
+        if (salarioActualzado) {
+            showToast("Salario actualizado correctamente", "SUCCESS");
+            modalActualizarSalario.hide();
+            $q("#formActualizarSalario").reset();
+            await dataFilters();
+        }
     })
 
-    $q("#btnGuardarNomina").addEventListener("click", async () => {
+    function buttonBorrar(e) {
+        idsalario = e.target.getAttribute("data-idsalario");
+        console.log("idsalario -> ", idsalario);
+        alert("prueba de borrando")
+    }
 
+    /*     function buttonSalario(e) {
+            idcolaborador = e.target.getAttribute("data-idcolaborador");
+            window.localStorage.clear()
+            window.localStorage.setItem("idcolaborador", idcolaborador);
+            window.location.href = `${hostOnly}/views/colaboradores/salarios-colaborador`;
+        } */
+
+    $q("#formsalario").addEventListener("submit", async (e) => {
+        e.preventDefault()
+        const salarioRegistrado = await registrarSalario(idcolaborador);
+        console.log("salrio registrado -> ", salarioRegistrado);
+        if (salarioRegistrado) {
+            showToast("Salario registrado correctamente", "SUCCESS");
+            $q("#formsalario").reset();
+            await dataFilters();
+        }
 
     })
 })

@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   bloquearCampos(true); // bloquear campos de llenar persona por defecto
 
   await cargarDatosPorDefecto()
+  await obtenerSucursales()
 
   // ******************************* CLODUINARY ********************************************************************
 
@@ -82,20 +83,20 @@ document.addEventListener("DOMContentLoaded", async () => {
    */
   /* ************************************* OBTENER RECURSOS ******************************************************* */
 
-  /*   await obtenerSucursales()
-  
-    async function obtenerSucursales() {
-      const params = new URLSearchParams();
-      params.append("operation", "obtenerSucursales");
-      const data = await getDatos(`${host}sucursal.controller.php`, params);
-      console.log("data de succursales -> ", data);
-      $q("#sucursal").innerHTML = "<option value=''>Seleccione</option>"
-      data.forEach((sucursal) => {
-        $q("#sucursal").innerHTML += `<option value="${sucursal.idsucursal}">${sucursal.nombre}</option>`;
-      });
-      //return data;
-    }
-   */
+  await obtenerSucursales()
+
+  async function obtenerSucursales() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerSucursales");
+    const data = await getDatos(`${host}sucursal.controller.php`, params);
+    console.log("data de succursales -> ", data);
+    $q("#sucursal").innerHTML = "<option value=''>Seleccione</option>"
+    data.forEach((sucursal) => {
+      $q("#sucursal").innerHTML += `<option value="${sucursal.idsucursal}">${sucursal.nombre}</option>`;
+    });
+    //return data;
+  }
+
 
 
   async function obtenerAreas() {
@@ -129,6 +130,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data
   }
 
+
+  async function obtenerSucursales() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerSucursales");
+    const data = await getDatos(`${host}sucursal.controller.php`, params);
+    console.log("data de succursales -> ", data);
+    $q("#sucursal").innerHTML = "<option value=''>Seleccione</option>"
+    data.forEach((sucursal) => {
+      $q("#sucursal").innerHTML += `<option value="${sucursal.idsucursal}">${sucursal.nombre}</option>`;
+    });
+    //return data;
+  }
+
+
   async function registrarPersona() {
     const persona = new FormData();
     persona.append("operation", "registrarPersona");
@@ -156,6 +171,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const params = new FormData();
     params.append("operation", "registrarColaborador");
     params.append("idpersona", idpersona);
+    params.append("idsucursal", $q("#sucursal").value);
     params.append("fechaingreso", $q("#fechaingreso").value);
     params.append("area", $q("#area").value);
     const resp = await fetch(`${host}nomina.controller.php`, {
@@ -484,6 +500,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   $q("#btnGuardarNuevaArea").addEventListener("click", async () => {
     const arearegistrada = await registrarArea()
     console.log("area registrada -> ", arearegistrada);
+    if ($q("#areanueva").value.trim() == "") {
+      showToast("El campo area no puede estar vacio", "ERROR");
+      return
+    }
     if (arearegistrada) {
       showToast("Area registrada correctamente", "SUCCESS");
       $q("#area").value = '';
@@ -505,10 +525,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const unikeEmail = await existeCorreo($q("#correo").value);
     console.log("email encontrado -> ", unikeEmail);
 
-/*     const imagenInputMarcaAgua = $q("#upload_widget_marcaagua");
-    const fileMarcaAgua = imagenInputMarcaAgua.files[0];
-    const imagenInputFirma = $q("#upload_widget_firma");
-    const fileFirma = imagenInputFirma.files[0]; */
+    /*     const imagenInputMarcaAgua = $q("#upload_widget_marcaagua");
+        const fileMarcaAgua = imagenInputMarcaAgua.files[0];
+        const imagenInputFirma = $q("#upload_widget_firma");
+        const fileFirma = imagenInputFirma.files[0]; */
 
     //const existResp = await existeResponsable(parseInt($q("#area").value)); //valida que no exista un responsable en el area elegida
     //if (parseInt($q("#nivel").value) === 2 && isNaN(parseInt($q("#area").value))) { selectArea = false; }

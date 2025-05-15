@@ -571,22 +571,27 @@ CREATE TABLE areas (
 CREATE TABLE colaboradores (
     idcolaborador INT AUTO_INCREMENT PRIMARY KEY,
     idpersona INT NOT NULL,
+	idsucursal INT NOT NULL,
     fechaingreso DATE NOT NULL,
     idarea INT,
     activo TINYINT DEFAULT 1,
     CONSTRAINT fk_idpersona_colaborador foreign key (idpersona) references personas (idpersona),
-    CONSTRAINT fk_idarea_colaborador foreign key (idarea) references areas (idarea)
+    CONSTRAINT fk_idarea_colaborador foreign key (idarea) references areas (idarea),
+	CONSTRAINT fk_idsucursal_colaborador FOREIGN KEY (idsucursal) REFERENCES sucursales (idsucursal) ON DELETE CASCADE
 ) ENGINE = INNODB;
+
+select * from colaboradores;
 
 CREATE TABLE salarios (
     idsalario INT AUTO_INCREMENT PRIMARY KEY,
     idcolaborador INT NOT NULL,
     salario	DECIMAL (10,2) NOT NULL,
     costohora DECIMAL(10, 2) NOT NULL,
-    fechainicio DATE NOT NULL,
+    fechainicio DATE DEFAULT NOW(),
     fechafin DATE DEFAULT NULL,
-    CONSTRAINT fk_idcolaborador_salario FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador)
+    CONSTRAINT fk_idcolaborador_salario FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador) ON DELETE CASCADE
 ) ENGINE = INNODB;
+select* from salarios;
 
 CREATE TABLE nomina (
     idnomina INT AUTO_INCREMENT PRIMARY KEY,
@@ -601,5 +606,5 @@ CREATE TABLE nomina (
     rendimiento DECIMAL(10,2) NOT NULL,
     proporcion DECIMAL(10,2) not null,
     acumulado DECIMAL(10,2) not null,
-    CONSTRAINT fk_idempleado_nomina FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador)
+    CONSTRAINT fk_idempleado_nomina FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador) ON DELETE CASCADE
 )ENGINE = INNODB;

@@ -17,53 +17,48 @@
                     <h1>Colaboradores</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a href="<?= $hostOnlyHeader ?>/views/nominas/registrar-colaborador" class="btn btn-info" id="btnNuevoColaborador" data-bs-toggle="modal" data-bs-target="#modal-nuevo-colaborador">Nuevo Colaborador</a>
+                    <a href="<?= $hostOnlyHeader ?>/views/colaboradores/registrar-colaborador" class="btn btn-info">Nuevo Colaborador</a>
                 </div>
             </div>
             <div class="row">
                 <div class="card border-0">
                     <div class="card-body">
                         <div class="row g-0 mb-3">
-                            <!-- <div class="card border-0">
+                            <div class="card border-0">
                                 <div class="card-body border-0">
                                     <div class="row">
-                                        <div class="col-md-2">
+                                        <div class="col-md-4">
                                             <div class="form-floating">
-                                                <input type="text" class="form-control filter" id="nombre" autocomplete="off" placeholder="Nombre">
-                                                <label for="nombre">Nombre</label>
+                                                <input type="text" class="form-control filter" id="num_doc" autocomplete="off" placeholder="N° Documento">
+                                                <label for="num_doc">N° Documento</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-4">
                                             <div class="form-floating">
-                                                <input type="text" class="form-control filter" id="dni" autocomplete="off" placeholder="Dni">
-                                                <label for="dni">Dni</label>
+                                                <select name="idarea" id="idarea" class="form-select filter">
+
+                                                </select>
+                                                <label for="idarea" class="form-label">Área</label>                                                
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div> -->
+                            </div>
                             <hr>
                             <div class="row g-1">
                                 <div class="table-responsive">
-                                    <table class="table" id="table-nominas">
+                                    <table class="table" id="table-colaboradores">
                                         <thead class="text-center">
                                             <tr>
-                                                <th>Nombre</th>
-                                                <th>Fecha Ingreso</th>
-                                                <th>Salario</th>
-                                                <th>Horas</th>
-                                                <th>Costo/horas</th>
-                                                <th>Periodo</th>
+                                                <th>N° Doc</th>
+                                                <th>Nombres</th>
+                                                <th>Apellidos</th>
+                                                <th>F. Ingreso</th>
                                                 <th>Área</th>
-                                                <th>Nivel</th>
-                                                <th>Tiempo</th>
-                                                <th>Rendimiento</th>
-                                                <th>Proporción</th>
-                                                <th>Acumulado</th>
                                                 <th>Opciones</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="tb-body-nomina">
+                                        <tbody id="tb-body-colaborador">
                                         </tbody>
                                     </table>
 
