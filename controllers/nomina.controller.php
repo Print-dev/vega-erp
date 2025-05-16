@@ -21,6 +21,13 @@ if (isset($_GET['operation'])) {
             echo json_encode($nomina->obtenerPersonaNumDocColaborador($cleanData));
             break;
 
+        case 'obtenerUltimoSalarioPorColaborador':
+            $cleanData = [
+                'idcolaborador'   => $nomina->limpiarCadena($_GET['idcolaborador']),
+            ];
+            echo json_encode($nomina->obtenerUltimoSalarioPorColaborador($cleanData));
+            break;
+
         case 'obtenerColaboradorPorId':
             $cleanData = [
                 'idcolaborador'   => $nomina->limpiarCadena($_GET['idcolaborador']),
@@ -128,6 +135,8 @@ if (isset($_POST['operation'])) {
             $cleanData = [
                 'idcolaborador'   => $nomina->limpiarCadena($_POST['idcolaborador']),
                 'salario'   => $nomina->limpiarCadena($_POST['salario']),
+                'periodo'   => $nomina->limpiarCadena($_POST['periodo']),
+                'horas'   => $nomina->limpiarCadena($_POST['horas']),
                 'costohora'   => $nomina->limpiarCadena($_POST['costohora']),
             ];
 
@@ -159,6 +168,8 @@ if (isset($_POST['operation'])) {
             $cleanData = [
                 'idsalario'   => $nomina->limpiarCadena($_POST['idsalario']) ? $nomina->limpiarCadena($_POST['idsalario']) : '',
                 'salario'   => $nomina->limpiarCadena($_POST['salario']) ? $nomina->limpiarCadena($_POST['salario']) : '',
+                'periodo'   => $nomina->limpiarCadena($_POST['periodo']) ? $nomina->limpiarCadena($_POST['periodo']) : '',
+                'horas'   => $nomina->limpiarCadena($_POST['horas']) ? $nomina->limpiarCadena($_POST['horas']) : '',
                 'costohora' => $nomina->limpiarCadena($_POST['costohora']) ? $nomina->limpiarCadena($_POST['costohora']) :'',
                 'fechainicio'   => $nomina->limpiarCadena($_POST['fechainicio']) ? $nomina->limpiarCadena($_POST['fechainicio']) : '',
             ];
@@ -171,16 +182,13 @@ if (isset($_POST['operation'])) {
         case 'registrarNomina':
             $cleanData = [
                 'idcolaborador'   => $nomina->limpiarCadena($_POST['idcolaborador']),
+                'salariousado'   => $nomina->limpiarCadena($_POST['salariousado']),
                 'periodo'   => $nomina->limpiarCadena($_POST['periodo']),
-                'fechainicio' => $nomina->limpiarCadena($_POST['fechainicio']),
-                'fechafin' => $nomina->limpiarCadena($_POST['fechafin']),
-                'horas' => $nomina->limpiarCadena($_POST['horas']),
-                'costohora' => $nomina->limpiarCadena($_POST['costohora']),
-                'salario' => $nomina->limpiarCadena($_POST['salario']),
-                'tiempo' => $nomina->limpiarCadena($_POST['tiempo']),
-                'rendimiento' => $nomina->limpiarCadena($_POST['rendimiento']),
-                'proporcion' => $nomina->limpiarCadena($_POST['proporcion']),
-                'acumulado'   => $nomina->limpiarCadena($_POST['acumulado']),
+                'tiempo'   => $nomina->limpiarCadena($_POST['tiempo']),
+                'horas'   => $nomina->limpiarCadena($_POST['horas']),
+                'rendimiento' => $nomina->limpiarCadena($_POST['rendimiento']) ? $nomina->limpiarCadena($_POST['rendimiento']) : '',
+                'proporcion' => $nomina->limpiarCadena($_POST['proporcion']) ? $nomina->limpiarCadena($_POST['proporcion']) : '',
+                'acumulado' => $nomina->limpiarCadena($_POST['acumulado']) ? $nomina->limpiarCadena($_POST['acumulado']) : '',
             ];
 
             $respuesta = ['idnomina' => -1];

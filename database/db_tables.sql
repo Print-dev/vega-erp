@@ -573,7 +573,6 @@ CREATE TABLE colaboradores (
     idpersona INT NOT NULL,
 	idsucursal INT NOT NULL,
     fechaingreso DATE NOT NULL,
-	periodo INT NOT NULL, -- 1: Semanal. 2: Quincenal. 3: Mensual
     idarea INT,
     activo TINYINT DEFAULT 1,
     CONSTRAINT fk_idpersona_colaborador foreign key (idpersona) references personas (idpersona),
@@ -581,12 +580,11 @@ CREATE TABLE colaboradores (
 	CONSTRAINT fk_idsucursal_colaborador FOREIGN KEY (idsucursal) REFERENCES sucursales (idsucursal) ON DELETE CASCADE
 ) ENGINE = INNODB;
 
-select * from colaboradores;
-
 CREATE TABLE salarios (
     idsalario INT AUTO_INCREMENT PRIMARY KEY,
     idcolaborador INT NOT NULL,
     salario	DECIMAL (10,2) NOT NULL,
+	periodo INT NOT NULL, -- 1: Semanal. 2: Quincenal. 3: Mensual
     horas	DECIMAL (10,2) NOT NULL,
     costohora DECIMAL(10, 2) NOT NULL,
     fechainicio DATE DEFAULT NOW(),
@@ -595,17 +593,41 @@ CREATE TABLE salarios (
 ) ENGINE = INNODB;
 select* from salarios;
 
-CREATE TABLE nomina (
+create TABLE nomina (
     idnomina INT AUTO_INCREMENT PRIMARY KEY,
     idcolaborador INT NOT NULL,
-    fechainicio DATE NOT NULL,
-    fechafin DATE NOT NULL,
-    horas INT NOT NULL,
-    costohora DECIMAL(10,2) NOT NULL,
-    salario  DECIMAL(10,2) NOT NULL,
-    tiempo DECIMAL(10,2) NOT NULL,
-    rendimiento DECIMAL(10,2) NOT NULL,
-    proporcion DECIMAL(10,2) not null,
-    acumulado DECIMAL(10,2) not null,
+    salario_usado INT NOT NULL,
+    periodo INT NOT NULL,
+    horas DECIMAL(10,2) NOT NULL,
+	tiempo DECIMAL(10,2) NOT NULL,
+    rendimiento DECIMAL(10,2) NULL,
+    proporcion DECIMAL(10,2) null,
+    acumulado DECIMAL(10,2)  null,
+    created_at DATETIME DEFAULT NOW(),
     CONSTRAINT fk_idempleado_nomina FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador) ON DELETE CASCADE
 )ENGINE = INNODB;
+
+CREATE TABLE gastosentradas (
+    idgastonomina INT AUTO_INCREMENT PRIMARY KEY,
+    estadopago INT NOT NULL,
+    fgasto INT NOT NULL, -- 1: fijo, 2: variable
+    fvencimiento VARCHAR(100) NOT NULL,          -- como 'bonificación', 'descuento', 'aporte', etc.
+    tipo TEXT,
+    concepto DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    subtipo DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    idproveedor INT NOT NULL,
+    idcolaborador INT NOT NULL,
+    cunitario INT NOT NULL,
+    pagado TINYINT NOT NULL,
+    nombre VARCHAR(120) NOT NULL,
+    cantidad INT NOT NULL,
+    unidades INT NOT NULL,
+    formapago INT NOT NULL,
+    cuenta	  INT NOT NULL,
+    foliofactura VARCHAR(13) NOT NULL,
+	tasafactura VARCHAR(30) NOT NULL,
+    emision	 DATE NULL,
+    descripcion TEXT NULL,
+    -- completar lo demas
+    CONSTRAINT fk_nomina_gasto FOREIGN KEY (idnomina) REFERENCES nomina(idnomina) ON DELETE CASCADE
+) ENGINE = INNODB;

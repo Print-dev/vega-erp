@@ -97,7 +97,9 @@ $accesos = [
     ['modulo' => 'colaboradores', 'ruta' => 'actualizar-colaborador', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'colaboradores', 'ruta' => 'salarios-colaborador', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
 
-    // REGISTRO DE SALARIOS
+    // REGISTRO DE GASTOS
+    ['modulo' => 'gastos', 'ruta' => 'listar-gastos', 'subruta' => '', 'texto' => 'Gastos', 'visible' => true, 'icono' => 'fa-solid fa-building'],
+
   ],
   "Artista" => [
     ['modulo' => 'agenda', 'ruta' => '', 'texto' => 'Agenda', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],

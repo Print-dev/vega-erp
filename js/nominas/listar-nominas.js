@@ -1,6 +1,11 @@
 document.addEventListener("DOMContentLoaded", async () => {
     let myTable = null;
     let idproveedor
+    let idcolaborador
+    let idnomina
+    let colaboradorObt = []
+    let salarioObt = []
+    let tiempocalculado
     /*     let modalNuevoProvedor = new bootstrap.Modal($q("#modal-nuevo-proveedor"))
         let modalActualizarProveedor = new bootstrap.Modal($q("#modal-actualizar-proveedor"))
      */
@@ -31,22 +36,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         $q("#colaborador").innerHTML = `<option value="">Seleccione</option>`;
         data.forEach(nomina => {
             $q("#colaborador").innerHTML += `
-            <option value="${nomina.idpersona}">${nomina.nombres} ${nomina.apellidos}</option>
+            <option value="${nomina.idcolaborador}">${nomina.nombres} ${nomina.apellidos}</option>
         `;
         });
     }
 
-    async function registrarNomina() {
+    async function obtenerColaboradorPorId(idcolaborador) {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerColaboradorPorId");
+        params.append("idcolaborador", idcolaborador);
+        const data = await getDatos(`${host}nomina.controller.php`, params);
+        return data
+    }
+
+    async function obtenerUltimoSalarioColaborador(idcolaborador) {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerUltimoSalarioPorColaborador");
+        params.append("idcolaborador", idcolaborador);
+        const data = await getDatos(`${host}nomina.controller.php`, params);
+        return data
+    }
+
+    async function registrarNomina(idcolaborador, salariousado, periodo, horas, tiempo) {
         const colaborador = new FormData();
         colaborador.append("operation", "registrarNomina");
-        colaborador.append("idcolaborador", $q("#colaborador").value || '');
-        colaborador.append("periodo", $q("#periodo").value || '');
-        colaborador.append("fechainicio", $q("#fechainicio").value || '');
-        colaborador.append("fechafin", $q("#fechafin").value || '');
-        colaborador.append("horas", $q("#horas").value || '');
-        colaborador.append("costohora", $q("#costohora").value || '');
-        colaborador.append("salario", $q("#salario").value || '');
-        colaborador.append("tiempo", $q("#tiempo").value || '');
+        colaborador.append("idcolaborador", idcolaborador);
+        colaborador.append("salariousado", salariousado);
+        colaborador.append("periodo", periodo);
+        colaborador.append("horas", horas);
+        colaborador.append("tiempo", tiempo);
         colaborador.append("rendimiento", $q("#rendimiento").value || '');
         colaborador.append("proporcion", $q("#proporcion").value || '');
         colaborador.append("acumulado", $q("#acumulado").value || '');
@@ -186,18 +204,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             $q("#table-nominas tbody").innerHTML += `
             <tr>
-                <td>${x.nombres ?? ''}</td>
-                <td>${x.apellidos ?? ''}</td>
-                <td>${x.periodo ?? ''}</td>
-                <td>${x.fehainicio ?? "no aplica"}</td>
-                <td>${x.fechafin ?? ''}</td0>
+                <td>${x.nombres && x.apellidos ? x.nombres + " " + x.apellidos : ''}</td>
+                <td>${x.fechaingreso ?? ''}</td>
+                <td>${x.salario_usado ?? ''}</td>
                 <td>${x.horas ?? ''}</td>
-                <td>${x.costohora ?? ''}</td>
-                <td>${x.salario ?? ''}</td>
-                <td>${x.nproveedor ?? ''}</td>
+                <td>${x.periodo == 1 ? "Quincenal" : x.periodo == 2 ? "Semanal" : x.periodo == 3 ? "Mensual" : ''}</td>
+                <td>${x.area ?? ""}</td>
+                <td>${x.tiempo ?? ''}</td0>
+                <td>${x.rendimiento ?? 0}</td>
+                <td>${x.proporcion ?? 0}</td>
+                <td>${x.acumulado ?? 0}</td>
                 <td>
-                    <button class="btn btn-sm btn-primary btn-actualizar" data-nomina="${x.idnomina}">Actualizar</button>
-                    <button class="btn btn-sm btn-danger btn-historial" data-nomina="${x.idnomina}">Historial</button>
+                    <button class="btn btn-sm btn-primary btn-historial" data-idnomina="${x.idnomina}">Historial</button>
+                    <button class="btn btn-sm btn-primary btn-borrar" data-idnomina="${x.idnomina}">Borrar</button>
                 </td>
             </tr>
         `;
@@ -248,12 +267,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             .querySelector(".table-responsive")
             .addEventListener("click", async (e) => {
                 if (e.target) {
-                    if (e.target.classList.contains("btn-actualizar")) {
-                        await buttonActualizar(e);
+                    if (e.target.classList.contains("btn-borrar")) {
+                        await buttonBorrar(e);
                     }
-                    if (e.target.classList.contains("btn-historial")) {
+                    /* if (e.target.classList.contains("btn-historial")) {
                         buttonHistorial(e);
-                    }
+                    } */
                     /* if (e.target.classList.contains("btn-cerrar")) {
                         buttonCerrarCaja(e);
                     }
@@ -262,6 +281,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                     } */
                 }
             });
+    }
+
+    async function buttonBorrar(e) {
+        idnomina = e.target.getAttribute("data-idnomina");
+        console.log("idnomina -> ", idnomina);
+        alert("prueba de borrando")
     }
 
     /*     $q("#formProveedor").addEventListener("submit", async (e) => {
@@ -289,7 +314,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         })
     
-        async function buttonActualizar(e) {
+        async function buttonBorrar(e) {
             idproveedor = e.target.getAttribute("data-idproveedor");
             console.log("idproveedor -> ", idproveedor);
             const proveedorObtenido = await obtenerProveedorPorId(idproveedor)
@@ -319,8 +344,27 @@ document.addEventListener("DOMContentLoaded", async () => {
         await obtenerColaboradores();
     })
 
-    $q("#btnGuardarNomina").addEventListener("click", async () => {
+    $q("#colaborador").addEventListener("change", async (e) => {
+        idcolaborador = e.target.value;
+        colaboradorObt = await obtenerColaboradorPorId(idcolaborador)
+        salarioObt = await obtenerUltimoSalarioColaborador(idcolaborador)
+        console.log("salarioObt -> ", salarioObt);
+        console.log("colaboradorObt -> ", colaboradorObt);
+        tiempocalculado = calcularDiasTrabajados(colaboradorObt[0].fechaingreso)
+        console.log("tiempocalculado >", tiempocalculado);
+        $q("#tiempo").value = tiempocalculado ?? '';
+    })
 
+    $q("#formNomina").addEventListener("submit", async (e) => {
+        e.preventDefault()
+        console.log("formNomina"); 
+        const nominaRegistrada = await registrarNomina(idcolaborador, salarioObt[0]?.salario, salarioObt[0]?.periodo, salarioObt[0]?.horas,tiempocalculado);
+        console.log("nominaRegistrada -> ", nominaRegistrada);
+        if (nominaRegistrada) {
+            showToast("Nomina registrada correctamente", "SUCCESS");
+            $q("#formNomina").reset();
+            await dataFilters();
+        }
 
     })
 })

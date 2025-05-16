@@ -14,10 +14,10 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h1>Nóminas</h1>
+                    <h1>Gastos e Ingresos</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <button class="btn btn-info" id="btnNuevoColaboradorNomina" data-bs-toggle="modal" data-bs-target="#modal-nuevo-colaborador-nomina">Asignar Colaborador</button>
+                     <button class="btn btn-info" id="btnNuevoColaboradorNomina" data-bs-toggle="modal" data-bs-target="#modal-nuevo-gasto">Nuevo Gasto</button>
                 </div>
             </div>
             <div class="row">
@@ -52,6 +52,7 @@
                                                 <th>Fecha Ingreso</th>
                                                 <th>Salario</th>
                                                 <th>Horas</th>
+                                                <th>Costo/horas</th>
                                                 <th>Periodo</th>
                                                 <th>Área</th>
                                                 <th>Tiempo</th>
@@ -78,11 +79,11 @@
 </div>
 
 <!-- MODAL PARA COTIZAR DE MANERA CONTRATO -->
-<div class="modal fade" id="modal-nuevo-colaborador-nomina" tabindex="-1" aria-labelledby="modalcolaboradornomina" aria-hidden="true">
+<div class="modal fade" id="modal-nuevo-gasto" tabindex="-1" aria-labelledby="modalnuevogasto" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalcolaboradornomina">Asignar Colaborador a nómina</h1>
+                <h1 class="modal-title fs-5" id="modalnuevogasto">Nuevo gasto</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -276,7 +277,7 @@
 <?php require_once '../footer.php' ?>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script src="<?= $hostOnlyHeader ?>/js/nominas/listar-nominas.js"></script>
+<script src="<?= $hostOnlyHeader ?>/js/gastos/listar-gastos.js"></script>
 <!-- <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script> -->
 
 </body>
