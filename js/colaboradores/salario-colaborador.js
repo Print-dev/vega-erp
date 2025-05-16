@@ -317,8 +317,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         modalActualizarSalario.show()
     }
 
-    $q("#btnActualizarSalario").addEventListener("click", async (e) => {
-
+    $q("#formActualizarSalario").addEventListener("submit", async (e) => {
+        e.preventDefault()
+        console.log("clicka salario");
         const salarioActualzado = await actualizarSalario(idsalario)
         console.log("salario actualizado -> ", salarioActualzado);
         if (salarioActualzado) {

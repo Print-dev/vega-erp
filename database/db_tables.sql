@@ -573,6 +573,7 @@ CREATE TABLE colaboradores (
     idpersona INT NOT NULL,
 	idsucursal INT NOT NULL,
     fechaingreso DATE NOT NULL,
+	periodo INT NOT NULL, -- 1: Semanal. 2: Quincenal. 3: Mensual
     idarea INT,
     activo TINYINT DEFAULT 1,
     CONSTRAINT fk_idpersona_colaborador foreign key (idpersona) references personas (idpersona),
@@ -586,6 +587,7 @@ CREATE TABLE salarios (
     idsalario INT AUTO_INCREMENT PRIMARY KEY,
     idcolaborador INT NOT NULL,
     salario	DECIMAL (10,2) NOT NULL,
+    horas	DECIMAL (10,2) NOT NULL,
     costohora DECIMAL(10, 2) NOT NULL,
     fechainicio DATE DEFAULT NOW(),
     fechafin DATE DEFAULT NULL,
@@ -596,7 +598,6 @@ select* from salarios;
 CREATE TABLE nomina (
     idnomina INT AUTO_INCREMENT PRIMARY KEY,
     idcolaborador INT NOT NULL,
-    periodo INT NOT NULL, -- 1: Semanal. 2: Quincenal. 3: Mensual
     fechainicio DATE NOT NULL,
     fechafin DATE NOT NULL,
     horas INT NOT NULL,

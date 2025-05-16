@@ -9,6 +9,7 @@ CREATE PROCEDURE sp_registrar_colaborador(
     IN _idpersona INT,
     IN _idsucursal INT,
     IN _fechaingreso DATE,
+    IN _periodo INT,
     IN _idarea int
 )
 BEGIN
@@ -19,8 +20,8 @@ BEGIN
     END;
     
     -- Insertar la notificación
-    INSERT INTO colaboradores (idpersona, idsucursal, fechaingreso, idarea)
-    VALUES (_idpersona, _idsucursal, _fechaingreso , _idarea);
+    INSERT INTO colaboradores (idpersona, idsucursal, fechaingreso, periodo, idarea)
+    VALUES (_idpersona, _idsucursal, _fechaingreso, _periodo , _idarea);
 
     IF existe_error = 1 THEN
         SET _idcolaborador = -1;
@@ -37,6 +38,7 @@ CREATE PROCEDURE sp_actualizar_colaborador (
 	IN _idcolaborador int,
 	IN _idsucursal INT,
     IN _fechaingreso DATE,
+    IN _periodo INT,
     IN _idarea INT
 )
 BEGIN
@@ -44,6 +46,7 @@ BEGIN
     SET 
 		idsucursal = NULLIF(_idsucursal, ''),
         fechaingreso = NULLIF(_fechaingreso, ''),
+        periodo = NULLIF(_periodo, ''),
         idarea = NULLIF(_idarea, '')
     WHERE idcolaborador = _idcolaborador;
 
@@ -56,14 +59,15 @@ CREATE PROCEDURE sp_registrar_salario(
     OUT _idsalario INT,
     IN _idcolaborador int,
     IN _salario DECIMAL(10,2),
+    IN _horas DECIMAL(10,2),
     IN _costohora DECIMAL(10,2)
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
     
     -- Insertar la notificación
-    INSERT INTO salarios (idcolaborador, salario, costohora)
-    VALUES (_idcolaborador, _salario , _costohora);
+    INSERT INTO salarios (idcolaborador, salario, horas, costohora)
+    VALUES (_idcolaborador, _salario , _horas, _costohora);
 
     IF existe_error = 1 THEN
         SET _idsalario = -1;
@@ -78,12 +82,14 @@ DELIMITER //
 CREATE PROCEDURE sp_actualizar_salario (
 	IN _idsalario INT,
     IN _salario DECIMAL(10,2),
+    IN _horas DECIMAL(10,2),
     IN _costohora DECIMAL(10,2),
     IN _fechainicio DATE
 )
 BEGIN
 		UPDATE salarios SET
         salario = nullif(_salario,''),
+        horas = nullif(_horas, ''),
         costohora = nullif(_costohora, ''),
         fechainicio = nullif(_fechainicio, '')
     WHERE idsalario = _idsalario; 

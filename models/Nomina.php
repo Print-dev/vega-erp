@@ -175,12 +175,13 @@ class Nomina extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_colaborador(@idcolaborador,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_colaborador(@idcolaborador,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idpersona'],
           $params['idsucursal'],
           $params['fechaingreso'],
+          $params['periodo'],
           $params['area']
         )
       );

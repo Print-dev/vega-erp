@@ -157,10 +157,10 @@ if (isset($_POST['operation'])) {
 
         case 'actualizarSalario':
             $cleanData = [
-                'idcolaborador'   => $nomina->limpiarCadena($_POST['idcolaborador']) ? $nomina->limpiarCadena($_POST['idcolaborador']) : '',
-                'idsucursal'   => $nomina->limpiarCadena($_POST['idsucursal']) ? $nomina->limpiarCadena($_POST['idsucursal']) : '',
-                'fechainicio' => $nomina->limpiarCadena($_POST['fechainicio']) ? $nomina->limpiarCadena($_POST['fechainicio']) :'',
-                'idarea'   => $nomina->limpiarCadena($_POST['idarea']) ? $nomina->limpiarCadena($_POST['idarea']) : '',
+                'idsalario'   => $nomina->limpiarCadena($_POST['idsalario']) ? $nomina->limpiarCadena($_POST['idsalario']) : '',
+                'salario'   => $nomina->limpiarCadena($_POST['salario']) ? $nomina->limpiarCadena($_POST['salario']) : '',
+                'costohora' => $nomina->limpiarCadena($_POST['costohora']) ? $nomina->limpiarCadena($_POST['costohora']) :'',
+                'fechainicio'   => $nomina->limpiarCadena($_POST['fechainicio']) ? $nomina->limpiarCadena($_POST['fechainicio']) : '',
             ];
 
             $rpt = $nomina->actualizarSalario($cleanData);
