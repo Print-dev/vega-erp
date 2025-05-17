@@ -25,7 +25,7 @@
                 <div class="card border-0">
                     <div class="card-body">
                         <div class="row g-0 mb-3">
-                            
+
                             <div class="row g-1">
                                 <div class="table-responsive">
                                     <table class="table" id="table-salarios">
@@ -34,6 +34,8 @@
                                                 <th>#</th>
                                                 <th>Salario (s/.)</th>
                                                 <th>Costo x Hora</th>
+                                                <th>Periodo</th>
+                                                <th>Horas</th>
                                                 <th>Fecha Ingreso</th>
                                                 <th>Fecha Fin</th>
                                                 <th>Opciones</th>
@@ -95,7 +97,24 @@
                     </div>
                     <div class="col-md-12 mb-3">
                         <div class="form-floating">
-                            <input type="number" id="costohora" name="costohora" class="form-control" placeholder="costohora">
+                            <select name="periodo" id="periodo" class="form-select" placeholder="Periodo">
+                                <option value="">Selecciona</option>
+                                <option value="1">Quincenal</option>
+                                <option value="2">Semanal</option>
+                                <option value="3">Mensual</option>
+                            </select>
+                            <label for="periodo" class="form-label">Periodo</label>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <input type="number" id="horas" name="horas" class="form-control" placeholder="Horas">
+                            <label for="horas" class="form-label">Horas</label>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <input type="number" id="costohora" name="costohora" class="form-control" placeholder="Costo x Hora">
                             <label for="costohora" class="form-label">Costo x Hora</label>
                         </div>
                     </div>
@@ -137,7 +156,24 @@
                     </div>
                     <div class="col-md-12 mb-3">
                         <div class="form-floating">
-                            <input type="number" id="costohoraactualizar" name="costohoraactualizar" class="form-control" placeholder="costohora">
+                            <select name="periodoactualizar" id="periodoactualizar" class="form-select" placeholder="Periodo">
+                                <option value="">Selecciona</option>
+                                <option value="1">Semanal</option>
+                                <option value="2">Quincenal</option>
+                                <option value="3">Mensual</option>
+                            </select>
+                            <label for="periodoactualizar" class="form-label">Periodo</label>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <input type="number" id="horasactualizar" name="horasactualizar" class="form-control" placeholder="Horas">
+                            <label for="horasactualizar" class="form-label">Horas</label>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-floating">
+                            <input type="number" id="costohoraactualizar" name="costohoraactualizar" class="form-control" placeholder="Costo x Hora">
                             <label for="costohoraactualizar" class="form-label">Costo x Hora</label>
                         </div>
                     </div>

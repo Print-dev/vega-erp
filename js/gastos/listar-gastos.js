@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", async () => {
     let myTable = null;
-    //let idproveedor
-    let modalActualizarSalario = new bootstrap.Modal($q("#modal-actualizar-salario"))
-    //let modalActualizarProveedor = new bootstrap.Modal($q("#modal-actualizar-proveedor")) 
-    let idcolaborador = window.localStorage.getItem("idcolaborador") || -1;
-
-
+    let idproveedor
+    let idcolaborador
+    let idnomina
+    /*     let modalNuevoProvedor = new bootstrap.Modal($q("#modal-nuevo-proveedor"))
+        let modalActualizarProveedor = new bootstrap.Modal($q("#modal-actualizar-proveedor"))
+     */
     function $q(object = null) {
         return document.querySelector(object);
     }
@@ -20,60 +20,52 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
-    /*     async function obtenerAreas() {
-            const data = await getDatos(`${host}nomina.controller.php`, "operation=obtenerAreas");
-            console.log(data);
-            $q("#idarea").innerHTML = `<option value="">Seleccione</option>`
-            data.forEach((x) => {
-                $q("#idarea").innerHTML += `
-                    <option value="${x.idarea}">${x.area}</option>
-                `;
-            }
-            );
-    
-            return data
-        }
-    
-        await obtenerAreas() */
-
     // ************************************ REGISTRAR DATOS ********************************
 
-    async function registrarSalario(idcolaborador) {
-        const nomina = new FormData();
-        nomina.append("operation", "registrarSalario");
-        nomina.append("idcolaborador", idcolaborador);
-        nomina.append("salario", $q("#salario").value || '');
-        nomina.append("periodo", $q("#periodo").value || '');
-        nomina.append("horas", $q("#horas").value || '');
-        nomina.append("costohora", $q("#costohora").value || '');
+    async function obtenerColaboradores() {
+        const params = new URLSearchParams();
+        params.append("operation", "filtrarColaboradores");
+        params.append("numdoc", "");
+        params.append("idarea", "");
 
-        const fnomina = await fetch(`${host}nomina.controller.php`, {
-            method: "POST",
-            body: nomina,
+        const data = await getDatos(`${host}nomina.controller.php`, params);
+        console.log("data -> ", data);
+        $q("#colaborador").innerHTML = `<option value="">Seleccione</option>`;
+        data.forEach(nomina => {
+            $q("#colaborador").innerHTML += `
+            <option value="${nomina.idcolaborador}">${nomina.nombres} ${nomina.apellidos}</option>
+        `;
         });
-        const rnomina = await fnomina.json();
-        return rnomina;
     }
 
-    async function actualizarSalario(idsalario) {
-        const nomina = new FormData();
-        nomina.append("operation", "actualizarSalario");
-        nomina.append("idsalario", idsalario);
-        nomina.append("salario", $q("#salarioactualizar").value || '');
-        nomina.append("periodo", $q("#periodoactualizar").value || '');
-        nomina.append("horas", $q("#horasactualizar").value || '');
-        nomina.append("costohora", $q("#costohoraactualizar").value || '');
-        nomina.append("fechainicio", $q("#fechainicioactualizar").value || '');
-
-        const fnomina = await fetch(`${host}nomina.controller.php`, {
-            method: "POST",
-            body: nomina,
-        });
-        const rnomina = await fnomina.json();
-        return rnomina;
+    async function obtenerColaboradorPorId(idcolaborador) {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerColaboradorPorId");
+        params.append("idcolaborador", idcolaborador);
+        const data = await getDatos(`${host}nomina.controller.php`, params);
+        return data
     }
-    /* 
-        async function actualizarProveedor(idproveedor) {
+
+    async function registrarNomina() {
+        const colaborador = new FormData();
+        colaborador.append("operation", "registrarNomina");
+        colaborador.append("idcolaborador", $q("#colaborador").value || '');
+        colaborador.append("tiempo", $q("#tiempo").value || '');
+        colaborador.append("rendimiento", $q("#rendimiento").value || '');
+        colaborador.append("proporcion", $q("#proporcion").value || '');
+        colaborador.append("acumulado", $q("#acumulado").value || '');
+
+        const fcolaborador = await fetch(`${host}nomina.controller.php`, {
+            method: "POST",
+            body: colaborador,
+        });
+        const rcolaborador = await fcolaborador.json();
+        return rcolaborador;
+    }
+
+
+
+    /*     async function actualizarProveedor(idproveedor) {
             const proveedor = new FormData();
             proveedor.append("operation", "actualizarProveedor");
             proveedor.append("idproveedor", idproveedor);
@@ -105,18 +97,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             return data;
         } */
 
-
-    async function obtenerSalarioPorId(idsalario) {
-        const params = new URLSearchParams();
-        params.append("operation", "obtenerSalarioPorId");
-        params.append("idsalario", idsalario);
-        const data = await getDatos(`${host}nomina.controller.php`, params);
-        return data;
-    }
-
-
     function createTable(data) {
-        let rows = $("#tb-body-salario").find("tr");
+        let rows = $("#tb-body-nomina").find("tr");
         ////console.log(rows.length);
         if (data.length > 0) {
             if (myTable) {
@@ -127,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             } else {
                 // Inicializa DataTable si no ha sido inicializado antes
-                myTable = $("#table-salarios").DataTable({
+                myTable = $("#table-nominas").DataTable({
                     paging: true,
                     searching: false,
                     lengthMenu: [5, 10, 15, 20],
@@ -158,12 +140,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function changeByFilters() {
         const filters = $all(".filter");
-        $q("#table-salarios tbody").innerHTML = "";
+        $q("#table-nominas tbody").innerHTML = "";
         filters.forEach((x) => {
             x.addEventListener("input", async () => {
-                await dataFilters();
-            });
-            x.addEventListener("change", async () => {
                 await dataFilters();
             });
             /* if (x.id === "ndocumento") {
@@ -188,15 +167,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function dataFilters() {
         const params = new URLSearchParams();
-        params.append("operation", "filtrarSalarios");
-        params.append("idcolaborador", idcolaborador);
+        params.append("operation", "filtrarNominas");
+        /*         params.append("nombre", $q("#nombre").value || "");
+                params.append("dni", $q("#dni").value || ""); */
+
         const data = await getDatos(`${host}nomina.controller.php`, params);
         console.log("data -> ", data);
 
-        $q("#table-salarios tbody").innerHTML = "";
+        $q("#table-nominas tbody").innerHTML = "";
 
         if (data.length === 0) {
-            $q("#table-salarios tbody").innerHTML = `
+            $q("#table-nominas tbody").innerHTML = `
             <tr>
                 <td colspan="9">Sin resultados</td>
             </tr>
@@ -207,18 +188,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         data.forEach((x) => {
 
-            $q("#table-salarios tbody").innerHTML += `
+            $q("#table-nominas tbody").innerHTML += `
             <tr>
-                <td>${x.idsalario ?? ''}</td>
+                <td>${x.nombres && x.apellidos ? x.nombres + " " + x.apellidos : ''}</td>
+                <td>${x.fechaingreso ?? ''}</td>
                 <td>${x.salario ?? ''}</td>
-                <td>${x.costohora ?? ''}</td>
-                <td>${x.periodo == 1 ? "Quincenal" : x.periodo == 2 ? "Semanal" : x.periodo == 3 ? "Mensual" : ""}</td>
                 <td>${x.horas ?? ''}</td>
-                <td>${x.fechainicio ?? ''}</td>
-                <td>${x.fechafin ?? ""}</td>
+                <td>${x.costohora ?? ''}</td>
+                <td>${x.periodo == 1 ? "Quincenal" : x.periodo == 2 ? "Semanal" : x.periodo == 3 ? "Mensual" : ''}</td>
+                <td>${x.area ?? ""}</td>
+                <td>${x.tiempo ?? ''}</td0>
+                <td>${x.rendimiento ?? 0}</td>
+                <td>${x.proporcion ?? 0}</td>
+                <td>${x.acumulado ?? 0}</td>
                 <td>
-                    <button class="btn btn-sm btn-primary btn-actualizar" data-idsalario="${x.idsalario}">Actualizar</button>
-                    <button class="btn btn-sm btn-danger btn-borrar" data-idsalario="${x.idsalario}">Borrar</button>
+                    <button class="btn btn-sm btn-primary btn-borrar" data-idnomina="${x.idnomina}">Borrar</button>
                 </td>
             </tr>
         `;
@@ -227,7 +211,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function createTable(data) {
-        let rows = $("#tb-body-salario").find("tr");
+        let rows = $("#tb-body-nomina").find("tr");
         ////console.log(rows.length);
         if (data.length > 0) {
             if (myTable) {
@@ -238,7 +222,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             } else {
                 // Inicializa DataTable si no ha sido inicializado antes
-                myTable = $("#table-salarios").DataTable({
+                myTable = $("#table-nominas").DataTable({
                     paging: true,
                     searching: false,
                     lengthMenu: [5, 10, 15, 20],
@@ -269,15 +253,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             .querySelector(".table-responsive")
             .addEventListener("click", async (e) => {
                 if (e.target) {
-                    if (e.target.classList.contains("btn-actualizar")) {
-                        await buttonActualizar(e);
-                    }
                     if (e.target.classList.contains("btn-borrar")) {
-                        buttonBorrar(e);
+                        await buttonBorrar(e);
                     }
-                    if (e.target.classList.contains("btn-salario")) {
-                        buttonSalario(e);
-                    }
+                    /* if (e.target.classList.contains("btn-historial")) {
+                        buttonHistorial(e);
+                    } */
                     /* if (e.target.classList.contains("btn-cerrar")) {
                         buttonCerrarCaja(e);
                     }
@@ -286,6 +267,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                     } */
                 }
             });
+    }
+
+    async function buttonBorrar(e) {
+        idnomina = e.target.getAttribute("data-idnomina");
+        console.log("idnomina -> ", idnomina);
+        alert("prueba de borrando")
     }
 
     /*     $q("#formProveedor").addEventListener("submit", async (e) => {
@@ -299,8 +286,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#formProveedor").reset();
                 await dataFilters();
             }
-        }) */
-    /* 
+        })
+    
         $q("#formActualizarProveedor").addEventListener("submit", async (e) => {
             e.preventDefault();
             const proveedorActualizado = await actualizarProveedor(idproveedor);
@@ -311,53 +298,54 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#formActualizarProveedor").reset();
                 await dataFilters();
             }
-        }) */
-
-    async function buttonActualizar(e) {
-        idsalario = e.target.getAttribute("data-idsalario");
-        const salarioObt = await obtenerSalarioPorId(idsalario)
-        console.log("salarioObt .> ", salarioObt);
-        $q("#salarioactualizar").value = salarioObt[0].salario;
-        $q("#costohoraactualizar").value = salarioObt[0].costohora;
-        $q("#fechainicioactualizar").value = salarioObt[0].fechainicio;
-        $q("#periodoactualizar").value = salarioObt[0].periodo;
-        $q("#horasactualizar").value = salarioObt[0].horas;
-        modalActualizarSalario.show()
-    }
-
-    $q("#formActualizarSalario").addEventListener("submit", async (e) => {
-        e.preventDefault()
-        console.log("clicka salario");
-        const salarioActualzado = await actualizarSalario(idsalario)
-        console.log("salario actualizado -> ", salarioActualzado);
-        if (salarioActualzado) {
-            showToast("Salario actualizado correctamente", "SUCCESS");
-            modalActualizarSalario.hide();
-            $q("#formActualizarSalario").reset();
-            await dataFilters();
+        })
+    
+        async function buttonBorrar(e) {
+            idproveedor = e.target.getAttribute("data-idproveedor");
+            console.log("idproveedor -> ", idproveedor);
+            const proveedorObtenido = await obtenerProveedorPorId(idproveedor)
+            console.log("proveedorObtenido -> ", proveedorObtenido);
+            await obtenerProveedorPorId(idproveedor).then((data) => {
+                console.log("data -> ", data);
+                $q("#empresaactualizar").value = data[0].empresa ?? '';
+                $q("#nombreempresaactualizar").value = data[0].nombre ?? '';
+                $q("#contactoactualizar").value = data[0].contacto ?? '';
+                $q("#correoactualizar").value = data[0].correo ?? '';
+                $q("#dniempresaactualizar").value = data[0].dni ?? '';
+                $q("#bancoactualizar").value = data[0].banco ?? '';
+                $q("#ctabancariaactualizar").value = data[0].ctabancaria ?? '';
+                $q("#servicioactualizar").value = data[0].servicio ?? '';
+                $q("#nproveedoractualizar").value = data[0].nproveedor ?? '';
+            });
+            modalActualizarProveedor.show()
         }
-    })
-
-    function buttonBorrar(e) {
-        idsalario = e.target.getAttribute("data-idsalario");
-        console.log("idsalario -> ", idsalario);
-        alert("prueba de borrando")
-    }
-
-    /*     function buttonSalario(e) {
-            idcolaborador = e.target.getAttribute("data-idcolaborador");
-            window.localStorage.clear()
-            window.localStorage.setItem("idcolaborador", idcolaborador);
-            window.location.href = `${hostOnly}/views/colaboradores/salarios-colaborador`;
+    
+        function buttonDeshabilitar(e) {
+            idproveedor = e.target.getAttribute("data-idproveedor");
+            console.log("idproveedor -> ", idproveedor);
         } */
 
-    $q("#formsalario").addEventListener("submit", async (e) => {
+    $q("#btnNuevoColaboradorNomina").addEventListener("click", async () => {
+        console.log("butttoooon");
+        await obtenerColaboradores();
+    })
+
+    $q("#colaborador").addEventListener("change", async (e) => {
+        idcolaborador = e.target.value;
+        const colaboradorObt = await obtenerColaboradorPorId(idcolaborador)
+        console.log("colaboradorObt -> ", colaboradorObt);
+        const tiempocalculado = calcularDiasTrabajados(colaboradorObt[0].fechaingreso)
+        console.log("tiempocalculado >", tiempocalculado);
+        $q("#tiempo").value = tiempocalculado ?? '';
+    })
+
+    $q("#formNomina").addEventListener("submit", async (e) => {
         e.preventDefault()
-        const salarioRegistrado = await registrarSalario(idcolaborador);
-        console.log("salrio registrado -> ", salarioRegistrado);
-        if (salarioRegistrado) {
-            showToast("Salario registrado correctamente", "SUCCESS");
-            $q("#formsalario").reset();
+        const nominaRegistrada = await registrarNomina()
+        console.log("nominaRegistrada -> ", nominaRegistrada);
+        if (nominaRegistrada) {
+            showToast("Nomina registrada correctamente", "SUCCESS");
+            $q("#formNomina").reset();
             await dataFilters();
         }
 

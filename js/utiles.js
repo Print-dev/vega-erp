@@ -18,6 +18,62 @@ function formatearFecha(fechaStr) {
   return `${dia}-${mes}-${anio}`;
 }
 
+function calcularDiasTrabajados(fechaIngreso) {
+  // Configurar para usar zona horaria de Lima, Perú
+  const options = { timeZone: "America/Lima" };
+
+  let fechaInicio;
+
+  // Verificar el formato de la fecha de ingreso
+  if (fechaIngreso instanceof Date) {
+    fechaInicio = fechaIngreso;
+  } else if (typeof fechaIngreso === 'string') {
+    // Detectar formato DD/MM/YY
+    if (fechaIngreso.includes('/')) {
+      const partes = fechaIngreso.split('/');
+      // Asumir formato DD/MM/YY o DD/MM/YYYY
+      const dia = parseInt(partes[0], 10);
+      const mes = parseInt(partes[1], 10) - 1; // Los meses en JavaScript son 0-indexed
+      let anio = parseInt(partes[2], 10);
+
+      // Ajustar año de 2 dígitos
+      if (anio < 100) {
+        // Si es menor a 100, asumimos que es un año del 2000 en adelante
+        anio += 2000;
+      }
+
+      // Crear fecha en zona horaria de Lima
+      fechaInicio = new Date(Date.UTC(anio, mes, dia));
+    } else {
+      // Asumir formato YYYY-MM-DD
+      fechaInicio = new Date(fechaIngreso);
+    }
+  } else {
+    throw new Error('Formato de fecha no válido');
+  }
+
+  // Verificar si la fecha es válida
+  if (isNaN(fechaInicio.getTime())) {
+    throw new Error('Fecha de ingreso inválida');
+  }
+
+  // Obtener la fecha actual en Lima, Perú
+  const ahora = new Date();
+  const fechaActualLima = new Date(ahora.toLocaleString('en-US', options));
+
+  // Normalizar las fechas a medianoche para contar días completos
+  fechaInicio.setHours(0, 0, 0, 0);
+  fechaActualLima.setHours(0, 0, 0, 0);
+
+  // Calcular la diferencia en milisegundos
+  const diferenciaMs = fechaActualLima - fechaInicio;
+
+  // Convertir milisegundos a días
+  const diasTrabajados = Math.floor(diferenciaMs / (1000 * 60 * 60 * 24));
+
+  // Devolver solo el número de días como entero
+  return diasTrabajados;
+}
 
 function generarCorrelativo(serie, correlativo) {
   // Convertir el correlativo a un número y añadir ceros si es necesario
@@ -59,9 +115,9 @@ function incrementarSerie(serie) {
 /* // Ejemplo de uso:
 let serie = 'F001';
 let correlativo = '99999999'; // Simulamos el correlativo al máximo
-
+ 
 let { nuevaSerie, nuevoCorrelativo } = generarCorrelativo(serie, correlativo);
-
+ 
 console.log(`Nueva Serie: ${nuevaSerie}`);
 console.log(`Nuevo Correlativo: ${nuevoCorrelativo}`);
  */
@@ -248,7 +304,7 @@ function calcularPrecio(duracionSegundos) {
 // Ejemplo de uso
 $departamentoBase = 5000; // Precio base por departamento
 $duracionSegundos = 13830.2; // Duración obtenida de la API (en segundos)
-
+ 
 $resultado = calcularPrecio($departamentoBase, $duracionSegundos);
 print_r($resultado);
  */
