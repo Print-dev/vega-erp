@@ -581,8 +581,6 @@ CREATE TABLE colaboradores (
 	CONSTRAINT fk_idsucursal_colaborador FOREIGN KEY (idsucursal) REFERENCES sucursales (idsucursal) ON DELETE CASCADE
 ) ENGINE = INNODB;
 
-select * from colaboradores;
-
 CREATE TABLE salarios (
     idsalario INT AUTO_INCREMENT PRIMARY KEY,
     idcolaborador INT NOT NULL,
