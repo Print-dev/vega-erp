@@ -17,7 +17,7 @@
                     <h1>Gastos e Ingresos</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                     <button class="btn btn-info" id="btnNuevoColaboradorNomina" data-bs-toggle="modal" data-bs-target="#modal-nuevo-gasto">Nuevo Gasto</button>
+                     <a class="btn btn-info" id="btnNuevoColaboradorNomina" href="<?= $hostOnlyHeader ?>/views/gastos/registrar-gasto">Nuevo Gasto</a>
                 </div>
             </div>
             <div class="row">

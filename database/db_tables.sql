@@ -591,7 +591,6 @@ CREATE TABLE salarios (
     fechafin DATE DEFAULT NULL,
     CONSTRAINT fk_idcolaborador_salario FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador) ON DELETE CASCADE
 ) ENGINE = INNODB;
-select* from salarios;
 
 create TABLE nomina (
     idnomina INT AUTO_INCREMENT PRIMARY KEY,
@@ -609,25 +608,33 @@ create TABLE nomina (
 
 CREATE TABLE gastosentradas (
     idgastonomina INT AUTO_INCREMENT PRIMARY KEY,
-    estadopago INT NOT NULL,
-    fgasto INT NOT NULL, -- 1: fijo, 2: variable
-    fvencimiento VARCHAR(100) NOT NULL,          -- como 'bonificación', 'descuento', 'aporte', etc.
-    tipo TEXT,
-    concepto DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-    subtipo DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-    idproveedor INT NOT NULL,
-    idcolaborador INT NOT NULL,
-    cunitario INT NOT NULL,
-    pagado TINYINT NOT NULL,
-    nombre VARCHAR(120) NOT NULL,
-    cantidad INT NOT NULL,
-    unidades INT NOT NULL,
-    formapago INT NOT NULL,
-    cuenta	  INT NOT NULL,
-    foliofactura VARCHAR(13) NOT NULL,
-	tasafactura VARCHAR(30) NOT NULL,
+    estadopago INT NULL,
+    fgasto INT NULL, -- 1: fijo, 2: variable
+    fvencimiento VARCHAR(100) NULL,          -- como 'bonificación', 'descuento', 'aporte', etc.
+    tipo TEXT NULL,
+    concepto DECIMAL(10,2) NULL,
+    subtipo DECIMAL(10,2) NULL,
+    idproveedor INT NULL,
+    idcolaborador INT NULL,
+    cunitario INT NULL,
+    pagado TINYINT NULL,
+    nombre VARCHAR(120) NULL,
+    cantidad INT NULL,
+    unidades INT NULL,
+    formapago INT NULL,
+    cuenta	  INT NULL,
+    foliofactura VARCHAR(13) NULL, 
+	tasafactura VARCHAR(30) NULL,
     emision	 DATE NULL,
     descripcion TEXT NULL,
-    -- completar lo demas
+    codigo char(6) null,
+    costofinal DECIMAL(10,2) NULL,
+    egreso 	DECIMAL(10,2) NULL,
+    montopdte DECIMAL(10,2) NULL,
+    gastoabono	DECIMAL(10,2) NULL,
+    facturacion INT NULL,
+    impuestos DECIMAL(10,2) NULL,
+    costofinalunit DECIMAL(10,2) NULL,
+    created_at DATETIME DEFAULT NOW(),
     CONSTRAINT fk_nomina_gasto FOREIGN KEY (idnomina) REFERENCES nomina(idnomina) ON DELETE CASCADE
 ) ENGINE = INNODB;

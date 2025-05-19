@@ -292,7 +292,7 @@ switch ($_SESSION['login']['nivelacceso']) {
         </li>
         <?php
         foreach ($listaAcceso as $access) {
-          if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario" && $access['modulo'] !== "pyp" && $access['modulo'] !== "contabilidad" && $access['modulo'] !== "agenda" && $access['modulo'] !== "comprobantes" && $access['modulo'] !== "colaboradores") {
+          if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario" && $access['modulo'] !== "pyp" && $access['modulo'] !== "contabilidad" && $access['modulo'] !== "agenda" && $access['modulo'] !== "comprobantes" && $access['modulo'] !== "colaboradores" && $access['modulo'] !== "gastos") {
 
             echo "
               <li class='nav-item' >
@@ -493,6 +493,30 @@ switch ($_SESSION['login']['nivelacceso']) {
               if (!$subAccess['visible'] && $subAccess['modulo'] === "colaboradores" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
                 echo "
                 <li class='sidebar-item nav-item list-colaboradores'>
+                  <a href='{$hostOnlyHeader}/views/{$subAccess['modulo']}/{$subAccess['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                    <i class='{$subAccess['icono']}'></i>
+                    <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
+                  </a>
+                </li>";
+              }
+            }
+            echo "</ul>";
+          } else if ($access['modulo'] === "gastos" && $access['visible']) {
+            echo "
+              <li class='sidebar-item nav-item'>
+                <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#gastos'
+                  aria-expanded='false' aria-controls='gastos'>
+                  <i class='{$access['icono']}'></i>
+                  <span class='sidebar-text mx-2'>{$access['texto']}</span>
+                  <i class='fa-solid fa-angle-down ms-auto mt-2 toggle-icon'></i>
+                </a>              
+              </li> 
+              <ul id='gastos' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#gastos'>";
+
+            foreach ($listaAcceso as $subAccess) {
+              if (!$subAccess['visible'] && $subAccess['modulo'] === "gastos" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
+                echo "
+                <li class='sidebar-item nav-item list-gastos'>
                   <a href='{$hostOnlyHeader}/views/{$subAccess['modulo']}/{$subAccess['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
                     <i class='{$subAccess['icono']}'></i>
                     <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
