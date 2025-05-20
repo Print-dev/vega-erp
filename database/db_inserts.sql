@@ -93,3 +93,13 @@ INSERT INTO tipotarea (tipotarea) VALUES
     ('Contenido');
     
     select * from nivelaccesos;
+    
+    
+    INSERT INTO conceptos (concepto) VALUES ("oficina"),("ventas"),("costos"),("produccion"),("proyecto"),("fiscal"),("otros"),("inventario");
+INSERT INTO subtipos (idconcepto, subtipo) VALUES (1, "renta oficina"),(1, "nomina"),(1, "material oficina"),(1, "gastos oficina"),(1, "capacitacion"),(1, "gasolina"),(1, "cursos"),(1, "seguro camioneta"),(1, "servicios");
+INSERT INTO subtipos (idconcepto, subtipo) VALUES (2, "publicidad"),(2, "envio"),(2, "subcontratacion"),(2, "pagina web"),(2, "mensualidad"),(2, "anualidad"),(2, "subscripcion");
+INSERT INTO subtipos (idconcepto, subtipo) VALUES (3, "paqueteria"),(3, "envios"),(2, "comisiones"),(2, "pago a cliente");
+INSERT INTO subtipos (idconcepto, subtipo) VALUES (4, "materia prima"),(3, "materiales"),(2, "cajas"),(2, "envolturas");
+INSERT INTO subtipos (idconcepto, subtipo) VALUES (5, "mano de obra"),(3, "materia prima"),(2, "contratacion"),(2, "extras");
+INSERT INTO subtipos (idconcepto, subtipo) VALUES (7, "impuestos"),(3, "contables"),(2, "contador"),(2, "multa");
+INSERT INTO subtipos (idconcepto, subtipo) VALUES (8, "comida"),(3, "viaje"),(2, "gasolina");

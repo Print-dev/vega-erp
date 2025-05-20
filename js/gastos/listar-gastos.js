@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } */
 
     function createTable(data) {
-        let rows = $("#tb-body-nomina").find("tr");
+        let rows = $("#tb-body-gasto").find("tr");
         ////console.log(rows.length);
         if (data.length > 0) {
             if (myTable) {
@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             } else {
                 // Inicializa DataTable si no ha sido inicializado antes
-                myTable = $("#table-nominas").DataTable({
+                myTable = $("#table-gastos").DataTable({
                     paging: true,
                     searching: false,
                     lengthMenu: [5, 10, 15, 20],
@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function changeByFilters() {
         const filters = $all(".filter");
-        $q("#table-nominas tbody").innerHTML = "";
+        $q("#table-gastos tbody").innerHTML = "";
         filters.forEach((x) => {
             x.addEventListener("input", async () => {
                 await dataFilters();
@@ -167,17 +167,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function dataFilters() {
         const params = new URLSearchParams();
-        params.append("operation", "filtrarNominas");
-        /*         params.append("nombre", $q("#nombre").value || "");
-                params.append("dni", $q("#dni").value || ""); */
+        params.append("operation", "filtrarGastos");
+        params.append("idproveedor", $q("#proveedor").value || "");
+        params.append("fgasto", $q("#fechagasto").value || "");
 
-        const data = await getDatos(`${host}nomina.controller.php`, params);
+        const data = await getDatos(`${host}gastoentrada.controller.php`, params);
         console.log("data -> ", data);
 
-        $q("#table-nominas tbody").innerHTML = "";
+        $q("#table-gastos tbody").innerHTML = "";
 
         if (data.length === 0) {
-            $q("#table-nominas tbody").innerHTML = `
+            $q("#table-gastos tbody").innerHTML = `
             <tr>
                 <td colspan="9">Sin resultados</td>
             </tr>
@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         data.forEach((x) => {
 
-            $q("#table-nominas tbody").innerHTML += `
+            $q("#table-gastos tbody").innerHTML += `
             <tr>
                 <td>${x.nombres && x.apellidos ? x.nombres + " " + x.apellidos : ''}</td>
                 <td>${x.fechaingreso ?? ''}</td>
@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function createTable(data) {
-        let rows = $("#tb-body-nomina").find("tr");
+        let rows = $("#tb-body-gasto").find("tr");
         ////console.log(rows.length);
         if (data.length > 0) {
             if (myTable) {
@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             } else {
                 // Inicializa DataTable si no ha sido inicializado antes
-                myTable = $("#table-nominas").DataTable({
+                myTable = $("#table-gastos").DataTable({
                     paging: true,
                     searching: false,
                     lengthMenu: [5, 10, 15, 20],

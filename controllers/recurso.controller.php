@@ -64,6 +64,12 @@ if (isset($_GET['operation'])) {
     case 'obtenerNacionalidadPorId':
       echo json_encode($recurso->obtenerNacionalidadPorId(["idnacionalidad" => $recurso->limpiarCadena($_GET['idnacionalidad'])]));
       break;
+    case 'obtenerConceptos':
+      echo json_encode($recurso->obtenerConceptos());
+      break;
+    case 'obtenerSubTipoPorIdConcepto':
+      echo json_encode($recurso->obtenerSubTipoPorIdConcepto(["idconcepto" => $recurso->limpiarCadena($_GET['idconcepto'])]));
+      break;
 
     
   }

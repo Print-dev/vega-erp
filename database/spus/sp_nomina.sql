@@ -13,10 +13,7 @@ CREATE PROCEDURE sp_registrar_colaborador(
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
-        DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-    BEGIN
-        SET existe_error = 1;
-    END;
+
     
     -- Insertar la notificación
     INSERT INTO colaboradores (idpersona, idsucursal, fechaingreso, idarea)
@@ -29,6 +26,9 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
+
+-- CALL sp_registrar_colaborador(@idcolaborador, 1, 1, "2025-01-01", 1)
+select * from colaboradores
 -- CALL sp_registrar_colaborador (@idcolaborador,15, '2025-05-10', 3)
 
 DROP PROCEDURE if exists sp_actualizar_colaborador;
@@ -131,7 +131,7 @@ BEGIN
 END //
 DELIMITER ;
 
-DROP PROCEDURE IF EXISTS `sp_registrar_gasto`;
+DROP PROCEDURE IF EXISTS `sp_registrar_gasto`; -- old
 DELIMITER //
 CREATE PROCEDURE sp_registrar_gasto(
     OUT _idgastonomina INT,
@@ -185,37 +185,6 @@ BEGIN
     NOM.acumulado
     FROM nomina NOM
 	LEFT JOIN colaboradores	COL ON COL.idcolaborador = NOM.idcolaborador
-	left JOIN personas PE ON PE.idpersona = COL.idpersona
-    LEFT JOIN areas AR ON AR.idarea = COL.idarea
-    -- WHERE (PE.num_doc LIKE CONCAT('%', COALESCE(_num_doc, ''), '%') OR PE.num_doc IS NULL) AND
-	-- (PE.nombres LIKE CONCAT('%', COALESCE(_nombres, ''), '%') OR PE.nombres IS NULL)
-    ORDER BY idcolaborador DESC;
-END //
-
-DROP PROCEDURE IF EXISTS sp_filtrar_gastos;
-DELIMITER //
-CREATE PROCEDURE sp_filtrar_gastos(
-	-- IN _nombres VARCHAR(100),
-	-- IN _num_doc VARCHAR(20)
-)
-BEGIN
-	SELECT 
-	NOM.idnomina, 
-    COL.idcolaborador, 
-    PE.nombres, 
-    PE.apellidos, 
-    COL.fechaingreso, 
-    NOM.salario_usado,
-    NOM.periodo,
-    NOM.horas,
-    AR.area,
-    AR.idarea, 
-    NOM.tiempo, 
-    NOM.rendimiento,
-    NOM.proporcion, 
-    NOM.acumulado
-    FROM gastos NOM
-	LEFT JOIN nominas	COL ON COL.idcolaborador = NOM.idcolaborador
 	left JOIN personas PE ON PE.idpersona = COL.idpersona
     LEFT JOIN areas AR ON AR.idarea = COL.idarea
     -- WHERE (PE.num_doc LIKE CONCAT('%', COALESCE(_num_doc, ''), '%') OR PE.num_doc IS NULL) AND

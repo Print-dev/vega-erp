@@ -145,8 +145,22 @@ SELECT * FROM proveedores order by idproveedor DESC;
 -- ALTER TABLE usuarios
 -- MODIFY COLUMN marcaagua VARCHAR(120) NULL,
 -- MODIFY COLUMN firma VARCHAR(120) NULL;
-
 -- ALTER TABLE usuarios ADD COLUMN idsucursal int not null;
+
+CREATE TABLE conceptos (
+    idconcepto INT AUTO_INCREMENT PRIMARY KEY,
+    concepto	VARCHAR(120) NULL 
+)  ENGINE=INNODB;
+
+
+
+CREATE TABLE subtipos (
+    idsubtipo INT AUTO_INCREMENT PRIMARY KEY,
+    idconcepto INT NOT NULL,
+    subtipo	VARCHAR(120) NULL,
+    constraint fk_idsubtipo foreign key (idconcepto) references conceptos(idconcepto)
+)  ENGINE=INNODB;
+
 CREATE TABLE tarifario (
 	idtarifario int auto_increment primary key,
     idusuario		int not null,
@@ -245,6 +259,7 @@ CREATE TABLE responsables_boleteria_contratoreservasreservas (
     constraint fk_idusuario_contrato foreign key (idusuarioContrato) references usuarios (idusuario)
 ) ENGINE = INNODB;
 
+select  * from colaboradores;
 
 -- ESTA TABLA SOLO SERA PARA EVENTOS DE TIPO CONVENIO
 CREATE TABLE precios_entrada_evento ( 
@@ -607,34 +622,30 @@ create TABLE nomina (
 )ENGINE = INNODB;
 
 CREATE TABLE gastosentradas (
-    idgastonomina INT AUTO_INCREMENT PRIMARY KEY,
+    idgastoentrada INT AUTO_INCREMENT PRIMARY KEY,
     estadopago INT NULL,
-    fgasto INT NULL, -- 1: fijo, 2: variable
-    fvencimiento VARCHAR(100) NULL,          -- como 'bonificación', 'descuento', 'aporte', etc.
-    tipo TEXT NULL,
-    concepto DECIMAL(10,2) NULL,
-    subtipo DECIMAL(10,2) NULL,
+    fgasto DATE NULL,
+    fvencimiento DATE NULL,          -- como 'bonificación', 'descuento', 'aporte', etc.
+    tipo INT NULL,  -- 1: fijo, 2: variable
+    concepto INT NULL,
+    subtipo INT NULL,
     idproveedor INT NULL,
     idcolaborador INT NULL,
-    cunitario INT NULL,
-    pagado TINYINT NULL,
-    nombre VARCHAR(120) NULL,
+    gasto DECIMAL(10,2) NULL,
+    cunitario DECIMAL(10,2) NULL,
+    pagado DECIMAL(10,2) NULL, -- pago anticipado
+    idproducto INT NULL,
     cantidad INT NULL,
     unidades INT NULL,
     formapago INT NULL,
     cuenta	  INT NULL,
     foliofactura VARCHAR(13) NULL, 
-	tasafactura VARCHAR(30) NULL,
     emision	 DATE NULL,
     descripcion TEXT NULL,
-    codigo char(6) null,
     costofinal DECIMAL(10,2) NULL,
     egreso 	DECIMAL(10,2) NULL,
     montopdte DECIMAL(10,2) NULL,
-    gastoabono	DECIMAL(10,2) NULL,
-    facturacion INT NULL,
     impuestos DECIMAL(10,2) NULL,
     costofinalunit DECIMAL(10,2) NULL,
-    created_at DATETIME DEFAULT NOW(),
-    CONSTRAINT fk_nomina_gasto FOREIGN KEY (idnomina) REFERENCES nomina(idnomina) ON DELETE CASCADE
+    created_at DATETIME DEFAULT NOW()
 ) ENGINE = INNODB;

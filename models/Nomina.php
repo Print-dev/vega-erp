@@ -85,7 +85,7 @@ class Nomina extends ExecQuery
       die($e->getMessage());
     }
   }
-  
+
   public function filtrarGastos($params = []): array
   {
     try {
@@ -101,7 +101,7 @@ class Nomina extends ExecQuery
       die($e->getMessage());
     }
   }
-  
+
   public function filtrarNominas($params = []): array
   {
     try {
@@ -109,8 +109,7 @@ class Nomina extends ExecQuery
       $sp->execute(
         array(
           /* $params["nombres"],
-          $params["numdoc"] */
-        )
+          $params["numdoc"] */)
       );
       return $sp->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
@@ -233,29 +232,8 @@ class Nomina extends ExecQuery
       return -1;
     }
   }
-  
-  public function registrarGasto($params = []): int
-  {
-    try {
-      $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_gasto(@idgasto,?,?,?,?,?)');
-      $cmd->execute(
-        array(
-          $params['idnomina'],
-          $params['tipo'],
-          $params['subtipo'],
-          $params['descripcion'],
-          $params['monto'],
-        )
-      );
 
-      $respuesta = $pdo->query("SELECT @idgasto AS idgasto")->fetch(PDO::FETCH_ASSOC);
-      return $respuesta['idgasto'];
-    } catch (Exception $e) {
-      error_log("Error: " . $e->getMessage());
-      return -1;
-    }
-  }
+
 
   public function registrarNomina($params = []): int
   {
@@ -308,7 +286,7 @@ class Nomina extends ExecQuery
       die($e->getMessage());
     }
   }
-  
+
   public function obtenerUltimoSalarioPorColaborador($params = []): array
   {
     try {

@@ -17,52 +17,49 @@
                     <h1>Gastos e Ingresos</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                     <a class="btn btn-info" id="btnNuevoColaboradorNomina" href="<?= $hostOnlyHeader ?>/views/gastos/registrar-gasto">Nuevo Gasto</a>
+                    <a class="btn btn-info" id="btnNuevoColaboradorNomina" href="<?= $hostOnlyHeader ?>/views/gastos/registrar-gasto">Nuevo Gasto</a>
                 </div>
             </div>
             <div class="row">
                 <div class="card border-0">
                     <div class="card-body">
                         <div class="row g-0 mb-3">
-                            <!-- <div class="card border-0">
+                            <div class="card border-0">
                                 <div class="card-body border-0">
                                     <div class="row">
                                         <div class="col-md-2">
                                             <div class="form-floating">
-                                                <input type="text" class="form-control filter" id="nombre" autocomplete="off" placeholder="Nombre">
-                                                <label for="nombre">Nombre</label>
+                                                <input type="text" class="form-control filter" id="proveedor" autocomplete="off" placeholder="Proveedor">
+                                                <label for="proveedor">Proveedor</label>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-floating">
-                                                <input type="text" class="form-control filter" id="dni" autocomplete="off" placeholder="Dni">
-                                                <label for="dni">Dni</label>
+                                                <input type="text" class="form-control filter" id="fechagasto" autocomplete="off" placeholder="Fecha Gasto">
+                                                <label for="fechagasto">Fecha Gasto</label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div> -->
+                            </div>
                             <hr>
                             <div class="row g-1">
                                 <div class="table-responsive">
-                                    <table class="table" id="table-nominas">
+                                    <table class="table" id="table-gastos">
                                         <thead class="text-center">
                                             <tr>
-                                                <th>Nombre</th>
-                                                <th>Fecha Ingreso</th>
-                                                <th>Salario</th>
-                                                <th>Horas</th>
-                                                <th>Costo/horas</th>
-                                                <th>Periodo</th>
-                                                <th>Área</th>
-                                                <th>Tiempo</th>
-                                                <th>Rendimiento</th>
-                                                <th>Proporción</th>
-                                                <th>Acumulado</th>
+                                                <th>Estado</th>
+                                                <th>Fecha Gasto</th>
+                                                <th>Fecha Vencimiento</th>
+                                                <th>Proveedor</th>
+                                                <th>Razón</th> <!-- ESTO SERA SUBTIPO PERO COMO PARA QUE ENTIENDAN -->
+                                                <th>Gasto</th>
+                                                <th>Costo Final</th>
+                                                <th>Monto Pendiente</th>
                                                 <th>Opciones</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="tb-body-nomina">
+                                        <tbody id="tb-body-gasto">
                                         </tbody>
                                     </table>
 
