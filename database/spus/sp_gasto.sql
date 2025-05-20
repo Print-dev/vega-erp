@@ -9,13 +9,13 @@ CREATE PROCEDURE sp_filtrar_gastos(
 )
 BEGIN
 	SELECT 
-	GASTOS.*, COL.*
+*
     FROM gastosentradas GASTOS
 	LEFT JOIN colaboradores	COL ON COL.idcolaborador = GASTOS.idcolaborador
 	left JOIN proveedores PRO ON PRO.idproveedor = GASTOS.idproveedor
-    WHERE (COL.num_doc LIKE CONCAT('%', COALESCE(_num_doc, ''), '%') OR COL.num_doc IS NULL) AND
-    GASTOS.modalidad = _modalidad AND (_igv IS NULL OR DP.igv = _igv)
-    ORDER BY idcolaborador DESC;
+    WHERE (PRO.idproveedor LIKE CONCAT('%', COALESCE(_idproveedor, ''), '%') OR PRO.idproveedor IS NULL) AND
+    GASTOS.fgasto = _fgasto AND (_fgasto IS NULL OR GASTOS.fgasto = _fgasto)
+    ORDER BY GASTOS.idgastoentrada DESC;
 END //
 
 select * from gastosentradas

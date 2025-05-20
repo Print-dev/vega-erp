@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // GENERAL
     $q("#div-colaborador").classList.add("d-none")
+    $q("#div-costofinalunit").classList.add("d-none")
 
     // DETALLES DE FACTURACION 
 
@@ -187,6 +188,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#div-colaborador").classList.add("d-none")
                 $q("#div-cunitario").classList.add("d-none")
                 $q("#div-pagadoanticipo").classList.remove("d-none")
+                $q("#div-costofinalunit").classList.add("d-none")
 
                 // DISABLES
                 $q("#cantidad").disabled = true
@@ -200,6 +202,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#div-colaborador").classList.add("d-none")
                 $q("#div-cunitario").classList.add("d-none")
                 $q("#div-pagadoanticipo").classList.remove("d-none")
+                $q("#div-costofinalunit").classList.add("d-none")
 
                 //DISABLES
                 $q("#cantidad").disabled = true
@@ -213,6 +216,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#div-colaborador").classList.add("d-none")
                 $q("#div-cunitario").classList.add("d-none")
                 $q("#div-pagadoanticipo").classList.remove("d-none")
+                $q("#div-costofinalunit").classList.add("d-none")
 
                 // DISABLES
                 $q("#cantidad").disabled = true
@@ -225,6 +229,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#div-colaborador").classList.add("d-none")
                 $q("#div-cunitario").classList.add("d-none")
                 $q("#div-pagadoanticipo").classList.remove("d-none")
+                $q("#div-costofinalunit").classList.add("d-none")
 
                 // DISABLES
                 $q("#cantidad").disabled = true
@@ -237,6 +242,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#div-colaborador").classList.add("d-none")
                 $q("#div-cunitario").classList.add("d-none")
                 $q("#div-pagadoanticipo").classList.remove("d-none")
+                $q("#div-costofinalunit").classList.add("d-none")
 
                 // DISABLES
                 $q("#cantidad").disabled = true
@@ -249,6 +255,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#div-colaborador").classList.add("d-none")
                 $q("#div-cunitario").classList.add("d-none")
                 $q("#div-pagadoanticipo").classList.remove("d-none")
+                $q("#div-costofinalunit").classList.add("d-none")
 
                 // DISABLES
                 $q("#cantidad").disabled = true
@@ -261,6 +268,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#div-colaborador").classList.add("d-none")
                 $q("#div-cunitario").classList.add("d-none")
                 $q("#div-pagadoanticipo").classList.remove("d-none")
+                $q("#div-costofinalunit").classList.add("d-none")
 
                 // DISABLES
                 $q("#cantidad").disabled = true
@@ -273,6 +281,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#div-subtipo").classList.add("d-none")
                 $q("#div-colaborador").classList.remove("d-none")
                 $q("#div-pagadoanticipo").classList.add("d-none")
+                $q("#div-costofinalunit").classList.remove("d-none")
 
                 $q("#div-formapago").classList.add("d-none")
                 $q("#div-cuenta").classList.add("d-none")

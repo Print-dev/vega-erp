@@ -119,7 +119,7 @@
                                 <label for="costofinal" class="form-label">Costo Final</label>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2" id="div-costofinalunit">
                             <div class="form-floating">
                                 <input type="number" id="costofinalunit" class="form-control" autocomplete="off">
                                 <label for="costofinalunit" class="form-label">Costo F. Unit</label>
