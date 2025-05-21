@@ -245,6 +245,32 @@ class Gastos extends ExecQuery
         }
     }
 
+   /*  public function registrarPagoPendiente($params = []): int
+    {
+        try {
+            $pdo = parent::getConexion();
+            $cmd = $pdo->prepare('CALL sp_registrar_pagopendiente(@idpagopendiente,?,?,?,?,?,?,?,?)');
+            $cmd->execute(
+                array(
+                    $params['idcolaborador'],
+                    $params['salariousado'],
+                    $params['periodo'],
+                    $params['horas'],
+                    $params['tiempo'],
+                    $params['rendimiento'],
+                    $params['proporcion'],
+                    $params['acumulado'],
+                )
+            );
+
+            $respuesta = $pdo->query("SELECT @idpagopendiente AS idpagopendiente")->fetch(PDO::FETCH_ASSOC);
+            return $respuesta['idpagopendiente'];
+        } catch (Exception $e) {
+            error_log("Error: " . $e->getMessage());
+            return -1;
+        }
+    } */
+
 
     /*  public function obtenerNotificacionesViatico(): array
   {

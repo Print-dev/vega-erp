@@ -24,7 +24,7 @@
                 <div class="card border-0">
                     <div class="card-body">
                         <div class="row g-0 mb-3">
-                            <div class="card border-0">
+                            <div class="card border-0" hidden>
                                 <div class="card-body border-0">
                                     <div class="row">
                                         <div class="col-md-2">
@@ -51,7 +51,6 @@
                                                 <th>Estado</th>
                                                 <th>Fecha Gasto</th>
                                                 <th>Fecha Vencimiento</th>
-                                                <th>Proveedor</th>
                                                 <th>Razón</th> <!-- ESTO SERA SUBTIPO PERO COMO PARA QUE ENTIENDAN -->
                                                 <th>Gasto</th>
                                                 <th>Costo Final</th>

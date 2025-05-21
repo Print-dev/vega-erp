@@ -3,9 +3,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     let idproveedor
     let idcolaborador
     let idnomina
-    /*     let modalNuevoProvedor = new bootstrap.Modal($q("#modal-nuevo-proveedor"))
-        let modalActualizarProveedor = new bootstrap.Modal($q("#modal-actualizar-proveedor"))
-     */
+    let ngasto
+
+    // REUTILIZABLE:
+    let costo = 0
+    let costofinal = 0
+    let montopdte = 0
+    let costofinalunit = 0
+    let cantidad = 0
+    let pagoAnticipado = 0
+    let tasafactura = 0
+    let impuestos
+    let egreso = 0
+
     function $q(object = null) {
         return document.querySelector(object);
     }
@@ -137,9 +147,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         gasto.append("subtipo", $q("#subtipo").value || null);
         gasto.append("idproveedor", $q("#proveedor").value || null);
         gasto.append("idcolaborador", $q("#colaborador").value || null);
-        gasto.append("gasto", $q("#gasto").value || null);
-        gasto.append("cunitario", $q("#costounitario").value || null);
-        gasto.append("pagado", $q("#pagadoanticipo").value || null);
+        gasto.append("gasto", parseFloat($q("#gasto").value).toFixed(2) || null);
+        gasto.append("cunitario", parseFloat($q("#costounitario").value).toFixed(2) || null);
+        gasto.append("pagado", parseFloat($q("#pagadoanticipo").value).toFixed(2) || null);
         gasto.append("idproducto", $q("#nombre").value || null);
         gasto.append("cantidad", $q("#cantidad").value || null);
         gasto.append("unidades", $q("#unidades").value || null);
@@ -149,11 +159,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         //gasto.append("tasafactura", $q("#tasafactura").value || null);
         gasto.append("emision", $q("#emision").value || null);
         gasto.append("descripcion", $q("#descripcion").value || null);
-        gasto.append("costofinal", $q("#costofinal").value || null);
-        gasto.append("egreso", $q("#egreso").value || null);
-        gasto.append("montopdte", $q("#montopdte").value || null);
-        gasto.append("impuestos", $q("#impuestos").value || null);
-        gasto.append("costofinalunit", $q("#costofinalunit").value || null);
+        gasto.append("costofinal", parseFloat($q("#costofinal").value).toFixed(2) || null);
+        gasto.append("egreso", parseFloat($q("#egreso").value).toFixed(2) || null);
+        gasto.append("montopdte", parseFloat($q("#montopdte").value).toFixed(2) || null);
+        gasto.append("impuestos", parseFloat($q("#impuestos").value).toFixed(2) || null);
+        gasto.append("costofinalunit", parseFloat($q("#costofinalunit").value).toFixed(2) || null);
 
 
         const response = await fetch(`${host}gastoentrada.controller.php`, {
@@ -179,22 +189,55 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     })
 
+    $q("#costounitario").addEventListener("input", async (e) => {
+        costo = e.target.value
+        if ($q("#foliofactura").value != "") {
+            costofinalunit = (parseFloat($q("#costounitario").value) * 1.18)
+            $q("#costofinalunit").value = costofinalunit
+        }
+        /* console.log("costo > ,", costo);
+        if ($q("#estado").value == "1" && $q("#concepto").value == "8") { // PENDIENTE
+            costofinal = parseFloat(costo)
+            montopdte = parseFloat(costo)
+            costofinalunit = parseFloat(costo)
+            $q("#costofinal").value = costofinal
+            $q("#montopdte").value = montopdte
+            $q("#costofinalunit").value = costofinalunit
+        } */
+    })
+
     $q("#concepto").addEventListener("change", async (e) => {
         const concepto = e.target.value
         console.log("target", e.target.value);
         switch (concepto) {
             case "1": // oficina
-                $q("#div-subtipo").classList.remove("d-none")
-                $q("#div-colaborador").classList.add("d-none")
-                $q("#div-cunitario").classList.add("d-none")
-                $q("#div-pagadoanticipo").classList.remove("d-none")
-                $q("#div-costofinalunit").classList.add("d-none")
+                if ($q("#estado").value == "2") {
+                    $q("#div-subtipo").classList.remove("d-none")
+                    $q("#div-colaborador").classList.add("d-none")
+                    $q("#div-cunitario").classList.add("d-none")
+                    $q("#div-pagadoanticipo").classList.add("d-none")
+                    $q("#div-costofinalunit").classList.add("d-none")
+                    $q("#div-pendiente").classList.add("d-none")
 
-                // DISABLES
-                $q("#cantidad").disabled = true
-                $q("#nombre").disabled = true
-                $q("#unidades").disabled = true
+                    // DISABLES
+                    $q("#cantidad").disabled = true
+                    $q("#nombre").disabled = true
+                    $q("#unidades").disabled = true
+                }
+                else {
+                    $q("#div-subtipo").classList.remove("d-none")
+                    $q("#div-colaborador").classList.add("d-none")
+                    $q("#div-cunitario").classList.add("d-none")
+                    $q("#div-pagadoanticipo").classList.remove("d-none")
+                    $q("#div-costofinalunit").classList.add("d-none")
+                    $q("#div-pendiente").classList.remove("d-none")
 
+
+                    // DISABLES
+                    $q("#cantidad").disabled = true
+                    $q("#nombre").disabled = true
+                    $q("#unidades").disabled = true
+                }
                 break;
 
             case "2": // Venta
@@ -203,6 +246,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#div-cunitario").classList.add("d-none")
                 $q("#div-pagadoanticipo").classList.remove("d-none")
                 $q("#div-costofinalunit").classList.add("d-none")
+                $q("#div-pendiente").classList.remove("d-none")
 
                 //DISABLES
                 $q("#cantidad").disabled = true
@@ -217,6 +261,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#div-cunitario").classList.add("d-none")
                 $q("#div-pagadoanticipo").classList.remove("d-none")
                 $q("#div-costofinalunit").classList.add("d-none")
+                $q("#div-pendiente").classList.remove("d-none")
 
                 // DISABLES
                 $q("#cantidad").disabled = true
@@ -230,6 +275,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#div-cunitario").classList.add("d-none")
                 $q("#div-pagadoanticipo").classList.remove("d-none")
                 $q("#div-costofinalunit").classList.add("d-none")
+                $q("#div-pendiente").classList.remove("d-none")
 
                 // DISABLES
                 $q("#cantidad").disabled = true
@@ -243,6 +289,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#div-cunitario").classList.add("d-none")
                 $q("#div-pagadoanticipo").classList.remove("d-none")
                 $q("#div-costofinalunit").classList.add("d-none")
+                $q("#div-pendiente").classList.remove("d-none")
 
                 // DISABLES
                 $q("#cantidad").disabled = true
@@ -256,6 +303,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#div-cunitario").classList.add("d-none")
                 $q("#div-pagadoanticipo").classList.remove("d-none")
                 $q("#div-costofinalunit").classList.add("d-none")
+                $q("#div-pendiente").classList.remove("d-none")
 
                 // DISABLES
                 $q("#cantidad").disabled = true
@@ -269,6 +317,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 $q("#div-cunitario").classList.add("d-none")
                 $q("#div-pagadoanticipo").classList.remove("d-none")
                 $q("#div-costofinalunit").classList.add("d-none")
+                $q("#div-pendiente").classList.remove("d-none")
 
                 // DISABLES
                 $q("#cantidad").disabled = true
@@ -277,20 +326,45 @@ document.addEventListener("DOMContentLoaded", async () => {
                 break;
 
             case "8": // inventario
-                $q("#div-cunitario").classList.remove("d-none")
-                $q("#div-subtipo").classList.add("d-none")
-                $q("#div-colaborador").classList.remove("d-none")
-                $q("#div-pagadoanticipo").classList.add("d-none")
-                $q("#div-costofinalunit").classList.remove("d-none")
+                if ($q("#estado").value == "1") { // ESTADO PENDIENTE
+                    $q("#div-gasto").classList.add("d-none")
+                    $q("#div-pagadoanticipo").classList.remove("d-none")
+                    $q("#div-cunitario").classList.remove("d-none")
+                    $q("#div-subtipo").classList.add("d-none")
+                    $q("#div-colaborador").classList.add("d-none")
+                    $q("#div-pendiente").classList.remove("d-none")
 
-                $q("#div-formapago").classList.add("d-none")
-                $q("#div-cuenta").classList.add("d-none")
-                //$q("#div-tasafactura").hidden = true
-                $q("#div-emision").hidden = true
+                    $q("#div-costofinalunit").classList.remove("d-none")
 
-                $q("#cantidad").disabled = false
-                $q("#nombre").disabled = false
-                $q("#unidades").disabled = false
+                    $q("#div-formapago").classList.add("d-none")
+                    $q("#div-cuenta").classList.add("d-none")
+                    $q("#div-emision").hidden = false
+
+                    $q("#cantidad").disabled = false
+                    $q("#nombre").disabled = false
+                    $q("#unidades").disabled = false
+                    $q("#foliofactura").disabled = false
+
+                } else { // OTRO ESTADO 
+                    $q("#div-pagadoanticipo").classList.add("d-none")
+                    $q("#div-gasto").classList.remove("d-none")
+                    $q("#div-cunitario").classList.remove("d-none")
+                    $q("#div-subtipo").classList.add("d-none")
+                    $q("#div-colaborador").classList.add("d-none")
+                    $q("#div-pendiente").classList.remove("d-none")
+
+                    $q("#div-costofinalunit").classList.remove("d-none")
+
+                    $q("#div-formapago").classList.add("d-none")
+                    $q("#div-cuenta").classList.add("d-none")
+                    //$q("#div-tasafactura").hidden = true
+                    $q("#div-emision").hidden = true
+
+                    $q("#cantidad").disabled = false
+                    $q("#nombre").disabled = false
+                    $q("#unidades").disabled = false
+                }
+
 
                 console.log("cambiando...");
                 break;
@@ -316,11 +390,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
 
     $q("#gasto").addEventListener("input", async (e) => {
-        const gasto = e.target.value
-        console.log("gasto value ", gasto);
-        if (gasto != "") {
+        ngasto = e.target.value
+        console.log("gasto value ", ngasto);
+        if (ngasto != "") {
             $q("#foliofactura").disabled = false
-            $q("#descripcion").disabled = false
+            // $q("#descripcion").disabled = false
             $q("#formapago").disabled = false
             $q("#cuenta").disabled = false
 
@@ -332,60 +406,242 @@ document.addEventListener("DOMContentLoaded", async () => {
             $q("#cuenta").disabled = true
         }
 
-        const impuesto = parseFloat(gasto) * 0.18
-        const costofinal = parseFloat(gasto) + parseFloat(impuesto)
+        if ($q("#estado").value == "2" && $q("#concepto").value == "1" && $q("#subtipo").value == "1") {
+            $q("#costofinal").value = parseFloat(ngasto).toFixed(2)
+            $q("#egreso").value = parseFloat(ngasto).toFixed(2)
+            return
+        }
 
-        $q("#impuestos").value = parseFloat(impuesto).toFixed(2)
-        $q("#costofinal").value = parseFloat(costofinal).toFixed(2)
-        $q("#egreso").value = parseFloat(costofinal).toFixed(2)
+        if ($q("#concepto").value == "1" && $q("#subtipo").value == "1" && $q("#estado").value == "2" && $q("#foliofactura").value != "") {
+            impuestos = parseFloat(ngasto) * 0.18
+            //impuestos = (parseFloat(pagoAnticipado) * 0.18).toFixed(2)
+            $q("#impuestos").value = impuestos.toFixed(2)
+            //DESHABILITAR ATRIBUTOS
+            $q("#descripcion").disabled = false
+            $q("#descripcion").value = ''
+            $q("#emision").disabled = false
+            //$q("#tasafactura").disabled = true
+            $q("#emision").value = ""
+            return
+        }
+
+        /* const impuesto = parseFloat(ngasto) * 0.18
+        const costofinal = parseFloat(ngasto) + parseFloat(impuesto) */
+        if ($q("#concepto").value == "1" && $q("#subtipo").value == "1") {
+            console.log("entrando a concepto 1");
+            costofinal = parseFloat(ngasto)
+
+            //$q("#impuestos").value = parseFloat(impuesto).toFixed(2)
+            $q("#costofinal").value = parseFloat(costofinal).toFixed(2)
+            $q("#montopdte").value = parseFloat(costofinal).toFixed(2)
+            if ($q("#pagadoanticipo").value != "") {
+                montopdte = parseFloat(ngasto) - parseFloat(pagoAnticipado)
+                $q("#montopdte").value = montopdte
+            }
+            return
+        }
+
+
     })
 
-    $q("#pagadoanticipo").addEventListener("input", async (e) => {
-        const pagoanticipado = e.target.value
-        console.log("pagoanticipado value ", pagoanticipado);
-        /* if (pagoanticipado != "") {
-            $q("#formapago").disabled = false
-            $q("#cuenta").disabled = false
+
+
+    $q("#pagadoanticipo").addEventListener("input", e => {
+        pagoAnticipado = parseFloat(e.target.value) || 0;
+        gasto = parseFloat($q("#gasto").value) || 0;
+        const concepto = $q("#concepto").value;           // id del concepto
+        const estado = $q("#estado").value;             // id del estado
+
+        /* --------------------------------------------------------------
+           Habilitar / deshabilitar forma de pago y cuenta
+        -------------------------------------------------------------- */
+        const formaPagoEl = $q("#formapago");
+        const cuentaEl = $q("#cuenta");
+
+        const hayPago = e.target.value.trim() !== "";
+        formaPagoEl.disabled = !hayPago;
+        cuentaEl.disabled = !hayPago;
+
+
+        if (concepto == "1" && $q("#subtipo").value == "1" && estado == "1") {
+            egreso = parseFloat(pagoAnticipado).toFixed(2)
+            $q("#egreso").value = egreso
+            montopdte = parseFloat(ngasto) - parseFloat(pagoAnticipado)
+            $q("#montopdte").value = montopdte
+            if ($q("#foliofactura").value != "") {
+                impuestos = (parseFloat(pagoAnticipado) * 0.18).toFixed(2)
+                $q("#impuestos").value = impuestos
+            }
+            if (parseFloat($q("#pagadoanticipo").value) >= parseFloat($q("#gasto").value)) {
+                mostrarEstadoPago("pagado");   // nada que mostrar
+            } else {
+                mostrarEstadoPago("pendiente");   // nada que mostrar
+            }
+            return
         }
-        else {
-            $q("#formapago").disabled = true
-            $q("#cuenta").disabled = true
-        } */
-        if (parseFloat(pagoanticipado) >= parseFloat($q("#gasto").value)) {
-            $q("#div-estadopago").classList.remove("d-none")
-            $q("#montopdte").value = 0
-            $q("#div-estadopago").innerHTML = `
-                <div class="bg-success h-100 w-100 text-white text-center d-flex align-items-center justify-content-center">
-                    Pagado
-                </div>
-            `
+
+        /* --------------------------------------------------------------
+           Caso especial: concepto 8 (INVENTARIO) + estado 1 (PENDIENTE)  →  Anticipo interno
+        -------------------------------------------------------------- */
+        if (concepto === "8" && estado === "1") {
+            if (cantidad <= 0) {
+                $q("#montopdte").value = pagoAnticipado.toFixed(2);
+                $q("#egreso").value = pagoAnticipado.toFixed(2);
+                mostrarEstadoPago("oculto");   // nada que mostrar
+                return;
+            }
+            $q("#montopdte").value = (costofinal - pagoAnticipado).toFixed(2);
+            //$q("#egreso").value = pagoAnticipado.toFixed(2);
+            //$q("#costofinal").value = (costofinal * cantidad).toFixed(2)
+            mostrarEstadoPago("oculto");   // nada que mostrar
+            return;
+        }
+
+        /* --------------------------------------------------------------
+           Pago ≥ gasto  →  Pagado,   si no → Pendiente
+        -------------------------------------------------------------- */
+        if (pagoAnticipado >= gasto && gasto > 0) {
+            mostrarEstadoPago("pagado");
         } else {
-            $q("#div-estadopago").classList.remove("d-none")
-
-            $q("#montopdte").value = parseFloat($q("#gasto").value) - parseFloat(pagoanticipado)
-            $q("#div-estadopago").innerHTML = `
-                <div class="bg-danger h-100 w-100 text-white text-center d-flex align-items-center justify-content-center" >
-                    Pendiente
-                </div >
-                `
+            mostrarEstadoPago("pendiente");
         }
+    });
 
+    $q("#cantidad").addEventListener("input", async (e) => {
+        cantidad = e.target.value
+        console.log("cantidd -> ", cantidad);
+        if ($q("#estado").value == "1" && $q("#concepto").value == "8") { // ESTADO PENDIENTE Y CONCEPTO INVENTARIO
+            costofinal = (costo * cantidad).toFixed(2)
+            $q("#costofinal").value = costofinal
+            console.log("costo final unit -> ", costofinal);
+            montopdte = (costofinal - pagoAnticipado).toFixed(2)
+            $q("#montopdte").value = montopdte
+            //$q("#costofinalunit").value = 
+        }
+        if ($q("#foliofactura").value != "") {
+            costofinalunit = (parseFloat($q("#costounitario").value) * 1.18).toFixed(2)
+            $q("#costofinalunit").value = costofinalunit
+        }
+        if (cantidad <= 0) {
+            $q("#montopdte").value = pagoAnticipado.toFixed(2);
+            mostrarEstadoPago("oculto");   // nada que mostrar
+            return;
+        }
+        //$q("#montopdte").value = (costofinal - pagoAnticipado).toFixed(2);
+        //$q("#egreso").value = pagoAnticipado.toFixed(2);
+        //$q("#costofinal").value = (costofinal * cantidad).toFixed(2)
+        mostrarEstadoPago("oculto");   // nada que mostrar
+        return;
     })
 
+
+    function mostrarEstadoPago(estado) {
+        const wrapper = $q("#div-estadopago");
+        wrapper.classList.remove("d-none");
+
+        if (estado === "pagado") {
+            wrapper.innerHTML = `
+            <div class="bg-success h-100 w-100 text-white text-center
+                        d-flex align-items-center justify-content-center">
+                Pagado
+            </div>`;
+        } else if (estado === "pendiente") {
+            wrapper.innerHTML = `
+            <div class="bg-danger h-100 w-100 text-white text-center
+                        d-flex align-items-center justify-content-center">
+                Pendiente
+            </div>`;
+        } else {                    // "oculto"
+            wrapper.classList.add("d-none");
+            wrapper.innerHTML = "";
+        }
+    }
 
     $q("#foliofactura").addEventListener("input", async (e) => {
         const gasto = e.target.value
         console.log("gasto value ", gasto);
+
+        if ($q("#concepto").value == "1" && $q("#subtipo").value == "1" && $q("#estado").value == "2") {
+            impuestos = parseFloat(ngasto) * 0.18
+            //impuestos = (parseFloat(pagoAnticipado) * 0.18).toFixed(2)
+            $q("#impuestos").value = impuestos.toFixed(2)
+            //DESHABILITAR ATRIBUTOS
+            $q("#descripcion").disabled = false
+            $q("#descripcion").value = ''
+            $q("#emision").disabled = false
+            //$q("#tasafactura").disabled = true
+            $q("#emision").value = ""
+            return
+        }
+
+        if ($q("#concepto").value == "1" && $q("#subtipo").value == "1" && $q("#estado").value == "1") {
+
+            if ($q("#foliofactura").value == "") {
+                costofinal = parseFloat(ngasto)
+
+                //$q("#impuestos").value = parseFloat(impuesto).toFixed(2)
+                $q("#costofinal").value = parseFloat(costofinal).toFixed(2)
+                $q("#montopdte").value = parseFloat(costofinal).toFixed(2)
+                $q("#impuestos").value = ""
+
+                if ($q("#pagadoanticipo").value != "") {
+                    montopdte = parseFloat(ngasto) - parseFloat(pagoAnticipado)
+                    $q("#montopdte").value = montopdte
+                }
+                return
+            }
+            console.log("entrando ...");
+            impuestos = parseFloat(pagoAnticipado) - (parseFloat(pagoAnticipado) / 1.18)
+            //impuestos = (parseFloat(pagoAnticipado) * 0.18).toFixed(2)
+            $q("#impuestos").value = impuestos.toFixed(2)
+            costofinal = (parseFloat(costofinal) * 1.18).toFixed(2)
+            console.log("entrando -> ", costofinal);
+            $q("#costofinal").value = costofinal
+            montopdte = (costofinal - parseFloat(montopdte)).toFixed(2)
+            $q("#montopdte").value = montopdte
+
+            //DESHABILITAR ATRIBUTOS
+            $q("#descripcion").disabled = false
+            $q("#descripcion").value = ''
+            $q("#emision").disabled = false
+            //$q("#tasafactura").disabled = true
+            $q("#emision").value = ""
+
+            return
+        }
+
+        if ($q("#foliofactura").value != "") {
+            costofinalunit = (parseFloat($q("#costounitario").value) * 1.18).toFixed(2)
+            impuestos = parseFloat(pagoAnticipado) - (parseFloat(pagoAnticipado) / 1.18)
+            //impuestos = (parseFloat($q("#pagadoanticipo").value * 0.18)).toFixed(2)
+            $q("#costofinalunit").value = costofinalunit
+            $q("#emision").disabled = false
+            $q("#descripcion").disabled = false
+            $q("#impuestos").value = impuestos.toFixed(2)
+            return
+        }
+
+        costofinal = 0
+        $q("#costofinalunit").value = 0
+        $q("#impuestos").value = 0
+
         if (gasto != "") {
             $q("#emision").disabled = false
             //$q("#tasafactura").disabled = false
-
         }
         else {
             $q("#emision").disabled = true
             //$q("#tasafactura").disabled = true
+            $q("#emision").value = ""
+            $q("#descripcion").disabled = true
+
+            $q("#descripcion").value = ''
 
         }
+    })
+
+    $q("#btn-resetear").addEventListener("click", async () => {
+        $q("#form-registro-gasto").reset()
     })
 
     $q("#estado").addEventListener("change", async (e) => {
@@ -393,12 +649,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         switch (estado) {
             case "1":
                 $q("#fechavencimiento").disabled = false
-
                 break;
 
             case "2":
                 $q("#fechavencimiento").disabled = true
                 $q("#fechavencimiento").value = ""
+
                 break;
 
             default:

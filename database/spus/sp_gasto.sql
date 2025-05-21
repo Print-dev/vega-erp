@@ -3,22 +3,30 @@ USE vega_producciones_erp;
 
 DROP PROCEDURE IF EXISTS sp_filtrar_gastos;
 DELIMITER //
+
 CREATE PROCEDURE sp_filtrar_gastos(
-	IN _idproveedor INT,
-	IN _fgasto DATE
+    IN _idproveedor INT,
+    IN _fgasto DATE
 )
 BEGIN
-	SELECT 
-*
-    FROM gastosentradas GASTOS
-	LEFT JOIN colaboradores	COL ON COL.idcolaborador = GASTOS.idcolaborador
-	left JOIN proveedores PRO ON PRO.idproveedor = GASTOS.idproveedor
-    WHERE (PRO.idproveedor LIKE CONCAT('%', COALESCE(_idproveedor, ''), '%') OR PRO.idproveedor IS NULL) AND
-    GASTOS.fgasto = _fgasto AND (_fgasto IS NULL OR GASTOS.fgasto = _fgasto)
-    ORDER BY GASTOS.idgastoentrada DESC;
+    SELECT 
+        *
+    FROM 
+        gastosentradas GASTOS
+        LEFT JOIN colaboradores COL ON COL.idcolaborador = GASTOS.idcolaborador
+        LEFT JOIN proveedores PRO ON PRO.idproveedor = GASTOS.idproveedor
+		LEFT JOIN subtipos SUB ON SUB.idsubtipo = GASTOS.subtipo
+        LEFT JOIN conceptos CON ON CON.idconcepto = SUB.idconcepto
+    WHERE 
+        (_idproveedor IS NULL OR GASTOS.idproveedor = _idproveedor)
+        AND (_fgasto IS NULL OR GASTOS.fgasto = _fgasto)
+    ORDER BY 
+        GASTOS.idgastoentrada DESC;
 END //
+DELIMITER ;
 
-select * from gastosentradas
+call sp_filtrar_gastos (null , null);
+select * from gastosentradas;
 
 
 DROP PROCEDURE IF EXISTS `sp_registrar_gasto_entrada`;

@@ -151,7 +151,7 @@ CREATE TABLE conceptos (
     idconcepto INT AUTO_INCREMENT PRIMARY KEY,
     concepto	VARCHAR(120) NULL 
 )  ENGINE=INNODB;
-
+select * from conceptos;
 
 
 CREATE TABLE subtipos (
@@ -647,5 +647,6 @@ CREATE TABLE gastosentradas (
     montopdte DECIMAL(10,2) NULL,
     impuestos DECIMAL(10,2) NULL,
     costofinalunit DECIMAL(10,2) NULL,
-    created_at DATETIME DEFAULT NOW()
+    created_at DATETIME DEFAULT NOW(),
+    CONSTRAINT fk_subtipo_gastoentrada foreign key (subtipo) references subtipos (idsubtipo) ON DELETE CASCADE
 ) ENGINE = INNODB;

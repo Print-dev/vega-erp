@@ -49,7 +49,7 @@
                             <div class="form-floating">
                                 <select name="concepto" id="concepto" class="form-select" ">
                                     <option value="">Selecciona</option>
-                                    <option value=" 1">Oficina</option>
+                                    <option value="1">Oficina</option>
                                     <option value="2">Venta</option>
                                     <option value="3">Costos</option>
                                     <option value="4">Produccion</option>
@@ -73,8 +73,7 @@
                         <div class="col-md-2" id="div-proveedor">
                             <div class="form-floating">
                                 <select name="proveedor" id="proveedor" class="form-select" ">
-                                    <option value="">Selecciona</option>
-                                    <option value=" 1">prov 1</option>
+
                                 </select>
                                 <label for="proveedor" class="form-label">Proveedor</label>
                             </div>
@@ -82,8 +81,7 @@
                         <div class="col-md-2" id="div-colaborador">
                             <div class="form-floating">
                                 <select name="colaborador" id="colaborador" class="form-select" ">
-                                        <option value="">Selecciona</option>
-                                        <option value=" 1">Royer</option>
+
                                 </select>
                                 <label for="colaborador" class="form-label">Colaborador</label>
                             </div>
@@ -94,19 +92,19 @@
                         </div>
                         <div class="col-md-2" id="div-cunitario">
                             <div class="form-floating">
-                                <input type="number" id="costounitario" class="form-control" autocomplete="off">
+                                <input type="number" step="any" id="costounitario" class="form-control" autocomplete="off">
                                 <label for="costounitario" class="form-label">Costo Unitario</label>
                             </div>
                         </div>
                         <div class="col-md-2" id="div-gasto">
                             <div class="form-floating">
-                                <input type="number" id="gasto" class="form-control" autocomplete="off">
+                                <input type="number" step="any" id="gasto" class="form-control" autocomplete="off">
                                 <label for="gasto" class="form-label">Gasto Total</label>
                             </div>
                         </div>
                         <div class="col-md-2" id="div-pagadoanticipo">
                             <div class="form-floating">
-                                <input type="number" id="pagadoanticipo" class="form-control" autocomplete="off">
+                                <input type="number" step="any" id="pagadoanticipo" class="form-control" autocomplete="off">
                                 <label for="pagadoanticipo" class="form-label">Pago Anticipado</label>
                             </div>
                         </div>
@@ -115,31 +113,31 @@
                         </div>
                         <div class="col-md-2">
                             <div class="form-floating">
-                                <input type="number" id="costofinal" class="form-control" autocomplete="off">
+                                <input type="number" step="any" id="costofinal" class="form-control" autocomplete="off" disabled>
                                 <label for="costofinal" class="form-label">Costo Final</label>
                             </div>
                         </div>
                         <div class="col-md-2" id="div-costofinalunit">
                             <div class="form-floating">
-                                <input type="number" id="costofinalunit" class="form-control" autocomplete="off">
-                                <label for="costofinalunit" class="form-label">Costo F. Unit</label>
+                                <input type="number" step="any" id="costofinalunit" class="form-control" autocomplete="off" disabled>
+                                <label for="costofinalunit" class="form-label">Costo F. Unit (18%)</label>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-floating">
-                                <input type="number" id="egreso" class="form-control" autocomplete="off">
+                                <input type="number" step="any" id="egreso" class="form-control" autocomplete="off" disabled>
                                 <label for="egreso" class="form-label">Egreso</label>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2" id="div-pendiente">
                             <div class="form-floating">
-                                <input type="number" id="montopdte" class="form-control" autocomplete="off">
+                                <input type="number" step="any" id="montopdte" class="form-control" autocomplete="off" disabled>
                                 <label for="montopdte" class="form-label">Monto Pendiente</label>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-floating">
-                                <input type="number" id="impuestos" class="form-control" autocomplete="off">
+                                <input type="number" step="any" id="impuestos" class="form-control" autocomplete="off" disabled>
                                 <label for="impuestos" class="form-label">Impuestos</label>
                             </div>
                         </div>
@@ -159,7 +157,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-floating">
-                                <input type="number" id="cantidad" class="form-control" autocomplete="off">
+                                <input type="number" step="any" id="cantidad" class="form-control" autocomplete="off">
                                 <label for="cantidad" class="form-label">Cantidad</label>
                             </div>
                         </div>
@@ -205,7 +203,7 @@
                         </div>
                         <!-- <div class="col-md-3" id="div-tasafactura">
                             <div class="form-floating">
-                                <input type="number" id="tasafactura" class="form-control" autocomplete="off">
+                                <input type="number" step="any" id="tasafactura" class="form-control" autocomplete="off">
                                 <label for="tasafactura" class="form-label">Tasa Factura</label>
                             </div>
                         </div> -->
@@ -232,6 +230,7 @@
                     <hr>
                     <div class="row">
                         <div class="text-end">
+                            <button type="button" class="btn btn-danger" id="btn-resetear">Resetear</button>
                             <button type="submit" class="btn btn-primary" id="btn-registrar-gasto">Registrar Gasto</button>
                         </div>
                     </div>

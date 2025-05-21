@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // Inicializa DataTable si no ha sido inicializado antes
                 myTable = $("#table-gastos").DataTable({
                     paging: true,
-                    searching: false,
+                    searching: true,
                     lengthMenu: [5, 10, 15, 20],
                     pageLength: 5,
                     language: {
@@ -190,19 +190,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             $q("#table-gastos tbody").innerHTML += `
             <tr>
-                <td>${x.nombres && x.apellidos ? x.nombres + " " + x.apellidos : ''}</td>
-                <td>${x.fechaingreso ?? ''}</td>
-                <td>${x.salario ?? ''}</td>
-                <td>${x.horas ?? ''}</td>
-                <td>${x.costohora ?? ''}</td>
-                <td>${x.periodo == 1 ? "Quincenal" : x.periodo == 2 ? "Semanal" : x.periodo == 3 ? "Mensual" : ''}</td>
-                <td>${x.area ?? ""}</td>
-                <td>${x.tiempo ?? ''}</td0>
-                <td>${x.rendimiento ?? 0}</td>
-                <td>${x.proporcion ?? 0}</td>
-                <td>${x.acumulado ?? 0}</td>
+                <td>${x.estadopago == 1 ? "Pendiente" : "Pagado"}</td>
+                <td>${x.fgasto ? formatearFecha(x.fgasto) : ''}</td0>
+                <td>${x.fvencimiento ? formatearFecha(x.fvencimiento) : ""}</td>
+                <td>${x.concepto ? x.concepto + "/" + x.subtipo : ""}</td>
+                <td>${x.gasto ?? ""}</td>
+                <td>${x.costofinal ?? ""}</td>
+                <td>${x.montopdte ?? ""}</td>
                 <td>
-                    <button class="btn btn-sm btn-primary btn-borrar" data-idnomina="${x.idnomina}">Borrar</button>
+                    <button class="btn btn-sm btn-primary btn-actualizar" data-idgastoentrega="${x.idgastoentrega}">Actualizar</button>
+                    <button class="btn btn-sm btn-primary btn-borrar" data-idgastoentrega="${x.idgastoentrega}">Borrar</button>
                 </td>
             </tr>
         `;
@@ -224,7 +221,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // Inicializa DataTable si no ha sido inicializado antes
                 myTable = $("#table-gastos").DataTable({
                     paging: true,
-                    searching: false,
+                    searching: true,
                     lengthMenu: [5, 10, 15, 20],
                     pageLength: 5,
                     language: {
@@ -256,9 +253,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (e.target.classList.contains("btn-borrar")) {
                         await buttonBorrar(e);
                     }
-                    /* if (e.target.classList.contains("btn-historial")) {
-                        buttonHistorial(e);
-                    } */
+                    if (e.target.classList.contains("btn-actualizar")) {
+                        await buttonActualizar(e);
+                    }
                     /* if (e.target.classList.contains("btn-cerrar")) {
                         buttonCerrarCaja(e);
                     }
@@ -270,84 +267,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     async function buttonBorrar(e) {
-        idnomina = e.target.getAttribute("data-idnomina");
-        console.log("idnomina -> ", idnomina);
+        idgastoentrega = e.target.getAttribute("data-idgastoentrega");
+        console.log("idgastoentrega -> ", idgastoentrega);
         alert("prueba de borrando")
     }
 
-    /*     $q("#formProveedor").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            console.log("nombre de valor ", $q("#nombreempresa").value);
-            const proveedorRegistrado = await registrarProveedor();
-            console.log("proveedorRegistrado -> ", proveedorRegistrado);
-            if (proveedorRegistrado.idproveedor > 0) {
-                showToast("Proveedor registrado correctamente", "SUCCESS");
-                modalNuevoProvedor.hide();
-                $q("#formProveedor").reset();
-                await dataFilters();
-            }
-        })
-    
-        $q("#formActualizarProveedor").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const proveedorActualizado = await actualizarProveedor(idproveedor);
-            console.log("proveedorActualizado -> ", proveedorActualizado);
-            if (proveedorActualizado) {
-                showToast("Proveedor actualizado correctamente", "SUCCESS");
-                modalActualizarProveedor.hide();
-                $q("#formActualizarProveedor").reset();
-                await dataFilters();
-            }
-        })
-    
-        async function buttonBorrar(e) {
-            idproveedor = e.target.getAttribute("data-idproveedor");
-            console.log("idproveedor -> ", idproveedor);
-            const proveedorObtenido = await obtenerProveedorPorId(idproveedor)
-            console.log("proveedorObtenido -> ", proveedorObtenido);
-            await obtenerProveedorPorId(idproveedor).then((data) => {
-                console.log("data -> ", data);
-                $q("#empresaactualizar").value = data[0].empresa ?? '';
-                $q("#nombreempresaactualizar").value = data[0].nombre ?? '';
-                $q("#contactoactualizar").value = data[0].contacto ?? '';
-                $q("#correoactualizar").value = data[0].correo ?? '';
-                $q("#dniempresaactualizar").value = data[0].dni ?? '';
-                $q("#bancoactualizar").value = data[0].banco ?? '';
-                $q("#ctabancariaactualizar").value = data[0].ctabancaria ?? '';
-                $q("#servicioactualizar").value = data[0].servicio ?? '';
-                $q("#nproveedoractualizar").value = data[0].nproveedor ?? '';
-            });
-            modalActualizarProveedor.show()
-        }
-    
-        function buttonDeshabilitar(e) {
-            idproveedor = e.target.getAttribute("data-idproveedor");
-            console.log("idproveedor -> ", idproveedor);
-        } */
+    async function buttonActualizar(e) {
+        idgastoentrega = e.target.getAttribute("data-idgastoentrega");
+        console.log("idgastoentrega -> ", idgastoentrega);
+        alert("prueba de actualizadno")
+        window.localStorage.clear()
+        window.localStorage.setItem("idgastoentrega", idgastoentrega)
+        window.location.href = `${hostOnly}/views/gastos/registrar-gasto`
+    }
 
-    $q("#btnNuevoColaboradorNomina").addEventListener("click", async () => {
-        console.log("butttoooon");
-        await obtenerColaboradores();
-    })
 
-    $q("#colaborador").addEventListener("change", async (e) => {
-        idcolaborador = e.target.value;
-        const colaboradorObt = await obtenerColaboradorPorId(idcolaborador)
-        console.log("colaboradorObt -> ", colaboradorObt);
-        const tiempocalculado = calcularDiasTrabajados(colaboradorObt[0].fechaingreso)
-        console.log("tiempocalculado >", tiempocalculado);
-        $q("#tiempo").value = tiempocalculado ?? '';
-    })
 
-    $q("#formNomina").addEventListener("submit", async (e) => {
-        e.preventDefault()
-        const nominaRegistrada = await registrarNomina()
-        console.log("nominaRegistrada -> ", nominaRegistrada);
-        if (nominaRegistrada) {
-            showToast("Nomina registrada correctamente", "SUCCESS");
-            $q("#formNomina").reset();
-            await dataFilters();
-        }
 
-    })
 })
