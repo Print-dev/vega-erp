@@ -6,6 +6,90 @@
         height: auto;
         min-height: 100vh;
     }
+
+    #table-gastos {
+        font-size: 12px;
+        /* Reducir el tamaño de la fuente */
+        width: 100%;
+        border-collapse: collapse;
+        /* Unir bordes para ahorrar espacio */
+    }
+
+    /* Ajustar el padding de las celdas */
+    #table-gastos th,
+    #table-gastos td {
+        /* Reducir el espacio interno */
+        text-align: left;
+        white-space: nowrap;
+        /* Evitar saltos de línea */
+    }
+
+    /* Ajustar el ancho de columnas específicas */
+    #table-gastos th:nth-child(1),
+    #table-gastos td:nth-child(1) {
+        width: 1%;
+    }
+
+    /* # */
+    #table-gastos th:nth-child(2),
+    #table-gastos td:nth-child(2) {
+        width: 1%;
+    }
+
+    /* N° Cotización */
+    #table-gastos th:nth-child(3),
+    #table-gastos td:nth-child(3) {
+        width: 1%;
+    }
+
+    /* Artista */
+    #table-gastos th:nth-child(4),
+    #table-gastos td:nth-child(4) {
+        width: 1%;
+    }
+
+    /* Lugar */
+    #table-gastos th:nth-child(5),
+    #table-gastos td:nth-child(5) {
+        width: 1%;
+    }
+
+    /* Ubigeo */
+    #table-gastos th:nth-child(6),
+    #table-gastos td:nth-child(6) {
+        width: 1%;
+    }
+
+
+    #table-gastos tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+        /* Gris claro */
+    }
+
+    #table-gastos tbody tr:nth-child(even) {
+        background-color: #ffffff;
+        /* Blanco */
+    }
+
+    #table-gastos_length {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    #table-gastos_filter {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    tbody,
+    td,
+    tfoot,
+    th,
+    thead,
+    tr {
+        border-style: none;
+        border-bottom: none;
+    }
 </style>
 <div class="container-fluid contenedor-general">
     <div class="card" style="border-color: #f2f4f7; box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);

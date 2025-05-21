@@ -6,6 +6,85 @@
         height: auto;
         min-height: 100vh;
     }
+
+        #table-colaboradores {
+        font-size: 12px;
+        /* Reducir el tamaño de la fuente */
+        width: 100%;
+        border-collapse: collapse;
+        /* Unir bordes para ahorrar espacio */
+    }
+
+    /* Ajustar el padding de las celdas */
+    #table-colaboradores th,
+    #table-colaboradores td {
+        /* Reducir el espacio interno */
+        text-align: left;
+        white-space: nowrap;
+        /* Evitar saltos de línea */
+    }
+
+    /* Ajustar el ancho de columnas específicas */
+    #table-colaboradores th:nth-child(1),
+    #table-colaboradores td:nth-child(1) {
+        width: 1%;
+    }
+
+    /* # */
+    #table-colaboradores th:nth-child(2),
+    #table-colaboradores td:nth-child(2) {
+        width: 1%;
+    }
+
+    /* N° Cotización */
+    #table-colaboradores th:nth-child(3),
+    #table-colaboradores td:nth-child(3) {
+        width: 1%;
+    }
+
+    /* Artista */
+    #table-colaboradores th:nth-child(4),
+    #table-colaboradores td:nth-child(4) {
+        width: 1%;
+    }
+
+    /* Lugar */
+    #table-colaboradores th:nth-child(5),
+    #table-colaboradores td:nth-child(5) {
+        width: 1%;
+    }
+
+    /* Ubigeo */
+    #table-colaboradores th:nth-child(6),
+    #table-colaboradores td:nth-child(6) {
+        width: 1%;
+    }
+
+
+    #table-colaboradores tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+        /* Gris claro */
+    }
+
+    #table-colaboradores tbody tr:nth-child(even) {
+        background-color: #ffffff;
+        /* Blanco */
+    }
+
+    #table-colaboradores_length {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    #table-colaboradores_filter {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    tbody, td, tfoot, th, thead, tr{
+        border-style: none;
+        border-bottom: none;
+    }
 </style>
 <div class="container-fluid contenedor-general">
     <div class="card" style="border-color: #f2f4f7; box-shadow: 1px 1px 0px 0px rgba(0,0,0,0.11);
@@ -24,7 +103,7 @@
                 <div class="card border-0">
                     <div class="card-body">
                         <div class="row g-0 mb-3">
-                            <div class="card border-0">
+                            <div class="card border-0" hidden>
                                 <div class="card-body border-0">
                                     <div class="row">
                                         <div class="col-md-4">

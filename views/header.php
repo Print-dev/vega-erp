@@ -225,9 +225,9 @@ switch ($_SESSION['login']['nivelacceso']) {
     transition: all 0.3s ease;
   }
 </style>
-<div class="beta-banner">Vega Producciones V.1.0</div>
-
-<body style="background-color: #FFFFFA; ">
+<!-- <div class="beta-banner">Vega Producciones V.1.0</div>
+ -->
+<body style="background-color:rgb(250, 250, 251); ">
 
   <!-- BOTON HAMBURGUESA EN RESPONSIVE -->
   <nav class="navbar navbar-light bg-white px-4 col-12 d-lg-none" style="box-shadow: 0px 2px 17px -8px rgba(0,0,0,0.27);
@@ -546,11 +546,11 @@ switch ($_SESSION['login']['nivelacceso']) {
           id="navbarSupportedContent">
           <div class="d-flex align-items-center">
             <!-- Botón para colapsar sidebar en escritorio -->
-            <button id="toggleSidebar" class="btn btn-sm btn-outline-dark d-none d-lg-inline-block me-2">
+            <!-- <button id="toggleSidebar" class="btn btn-sm btn-outline-dark d-none d-lg-inline-block me-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M3 6h18M3 18h18" />
               </svg>
-            </button>
+            </button> -->
           </div>
           <!-- Navbar links (PERFIL USUARIO) -->
           <ul class="navbar-nav align-items-center">

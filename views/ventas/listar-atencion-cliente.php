@@ -24,7 +24,6 @@
     /* Ajustar el padding de las celdas */
     #table-atenciones th,
     #table-atenciones td {
-        padding: 4px 8px;
         /* Reducir el espacio interno */
         text-align: left;
         white-space: nowrap;
@@ -34,45 +33,64 @@
     /* Ajustar el ancho de columnas específicas */
     #table-atenciones th:nth-child(1),
     #table-atenciones td:nth-child(1) {
-        width: 5%;
+        width: 1%;
     }
 
     /* # */
     #table-atenciones th:nth-child(2),
     #table-atenciones td:nth-child(2) {
-        width: 10%;
+        width: 1%;
     }
 
     /* N° Cotización */
     #table-atenciones th:nth-child(3),
     #table-atenciones td:nth-child(3) {
-        width: 15%;
+        width: 1%;
     }
 
     /* Artista */
     #table-atenciones th:nth-child(4),
     #table-atenciones td:nth-child(4) {
-        width: 20%;
+        width: 1%;
     }
 
     /* Lugar */
     #table-atenciones th:nth-child(5),
     #table-atenciones td:nth-child(5) {
-        width: 15%;
+        width: 1%;
     }
 
     /* Ubigeo */
     #table-atenciones th:nth-child(6),
     #table-atenciones td:nth-child(6) {
-        width: 10%;
+        width: 1%;
     }
 
-    /* Fecha Presentación */
-    #table-atenciones th:nth-child(7),
-    #table-atenciones td:nth-child(7) {
-        width: 10%;
+
+    #table-atenciones tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+        /* Gris claro */
     }
 
+    #table-atenciones tbody tr:nth-child(even) {
+        background-color: #ffffff;
+        /* Blanco */
+    }
+
+    #table-atenciones_length {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    #table-atenciones_filter {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    tbody, td, tfoot, th, thead, tr{
+        border-style: none;
+        border-bottom: none;
+    }
     /* Opciones */
 
     /* Ajustar el contenedor de la tabla para evitar desbordamientos */
@@ -155,9 +173,8 @@
                     <div class="row g-1">
                         <div class="table-responsive">
                             <table class="table" id="table-atenciones">
-                                <thead class="text-center" style="background-color:rgb(255, 250, 230);">
+                                <thead class="text-center" style="background-color:rgb(255, 255, 255);">
                                     <tr>
-                                        <th>#</th>
                                         <th>N° Cotizacion</th>
                                         <th>Artista</th>
                                         <!-- <th>N° Documento/RUC</th>
@@ -173,7 +190,7 @@
                                         <th>Opciones</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tb-body-atencion">
+                                <tbody id="tb-body-atencion" class="border-0">
                                 </tbody>
                             </table>
 

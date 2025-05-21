@@ -899,8 +899,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     for (const x of data) {
       tbody.innerHTML += `
-            <tr>
-                <td>${x.iddetalle_presentacion}</td>
+            <tr class="border-0">
                 <td>${x.ncotizacion ? x.ncotizacion : 'no aplica'}</td>
                 <td>${x.nom_usuario ? x.nom_usuario : ''}</td>
 

@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // Inicializa DataTable si no ha sido inicializado antes
                 myTable = $("#table-colaboradores").DataTable({
                     paging: true,
-                    searching: false,
+                    searching: true,
                     lengthMenu: [5, 10, 15, 20],
                     pageLength: 5,
                     language: {
@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // Inicializa DataTable si no ha sido inicializado antes
                 myTable = $("#table-colaboradores").DataTable({
                     paging: true,
-                    searching: false,
+                    searching: true,
                     lengthMenu: [5, 10, 15, 20],
                     pageLength: 5,
                     language: {
