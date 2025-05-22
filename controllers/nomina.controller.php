@@ -21,6 +21,13 @@ if (isset($_GET['operation'])) {
             echo json_encode($nomina->obtenerPersonaNumDocColaborador($cleanData));
             break;
 
+        case 'obtenerUltimaNominaPorColaborador':
+            $cleanData = [
+                'idcolaborador'   => $nomina->limpiarCadena($_GET['idcolaborador']),
+            ];
+            echo json_encode($nomina->obtenerUltimaNominaPorColaborador($cleanData));
+            break;
+
         case 'obtenerUltimoSalarioPorColaborador':
             $cleanData = [
                 'idcolaborador'   => $nomina->limpiarCadena($_GET['idcolaborador']),
@@ -34,14 +41,14 @@ if (isset($_GET['operation'])) {
             ];
             echo json_encode($nomina->obtenerColaboradorPorId($cleanData));
             break;
-        
+
         case 'obtenerSalarioPorId':
             $cleanData = [
                 'idsalario'   => $nomina->limpiarCadena($_GET['idsalario']),
             ];
             echo json_encode($nomina->obtenerSalarioPorId($cleanData));
             break;
-        
+
 
         case 'filtrarColaboradores':
             $cleanData = [
@@ -151,11 +158,29 @@ if (isset($_POST['operation'])) {
             echo json_encode($respuesta);
             break;
 
+        case 'registrarGastoNomina':
+            $cleanData = [
+                'idnomina'   => $nomina->limpiarCadena($_POST['idnomina']),
+                'descripcion'   => $nomina->limpiarCadena($_POST['descripcion']),
+                'monto'   => $nomina->limpiarCadena($_POST['monto'])
+            ];
+
+            $respuesta = ['idgastosalario' => -1];
+
+            $idgastosalario = $nomina->registrarGastoNomina($cleanData);
+
+            if ($idgastosalario > 0) {
+                $respuesta['idgastosalario'] = $idgastosalario;
+            }
+
+            echo json_encode($respuesta);
+            break;
+
         case 'actualizarColaborador':
             $cleanData = [
                 'idcolaborador'   => $nomina->limpiarCadena($_POST['idcolaborador']) ? $nomina->limpiarCadena($_POST['idcolaborador']) : '',
                 'idsucursal'   => $nomina->limpiarCadena($_POST['idsucursal']) ? $nomina->limpiarCadena($_POST['idsucursal']) : '',
-                'fechaingreso' => $nomina->limpiarCadena($_POST['fechaingreso']) ? $nomina->limpiarCadena($_POST['fechaingreso']) :'',
+                'fechaingreso' => $nomina->limpiarCadena($_POST['fechaingreso']) ? $nomina->limpiarCadena($_POST['fechaingreso']) : '',
                 'idarea'   => $nomina->limpiarCadena($_POST['idarea']) ? $nomina->limpiarCadena($_POST['idarea']) : '',
             ];
 
@@ -170,7 +195,7 @@ if (isset($_POST['operation'])) {
                 'salario'   => $nomina->limpiarCadena($_POST['salario']) ? $nomina->limpiarCadena($_POST['salario']) : '',
                 'periodo'   => $nomina->limpiarCadena($_POST['periodo']) ? $nomina->limpiarCadena($_POST['periodo']) : '',
                 'horas'   => $nomina->limpiarCadena($_POST['horas']) ? $nomina->limpiarCadena($_POST['horas']) : '',
-                'costohora' => $nomina->limpiarCadena($_POST['costohora']) ? $nomina->limpiarCadena($_POST['costohora']) :'',
+                'costohora' => $nomina->limpiarCadena($_POST['costohora']) ? $nomina->limpiarCadena($_POST['costohora']) : '',
                 'fechainicio'   => $nomina->limpiarCadena($_POST['fechainicio']) ? $nomina->limpiarCadena($_POST['fechainicio']) : '',
             ];
 
@@ -184,6 +209,7 @@ if (isset($_POST['operation'])) {
                 'idcolaborador'   => $nomina->limpiarCadena($_POST['idcolaborador']),
                 'salariousado'   => $nomina->limpiarCadena($_POST['salariousado']),
                 'periodo'   => $nomina->limpiarCadena($_POST['periodo']),
+                'idarea'   => $nomina->limpiarCadena($_POST['idarea']),
                 'tiempo'   => $nomina->limpiarCadena($_POST['tiempo']),
                 'horas'   => $nomina->limpiarCadena($_POST['horas']),
                 'rendimiento' => $nomina->limpiarCadena($_POST['rendimiento']) ? $nomina->limpiarCadena($_POST['rendimiento']) : '',

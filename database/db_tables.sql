@@ -582,7 +582,7 @@ CREATE TABLE areas (
     idarea INT AUTO_INCREMENT PRIMARY KEY,
     area VARCHAR(100) NOT NULL
 );
-
+select * from areas;
 CREATE TABLE colaboradores (
     idcolaborador INT AUTO_INCREMENT PRIMARY KEY,
     idpersona INT NOT NULL,
@@ -606,20 +606,39 @@ CREATE TABLE salarios (
     fechafin DATE DEFAULT NULL,
     CONSTRAINT fk_idcolaborador_salario FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador) ON DELETE CASCADE
 ) ENGINE = INNODB;
-
+select * from nomina;
 create TABLE nomina (
     idnomina INT AUTO_INCREMENT PRIMARY KEY,
     idcolaborador INT NOT NULL,
     salario_usado INT NOT NULL,
     periodo INT NOT NULL,
+	idarea	INT NOT NULL,
     horas DECIMAL(10,2) NOT NULL,
 	tiempo DECIMAL(10,2) NOT NULL,
     rendimiento DECIMAL(10,2) NULL,
     proporcion DECIMAL(10,2) null,
     acumulado DECIMAL(10,2)  null,
     created_at DATETIME DEFAULT NOW(),
-    CONSTRAINT fk_idempleado_nomina FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador) ON DELETE CASCADE
+    CONSTRAINT fk_idempleado_nomina FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador) ON DELETE CASCADE,
+    CONSTRAINT fk_idarea_nomina foreign key (idarea) references areas (idarea) ON DELETE CASCADE
 )ENGINE = INNODB;
+
+create TABLE gastos_nomina (
+    idgastonomina INT AUTO_INCREMENT PRIMARY KEY,
+    idnomina INT NOT NULL,
+    descripcion TEXT,
+    monto DECIMAL(10,2) NOT NULL,
+    created_at DATETIME DEFAULT NOW(),
+    CONSTRAINT fk_gasto_nomina FOREIGN KEY (idnomina) REFERENCES nomina(idnomina) ON DELETE CASCADE
+) ENGINE=INNODB;
+
+
+CREATE TABLE acumulados_nomina (
+	idacumulado_nomina INT auto_increment primary key,
+    idnomina INT NOT NULL,
+    acumulado DECIMAL(10,2) not null,
+    CONSTRAINT fk_idnomina_acumulado foreign key (idnomina) references nominas (idnomina)
+) ENGINE = INNODB;
 
 CREATE TABLE gastosentradas (
     idgastoentrada INT AUTO_INCREMENT PRIMARY KEY,

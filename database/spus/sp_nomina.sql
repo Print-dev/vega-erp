@@ -28,7 +28,7 @@ END //
 DELIMITER ;
 
 -- CALL sp_registrar_colaborador(@idcolaborador, 1, 1, "2025-01-01", 1)
-select * from colaboradores
+select * from colaboradores;
 -- CALL sp_registrar_colaborador (@idcolaborador,15, '2025-05-10', 3)
 
 DROP PROCEDURE if exists sp_actualizar_colaborador;
@@ -75,6 +75,9 @@ BEGIN
 END //
 DELIMITER ;
 
+CALL sp_registrar_salario(@idsalario, 1,'1200',1, 200.50, 30.0);
+select * from salarios;
+
 DROP PROCEDURE if exists sp_actualizar_salario;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_salario (
@@ -105,6 +108,7 @@ CREATE PROCEDURE sp_registrar_nomina(
     IN _idcolaborador int,
     IN _salario_usado DECIMAL(10,2),
     IN _periodo INT,
+    IN _idarea INT,
     IN _horas DECIMAL(10,2),
     IN _tiempo DECIMAL(10,2),
     IN _rendimiento DECIMAL(10,2),
@@ -120,13 +124,58 @@ BEGIN
     END;
     
     -- Insertar la notificación
-    INSERT INTO nomina (idcolaborador, salario_usado, periodo, horas, tiempo, rendimiento, proporcion,acumulado)
-    VALUES (_idcolaborador , _salario_usado, _periodo, _horas,nullif(_tiempo, '') , nullif(_rendimiento, ''), nullif(_proporcion,''), nullif(_acumulado,''));
+    INSERT INTO nomina (idcolaborador, salario_usado, periodo, idarea ,horas, tiempo, rendimiento, proporcion,acumulado)
+    VALUES (_idcolaborador , _salario_usado, _periodo, _idarea,_horas,nullif(_tiempo, '') , nullif(_rendimiento, ''), nullif(_proporcion,''), nullif(_acumulado,''));
 
     IF existe_error = 1 THEN
         SET _idnomina = -1;
     ELSE
         SET _idnomina = LAST_INSERT_ID();
+    END IF;
+END //
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS sp_obtener_ultimanomina_por_colaborador;
+DELIMITER //
+CREATE PROCEDURE sp_obtener_ultimanomina_por_colaborador(
+	IN _idcolaborador INT
+)
+BEGIN
+	SELECT * 
+	FROM colaboradores COL
+	INNER JOIN nomina NOM ON NOM.idcolaborador = COL.idcolaborador
+	WHERE COL.idcolaborador = _idcolaborador
+	ORDER BY NOM.idnomina DESC
+	LIMIT 1;
+
+END //
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `sp_registrar_gasto_nomina`;
+DELIMITER //
+CREATE PROCEDURE sp_registrar_gasto_nomina(
+    OUT _idgastonomina INT,
+    IN _idnomina int,
+    IN _descripcion text,
+    IN _monto DECIMAL(10,2)
+)
+BEGIN
+    DECLARE existe_error INT DEFAULT 0;
+    
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SET existe_error = 1;
+    END;
+    
+    -- Insertar la notificación
+    INSERT INTO gastos_nomina (idnomina, descripcion, monto)
+    VALUES (_idnomina , _descripcion, _monto);
+
+
+    IF existe_error = 1 THEN
+        SET _idgastonomina = -1;
+    ELSE
+        SET _idgastonomina = LAST_INSERT_ID();
     END IF;
 END //
 DELIMITER ;
@@ -186,10 +235,8 @@ BEGIN
     FROM nomina NOM
 	LEFT JOIN colaboradores	COL ON COL.idcolaborador = NOM.idcolaborador
 	left JOIN personas PE ON PE.idpersona = COL.idpersona
-    LEFT JOIN areas AR ON AR.idarea = COL.idarea
-    -- WHERE (PE.num_doc LIKE CONCAT('%', COALESCE(_num_doc, ''), '%') OR PE.num_doc IS NULL) AND
-	-- (PE.nombres LIKE CONCAT('%', COALESCE(_nombres, ''), '%') OR PE.nombres IS NULL)
-    ORDER BY idcolaborador DESC;
+    LEFT JOIN areas AR ON AR.idarea = NOM.idarea
+    ORDER BY NOM.idcolaborador DESC;
 END //
 
 select * from colaboradores;
@@ -250,3 +297,21 @@ BEGIN
 	LIMIT 1;
 END //
 DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS sp_obtener_colaborador_por_id;
+DELIMITER //
+CREATE PROCEDURE sp_obtener_colaborador_por_id(
+	IN _idcolaborador INT
+)
+BEGIN
+	SELECT 
+		*
+	FROM colaboradores COL
+	INNER JOIN areas AR ON COL.idarea = AR.idarea
+    WHERE COL.idcolaborador = _idcolaborador
+	LIMIT 1;
+END //
+DELIMITER ;
+
+CALL sp_obtener_colaborador_por_id(1)

@@ -210,6 +210,27 @@ class Nomina extends ExecQuery
     }
   }
 
+  public function registrarGastoNomina($params = []): int
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('CALL sp_registrar_gasto_nomina(@idgastonomina,?,?,?)');
+      $cmd->execute(
+        array(
+          $params['idnomina'],
+          $params['descripcion'],
+          $params['monto']
+        )
+      );
+
+      $respuesta = $pdo->query("SELECT @idgastonomina AS idgastonomina")->fetch(PDO::FETCH_ASSOC);
+      return $respuesta['idgastonomina'];
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return -1;
+    }
+  }
+
   public function registrarSalario($params = []): int
   {
     try {
@@ -239,14 +260,15 @@ class Nomina extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_nomina(@idnomina,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_nomina(@idnomina,?,?,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idcolaborador'],
           $params['salariousado'],
           $params['periodo'],
-          $params['horas'],
+          $params['idarea'],
           $params['tiempo'],
+          $params['horas'],
           $params['rendimiento'],
           $params['proporcion'],
           $params['acumulado'],
@@ -279,6 +301,21 @@ class Nomina extends ExecQuery
       $sp->execute(
         array(
           $params["numdoc"]
+        )
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerUltimaNominaPorColaborador($params = []): array
+  {
+    try {
+      $sp = parent::execQ("CALL sp_obtener_ultimanomina_por_colaborador(?)");
+      $sp->execute(
+        array(
+          $params["idcolaborador"]
         )
       );
       return $sp->fetchAll(PDO::FETCH_ASSOC);

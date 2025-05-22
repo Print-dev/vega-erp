@@ -75,7 +75,7 @@
                                 <select name="proveedor" id="proveedor" class="form-select" ">
 
                                 </select>
-                                <label for="proveedor" class="form-label">Proveedor</label>
+                                <label for=" proveedor" class="form-label">Proveedor</label>
                             </div>
                         </div>
                         <div class="col-md-2" id="div-colaborador">
@@ -83,7 +83,13 @@
                                 <select name="colaborador" id="colaborador" class="form-select" ">
 
                                 </select>
-                                <label for="colaborador" class="form-label">Colaborador</label>
+                                <label for=" colaborador" class="form-label">Colaborador</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4" id="div-descripcion">
+                            <div class="form-floating">
+                                <input type="text" id="descripcion" class="form-control" autocomplete="off">
+                                <label for="descripcion" class="form-label">Descripción</label>
                             </div>
                         </div>
                         <div class="text-center my-4 position-relative">
@@ -109,7 +115,7 @@
                             </div>
                         </div>
                         <div class="col-md-2 d-none" id="div-estadopago">
-                            
+
                         </div>
                         <div class="col-md-2">
                             <div class="form-floating">
@@ -195,7 +201,7 @@
                             <hr>
                             <span class="position-absolute top-50 start-50 translate-middle bg-white px-3">Datos de facturación</span>
                         </div>
-                        <div class="col-md-4" id="div-foliofactura">
+                        <div class="col-md-6" id="div-foliofactura">
                             <div class="form-floating">
                                 <input type="text" id="foliofactura" class="form-control" autocomplete="off">
                                 <label for="foliofactura" class="form-label">N° Factura</label>
@@ -207,19 +213,14 @@
                                 <label for="tasafactura" class="form-label">Tasa Factura</label>
                             </div>
                         </div> -->
-                        <div class="col-md-4" id="div-emision">
+                        <div class="col-md-6" id="div-emision">
                             <div class="form-floating">
                                 <input type="date" id="emision" class="form-control" autocomplete="off">
                                 <label for="emision" class="form-label">Emisión</label>
                             </div>
                         </div>
                         <!-- DESCRIPCION INFORMATIVA DEL GASTO O ENTRADA -->
-                        <div class="col-md-4" id="div-descripcion">
-                            <div class="form-floating">
-                                <input type="text" id="descripcion" class="form-control" autocomplete="off">
-                                <label for="descripcion" class="form-label">Descripción</label>
-                            </div>
-                        </div>
+
                         <!-- <div class="col-md-1">
                             <div class="form-floating">
                                 <input type="date" id="gastoabono" class="form-control" autocomplete="off">

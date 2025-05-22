@@ -57,12 +57,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data
     }
 
-    async function registrarNomina(idcolaborador, salariousado, periodo, horas, tiempo) {
+    async function registrarNomina(idcolaborador, salariousado, periodo, idarea,horas, tiempo) {
         const colaborador = new FormData();
         colaborador.append("operation", "registrarNomina");
         colaborador.append("idcolaborador", idcolaborador);
         colaborador.append("salariousado", salariousado);
         colaborador.append("periodo", periodo);
+        colaborador.append("idarea", idarea);
         colaborador.append("horas", horas);
         colaborador.append("tiempo", tiempo);
         colaborador.append("rendimiento", $q("#rendimiento").value || '');
@@ -209,7 +210,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${x.salario_usado ?? ''}</td>
                 <td>${x.horas ?? ''}</td>
                 <td>${x.periodo == 1 ? "Quincenal" : x.periodo == 2 ? "Semanal" : x.periodo == 3 ? "Mensual" : ''}</td>
-                <td>${x.area ?? ""}</td>
+                <td>${x.area ?? ''}</td>
                 <td>${x.tiempo ?? ''}</td0>
                 <td>${x.rendimiento ?? 0}</td>
                 <td>${x.proporcion ?? 0}</td>
@@ -358,7 +359,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#formNomina").addEventListener("submit", async (e) => {
         e.preventDefault()
         console.log("formNomina"); 
-        const nominaRegistrada = await registrarNomina(idcolaborador, salarioObt[0]?.salario, salarioObt[0]?.periodo, salarioObt[0]?.horas,tiempocalculado);
+        console.log("oj de colaborador -> ", colaboradorObt[0]);
+        console.log("idarea de colaborador -> ", colaboradorObt[0]?.idarea);
+        const nominaRegistrada = await registrarNomina(idcolaborador, salarioObt[0]?.salario, salarioObt[0]?.periodo, colaboradorObt[0]?.idarea, salarioObt[0]?.horas, tiempocalculado);
         console.log("nominaRegistrada -> ", nominaRegistrada);
         if (nominaRegistrada) {
             showToast("Nomina registrada correctamente", "SUCCESS");

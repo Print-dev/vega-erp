@@ -103,6 +103,12 @@ $accesos = [
     ['modulo' => 'gastos', 'ruta' => 'listar-gastos', 'subruta' => '', 'texto' => 'Registrados', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'gastos', 'ruta' => 'registrar-gasto', 'subruta' => '', 'texto' => 'Nuevo Registro', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
 
+    // REGISTRO DE DEBER A LOS PROVEEDORES
+    ['modulo' => 'gastosporpagar', 'ruta' => '', 'texto' => 'Gastos Por Pagar', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-users'],
+
+    ['modulo' => 'gastosporpagar', 'ruta' => 'listar-gtxp', 'subruta' => '', 'texto' => 'Registrados', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'gastosporpagar', 'ruta' => 'registrar-gtxp', 'subruta' => '', 'texto' => 'Nuevo Registro', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+
   ],
   "Artista" => [
     ['modulo' => 'agenda', 'ruta' => '', 'texto' => 'Agenda', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],
