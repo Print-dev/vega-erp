@@ -1,5 +1,33 @@
 USE vega_producciones_erp;
 
+DROP PROCEDURE IF EXISTS `sp_registrar_gasto_nomina`;
+DELIMITER //
+CREATE PROCEDURE sp_registrar_gasto_nomina(
+    OUT _idgastonomina INT,
+    IN _idnomina int,
+    IN _descripcion text,
+    IN _monto DECIMAL(10,2)
+)
+BEGIN
+    DECLARE existe_error INT DEFAULT 0;
+    
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SET existe_error = 1;
+    END;
+    
+    -- Insertar la notificación
+    INSERT INTO gastos_nomina (idnomina, descripcion, monto)
+    VALUES (_idnomina , _descripcion, _monto);
+
+
+    IF existe_error = 1 THEN
+        SET _idgastonomina = -1;
+    ELSE
+        SET _idgastonomina = LAST_INSERT_ID();
+    END IF;
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS sp_filtrar_gastos;
 DELIMITER //

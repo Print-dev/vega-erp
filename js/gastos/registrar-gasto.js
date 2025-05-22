@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         `;
         });
     }
-    
+
     async function obtenerUltimaNominaPorColaborador(idcolaborador) {
         const params = new URLSearchParams();
         params.append("operation", "obtenerUltimaNominaPorColaborador");
@@ -191,11 +191,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         gasto.append("operation", "registrarGastoNomina");
 
         gasto.append("idnomina", idnomina);
-        gasto.append("fgasto", $q("#fechagasto").value || "");
+        gasto.append("descripcion", $q("#descripcion").value || "");
+        gasto.append("monto", $q("#monto").value || "");
 
 
 
-        const response = await fetch(`${host}gastoentrada.controller.php`, {
+        const response = await fetch(`${host}nomina.controller.php`, {
             method: "POST",
             body: gasto,
         });
@@ -205,7 +206,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
-ME QUEDE EN REGSITRAR GASTO NOMINA
+    //ME QUEDE EN REGSITRAR GASTO NOMINA
     $q("#form-registro-gasto").addEventListener("submit", async (e) => {
         e.preventDefault()
 
@@ -219,7 +220,8 @@ ME QUEDE EN REGSITRAR GASTO NOMINA
             }
         } else {
             const gastoentradaRegis = await registrarGastoEntrada()
-            await registrarGastoNomina()
+            const gastonomina = await registrarGastoNomina(idnomina)
+            console.log("gastonomina -> ", gastonomina);
             console.log("gastoentradaRegis", gastoentradaRegis);
             if (gastoentradaRegis.idgastoentrada) {
                 showToast("Gasto registrado correctamente", "SUCCESS")
@@ -253,6 +255,7 @@ ME QUEDE EN REGSITRAR GASTO NOMINA
         const ultimaNomina = await obtenerUltimaNominaPorColaborador($q("#colaborador").value)
         console.log("ultima nomina -> ", ultimaNomina);
         acumuladoUltimo = ultimaNomina[0]?.acumulado
+        idnomina = ultimaNomina[0]?.idnomina
     })
 
     $q("#concepto").addEventListener("change", async (e) => {
@@ -480,7 +483,10 @@ ME QUEDE EN REGSITRAR GASTO NOMINA
 
         /* const impuesto = parseFloat(ngasto) * 0.18
         const costofinal = parseFloat(ngasto) + parseFloat(impuesto) */
-        if ($q("#concepto").value == "1" && $q("#subtipo").value == "1" && $q("#estado").value == "1") {
+        if ($q("#concepto").value == "1" && $q("#subtipo").value == "2" && $q("#estado").value == "2") {
+            console.log("entrando");
+            calcularImpuestosOficinaPagado()
+            return
 
         }
         if ($q("#concepto").value == "1" && $q("#subtipo").value == "1") {
@@ -501,6 +507,27 @@ ME QUEDE EN REGSITRAR GASTO NOMINA
 
 
     })
+
+    function calcularImpuestosOficinaPagado() {
+        $q("#egreso").value = parseFloat(ngasto).toFixed(2)
+        $q("#costofinal").value = parseFloat(ngasto).toFixed(2)
+        if ($q("#foliofactura").value != "") {
+            console.log("adentro...");
+            impuestos = parseFloat(ngasto) * 0.18
+            costofinal = (parseFloat($q("#costofinal").value) * 1.18).toFixed(2)
+            console.log("costo final -> ", calcularImpuestosOficinaPagado);
+            egreso = costofinal
+            $q("#egreso").value = egreso
+            $q("#costofinal").value = costofinal me quede aca gaaaaaaaaaaaaaaaaaaaaa
+            $q("#impuestos").value = impuestos.toFixed(2) // ME QUEDE ACA
+        } else {
+            costofinal = parseFloat($q("#costofinal").value).toFixed(2)
+            egreso = parseFloat($q("#costofinal").value).toFixed(2)
+            $q("#egreso").value = egreso
+            $q("#costofinal").value = costofinal
+        }
+
+    }
 
     function calcularImpuestos() {
         if ($q("#foliofactura").value != "") {
