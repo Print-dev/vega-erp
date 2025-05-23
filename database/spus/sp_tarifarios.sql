@@ -39,7 +39,10 @@ BEGIN
     WHERE PR.idprovincia = _idprovincia AND USU.idusuario = _idusuario AND T.tipo_evento = _tipo_evento;
 END //
 DELIMITER ;
-
+select * from tarifario
+select*from usuarios
+call sp_search_tarifa_artista_por_provincia(161, 8, 2)
+select * from provincias;
 DROP PROCEDURE IF EXISTS sp_obtener_tarifario_artista_pais;
 DELIMITER //
 CREATE PROCEDURE sp_obtener_tarifario_artista_pais

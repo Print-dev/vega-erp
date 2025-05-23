@@ -28,6 +28,13 @@ if (isset($_GET['operation'])) {
             echo json_encode($nomina->obtenerUltimaNominaPorColaborador($cleanData));
             break;
 
+        case 'obtenerAcumuladosNomina':
+            $cleanData = [
+                'idnomina'   => $nomina->limpiarCadena($_GET['idnomina']),
+            ];
+            echo json_encode($nomina->obtenerAcumuladosNomina($cleanData));
+            break;
+
         case 'obtenerUltimoSalarioPorColaborador':
             $cleanData = [
                 'idcolaborador'   => $nomina->limpiarCadena($_GET['idcolaborador']),

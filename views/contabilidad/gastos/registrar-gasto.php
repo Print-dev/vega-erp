@@ -1,4 +1,4 @@
-<?php require_once '../header.php' ?>
+<?php require_once '../../header.php' ?>
 
 <div class="container-fluid py-4 px-0">
     <div class="row d-flex flex-nowrap">
@@ -241,7 +241,7 @@
     </div>
 </div>
 
-<?php require_once '../footer.php' ?>
+<?php require_once '../../footer.php' ?>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script src="<?= $hostOnlyHeader ?>/js/gastos/registrar-gasto.js"></script>

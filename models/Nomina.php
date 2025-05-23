@@ -323,6 +323,21 @@ class Nomina extends ExecQuery
       die($e->getMessage());
     }
   }
+  
+  public function obtenerAcumuladosNomina($params = []): array
+  {
+    try {
+      $sp = parent::execQ("CALL sp_obtener_acumulados_nomina(?)");
+      $sp->execute(
+        array(
+          $params["idnomina"]
+        )
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
 
   public function obtenerUltimoSalarioPorColaborador($params = []): array
   {

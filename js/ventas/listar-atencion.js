@@ -761,6 +761,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         myTable = $("#table-atenciones").DataTable({
           pageLength: 10,
           responsive: true,
+          ordering: false, // 👈 Esto desactiva el ordenamiento en el frontend
           dom: '<"top"f>rt<"bottom"lip><"clear">',
           initComplete: function () {
             $(".dataTables_filter input").addClass('form-control form-control-sm');
@@ -1035,6 +1036,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         myTable = $("#table-atenciones").DataTable({
           paging: true,
           searching: true,
+          ordering: false, // 👈 Esto desactiva el ordenamiento en el frontend
+
           lengthMenu: [20, 10, 15, 20],
           pageLength: 10,
           language: {
@@ -1139,6 +1142,22 @@ document.addEventListener("DOMContentLoaded", async () => {
              <label class="fw-bold">Desde - hasta:</label> <span id="noti-viaje">${formatHour(dpInfo[0]?.horainicio) ?? "0:00"} - ${formatHour(dpInfo[0]?.horafinal) ?? "0:00"}</span> <br>
              <label class="fw-bold">Tiempo:</label> <span id="noti-viaje">${calculateDuration(dpInfo[0]?.horainicio ?? "0:00", dpInfo[0]?.horafinal ?? "0:00")}</span> <br>
              <label class="fw-bold">Ubicacion:</label> <span id="noti-viaje">${ubicacion}</span>
+             <hr>
+             <div class="mt-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="check1">
+                <label class="form-check-label fw-normal" for="check1">
+                  coordinación técnica (pantalla, luces y sonido)
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="check2">
+                <label class="form-check-label fw-normal" for="check2">
+                  coordinación publicidad
+                </label>
+              </div>
+            </div>
+
            </div>    
      `;
   }

@@ -67,6 +67,11 @@ $accesos = [
     //['modulo' => 'contabilidad', 'ruta' => 'listar-cuotas', 'subruta' => 'cuotas', 'texto' => 'Cuotas', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'contabilidad', 'ruta' => 'listar-pagos', 'subruta' => 'pagos', 'texto' => 'Pagos', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
 
+    ['modulo' => 'contabilidad', 'ruta' => 'listar-gastos', 'subruta' => 'gastos', 'texto' => 'Gastos', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'contabilidad', 'ruta' => 'registrar-gasto', 'subruta' => 'gastos', 'texto' => '', 'visible' => false, 'icono' => ''],
+
+    ['modulo' => 'contabilidad', 'ruta' => 'listar-gtxp', 'subruta' => 'gtxp', 'texto' => 'Gastos Por Pagar', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'contabilidad', 'ruta' => 'registrar-gtxp', 'subruta' => 'gtxp', 'texto' => '', 'visible' => false, 'icono' => ''],
     /* ['modulo' => 'contabilidad', 'ruta' => 'listar-ingresos', 'subruta' => 'ingresos', 'texto' => 'Ingresos', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-ingreso', 'subruta' => 'ingresos', 'visible' => false], */
 
@@ -98,17 +103,19 @@ $accesos = [
     ['modulo' => 'colaboradores', 'ruta' => 'salarios-colaborador', 'subruta' => '', 'texto' => '', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
 
     // REGISTRO DE GASTOS
-    ['modulo' => 'gastos', 'ruta' => '', 'texto' => 'Gastos', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-users'],
+    /*     ['modulo' => 'gastos', 'ruta' => '', 'texto' => 'Gastos', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-users'],
 
     ['modulo' => 'gastos', 'ruta' => 'listar-gastos', 'subruta' => '', 'texto' => 'Registrados', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
-    ['modulo' => 'gastos', 'ruta' => 'registrar-gasto', 'subruta' => '', 'texto' => 'Nuevo Registro', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'gastos', 'ruta' => 'registrar-gasto', 'subruta' => '', 'texto' => 'Nuevo Registro', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true], */
 
-    // REGISTRO DE DEBER A LOS PROVEEDORES
-    ['modulo' => 'gastosporpagar', 'ruta' => '', 'texto' => 'Gastos Por Pagar', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-users'],
+    // REGISTRO DE GASTOS POR PAGAR
+    /*     ['modulo' => 'gastosporpagar', 'ruta' => '', 'texto' => 'Gastos Por Pagar', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-users'],
 
     ['modulo' => 'gastosporpagar', 'ruta' => 'listar-gtxp', 'subruta' => '', 'texto' => 'Registrados', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
-    ['modulo' => 'gastosporpagar', 'ruta' => 'registrar-gtxp', 'subruta' => '', 'texto' => 'Nuevo Registro', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'gastosporpagar', 'ruta' => 'registrar-gtxp', 'subruta' => '', 'texto' => 'Nuevo Registro', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true], */
 
+    // REGISTRO DE PRODUCTOS/SERVICIOS
+    ['modulo' => 'prodserv', 'ruta' => 'prodserv', 'subruta' => '', 'texto' => 'Prod. Serv', 'visible' => true, 'icono' => 'fa-solid fa-building'],
   ],
   "Artista" => [
     ['modulo' => 'agenda', 'ruta' => '', 'texto' => 'Agenda', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-clipboard'],

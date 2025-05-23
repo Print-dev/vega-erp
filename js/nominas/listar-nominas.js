@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     let colaboradorObt = []
     let salarioObt = []
     let tiempocalculado
+    let modalAcumulados = new bootstrap.Modal($q("#modal-acumulados"))
+    let totalAcumulado = 0
     /*     let modalNuevoProvedor = new bootstrap.Modal($q("#modal-nuevo-proveedor"))
         let modalActualizarProveedor = new bootstrap.Modal($q("#modal-actualizar-proveedor"))
      */
@@ -49,6 +51,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data
     }
 
+    async function obtenerAcumuladosNomina(idnomina) {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerAcumuladosNomina");
+        params.append("idnomina", idnomina);
+        const data = await getDatos(`${host}nomina.controller.php`, params);
+        return data
+    }
+
     async function obtenerUltimoSalarioColaborador(idcolaborador) {
         const params = new URLSearchParams();
         params.append("operation", "obtenerUltimoSalarioPorColaborador");
@@ -57,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data
     }
 
-    async function registrarNomina(idcolaborador, salariousado, periodo, idarea,horas, tiempo) {
+    async function registrarNomina(idcolaborador, salariousado, periodo, idarea, horas, tiempo) {
         const colaborador = new FormData();
         colaborador.append("operation", "registrarNomina");
         colaborador.append("idcolaborador", idcolaborador);
@@ -201,27 +211,36 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         listCajas = []
 
-        data.forEach((x) => {
+        for (const x of data) {
+            const acumuladosNomina = await obtenerAcumuladosNomina(x.idnomina);
 
+            // Sumar todos los montos
+            const totalAcumulado = acumuladosNomina.reduce((sum, item) => {
+                return sum + parseFloat(item.monto || 0);
+            }, 0);
+
+            // Insertar fila con total acumulado calculado
             $q("#table-nominas tbody").innerHTML += `
-            <tr>
-                <td>${x.nombres && x.apellidos ? x.nombres + " " + x.apellidos : ''}</td>
-                <td>${x.fechaingreso ?? ''}</td>
-                <td>${x.salario_usado ?? ''}</td>
-                <td>${x.horas ?? ''}</td>
-                <td>${x.periodo == 1 ? "Quincenal" : x.periodo == 2 ? "Semanal" : x.periodo == 3 ? "Mensual" : ''}</td>
-                <td>${x.area ?? ''}</td>
-                <td>${x.tiempo ?? ''}</td0>
-                <td>${x.rendimiento ?? 0}</td>
-                <td>${x.proporcion ?? 0}</td>
-                <td>${x.acumulado ?? 0}</td>
-                <td>
-                    <button class="btn btn-sm btn-primary btn-historial" data-idnomina="${x.idnomina}">Historial</button>
-                    <button class="btn btn-sm btn-primary btn-borrar" data-idnomina="${x.idnomina}">Borrar</button>
-                </td>
-            </tr>
-        `;
-        });
+        <tr>
+            <td>${x.nombres && x.apellidos ? x.nombres + " " + x.apellidos : ''}</td>
+            <td>${x.fechaingreso ?? ''}</td>
+            <td>${x.salario_usado ?? ''}</td>
+            <td>${x.horas ?? ''}</td>
+            <td>${x.periodo == 1 ? "Quincenal" : x.periodo == 2 ? "Semanal" : x.periodo == 3 ? "Mensual" : ''}</td>
+            <td>${x.area ?? ''}</td>
+            <td>${x.tiempo ?? ''}</td>
+            <td>${x.rendimiento ?? 0}</td>
+            <td>${x.proporcion ?? 0}</td>
+            <td>${totalAcumulado.toFixed(2)}</td>
+            <td>
+                <button class="btn btn-sm btn-primary btn-acumulados" data-idnomina="${x.idnomina}">Ver Acumulados</button>
+                <button class="btn btn-sm btn-danger btn-borrar" data-idnomina="${x.idnomina}">Borrar</button>
+            </td>
+        </tr>
+    `;
+        }
+
+
         createTable(data);
     }
 
@@ -271,9 +290,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (e.target.classList.contains("btn-borrar")) {
                         await buttonBorrar(e);
                     }
-                    /* if (e.target.classList.contains("btn-historial")) {
-                        buttonHistorial(e);
-                    } */
+                    if (e.target.classList.contains("btn-acumulados")) {
+                        await buttonAcumulados(e);
+                    }
                     /* if (e.target.classList.contains("btn-cerrar")) {
                         buttonCerrarCaja(e);
                     }
@@ -286,10 +305,54 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function buttonBorrar(e) {
         idnomina = e.target.getAttribute("data-idnomina");
+
         console.log("idnomina -> ", idnomina);
         alert("prueba de borrando")
     }
 
+    async function buttonAcumulados(e) {
+        idnomina = e.target.getAttribute("data-idnomina");
+        console.log("idnomina -> ", idnomina);
+
+        modalAcumulados.show()
+        const acumuladosNomina = await obtenerAcumuladosNomina(idnomina)
+        console.log("acumuladosNomina -> ", acumuladosNomina);
+        totalAcumulado = 0
+        $q("#div-acumulado").innerHTML = ``
+        acumuladosNomina.forEach(acumulado => {
+            const monto = parseFloat(acumulado.monto) || 0;
+            totalAcumulado += monto;
+
+            const [fecha, hora] = acumulado.created_at.split(" ");
+            $q("#div-acumulado").innerHTML += `
+            <tr>
+                <td>${formatearFecha(fecha) + " " + formatHour(hora)} </td>
+                <td>${acumulado.descripcion ?? "Sin descripción"}</td>
+                <td class="text-end">${acumulado.monto}</td>
+                <td class="text-end">
+                <button type="button" id="btn-borraracumulado" data-idgastonomina="${acumulado.idgastonomina}">
+                    <i class="bi bi-trash"></i>                
+                </button>
+                </td>
+            </tr>
+            `
+        });
+        console.log("totalAcumulado -> ", totalAcumulado);
+        $q("#div-totalacumulado").innerHTML = `
+        <tr class="fw-bold">
+            <td colspan="2" class="text-end">Total Acumulado</td>
+            <td class="text-end">${totalAcumulado.toFixed(2)}</td>
+        </tr>
+        `
+
+        $all("#btn-borraracumulado").forEach(btn => {
+            btn.addEventListener("click", e => {
+                const button = e.target.closest("button");
+                const idgastonomina = button.getAttribute("data-idgastonomina");
+                console.log("idgastonomina ->", idgastonomina);
+            });
+        });
+    }
     /*     $q("#formProveedor").addEventListener("submit", async (e) => {
             e.preventDefault();
             console.log("nombre de valor ", $q("#nombreempresa").value);
@@ -358,7 +421,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     $q("#formNomina").addEventListener("submit", async (e) => {
         e.preventDefault()
-        console.log("formNomina"); 
+        console.log("formNomina");
         console.log("oj de colaborador -> ", colaboradorObt[0]);
         console.log("idarea de colaborador -> ", colaboradorObt[0]?.idarea);
         const nominaRegistrada = await registrarNomina(idcolaborador, salarioObt[0]?.salario, salarioObt[0]?.periodo, colaboradorObt[0]?.idarea, salarioObt[0]?.horas, tiempocalculado);

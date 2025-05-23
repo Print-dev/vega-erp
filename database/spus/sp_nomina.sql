@@ -9,15 +9,18 @@ CREATE PROCEDURE sp_registrar_colaborador(
     IN _idpersona INT,
     IN _idsucursal INT,
     IN _fechaingreso DATE,
-    IN _idarea int
+    IN _idarea int,
+	IN _idresponsable INT,
+    IN _banco INT,
+    IN _ncuenta CHAR(20)    
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
 
     
     -- Insertar la notificación
-    INSERT INTO colaboradores (idpersona, idsucursal, fechaingreso, idarea)
-    VALUES (_idpersona, _idsucursal, _fechaingreso , _idarea);
+    INSERT INTO colaboradores (idpersona, idsucursal, fechaingreso, idarea, idresponsable, banco, ncuenta)
+    VALUES (_idpersona, _idsucursal, _fechaingreso , _idarea, _idresponsable, _banco, _ncuenta);
 
     IF existe_error = 1 THEN
         SET _idcolaborador = -1;
@@ -37,14 +40,20 @@ CREATE PROCEDURE sp_actualizar_colaborador (
 	IN _idcolaborador int,
 	IN _idsucursal INT,
     IN _fechaingreso DATE,
-    IN _idarea INT
+    IN _idarea INT,
+    IN _idresponsable INT,
+    IN _banco INT,
+    IN _ncuenta CHAR(20)
 )
 BEGIN
 		UPDATE colaboradores 
     SET 
 		idsucursal = NULLIF(_idsucursal, ''),
         fechaingreso = NULLIF(_fechaingreso, ''),
-        idarea = NULLIF(_idarea, '')
+        idarea = NULLIF(_idarea, ''),
+        idresponsable = NULLIF(_idresponsable, ''),
+        banco = NULLIF(_banco, ''),
+        ncuenta = nullif(_ncuenta ,'')
     WHERE idcolaborador = _idcolaborador;
 
 END //
@@ -151,7 +160,20 @@ BEGIN
 END //
 DELIMITER ;
 
-
+DROP PROCEDURE IF EXISTS sp_obtener_acumulados_nomina;
+DELIMITER //
+CREATE PROCEDURE sp_obtener_acumulados_nomina(
+	IN _idnomina INT
+)
+BEGIN
+	SELECT * 
+	FROM gastos_nomina GAS
+	INNER JOIN nomina NOM ON NOM.idnomina = GAS.idnomina
+	WHERE NOM.idnomina = _idnomina
+	ORDER BY NOM.idnomina DESC;
+    
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `sp_registrar_gasto`; -- old
 DELIMITER //
@@ -282,6 +304,7 @@ BEGIN
 		*
 	FROM colaboradores COL
 	INNER JOIN areas AR ON COL.idarea = AR.idarea
+    
     WHERE COL.idcolaborador = _idcolaborador
 	LIMIT 1;
 END //

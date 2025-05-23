@@ -84,6 +84,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   /* ************************************* OBTENER RECURSOS ******************************************************* */
 
   await obtenerSucursales()
+  await obtenerArtistas()
+  await obtenerOrganizadores()
 
   async function obtenerSucursales() {
     const params = new URLSearchParams();
@@ -105,6 +107,30 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     return data
   }
+
+  async function obtenerArtistas() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerUsuarioPorNivel");
+    params.append("idnivelacceso", 6);
+    const data = await getDatos(`${host}usuario.controller.php`, params)
+    console.log(data);
+    $q("#responsable").innerHTML = "<option value='-1'>Selecciona</option>";
+    data.forEach(artista => {
+      $q("#responsable").innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
+    });
+  }
+
+  async function obtenerOrganizadores() {
+    const params = new URLSearchParams();
+    params.append("operation", "obtenerUsuarioPorNivel");
+    params.append("idnivelacceso", 12);
+    const data = await getDatos(`${host}usuario.controller.php`, params)
+    console.log(data);
+    data.forEach(artista => {
+      $q("#responsable").innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
+    });
+  }
+
 
   async function obtenerDepartamentos() {
     const params = new URLSearchParams();

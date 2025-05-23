@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         gasto.append("idnomina", idnomina);
         gasto.append("descripcion", $q("#descripcion").value || "");
-        gasto.append("monto", $q("#monto").value || "");
+        gasto.append("monto", costofinal || "");
 
 
 
@@ -515,10 +515,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log("adentro...");
             impuestos = parseFloat(ngasto) * 0.18
             costofinal = (parseFloat($q("#costofinal").value) * 1.18).toFixed(2)
-            console.log("costo final -> ", calcularImpuestosOficinaPagado);
+            console.log("costo final -> ", costofinal);
             egreso = costofinal
+            console.log("egreso -> ", egreso);
+            console.log("impuestos -> ", impuestos);
             $q("#egreso").value = egreso
-            $q("#costofinal").value = costofinal me quede aca gaaaaaaaaaaaaaaaaaaaaa
+            $q("#costofinal").value = costofinal
             $q("#impuestos").value = impuestos.toFixed(2) // ME QUEDE ACA
         } else {
             costofinal = parseFloat($q("#costofinal").value).toFixed(2)
@@ -823,6 +825,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if ($q("#concepto").value == "8" && $q("#estado").value == "2") {
             calcularImpuestosInventarioPagado()
+            return
+        }
+
+        if ($q("#concepto").value == "1" && $q("#subtipo").value == "2" && $q("#estado").value == "2") {
+            calcularImpuestosOficinaPagado()
             return
         }
 

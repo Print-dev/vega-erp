@@ -1,4 +1,4 @@
-<?php require_once '../header.php' ?>
+<?php require_once '../../header.php' ?>
 <style>
     .contenedor-general {
         display: flex;
@@ -101,7 +101,7 @@
                     <h1>Gastos e Ingresos</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a class="btn btn-info" id="btnNuevoColaboradorNomina" href="<?= $hostOnlyHeader ?>/views/gastos/registrar-gasto">Nuevo Gasto</a>
+                    <a class="btn btn-info" id="btnNuevoColaboradorNomina" href="<?= $hostOnlyHeader ?>/views/contabilidad/gastos/registrar-gasto">Nuevo Gasto</a>
                 </div>
             </div>
             <div class="row">
@@ -354,7 +354,7 @@
 </div>
 
  -->
-<?php require_once '../footer.php' ?>
+<?php require_once '../../footer.php' ?>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script src="<?= $hostOnlyHeader ?>/js/gastos/listar-gastos.js"></script>

@@ -227,6 +227,7 @@ switch ($_SESSION['login']['nivelacceso']) {
 </style>
 <!-- <div class="beta-banner">Vega Producciones V.1.0</div>
  -->
+
 <body style="background-color:rgb(250, 250, 251); ">
 
   <!-- BOTON HAMBURGUESA EN RESPONSIVE -->
@@ -292,7 +293,7 @@ switch ($_SESSION['login']['nivelacceso']) {
         </li>
         <?php
         foreach ($listaAcceso as $access) {
-          if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario" && $access['modulo'] !== "pyp" && $access['modulo'] !== "contabilidad" && $access['modulo'] !== "agenda" && $access['modulo'] !== "comprobantes" && $access['modulo'] !== "colaboradores" && $access['modulo'] !== "gastos") {
+          if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario" && $access['modulo'] !== "pyp" && $access['modulo'] !== "contabilidad" && $access['modulo'] !== "agenda" && $access['modulo'] !== "comprobantes" && $access['modulo'] !== "colaboradores" && $access['modulo'] !== "gtxp") {
 
             echo "
               <li class='nav-item' >
@@ -501,22 +502,22 @@ switch ($_SESSION['login']['nivelacceso']) {
               }
             }
             echo "</ul>";
-          } else if ($access['modulo'] === "gastos" && $access['visible']) {
+          } else if ($access['modulo'] === "gtxp" && $access['visible']) {
             echo "
               <li class='sidebar-item nav-item'>
-                <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#gastos'
-                  aria-expanded='false' aria-controls='gastos'>
+                <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#gtxp'
+                  aria-expanded='false' aria-controls='gtxp'>
                   <i class='{$access['icono']}'></i>
                   <span class='sidebar-text mx-2'>{$access['texto']}</span>
                   <i class='fa-solid fa-angle-down ms-auto mt-2 toggle-icon'></i>
                 </a>              
               </li> 
-              <ul id='gastos' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#gastos'>";
+              <ul id='gtxp' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#gtxp'>";
 
             foreach ($listaAcceso as $subAccess) {
-              if (!$subAccess['visible'] && $subAccess['modulo'] === "gastos" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
+              if (!$subAccess['visible'] && $subAccess['modulo'] === "gtxp" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
                 echo "
-                <li class='sidebar-item nav-item list-gastos'>
+                <li class='sidebar-item nav-item list-gtxp'>
                   <a href='{$hostOnlyHeader}/views/{$subAccess['modulo']}/{$subAccess['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
                     <i class='{$subAccess['icono']}'></i>
                     <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>

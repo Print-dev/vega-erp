@@ -139,7 +139,7 @@
             </div>
           </div>
           <div class="row align-items-center g-2 mt-3">
-            <label for="area" class="col-sm-1 col-form-label">Área:</label>
+            <label for="area" class="col-sm-1 col-form-label">Cargo:</label>
 
             <div class="col-sm-5 d-flex align-items-center">
               <select name="area" id="area" class="form-select me-2 filters" required>
@@ -149,11 +149,35 @@
             </div>
           </div>
           <div class="row g-2 mt-3">
+            <label for="responsable" class="col-sm-1 form-label size-label mt-3">Responsable</label>
+            <div class="col-sm-5">
+              <select name="responsable" id="responsable" class="form-select" required>
+              </select>
+            </div>
+          </div>
+          <div class="row g-2 mt-3">
             <label for="sucursal" class="col-sm-1 form-label size-label mt-3">Sucursal</label>
             <div class="col-sm-5">
               <select name="sucursal" id="sucursal" class="form-select" required>
                 <option value="">Selecciona</option>
               </select>
+            </div>
+          </div>
+          <div class="row g-2 mt-3">
+            <label for="banco" class="col-sm-1 form-label size-label mt-3">Banco</label>
+            <div class="col-sm-5">
+              <select name="banco" id="banco" class="form-select" required>
+                <option value="">Selecciona</option>
+                <option value="1">BBVA</option>
+                <option value="2">BCP</option>
+
+              </select>
+            </div>
+          </div>
+          <div class="row g-2 mt-3">
+            <label for="ncuenta" class="col-sm-1 form-label size-label mt-3">N° Cuenta:</label>
+            <div class="col-sm-5">
+              <input type="text" id="ncuenta" class="form-control" autocomplete="off" required>
             </div>
           </div>
       </div>
@@ -176,7 +200,7 @@
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-header border-0">
-        <h1 class="modal-title fs-5" id="modalnuevaarea">Nueva Area</h1>
+        <h1 class="modal-title fs-5" id="modalnuevaarea">Nueva Cargo</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -185,8 +209,8 @@
             <div class="row justify-content-center">
               <div class="col-md-12">
                 <div class=" mb-3">
-                  <label for="areanueva">Área</label>
-                  <input type="text" class="form-control" id="areanueva" placeholder="Área">
+                  <label for="areanueva">Cargo</label>
+                  <input type="text" class="form-control" id="areanueva" placeholder="Cargo">
                 </div>
                 <button type="button" class="btn btn-primary w-100" id="btnGuardarNuevaArea">Guardar</button>
               </div>

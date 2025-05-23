@@ -15,6 +15,9 @@ INSERT INTO nivelaccesos (nivelacceso) values
     ('Edicion y Produccion'),
     ('Filmmaker');
     
+select * from nivelaccesos;
+INSERT INTO nivelaccesos (nivelacceso) values ('Organizador');
+    
     INSERT INTO permisos (idnivelacceso, modulo, ruta, texto, visibilidad, icono) 
 VALUES 
 (3, 'ventas', '', 'Ventas', true, 'fa-solid fa-arrow-trend-up'),

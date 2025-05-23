@@ -272,3 +272,5 @@ FOREIGN KEY (iddetalle_presentacion)
 REFERENCES detalles_presentacion(iddetalle_presentacion)
 ON DELETE CASCADE;
 
+ALTER TABLE detalles_presentacion ADD COLUMN estadoCordinacionTecnica tinyint null default 0;
+ALTER TABLE detalles_presentacion ADD COLUMN estadoCordinacionPublicidad tinyint null default 0;

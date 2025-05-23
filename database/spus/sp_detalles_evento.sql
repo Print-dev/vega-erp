@@ -782,6 +782,21 @@ BEGIN
 END //
 DELIMITER ;
 
+DROP PROCEDURE if exists sp_actualizar_checks_info_evento;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_checks_info_evento (
+	IN _iddetalle_presentacion INT,
+    IN _estadoCordinacionTecnica INT,
+    IN _estadoCordinacionPublicidad INT
+)
+BEGIN
+		UPDATE responsables_boleteria_contratoreservasreservas SET
+    estadoCordinacionTecnica = nullif(_estadoCordinacionTecnica, ''),
+    estadoCordinacionPublicidadv = nullif(estadoCordinacionPublicidad, '')
+    WHERE iddetalle_presentacion = _idresponsablecontrato; 
+END //
+DELIMITER ;
+
 DROP PROCEDURE if exists sp_actualizar_precios_entrada_evento;
 DELIMITER //
 CREATE PROCEDURE sp_actualizar_precios_entrada_evento (
