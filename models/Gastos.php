@@ -73,11 +73,13 @@ class Gastos extends ExecQuery
     public function filtrarGastos($params = []): array
     {
         try {
-            $sp = parent::execQ("CALL sp_filtrar_gastos(?,?)");
+            $sp = parent::execQ("CALL sp_filtrar_gastosyentradas(?,?,?,?)");
             $sp->execute(
                 array(
-                    $params["idproveedor"],
-                    $params["fgasto"]
+                    $params["idusuario"],
+                    $params["iddetallepresentacion"],
+                    $params["fechagasto"],
+                    $params["estado"],
                 )
             );
             return $sp->fetchAll(PDO::FETCH_ASSOC);
@@ -249,9 +251,10 @@ class Gastos extends ExecQuery
     {
         try {
             $pdo = parent::getConexion();
-            $cmd = $pdo->prepare('CALL sp_registrar_gasto_entrada(@idgastoentrada,?,?,?,?,?,?,?,?,?,?)');
+            $cmd = $pdo->prepare('CALL sp_registrar_gasto_entrada(@idgastoentrada,?,?,?,?,?,?,?,?,?,?,?)');
             $cmd->execute(
                 array(
+                    $params['estado'],
                     $params['concepto'],
                     $params['fechagasto'],
                     $params['monto'],

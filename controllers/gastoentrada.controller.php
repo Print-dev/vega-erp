@@ -30,8 +30,10 @@ if (isset($_GET['operation'])) {
 
         case 'filtrarGastos':
             $cleanData = [
-                'idproveedor' => empty($_GET['idproveedor']) ? null : $gastos->limpiarCadena($_GET['idproveedor']),
-                'fgasto' => empty($_GET['fgasto']) ? null : $gastos->limpiarCadena($_GET['fgasto']),
+                'idusuario' => empty($_GET['idusuario']) ? null : $gastos->limpiarCadena($_GET['idusuario']),
+                'iddetallepresentacion' => empty($_GET['iddetallepresentacion']) ? null : $gastos->limpiarCadena($_GET['iddetallepresentacion']),
+                'fechagasto' => empty($_GET['fechagasto']) ? null : $gastos->limpiarCadena($_GET['fechagasto']),
+                'estado' => empty($_GET['estado']) ? null : $gastos->limpiarCadena($_GET['estado']),
             ];
             echo json_encode($gastos->filtrarGastos($cleanData));
             break;
@@ -116,6 +118,7 @@ if (isset($_POST['operation'])) {
             }
 
             $cleanData = [
+                'estado'      => $gastos->limpiarCadena($_POST['estado']) ? $gastos->limpiarCadena($_POST['estado']) : null,
                 'concepto'      => $gastos->limpiarCadena($_POST['concepto']) ? $gastos->limpiarCadena($_POST['concepto']) : null,
                 'fechagasto'          => $gastos->limpiarCadena($_POST['fechagasto']) ? $gastos->limpiarCadena($_POST['fechagasto']) : null,
                 'monto'    => $gastos->limpiarCadena($_POST['monto']) ? $gastos->limpiarCadena($_POST['monto']) : null,

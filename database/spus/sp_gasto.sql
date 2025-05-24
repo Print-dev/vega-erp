@@ -56,6 +56,31 @@ DELIMITER ;
 call sp_filtrar_gastos (null , null);
 select * from gastosentradas;
 
+DROP PROCEDURE IF EXISTS sp_filtrar_gastosyentradas;
+DELIMITER //
+
+CREATE PROCEDURE sp_filtrar_gastosyentradas(
+    IN _idusuario INT,
+    IN _iddetallepresentacion INT,
+    IN _fecha_gasto DATE,
+    IN _estado INT
+)
+BEGIN
+    SELECT 
+        *
+    FROM 
+        gastosyentradas GASTOS
+        LEFT JOIN usuarios USU ON USU.idusuario = GASTOS.idusuario
+        LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = GASTOS.iddetallepresentacion		
+    WHERE 
+		(_idusuario IS NULL OR USU.idusuario = _idusuario)
+        AND (_iddetallepresentacion IS NULL OR DP.iddetalle_presentacion = _iddetallepresentacion)
+        AND (_fecha_gasto IS NULL OR GASTOS.fecha_gasto = _fecha_gasto)
+        AND (_estado IS NULL OR GASTOS.estado = _estado)
+    ORDER BY 
+        GASTOS.idgastoentrada DESC;
+END //
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `sp_registrar_gasto_entrada`;
 DELIMITER //
@@ -189,6 +214,7 @@ DROP PROCEDURE IF EXISTS `sp_registrar_gasto_entrada`;
 DELIMITER //
 CREATE PROCEDURE sp_registrar_gasto_entrada(
     OUT _idgastoentrada INT,
+    IN _estado INT,
     IN _concepto VARCHAR(200),
     IN _fecha_gasto date,
 	IN _monto DECIMAL(10,2),
@@ -197,16 +223,16 @@ CREATE PROCEDURE sp_registrar_gasto_entrada(
     IN _idusuario INT,
     IN _mediopago INT,
     IN _detalles VARCHAR(200),
-    IN _comprobante_url VARCHAR(100),
-    IN _comprobante_fac_bol VARCHAR(100)
+    IN _comprobante_url VARCHAR(200),
+    IN _comprobante_fac_bol VARCHAR(200)
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
     
 
     -- Insertar la notificación
-    INSERT INTO gastosyentradas (concepto, fecha_gasto, monto, tipo, iddetallepresentacion, idusuario, mediopago, detalles, comprobante_url, comprobante_fac_bol)
-    VALUES (nullif(_concepto,''), _fecha_gasto , _monto ,_tipo, _iddetallepresentacion, _idusuario,_mediopago,_detalles,_comprobante_url,_comprobante_fac_bol );
+    INSERT INTO gastosyentradas (estado, concepto, fecha_gasto, monto, tipo, iddetallepresentacion, idusuario, mediopago, detalles, comprobante_url, comprobante_fac_bol)
+    VALUES (_estado, nullif(_concepto,''), _fecha_gasto , _monto ,_tipo, _iddetallepresentacion, _idusuario,_mediopago,_detalles,_comprobante_url,_comprobante_fac_bol );
 
     IF existe_error = 1 THEN
         SET _idgastoentrada = -1;

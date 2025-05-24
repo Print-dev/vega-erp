@@ -119,6 +119,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const gasto = new FormData();
         gasto.append("operation", "registrarGastoYEntrada");
 
+        gasto.append("estado", $q("#estado").value || "");
         gasto.append("concepto", $q("#concepto").value || "");
         gasto.append("fechagasto", $q("#fechagasto").value || "");
         gasto.append("monto", $q("#monto").value || "");

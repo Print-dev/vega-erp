@@ -93,7 +93,7 @@
                         </div>
                         <div id="div-comprobante-pago">
                             <div class="col-md-4 d-flex flex-column align-items-center">
-                                <img id="previewImagenPago" src="ruta/logo-por-defecto.png" class="img-fluid mb-2 border rounded" style="max-height: 180px; object-fit: contain;">
+                                <img id="previewImagenPago" src="" class="img-fluid mb-2 border rounded" style="max-height: 180px; object-fit: contain;">
                                 <input id="upload_widget_pago" type="file" name="upload_widget_pago" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
                                 <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Logo (app)
                                 <!--  <div class="mt-3">
@@ -103,7 +103,7 @@
                         </div>
 
                         <div class="col-md-4 d-flex flex-column align-items-center">
-                            <img id="previewImagenFacturaBoleta" src="ruta/logo-por-defecto.png" class="img-fluid mb-2 border rounded" style="max-height: 180px; object-fit: contain;">
+                            <img id="previewImagenFacturaBoleta" src="" class="img-fluid mb-2 border rounded" style="max-height: 180px; object-fit: contain;">
                             <input id="upload_widget_facturaboleta" type="file" name="upload_widget_facturaboleta" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
                             <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Logo (app)
                             <!--  <div class="mt-3">

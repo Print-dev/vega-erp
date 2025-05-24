@@ -108,21 +108,30 @@
                 <div class="card border-0">
                     <div class="card-body">
                         <div class="row g-0 mb-3">
-                            <div class="card border-0" hidden>
+                            <div class="card border-0">
                                 <div class="card-body border-0">
                                     <div class="row">
                                         <div class="col-md-2">
                                             <div class="form-floating">
-                                                <input type="text" class="form-control filter" id="proveedor" autocomplete="off" placeholder="Proveedor">
-                                                <label for="proveedor">Proveedor</label>
+                                                <select name="artista" id="artista" class="form-select filter">
+                                                </select>
+                                                <label for="artista">Artista</label>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-floating">
-                                                <input type="text" class="form-control filter" id="fechagasto" autocomplete="off" placeholder="Fecha Gasto">
+                                                <select name="evento" id="evento" class="form-select filter">
+                                                </select>
+                                                <label for="evento">Evento</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-floating">
+                                                <input type="date" class="form-control filter" id="fechagasto" autocomplete="off" placeholder="Fecha Gasto">
                                                 <label for="fechagasto">Fecha Gasto</label>
                                             </div>
                                         </div>
+                                        
                                     </div>
                                 </div>
                             </div>

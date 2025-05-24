@@ -21,22 +21,47 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     // ************************************ REGISTRAR DATOS ********************************
+    await obtenerUsuariosPorNivel()
+    await obtenerEventos()
 
-    async function obtenerColaboradores() {
+    async function obtenerUsuariosPorNivel() {
         const params = new URLSearchParams();
-        params.append("operation", "filtrarColaboradores");
-        params.append("numdoc", "");
-        params.append("idarea", "");
+        params.append("operation", "obtenerUsuarioPorNivel");
+        params.append("idnivelacceso", 6);
 
-        const data = await getDatos(`${host}nomina.controller.php`, params);
-        console.log("data -> ", data);
-        $q("#colaborador").innerHTML = `<option value="">Seleccione</option>`;
-        data.forEach(nomina => {
-            $q("#colaborador").innerHTML += `
-            <option value="${nomina.idcolaborador}">${nomina.nombres} ${nomina.apellidos}</option>
-        `;
-        });
+        try {
+            const data = await getDatos(`${host}usuario.controller.php`, params);
+
+            console.log(data);
+            $q("#artista").innerHTML = '<option value="">Selecciona</option>'
+            data.forEach(artista => {
+                $q("#artista").innerHTML += `
+                    <option value="${artista.idusuario}">${artista.nom_usuario}</option>
+                `
+            });
+            //return data // Verifica la estructura de los datos en la consola
+        } catch (error) {
+            console.error("Error al obtener los usuarios:", error);
+        }
     }
+
+    async function obtenerEventos() { // PARA OBTENER DATOS DE CLIENTE Y DE EVENTO (NO INCLUYE TARIFARIO NI COSTO EN PRESENTACION DE TAL LOCAL)
+        const params = new URLSearchParams();
+        params.append("operation", "filtrarAtenciones");
+        params.append("ncotizacion", "");
+        params.append("ndocumento", "");
+        params.append("nomusuario", "")
+        params.append("establecimiento", "")
+        params.append("fechapresentacion", "")
+        const data = await getDatos(`${host}detalleevento.controller.php`, params);
+        $q("#evento").innerHTML = '<option value="">Selecciona</option>'
+        data.forEach(evento => {
+            $q("#evento").innerHTML += `<option value="${evento.iddetalle_presentacion}">${evento.nom_usuario} - ${evento.establecimiento} (${evento.departamento} | ${evento.provincia} | ${evento.distrito}) [${evento.fecha_presentacion}]</option>`
+
+        });
+        //        return data
+    }
+
 
     async function obtenerColaboradorPorId(idcolaborador) {
         const params = new URLSearchParams();
@@ -145,6 +170,21 @@ document.addEventListener("DOMContentLoaded", async () => {
             x.addEventListener("input", async () => {
                 await dataFilters();
             });
+            if (x.id === "artista") {
+                x.addEventListener("artista", async () => {
+                    await dataFilters();
+                });
+            }
+            if (x.id === "evento") {
+                x.addEventListener("change", async () => {
+                    await dataFilters();
+                });
+            }
+            if (x.id === "fechagasto") {
+                x.addEventListener("change", async () => {
+                    await dataFilters();
+                });
+            }
             /* if (x.id === "ndocumento") {
                 x.addEventListener("input", async () => {
                     await dataFilters();
@@ -168,8 +208,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function dataFilters() {
         const params = new URLSearchParams();
         params.append("operation", "filtrarGastos");
-        params.append("idproveedor", $q("#proveedor").value || "");
-        params.append("fgasto", $q("#fechagasto").value || "");
+        params.append("idusuario", $q("#artista").value || "");
+        params.append("iddetallepresentacion", $q("#evento").value || "");
+        params.append("fechagasto", $q("#fechagasto").value || "");
+        params.append("estado", 2);
 
         const data = await getDatos(`${host}gastoentrada.controller.php`, params);
         console.log("data -> ", data);
@@ -187,23 +229,33 @@ document.addEventListener("DOMContentLoaded", async () => {
         listCajas = []
 
         data.forEach((x) => {
-
             $q("#table-gastos tbody").innerHTML += `
-            <tr>
-                <td>${x.estadopago == 1 ? "Pendiente" : "Pagado"}</td>
-                <td>${x.fgasto ? formatearFecha(x.fgasto) : ''}</td0>
-                <td>${x.fvencimiento ? formatearFecha(x.fvencimiento) : ""}</td>
-                <td>${x.concepto ? x.concepto + "/" + x.subtipo : ""}</td>
-                <td>${x.gasto ?? ""}</td>
-                <td>${x.costofinal ?? ""}</td>
-                <td>${x.montopdte ?? ""}</td>
-                <td>
-                    <button class="btn btn-sm btn-primary btn-actualizar" data-idgastoentrega="${x.idgastoentrega}">Actualizar</button>
-                    <button class="btn btn-sm btn-primary btn-borrar" data-idgastoentrega="${x.idgastoentrega}">Borrar</button>
-                </td>
-            </tr>
-        `;
+        <tr>
+            <td>${x.nom_usuario ?? "No aplica"}</td>
+            <td>${x.establecimiento ?? "No aplica"}</td>
+            <td>${x.fecha_gasto}</td>
+            <td>${x.monto}</td>
+            <td>${x.mediopago == 1 ? "Transferencia" : "Efectivo"}</td>
+            <td>
+                ${x.comprobante_url
+                    ? `<img src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1748079000/${x.comprobante_url}" height="30" alt="Voucher Pago">`
+                    : ''
+                }
+            </td>
+            <td>
+                ${x.comprobante_fac_bol
+                    ? `<img src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1748079000/${x.comprobante_fac_bol}" height="30" alt="Voucher Pago">`
+                    : ''
+                }
+            </td>
+            <td>
+                <button class="btn btn-sm btn-primary btn-actualizar" data-idgastoentrega="${x.idgastoentrega}">Actualizar</button>
+                <button class="btn btn-sm btn-primary btn-borrar" data-idgastoentrega="${x.idgastoentrega}">Borrar</button>
+            </td>
+        </tr>
+    `;
         });
+
         createTable(data);
     }
 
