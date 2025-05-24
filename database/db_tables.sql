@@ -665,17 +665,16 @@ CREATE TABLE gastosyentradas (
   concepto VARCHAR(200) NULL, -- PONER UNA NOTA : MAXIMO SOLO 200 CARACTERES
   fecha_gasto DATE NOT NULL,	
   monto DECIMAL(10,2) NOT NULL,
-  tipo INT NOT NULL, -- GASTO O ENTRADA
   iddetallepresentacion INT NULL, -- puede ser NULL si es solo de artista
   idusuario INT NULL, -- puede ser NULL si es solo del evento
-  mediopago INT NOT NULL, -- 1: Transferencia, 2: Efectivo
+  mediopago INT NULL, -- 1: Transferencia, 2: Efectivo
   detalles  VARCHAR(200) NULL, -- opcional
   comprobante_url VARCHAR(200) NULL, -- imagen o archivo
   comprobante_fac_bol VARCHAR(200) NULL, -- imagen o archivo
-  CONSTRAINT fk_idusuario_gastoentrada FOREIGN KEY (idusuario) REFERENCES usuarios (idusuario),
-  CONSTRAINT fk_iddp_gastoentrada FOREIGN KEY (iddetallepresentacion) REFERENCES detalles_presentacion (iddetalle_presentacion)
+  CONSTRAINT fk_idusuario_gastoentrada FOREIGN KEY (idusuario) REFERENCES usuarios (idusuario) ON DELETE CASCADE,
+  CONSTRAINT fk_iddp_gastoentrada FOREIGN KEY (iddetallepresentacion) REFERENCES detalles_presentacion (iddetalle_presentacion) ON DELETE CASCADE
 );
-
+select * from gastosyentradas;
 -- *************************** APARTIR DE ABAJO NO CONSIDERAR ***************************************
 
 DROP TABLE nomina (

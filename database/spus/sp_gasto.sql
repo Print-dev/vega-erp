@@ -218,7 +218,6 @@ CREATE PROCEDURE sp_registrar_gasto_entrada(
     IN _concepto VARCHAR(200),
     IN _fecha_gasto date,
 	IN _monto DECIMAL(10,2),
-    IN _tipo INT,
     IN _iddetallepresentacion INT,
     IN _idusuario INT,
     IN _mediopago INT,
@@ -231,8 +230,8 @@ BEGIN
     
 
     -- Insertar la notificación
-    INSERT INTO gastosyentradas (estado, concepto, fecha_gasto, monto, tipo, iddetallepresentacion, idusuario, mediopago, detalles, comprobante_url, comprobante_fac_bol)
-    VALUES (_estado, nullif(_concepto,''), _fecha_gasto , _monto ,_tipo, _iddetallepresentacion, _idusuario,_mediopago,_detalles,_comprobante_url,_comprobante_fac_bol );
+    INSERT INTO gastosyentradas (estado, concepto, fecha_gasto, monto, iddetallepresentacion, idusuario, mediopago, detalles, comprobante_url, comprobante_fac_bol)
+    VALUES (_estado, nullif(_concepto,''), _fecha_gasto , _monto, _iddetallepresentacion, _idusuario,nullif(_mediopago,''),_detalles,_comprobante_url,_comprobante_fac_bol );
 
     IF existe_error = 1 THEN
         SET _idgastoentrada = -1;
@@ -242,3 +241,27 @@ BEGIN
 END //
 DELIMITER ;
 
+DROP PROCEDURE if exists sp_pagar_gastoyentrada;
+DELIMITER //
+CREATE PROCEDURE sp_pagar_gastoyentrada (
+	IN _idgastoentrada INT,
+	IN _estado INT,
+	IN _mediopago INT,
+    IN _detalles VARCHAR(200),
+	IN _comprobante_url VARCHAR(200),
+    IN _comprobante_fac_bol VARCHAR(200)
+)
+BEGIN
+		UPDATE gastosyentradas 
+    SET 
+		estado = NULLIF(_estado, ''),
+		mediopago = NULLIF(_mediopago, ''),
+        detalles = NULLIF(_detalles, ''),
+        comprobante_url = NULLIF(_comprobante_url, ''),
+        comprobante_fac_bol = NULLIF(_comprobante_fac_bol, '')
+    WHERE idgastoentrada = _idgastoentrada;
+    
+END //
+DELIMITER ;
+-- select * from gastosyentradas
+-- CALL sp_pagar_gastoyentrada (1,2, 1, '', '', '');

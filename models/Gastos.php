@@ -251,14 +251,13 @@ class Gastos extends ExecQuery
     {
         try {
             $pdo = parent::getConexion();
-            $cmd = $pdo->prepare('CALL sp_registrar_gasto_entrada(@idgastoentrada,?,?,?,?,?,?,?,?,?,?,?)');
+            $cmd = $pdo->prepare('CALL sp_registrar_gasto_entrada(@idgastoentrada,?,?,?,?,?,?,?,?,?,?)');
             $cmd->execute(
                 array(
                     $params['estado'],
                     $params['concepto'],
                     $params['fechagasto'],
                     $params['monto'],
-                    $params['tipo'],
                     $params['iddetallepresentacion'],
                     $params['idusuario'],
                     $params['mediopago'],
@@ -273,6 +272,47 @@ class Gastos extends ExecQuery
         } catch (Exception $e) {
             error_log("Error: " . $e->getMessage());
             return -1;
+        }
+    }
+
+    public function pagarGastoEntrada($params = []): bool
+    {
+        try {
+            $pdo = parent::getConexion();
+            $cmd = $pdo->prepare("CALL sp_pagar_gastoyentrada(?,?,?,?,?,?)");
+            $act = $cmd->execute(
+                array(
+                    $params['idgastoentrada'],
+                    $params['estado'],
+                    $params['mediopago'],
+                    $params['detalles'],
+                    $params['comprobanteurl'],
+                    $params['comprobantefacbol']                
+                )
+            );
+
+            return $act;
+        } catch (Exception $e) {
+            error_log("Error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function eliminarGastoEntrada($params = []): bool
+    {
+        try {
+            $pdo = parent::getConexion();
+            $cmd = $pdo->prepare("DELETE FROM gastosyentradas WHERE idgastoentrada = ?;");
+            $act = $cmd->execute(
+                array(
+                    $params['idgastoentrada']          
+                )
+            );
+
+            return $act;
+        } catch (Exception $e) {
+            error_log("Error: " . $e->getMessage());
+            return false;
         }
     }
 

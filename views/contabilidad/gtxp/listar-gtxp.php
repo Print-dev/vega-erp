@@ -108,35 +108,45 @@
                 <div class="card border-0">
                     <div class="card-body">
                         <div class="row g-0 mb-3">
-                            <!-- <div class="card border-0" hidden>
+                            <div class="card border-0">
                                 <div class="card-body border-0">
                                     <div class="row">
                                         <div class="col-md-2">
                                             <div class="form-floating">
-                                                <input type="text" class="form-control filter" id="proveedor" autocomplete="off" placeholder="Proveedor">
-                                                <label for="proveedor">Proveedor</label>
+                                                <select name="artista" id="artista" class="form-select filter">
+                                                </select>
+                                                <label for="artista">Artista</label>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-floating">
-                                                <input type="text" class="form-control filter" id="fechagasto" autocomplete="off" placeholder="Fecha Gasto">
+                                                <select name="evento" id="evento" class="form-select filter">
+                                                </select>
+                                                <label for="evento">Evento</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-floating">
+                                                <input type="date" class="form-control filter" id="fechagasto" autocomplete="off" placeholder="Fecha Gasto">
                                                 <label for="fechagasto">Fecha Gasto</label>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
-                            <hr> -->
+                            <hr>
                             <div class="row g-1">
                                 <div class="table-responsive">
                                     <table class="table" id="table-gastos">
                                         <thead class="text-center">
                                             <tr>
-                                                <th>F. Gasto</th>
-                                                <th>F. Vecimiento</th>
-                                                <th>Proveedor</th>
-                                                <th>Nombre</th> <!-- ESTO SERA SUBTIPO PERO COMO PARA QUE ENTIENDAN -->
-                                                <th>Monto Pdte</th>
+                                                <th>Artista</th>
+                                                <th>Evento</th>
+                                                <th>Fecha de gasto</th>
+                                                <th>Monto</th> <!-- ESTO SERA SUBTIPO PERO COMO PARA QUE ENTIENDAN -->
+                                                <th>Medio de pago</th>
+                                                <th>Opciones</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tb-body-gasto">
@@ -156,57 +166,62 @@
 </div>
 
 <!-- MODAL PARA COTIZAR DE MANERA CONTRATO -->
-<!-- <div class="modal fade" id="modal-nuevo-gasto" tabindex="-1" aria-labelledby="modalnuevogasto" aria-hidden="true">
+<div class="modal fade" id="modal-pagar" tabindex="-1" aria-labelledby="modalpagar" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalnuevogasto">Nuevo gasto</h1>
+                <h1 class="modal-title fs-5" id="modalpagar">Nuevo gasto</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="" id="formNomina">
+                <form action="" id="formPagar">
                     <div class="row">
-                        <div class="col-md-12 mb-3">
+                        <div class="col-md-6 mb-3" id="div-mediopago">
                             <div class="form-floating">
-                                <select name="colaborador" id="colaborador" class="form-select filter" placeholder="Colaboradores">
-
+                                <select name="mediopago" id="mediopago" class="form-select" placeholder="Medio Pago">
+                                    <option value="">Selecciona</option>
+                                    <option value="1">Transferencia</option>
+                                    <option value="2">Efectivo</option>
                                 </select>
-                                <label for="colaborador" class="form-label">Colaboradores <span class="text-danger">(*)</span></label>
+                                <label for="mediopago" class="form-label">Medio Pago</label>
                             </div>
                         </div>
-                        <div class="col-md-12 mb-3">
+                        <div class="col-md-6 mb-3" id="div-detalles">
                             <div class="form-floating">
-                                <input type="number" id="tiempo" name="tiempo" class="form-control" placeholder="Tiempo" disabled>
-                                <label for="tiempo" class="form-label">Tiempo <span class="text-danger">(*)</span></label>
+                                <input type="text" id="detalles" class="form-control" autocomplete="off" placeholder="Detalles">
+                                <label for="detalles" class="form-label">Detalles</label>
                             </div>
                         </div>
-                        <div class="col-md-12 mb-3">
-                            <div class="form-floating">
-                                <input type="number" id="rendimiento" name="rendimiento" class="form-control" placeholder="Rendimiento">
-                                <label for="rendimiento" class="form-label">Rendimiento <span class="text-danger">(*)</span></label>
+                        <div id="div-comprobante-pago">
+                            <div class="col-md-12 d-flex flex-column align-items-center">
+                                <img id="previewImagenPago" src="" class="img-fluid mb-2 border rounded" style="max-height: 180px; object-fit: contain;">
+                                <input id="upload_widget_pago" type="file" name="upload_widget_pago" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Logo (app)
+                                <!--  <div class="mt-3">
+                                <img id="previewImagenLogo" src="" alt="Vista previa" class="img-fluid rounded shadow" style="max-height: 300px;">
+                            </div> -->
                             </div>
                         </div>
-                        <div class="col-md-12 mb-3">
-                            <div class="form-floating">
-                                <input type="number" id="proporcion" name="proporcion" class="form-control" placeholder="Proporción">
-                                <label for="proporcion" class="form-label">Proporción <span class="text-danger">(*)</span></label>
-                            </div>
-                        </div>
-                        <div class="col-md-12 mb-3">
-                            <div class="form-floating">
-                                <input type="number" id="acumulado" name="acumulado" class="form-control" placeholder="Acumulado">
-                                <label for="acumulado" class="form-label">Acumulado <span class="text-danger">(*)</span></label>
+
+                        <div id="div-comprobante-fac-bol">
+                            <div class="col-md-12 d-flex flex-column align-items-center">
+                                <img id="previewImagenFacturaBoleta" src="" class="img-fluid mb-2 border rounded" style="max-height: 180px; object-fit: contain;">
+                                <input id="upload_widget_facturaboleta" type="file" name="upload_widget_facturaboleta" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-cloud-upload-alt me-2"></i> Subir Comprobante
+                                <!--  <div class="mt-3">
+                                <img id="previewImagenLogo" src="" alt="Vista previa" class="img-fluid rounded shadow" style="max-height: 300px;">
+                            </div> -->
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100 btnGuardarNomina">Guardar</button>
+                    <button type="submit" class="btn btn-primary w-100 btnGuardarPago">Guardar</button>
                 </form>
 
             </div>
 
         </div>
     </div>
-</div> -->
+</div>
 <!-- 
 <div class="modal fade" id="modal-nuevo-proveedor" tabindex="-1" aria-labelledby="modalnuevo-proveedor" aria-hidden="true">
     <div class="modal-dialog modal-md">

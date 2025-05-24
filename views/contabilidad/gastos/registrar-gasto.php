@@ -39,16 +39,6 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-floating">
-                                <select name="tipo" id="tipo" class="form-select" placeholder="Tipo">
-                                    <option value="">Selecciona</option>
-                                    <option value="1">Gasto</option>
-                                    <option value="2">Entrada</option>
-                                </select>
-                                <label for="tipo" class="form-label">Tipo</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-floating">
                                 <select name="estado" id="estado" class="form-select" placeholder="Estado">
                                     <option value="">Selecciona</option>
                                     <option value="1">Pendiente</option>
@@ -75,7 +65,7 @@
                                 <label for="monto" class="form-label">Monto</label>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4" id="div-mediopago">
                             <div class="form-floating">
                                 <select name="mediopago" id="mediopago" class="form-select" placeholder="Medio Pago">
                                     <option value="">Selecciona</option>
@@ -102,13 +92,15 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4 d-flex flex-column align-items-center">
-                            <img id="previewImagenFacturaBoleta" src="" class="img-fluid mb-2 border rounded" style="max-height: 180px; object-fit: contain;">
-                            <input id="upload_widget_facturaboleta" type="file" name="upload_widget_facturaboleta" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
-                            <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Logo (app)
-                            <!--  <div class="mt-3">
+                        <div id="div-comprobante-fac-bol">
+                            <div class="col-md-4 d-flex flex-column align-items-center">
+                                <img id="previewImagenFacturaBoleta" src="" class="img-fluid mb-2 border rounded" style="max-height: 180px; object-fit: contain;">
+                                <input id="upload_widget_facturaboleta" type="file" name="upload_widget_facturaboleta" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Logo (app)
+                                <!--  <div class="mt-3">
                                 <img id="previewImagenLogo" src="" alt="Vista previa" class="img-fluid rounded shadow" style="max-height: 300px;">
                             </div> -->
+                            </div>
                         </div>
 
                     </div>

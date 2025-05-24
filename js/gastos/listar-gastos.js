@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let idproveedor
     let idcolaborador
     let idnomina
+    let idgastoentrada
     /*     let modalNuevoProvedor = new bootstrap.Modal($q("#modal-nuevo-proveedor"))
         let modalActualizarProveedor = new bootstrap.Modal($q("#modal-actualizar-proveedor"))
      */
@@ -88,7 +89,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         return rcolaborador;
     }
 
+    async function eliminarGastoEntrada(idgastoentrada) {
+        const ge = new FormData();
+        ge.append("operation", "eliminarGastoEntrada");
+        ge.append("idgastoentrada", idgastoentrada);
 
+        const fge = await fetch(`${host}gastoentrada.controller.php`, {
+            method: "POST",
+            body: ge,
+        });
+        const rge = await fge.json();
+        return rge;
+    }
 
     /*     async function actualizarProveedor(idproveedor) {
             const proveedor = new FormData();
@@ -249,8 +261,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             </td>
             <td>
-                <button class="btn btn-sm btn-primary btn-actualizar" data-idgastoentrega="${x.idgastoentrega}">Actualizar</button>
-                <button class="btn btn-sm btn-primary btn-borrar" data-idgastoentrega="${x.idgastoentrega}">Borrar</button>
+                <button class="btn btn-sm btn-primary btn-actualizar" data-idgastoentrada="${x.idgastoentrada}">Actualizar</button>
+                <button class="btn btn-sm btn-primary btn-borrar" data-idgastoentrada="${x.idgastoentrada}">Borrar</button>
             </td>
         </tr>
     `;
@@ -319,17 +331,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     async function buttonBorrar(e) {
-        idgastoentrega = e.target.getAttribute("data-idgastoentrega");
-        console.log("idgastoentrega -> ", idgastoentrega);
-        alert("prueba de borrando")
+        idgastoentrada = e.target.getAttribute("data-idgastoentrada");
+        console.log("idgastoentrada -> ", idgastoentrada);
+        if (await ask("Confirmar eliminación")) {
+            const gastoEliminado = await eliminarGastoEntrada(idgastoentrada)
+            console.log("eliminarGastoEntrada -> ", gastoEliminado);
+            if (gastoEliminado) {
+                showToast("Eliminado!", "SUCCESS")
+                await dataFilters()
+            }
+        }
     }
 
     async function buttonActualizar(e) {
-        idgastoentrega = e.target.getAttribute("data-idgastoentrega");
-        console.log("idgastoentrega -> ", idgastoentrega);
+        idgastoentrada = e.target.getAttribute("data-idgastoentrada");
+        console.log("idgastoentrada -> ", idgastoentrada);
         alert("prueba de actualizadno")
         window.localStorage.clear()
-        window.localStorage.setItem("idgastoentrega", idgastoentrega)
+        window.localStorage.setItem("idgastoentrada", idgastoentrada)
         window.location.href = `${hostOnly}/views/gastos/registrar-gasto`
     }
 

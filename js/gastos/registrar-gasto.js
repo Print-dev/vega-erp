@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const data = await getDatos(`${host}usuario.controller.php`, params);
 
             console.log(data);
-            $q("#artista").innerHTML = '<option value="">Selecciona</option>'
+            $q("#artista").innerHTML = '<option value="">Todos</option>'
             data.forEach(artista => {
                 $q("#artista").innerHTML += `
                     <option value="${artista.idusuario}">${artista.nom_usuario}</option>
@@ -123,7 +123,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         gasto.append("concepto", $q("#concepto").value || "");
         gasto.append("fechagasto", $q("#fechagasto").value || "");
         gasto.append("monto", $q("#monto").value || "");
-        gasto.append("tipo", $q("#tipo").value || "");
         gasto.append("iddetallepresentacion", $q("#evento").value || "");
         gasto.append("idusuario", $q("#artista").value || "");
         gasto.append("mediopago", $q("#mediopago").value || "");
@@ -171,4 +170,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     })
 
+    $q("#estado").addEventListener("change", async (e) => {
+        const estado = e.target.value
+        if (estado == "1") {
+            $q("#div-comprobante-pago").hidden = true
+            $q("#div-comprobante-fac-bol").hidden = true
+            $q("#div-mediopago").hidden = true
+        } else if (estado == "2") {
+            $q("#div-comprobante-pago").hidden = true
+            $q("#div-comprobante-fac-bol").hidden = false
+            $q("#div-mediopago").hidden = true
+        }
+    })
 })

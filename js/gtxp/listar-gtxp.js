@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     let idproveedor
     let idcolaborador
     let idnomina
+    let idgastoentrada
+    let modalPagar = new bootstrap.Modal($q("#modal-pagar"))
     /*     let modalNuevoProvedor = new bootstrap.Modal($q("#modal-nuevo-proveedor"))
         let modalActualizarProveedor = new bootstrap.Modal($q("#modal-actualizar-proveedor"))
      */
@@ -19,6 +21,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
+    $q("#div-detalles").hidden = true
+    $q("#div-comprobante-pago").hidden = true
+    /*     $q("#div-detalles").hidden = true
+     */
 
     // ************************************ REGISTRAR DATOS ********************************
     await obtenerUsuariosPorNivel()
@@ -33,7 +39,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const data = await getDatos(`${host}usuario.controller.php`, params);
 
             console.log(data);
-            $q("#artista").innerHTML = '<option value="">Selecciona</option>'
+            $q("#artista").innerHTML = '<option value="">Todos</option>'
             data.forEach(artista => {
                 $q("#artista").innerHTML += `
                     <option value="${artista.idusuario}">${artista.nom_usuario}</option>
@@ -54,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         params.append("establecimiento", "")
         params.append("fechapresentacion", "")
         const data = await getDatos(`${host}detalleevento.controller.php`, params);
-        $q("#evento").innerHTML = '<option value="">Selecciona</option>'
+        $q("#evento").innerHTML = '<option value="">Todos</option>'
         data.forEach(evento => {
             $q("#evento").innerHTML += `<option value="${evento.iddetalle_presentacion}">${evento.nom_usuario} - ${evento.establecimiento} (${evento.departamento} | ${evento.provincia} | ${evento.distrito}) [${evento.fecha_presentacion}]</option>`
 
@@ -71,23 +77,38 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data
     }
 
-    async function registrarNomina() {
-        const colaborador = new FormData();
-        colaborador.append("operation", "registrarNomina");
-        colaborador.append("idcolaborador", $q("#colaborador").value || '');
-        colaborador.append("tiempo", $q("#tiempo").value || '');
-        colaborador.append("rendimiento", $q("#rendimiento").value || '');
-        colaborador.append("proporcion", $q("#proporcion").value || '');
-        colaborador.append("acumulado", $q("#acumulado").value || '');
+    async function pagarGastoEntrada(idgastoentrada, estado, comprobanteurl, comprobantefacbol) {
+        const ge = new FormData();
+        ge.append("operation", "pagarGastoEntrada");
+        ge.append("idgastoentrada", idgastoentrada);
+        ge.append("estado", estado);
+        ge.append("mediopago", $q("#mediopago").value || '');
+        ge.append("detalles", $q("#detalles").value || '');
+        ge.append("comprobanteurl", comprobanteurl ? comprobanteurl : '');
+        ge.append("comprobantefacbol", comprobantefacbol ? comprobantefacbol : '');
+        ge.append("publicIdComprobanteURLanterior", '');
+        ge.append("publicIdComprobanteFacBolanterior", '');
 
-        const fcolaborador = await fetch(`${host}nomina.controller.php`, {
+        const fge = await fetch(`${host}gastoentrada.controller.php`, {
             method: "POST",
-            body: colaborador,
+            body: ge,
         });
-        const rcolaborador = await fcolaborador.json();
-        return rcolaborador;
+        const rge = await fge.json();
+        return rge;
     }
 
+    async function eliminarGastoEntrada(idgastoentrada) {
+        const ge = new FormData();
+        ge.append("operation", "eliminarGastoEntrada");
+        ge.append("idgastoentrada", idgastoentrada);
+
+        const fge = await fetch(`${host}gastoentrada.controller.php`, {
+            method: "POST",
+            body: ge,
+        });
+        const rge = await fge.json();
+        return rge;
+    }
 
 
     /*     async function actualizarProveedor(idproveedor) {
@@ -235,22 +256,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             <td>${x.establecimiento ?? "No aplica"}</td>
             <td>${x.fecha_gasto}</td>
             <td>${x.monto}</td>
-            <td>${x.mediopago == 1 ? "Transferencia" : "Efectivo"}</td>
+            <td>${x.mediopago == 1 ? "Transferencia" : "Efectivo"}</td>            
             <td>
-                ${x.comprobante_url
-                    ? `<img src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1748079000/${x.comprobante_url}" height="30" alt="Voucher Pago">`
-                    : ''
-                }
-            </td>
-            <td>
-                ${x.comprobante_fac_bol
-                    ? `<img src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1748079000/${x.comprobante_fac_bol}" height="30" alt="Voucher Pago">`
-                    : ''
-                }
-            </td>
-            <td>
-                <button class="btn btn-sm btn-primary btn-actualizar" data-idgastoentrega="${x.idgastoentrega}">Actualizar</button>
-                <button class="btn btn-sm btn-primary btn-borrar" data-idgastoentrega="${x.idgastoentrega}">Borrar</button>
+                <button class="btn btn-sm btn-primary btn-pagar" data-idgastoentrada="${x.idgastoentrada}">Pagar</button>
+                <button class="btn btn-sm btn-primary btn-borrar" data-idgastoentrada="${x.idgastoentrada}">Borrar</button>
             </td>
         </tr>
     `;
@@ -305,8 +314,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (e.target.classList.contains("btn-borrar")) {
                         await buttonBorrar(e);
                     }
-                    if (e.target.classList.contains("btn-actualizar")) {
-                        await buttonActualizar(e);
+                    if (e.target.classList.contains("btn-pagar")) {
+                        await buttonPagar(e);
                     }
                     /* if (e.target.classList.contains("btn-cerrar")) {
                         buttonCerrarCaja(e);
@@ -319,21 +328,99 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     async function buttonBorrar(e) {
-        idgastoentrega = e.target.getAttribute("data-idgastoentrega");
-        console.log("idgastoentrega -> ", idgastoentrega);
-        alert("prueba de borrando")
+        idgastoentrada = e.target.getAttribute("data-idgastoentrada");
+        console.log("idgastoentrada -> ", idgastoentrada);
+        if (await ask("Confirmar eliminación")) {
+            const gastoEliminado = await eliminarGastoEntrada(idgastoentrada)
+            console.log("eliminarGastoEntrada -> ", gastoEliminado);
+            if (gastoEliminado) {
+                showToast("Eliminado!", "SUCCESS")
+                await dataFilters()
+            }
+        }
     }
 
-    async function buttonActualizar(e) {
-        idgastoentrega = e.target.getAttribute("data-idgastoentrega");
-        console.log("idgastoentrega -> ", idgastoentrega);
-        alert("prueba de actualizadno")
-        window.localStorage.clear()
-        window.localStorage.setItem("idgastoentrega", idgastoentrega)
-        window.location.href = `${hostOnly}/views/gastos/registrar-gasto`
+    async function buttonPagar(e) {
+        idgastoentrada = e.target.getAttribute("data-idgastoentrada");
+        console.log("idgastoentrada -> ", idgastoentrada);
+        modalPagar.show()
     }
 
+    $q("#mediopago").addEventListener("change", async (e) => {
+        const tipopago = e.target.value
+        if (tipopago == "1") {
+            $q("#div-comprobante-pago").hidden = false
+            $q("#div-detalles").hidden = true
 
+        } else {
+            $q("#div-comprobante-pago").hidden = true
+            $q("#div-detalles").hidden = false
 
+        }
+    })
+
+    $q("#formPagar").addEventListener("submit", async (e) => {
+        e.preventDefault()
+        const imagenInputPago = $q("#upload_widget_pago");
+        const filePago = imagenInputPago.files[0];
+        const imagenInputFacturaBoleta = $q("#upload_widget_facturaboleta");
+        const fileFacturaBoleta = imagenInputFacturaBoleta.files[0];
+        console.log("filePago -> ", filePago);
+        console.log("fileFacturaBoleta -> ", fileFacturaBoleta);
+
+        if (!fileFacturaBoleta) {
+            showToast("Suba el/los comprobantes debidos", "ERROR")
+            return
+        } else {
+            const gastopagado = await pagarGastoEntrada(idgastoentrada, 2, filePago, fileFacturaBoleta)
+            console.log("gasto o entrada actualizada -> ", gastopagado);
+            if (gastopagado) {
+                showToast("Se ha pagado correctamente", "SUCCESS", 1000);
+                modalPagar.hide()
+                await dataFilters()
+                return
+            }
+        }
+    })
+
+    $q("#upload_widget_pago").addEventListener("change", function (e) {
+        console.log("cambiando...");
+        const file = e.target.files[0];
+        console.log("file de imagen event -> ", file);
+        const preview = $q("#previewImagenPago");
+
+        if (file && file.type.startsWith("image/")) {
+            console.log("renderizando ,,,,");
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "";
+            preview.style.display = "none";
+        }
+    });
+
+    $q("#upload_widget_facturaboleta").addEventListener("change", function (e) {
+        console.log("cambiando...");
+        const file = e.target.files[0];
+        console.log("file de imagen event -> ", file);
+        const preview = $q("#previewImagenFacturaBoleta");
+
+        if (file && file.type.startsWith("image/")) {
+            console.log("renderizando ,,,,");
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "";
+            preview.style.display = "none";
+        }
+    });
 
 })
