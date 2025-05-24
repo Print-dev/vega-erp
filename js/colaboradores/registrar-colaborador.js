@@ -200,6 +200,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     params.append("idsucursal", $q("#sucursal").value);
     params.append("fechaingreso", $q("#fechaingreso").value);
     params.append("area", $q("#area").value);
+    params.append("idresponsable", $q("#responsable").value);
+    params.append("banco", $q("#banco").value || "");
+    params.append("ncuenta", $q("#ncuenta").value || "");
     const resp = await fetch(`${host}nomina.controller.php`, {
       method: 'POST',
       body: params

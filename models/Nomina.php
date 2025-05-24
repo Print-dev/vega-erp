@@ -30,13 +30,16 @@ class Nomina extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare("CALL sp_actualizar_colaborador(?,?,?,?)");
+      $cmd = $pdo->prepare("CALL sp_actualizar_colaborador(?,?,?,?,?,?,?)");
       $act = $cmd->execute(
         array(
           $params['idcolaborador'],
           $params['idsucursal'],
           $params['fechaingreso'],
-          $params['idarea']
+          $params['idarea'],
+          $params['idresponsable'],
+          $params['banco'],
+          $params['ncuenta'],
         )
       );
 
@@ -192,13 +195,16 @@ class Nomina extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_colaborador(@idcolaborador,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_colaborador(@idcolaborador,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['idpersona'],
           $params['idsucursal'],
           $params['fechaingreso'],
-          $params['area']
+          $params['area'],
+          $params['idresponsable'],
+          $params['banco'],
+          $params['ncuenta'],
         )
       );
 

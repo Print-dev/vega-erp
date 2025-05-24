@@ -101,7 +101,7 @@ CREATE PROCEDURE `sp_obtener_dp_porid`(
 )
 BEGIN
 	SELECT 		
-		DP.iddetalle_presentacion, USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.tipo_evento, DP.idnacionalidad, NAC.pais, NAC.idnacionalidad, CLI.telefono , CLI.razonsocial, DP.esExtranjero
+		DP.iddetalle_presentacion, USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.tipo_evento, DP.idnacionalidad, NAC.pais, NAC.idnacionalidad, CLI.telefono , CLI.razonsocial, DP.esExtranjero, estadoCordinacionTecnica, estadoCordinacionPublicidad
 	FROM detalles_presentacion DP
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
@@ -708,6 +708,32 @@ BEGIN
     reserva = _reserva
     WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END //
+-- call sp_actualizar_estadoCordinacionPublicidad(139, true)
+-- select * from detalles_presentacion where iddetalle_presentacion = 139
+DROP PROCEDURE if exists sp_actualizar_estadoCordinacionTecnica;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_estadoCordinacionTecnica (
+	IN _iddetalle_presentacion INT,
+    IN _estadoCordinacionTecnica BOOLEAN
+)
+BEGIN
+	UPDATE detalles_presentacion SET
+    estadoCordinacionTecnica = _estadoCordinacionTecnica
+    WHERE iddetalle_presentacion = _iddetalle_presentacion; 
+END //
+
+DROP PROCEDURE if exists sp_actualizar_estadoCordinacionPublicidad;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_estadoCordinacionPublicidad (
+	IN _iddetalle_presentacion INT,
+    IN _estadoCordinacionPublicidad BOOLEAN
+)
+BEGIN
+	UPDATE detalles_presentacion SET
+    estadoCordinacionPublicidad = _estadoCordinacionPublicidad
+    WHERE iddetalle_presentacion = _iddetalle_presentacion; 
+END //
+
 
 DELIMITER;
 

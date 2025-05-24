@@ -587,7 +587,6 @@ CREATE TABLE areas ( -- AREAS DE UN COLABORADOR, EJEMP: sistemas, diseño, marke
 );
 select * from nivelaccesos;
 SELECT * FROM colaboradores;
-select * from 
 CREATE TABLE colaboradores (
     idcolaborador INT AUTO_INCREMENT PRIMARY KEY,
     idpersona INT NOT NULL,
@@ -600,12 +599,10 @@ CREATE TABLE colaboradores (
     activo TINYINT DEFAULT 1,
     CONSTRAINT fk_idpersona_colaborador foreign key (idpersona) references personas (idpersona) ON DELETE CASCADE,
     CONSTRAINT fk_idarea_colaborador foreign key (idarea) references areas (idarea) ON DELETE CASCADE,
-	CONSTRAINT fk_idsucursal_colaborador FOREIGN KEY (idsucursal) REFERENCES sucursales (idsucursal) ON DELETE CASCADE
+	CONSTRAINT fk_idsucursal_colaborador FOREIGN KEY (idsucursal) REFERENCES sucursales (idsucursal) ON DELETE CASCADE,
+    CONSTRAINT fk_idresponsable_colaborador foreign key (idresponsable) references usuarios (idusuario) ON DELETE CASCADE
 ) ENGINE = INNODB;
 
-ALTER TABLE colaboradores ADD COLUMN idresponsable INT NULL;
-ALTER TABLE colaboradores ADD COLUMN banco INT NULL;
-ALTER TABLE colaboradores ADD COLUMN ncuenta CHAR(20) NULL;
 
 CREATE TABLE salarios (
     idsalario INT AUTO_INCREMENT PRIMARY KEY,
@@ -618,6 +615,69 @@ CREATE TABLE salarios (
     fechafin DATE DEFAULT NULL,
     CONSTRAINT fk_idcolaborador_salario FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador) ON DELETE CASCADE
 ) ENGINE = INNODB;
+
+-- ********************************************** MODIFICAR DESDE AQUI ---
+
+CREATE TABLE pagos_trabajadores (
+  idpagotrabajadores INT AUTO_INCREMENT PRIMARY KEY,
+  idtrabajador INT NOT NULL,
+  periodo_inicio DATE NOT NULL,
+  periodo_fin DATE NOT NULL,
+  fecha_deposito DATE,
+  monto_a_pagar DECIMAL(10,2),
+  tipo_pago ENUM('QUINCENA', 'MENSUAL') NOT NULL,
+  boucher_url TEXT,
+  observaciones TEXT,
+  FOREIGN KEY (idtrabajador) REFERENCES trabajadores(idtrabajador)
+);
+
+CREATE TABLE detalle_pago_artista (
+  iddetallepagoartista INT AUTO_INCREMENT PRIMARY KEY,
+  idpagotrabajadores INT NOT NULL,
+  total_eventos_asistidos INT DEFAULT 0,
+  adelantos DECIMAL(10,2) DEFAULT 0.00,
+  CONSTRAINT fk_pagoartista FOREIGN KEY (idpagotrabajadores) REFERENCES pagos_trabajadores(idpagotrabajadores) ON DELETE CASCADE
+);
+
+CREATE TABLE detalle_pago_empresa (
+  iddetallepagoempresa INT AUTO_INCREMENT PRIMARY KEY,
+  idpagotrabajadores INT NOT NULL,
+  total_dias_laborados INT DEFAULT 0,
+  adelantos DECIMAL(10,2) DEFAULT 0.00,
+  saldo_a_favor DECIMAL(10,2) DEFAULT 0.00,
+  bono_productividad DECIMAL(10,2) DEFAULT 0.00,
+  CONSTRAINT fk_pagoempresa FOREIGN KEY (idpagotrabajadores) REFERENCES pagos_trabajadores(idpagotrabajadores) ON DELETE CASCADE
+);
+
+CREATE TABLE adelantos_trabajadores (
+  idadelanto INT AUTO_INCREMENT PRIMARY KEY,
+  idcolaborador INT NOT NULL,
+  fecha DATE NOT NULL,
+  monto DECIMAL(10,2),
+  motivo TEXT,
+  CONSTRAINT fk_idcolaborador_adelanto FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador)
+);
+
+-- ********************************************** GASTOS *********************************************
+CREATE TABLE gastosyentradas (
+  idgastoentrada INT AUTO_INCREMENT PRIMARY KEY,
+  concepto VARCHAR(200) NULL, -- PONER UNA NOTA : MAXIMO SOLO 200 CARACTERES
+  fecha_gasto DATE NOT NULL,	
+  monto DECIMAL(10,2) NOT NULL,
+  tipo INT NOT NULL, -- GASTO O ENTRADA
+  iddetallepresentacion INT NULL, -- puede ser NULL si es solo de artista
+  idusuario INT NULL, -- puede ser NULL si es solo del evento
+  mediopago INT NOT NULL, -- 1: Transferencia, 2: Efectivo
+  detalles  VARCHAR(200) NULL, -- opcional
+  comprobante_url VARCHAR(100) NULL, -- imagen o archivo
+  comprobante_fac_bol VARCHAR(100) NULL, -- imagen o archivo
+  CONSTRAINT fk_idusuario_gastoentrada FOREIGN KEY (idusuario) REFERENCES usuarios (idusuario),
+  CONSTRAINT fk_iddp_gastoentrada FOREIGN KEY (iddetallepresentacion) REFERENCES detalles_presentacion (iddetalle_presentacion)
+);
+
+select * from niv
+
+-- *************************** APARTIR DE ABAJO NO CONSIDERAR ***************************************
 
 DROP TABLE nomina (
 	idnomina INT auto_increment PRIMARY KEY,
@@ -666,15 +726,14 @@ CREATE TABLE acumulados_nomina (
     CONSTRAINT fk_idnomina_acumulado foreign key (idnomina) references nominas (idnomina)
 ) ENGINE = INNODB;
 
-CREATE TABLE gastosentradas (
+CREATE TABLE gastosentradas ( -- SE PENSARA EN AGREGAR
 	idgastoentrada INT auto_increment primary key,
 	estadopago INT NULL,
 	fgasto DATE NULL,
 	fvencimiento DATE NULL,          -- como 'bonificación', 'descuento', 'aporte', etc.
     tipo INT NULL,
     concepto VARCHAR(40) NULL,
-    idproveedor INT NULL,
-    
+    idproveedor INT NULL
 ) ENGINE = INNODB;
 
 CREATE TABLE gastosentradas (

@@ -101,7 +101,7 @@
                     <h1>Gastos e Ingresos</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a class="btn btn-info" id="btnNuevoColaboradorNomina" href="<?= $hostOnlyHeader ?>/views/contabilidad/gastos/registrar-gasto">Nuevo Gasto</a>
+                    <a class="btn btn-info" id="btnNuevoColaboradorNomina" href="<?= $hostOnlyHeader ?>/views/contabilidad/gastos/registrar-gasto">Nuevo Registro</a>
                 </div>
             </div>
             <div class="row">
@@ -132,13 +132,13 @@
                                     <table class="table" id="table-gastos">
                                         <thead class="text-center">
                                             <tr>
-                                                <th>Estado</th>
-                                                <th>Fecha Gasto</th>
-                                                <th>Fecha Vencimiento</th>
-                                                <th>Razón</th> <!-- ESTO SERA SUBTIPO PERO COMO PARA QUE ENTIENDAN -->
-                                                <th>Gasto</th>
-                                                <th>Costo Final</th>
-                                                <th>Monto Pendiente</th>
+                                                <th>Artista</th>
+                                                <th>Evento</th>
+                                                <th>Fecha de gasto</th>
+                                                <th>Monto</th> <!-- ESTO SERA SUBTIPO PERO COMO PARA QUE ENTIENDAN -->
+                                                <th>Medio de pago</th>
+                                                <th>Archivo adjunto</th>
+                                                <th>Baucher</th>
                                                 <th>Opciones</th>
                                             </tr>
                                         </thead>

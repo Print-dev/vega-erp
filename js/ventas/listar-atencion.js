@@ -446,6 +446,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rconvenio;
   }
 
+  async function actualizarEstadoCordinacionTecnica(iddetallepresentacion, estadocordinaciontecnica) {
+    const cordinacion = new FormData();
+    cordinacion.append("operation", "actualizarEstadoCordinacionTecnica");
+    cordinacion.append("iddetallepresentacion", iddetallepresentacion); // id artista
+    cordinacion.append("estadocordinaciontecnica", estadocordinaciontecnica);
+
+    const fcordinacion = await fetch(`${host}detalleevento.controller.php`, {
+      method: "POST",
+      body: cordinacion,
+    });
+    const rcordinacion = await fcordinacion.json();
+    return rcordinacion;
+  }
+
+  async function actualizarEstadoCordinacionPublicidad(iddetallepresentacion, estadocordinacionpublicidad) {
+    const cordinacion = new FormData();
+    cordinacion.append("operation", "actualizarEstadoCordinacionPublicidad");
+    cordinacion.append("iddetallepresentacion", iddetallepresentacion); // id artista
+    cordinacion.append("estadocordinacionpublicidad", estadocordinacionpublicidad);
+
+    const fcordinacion = await fetch(`${host}detalleevento.controller.php`, {
+      method: "POST",
+      body: cordinacion,
+    });
+    const rcordinacion = await fcordinacion.json();
+    return rcordinacion;
+  }
+
   async function registrarPagoContrato(idcontrato, estado) {
     const fechaHoraPeru = obtenerFechaHoraPeru();
 
@@ -871,14 +899,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function dataFilters() {
     const params = new URLSearchParams();
     params.append("operation", "filtrarAtenciones");
-    params.append(
-      "ncotizacion",
-      $q("#ncotizacion").value ? $q("#ncotizacion").value : ""
-    );
-    params.append(
-      "ndocumento",
-      $q("#ndocumento").value ? $q("#ndocumento").value : ""
-    );
+    params.append("ncotizacion",$q("#ncotizacion").value ? $q("#ncotizacion").value : "");
+    params.append("ndocumento",$q("#ndocumento").value ? $q("#ndocumento").value : "");
     params.append("nomusuario", $q("#nomusuario").value ? $q("#nomusuario").value : "")
     params.append("establecimiento", $q("#establecimiento").value ? $q("#establecimiento").value : "")
     params.append("fechapresentacion", $q("#fechapresentacion").value ? $q("#fechapresentacion").value : "")
@@ -1145,14 +1167,14 @@ document.addEventListener("DOMContentLoaded", async () => {
              <hr>
              <div class="mt-3">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="check1">
-                <label class="form-check-label fw-normal" for="check1">
+                <input class="form-check-input" type="checkbox" id="cordinaciontecnica" ${dpInfo[0]?.estadoCordinacionTecnica == 1 ? "checked" : ""}>
+                <label class="form-check-label fw-normal" for="cordinaciontecnica">
                   coordinación técnica (pantalla, luces y sonido)
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="check2">
-                <label class="form-check-label fw-normal" for="check2">
+                <input class="form-check-input" type="checkbox" id="cordinacionpublicidad" ${dpInfo[0]?.estadoCordinacionPublicidad == 1 ? "checked" : ""}>
+                <label class="form-check-label fw-normal" for="cordinacionpublicidad">
                   coordinación publicidad
                 </label>
               </div>
@@ -1160,6 +1182,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
            </div>    
      `;
+
+    $q("#cordinaciontecnica").addEventListener("change", async (e) => {
+            console.log("cambiando tecnica");
+
+      const estado = e.target.checked ? 1 : 0; // 👈 convierte a número
+      const cordtecact = await actualizarEstadoCordinacionTecnica(iddp, estado);
+      console.log("cordtecact", cordtecact);
+    });
+
+    $q("#cordinacionpublicidad").addEventListener("change", async (e) => {
+      console.log("cambiando publicidad");
+      const estado = e.target.checked ? 1 : 0; // 👈 convierte a número
+      const cordpubact = await actualizarEstadoCordinacionPublicidad(iddp, estado);
+      console.log("cordpubact", cordpubact);
+    });
   }
 
 

@@ -263,6 +263,28 @@ if (isset($_POST['operation'])) {
       echo json_encode($rpt);
       break;
 
+    case 'actualizarEstadoCordinacionTecnica':
+      $cleanData = [
+        'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']),
+        'estadocordinaciontecnica'   => $detalleevento->limpiarCadena($_POST['estadocordinaciontecnica']),
+      ];
+
+      $rpt = $detalleevento->actualizarEstadoCordinacionTecnica($cleanData);
+
+      echo json_encode($rpt);
+      break;
+
+    case 'actualizarEstadoCordinacionPublicidad':
+      $cleanData = [
+        'iddetallepresentacion'   => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']),
+        'estadocordinacionpublicidad'   => $detalleevento->limpiarCadena($_POST['estadocordinacionpublicidad']),
+      ];
+
+      $rpt = $detalleevento->actualizarEstadoCordinacionPublicidad($cleanData);
+
+      echo json_encode($rpt);
+      break;
+
       /* case 'asignarLugarDestinoBus':
       $cleanData = [
         'iddetallepresentacion' => $detalleevento->limpiarCadena($_POST['iddetallepresentacion']),

@@ -1,4 +1,10 @@
 <?php
+
+require '../vendor/autoload.php';
+
+use Cloudinary\Cloudinary;
+use Cloudinary\Configuration\Configuration;
+
 require_once '../models/Gastos.php';
 header("Access-Control-Allow-Origin: *");
 header("Content-type: application/json; charset=utf-8");
@@ -67,6 +73,64 @@ if (isset($_POST['operation'])) {
             $respuesta = ['idgastoentrada' => -1];
 
             $idgastoentrada = $gastos->registrarGastoEntrada($cleanData);
+
+            if ($idgastoentrada > 0) {
+                $respuesta['idgastoentrada'] = $idgastoentrada;
+            }
+
+            echo json_encode($respuesta);
+            break;
+
+        case 'registrarGastoYEntrada':
+            $cloudinary = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => 'dynpy0r4v',
+                    'api_key'    => '722279687758731',
+                    'api_secret' => 'KsLk7dNUAAjRYEBNUsv2JAV7cPI'
+                ],
+                'url' => [
+                    'secure' => true
+                ]
+            ]);
+
+            // Variables por defecto
+            $secureUrlComprobanteUrl = '';
+            $secureUrlComprobanteFacBol = '';
+
+            // Subir marca de agua si existe
+            if (isset($_FILES['comprobanteurl']) && $_FILES['comprobanteurl']['error'] === UPLOAD_ERR_OK) {
+                $uploadResultComprobanteUrl = $cloudinary->uploadApi()->upload(
+                    $_FILES['comprobanteurl']['tmp_name'],
+                    ['folder' => 'comprobantes_vegaproducciones']
+                );
+                $secureUrlComprobanteUrl = $uploadResultComprobanteUrl['public_id'] ?? '';
+            }
+
+            // Subir firma si existe
+            if (isset($_FILES['comprobantefacbol']) && $_FILES['comprobantefacbol']['error'] === UPLOAD_ERR_OK) {
+                $uploadResultComprobanteFacBol = $cloudinary->uploadApi()->upload(
+                    $_FILES['comprobantefacbol']['tmp_name'],
+                    ['folder' => 'comprobantes_vegaproducciones']
+                );
+                $secureUrlComprobanteFacBol = $uploadResultComprobanteFacBol['public_id'] ?? '';
+            }
+
+            $cleanData = [
+                'concepto'      => $gastos->limpiarCadena($_POST['concepto']) ? $gastos->limpiarCadena($_POST['concepto']) : null,
+                'fechagasto'          => $gastos->limpiarCadena($_POST['fechagasto']) ? $gastos->limpiarCadena($_POST['fechagasto']) : null,
+                'monto'    => $gastos->limpiarCadena($_POST['monto']) ? $gastos->limpiarCadena($_POST['monto']) : null,
+                'tipo'            => $gastos->limpiarCadena($_POST['tipo']) ? $gastos->limpiarCadena($_POST['tipo']) : null,
+                'iddetallepresentacion'        => $gastos->limpiarCadena($_POST['iddetallepresentacion']) ? $gastos->limpiarCadena($_POST['iddetallepresentacion']) : null,
+                'idusuario'         => $gastos->limpiarCadena($_POST['idusuario']) ? $gastos->limpiarCadena($_POST['idusuario']) : null,
+                'mediopago'     => $gastos->limpiarCadena($_POST['mediopago']) ? $gastos->limpiarCadena($_POST['mediopago']) : null,
+                'detalles'   => $gastos->limpiarCadena($_POST['detalles']) ? $gastos->limpiarCadena($_POST['detalles']) : null,
+                'comprobanteurl'           => $secureUrlComprobanteUrl,
+                'comprobantefacbol'       => $secureUrlComprobanteFacBol
+            ];
+
+            $respuesta = ['idgastoentrada' => -1];
+
+            $idgastoentrada = $gastos->registrarGastoYEntrada($cleanData);
 
             if ($idgastoentrada > 0) {
                 $respuesta['idgastoentrada'] = $idgastoentrada;

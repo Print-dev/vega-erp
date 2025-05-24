@@ -123,6 +123,9 @@ if (isset($_POST['operation'])) {
                 'idsucursal'   => $nomina->limpiarCadena($_POST['idsucursal']),
                 'fechaingreso'   => $nomina->limpiarCadena($_POST['fechaingreso']),
                 'area' => $nomina->limpiarCadena($_POST['area']),
+                'idresponsable' => $nomina->limpiarCadena($_POST['idresponsable']),
+                'banco' => $nomina->limpiarCadena($_POST['banco']),
+                'ncuenta' => $nomina->limpiarCadena($_POST['ncuenta']),
             ];
 
             $respuesta = ['idcolaborador' => -1];
@@ -189,6 +192,9 @@ if (isset($_POST['operation'])) {
                 'idsucursal'   => $nomina->limpiarCadena($_POST['idsucursal']) ? $nomina->limpiarCadena($_POST['idsucursal']) : '',
                 'fechaingreso' => $nomina->limpiarCadena($_POST['fechaingreso']) ? $nomina->limpiarCadena($_POST['fechaingreso']) : '',
                 'idarea'   => $nomina->limpiarCadena($_POST['idarea']) ? $nomina->limpiarCadena($_POST['idarea']) : '',
+                'idresponsable'   => $nomina->limpiarCadena($_POST['idresponsable']) ? $nomina->limpiarCadena($_POST['idresponsable']) : '',
+                'banco'   => $nomina->limpiarCadena($_POST['banco']) ? $nomina->limpiarCadena($_POST['banco']) : '',
+                'ncuenta'   => $nomina->limpiarCadena($_POST['ncuenta']) ? $nomina->limpiarCadena($_POST['ncuenta']) : '',
             ];
 
             $rpt = $nomina->actualizarColaborador($cleanData);

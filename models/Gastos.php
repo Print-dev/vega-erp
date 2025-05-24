@@ -244,6 +244,34 @@ class Gastos extends ExecQuery
             return -1;
         }
     }
+    
+    public function registrarGastoYEntrada($params = []): int
+    {
+        try {
+            $pdo = parent::getConexion();
+            $cmd = $pdo->prepare('CALL sp_registrar_gasto_entrada(@idgastoentrada,?,?,?,?,?,?,?,?,?,?)');
+            $cmd->execute(
+                array(
+                    $params['concepto'],
+                    $params['fechagasto'],
+                    $params['monto'],
+                    $params['tipo'],
+                    $params['iddetallepresentacion'],
+                    $params['idusuario'],
+                    $params['mediopago'],
+                    $params['detalles'],
+                    $params['comprobanteurl'],
+                    $params['comprobantefacbol']
+                )
+            );
+
+            $respuesta = $pdo->query("SELECT @idgastoentrada AS idgastoentrada")->fetch(PDO::FETCH_ASSOC);
+            return $respuesta['idgastoentrada'];
+        } catch (Exception $e) {
+            error_log("Error: " . $e->getMessage());
+            return -1;
+        }
+    }
 
    /*  public function registrarPagoPendiente($params = []): int
     {

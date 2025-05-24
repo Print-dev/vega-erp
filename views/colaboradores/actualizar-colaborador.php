@@ -5,7 +5,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header border-0 d-flex justify-content-between align-items-center">
-                <h2>Actualizar usuario</h2>
+                <h2>Actualizar Colaborador</h2>
 
                 <a id="btnRegresarActualizarUsuario" class="btn btn-outline-primary btn-sm ms-auto m-0" type="button"><i class="fa-solid fa-circle-left"></i> Regresar</a>
             </div>
@@ -144,7 +144,7 @@
                         </div>
                     </div>
                     <div class="row align-items-center g-2 mt-3">
-                        <label for="area" class="col-sm-1 col-form-label">Área:</label>
+                        <label for="area" class="col-sm-1 col-form-label">Cargo:</label>
 
                         <div class="col-sm-5 d-flex align-items-center">
                             <select name="area" id="area" class="form-select me-2 filters" required>
@@ -154,11 +154,35 @@
                         </div>
                     </div>
                     <div class="row g-2 mt-3">
+                        <label for="responsable" class="col-sm-1 form-label size-label mt-3">Responsable</label>
+                        <div class="col-sm-5">
+                            <select name="responsable" id="responsable" class="form-select" required>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-2 mt-3">
                         <label for="sucursal" class="col-sm-1 form-label size-label mt-3">Sucursal</label>
                         <div class="col-sm-5">
                             <select name="sucursal" id="sucursal" class="form-select" required>
                                 <option value="">Selecciona</option>
                             </select>
+                        </div>
+                    </div>
+                    <div class="row g-2 mt-3">
+                        <label for="banco" class="col-sm-1 form-label size-label mt-3">Banco</label>
+                        <div class="col-sm-5">
+                            <select name="banco" id="banco" class="form-select">
+                                <option value="">Selecciona</option>
+                                <option value="1">BBVA</option>
+                                <option value="2">BCP</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-2 mt-3">
+                        <label for="ncuenta" class="col-sm-1 form-label size-label mt-3">N° Cuenta:</label>
+                        <div class="col-sm-5">
+                            <input type="text" id="ncuenta" class="form-control" autocomplete="off">
                         </div>
                     </div>
                     <div class="row mt-3">

@@ -28,6 +28,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     await obtenerSucursales()
     await obtenerAreas()
+    await obtenerArtistas()
+    await obtenerOrganizadores()
 
     async function obtenerAreas() {
         const data = await getDatos(`${host}nomina.controller.php`, "operation=obtenerAreas");
@@ -128,6 +130,29 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data
     }
 
+    async function obtenerArtistas() {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerUsuarioPorNivel");
+        params.append("idnivelacceso", 6);
+        const data = await getDatos(`${host}usuario.controller.php`, params)
+        console.log(data);
+        $q("#responsable").innerHTML = "<option value='-1'>Selecciona</option>";
+        data.forEach(artista => {
+            $q("#responsable").innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
+        });
+    }
+
+    async function obtenerOrganizadores() {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerUsuarioPorNivel");
+        params.append("idnivelacceso", 12);
+        const data = await getDatos(`${host}usuario.controller.php`, params)
+        console.log(data);
+        data.forEach(artista => {
+            $q("#responsable").innerHTML += `<option value="${artista.idusuario}">${artista.nom_usuario}</option>`;
+        });
+    }
+
     await obtenerAreas()
 
     const colaborador = await obtenerColaboradorPorId(idcolaborador)
@@ -135,6 +160,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#fechaingreso").value = colaborador[0]?.fechaingreso
     $q("#area").value = colaborador[0]?.idarea
     $q("#sucursal").value = colaborador[0]?.idsucursal
+    $q("#responsable").value = colaborador[0]?.idresponsable
+    $q("#banco").value = colaborador[0]?.banco
+    $q("#ncuenta").value = colaborador[0]?.ncuenta
     /* if (usuario[0]?.idnivelacceso == 6) {
         $q(".contenedor-color").hidden = false
         $q(".contenedor-porcentaje").hidden = false
@@ -162,7 +190,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const persona = await obtenerPersonaCompletoPorId(colaborador[0]?.idpersona)
     console.log("persona->", persona);
     idpersona = persona[0]?.idpersona
-    renderizarDatosPersona(persona[0])
+    await renderizarDatosPersona(persona[0])
 
     // ***************************************************** CLOUDINARY *****************************************************************************
     /* let myWidget = cloudinary.createUploadWidget(
@@ -220,7 +248,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       false
     ); */
 
-    function renderizarDatosPersona(persona) {
+    async function renderizarDatosPersona(persona) {
         $q("#num_doc").value = persona.num_doc
         $q("#apellidos").value = persona.apellidos
         $q("#nombres").value = persona.nombres
@@ -229,8 +257,59 @@ document.addEventListener("DOMContentLoaded", async () => {
         $q("#telefono1").value = persona.telefono
         $q("#telefono2").value = persona.telefono2
         $q("#correo").value = persona.correo
-        $q("#distrito").value = persona.distrito
+        //$q("#distrito").value = persona.distrito
+        if (persona.iddistrito) {
+            await cargarUbigeoDesdeDistrito(persona.iddistrito);
+        }
     }
+
+
+    async function cargarUbigeoDesdeDistrito(idDistrito) {
+        try {
+            // 1️⃣ Obtener datos del distrito
+            let distrito = await fetch(`${host}recurso.controller.php?operation=obtenerDistritoPorId&iddistrito=${idDistrito}`).then(res => res.json());
+            console.log("TODAS LAS DISTRTITOS OBTENIDOAS  -> ", distrito)
+
+            // 2️⃣ Obtener todas las provincias y marcar la seleccionada
+            let provincias = await fetch(`${host}recurso.controller.php?operation=obtenerTodosProvincias`).then(res => res.json());
+            console.log("TODAS LAS PROVINCIAS OBTENIDOAS  -> ", provincias)
+            let provinciaSeleccionada = provincias.find(p => p.idprovincia == distrito[0].idprovincia);
+            console.log("LA PROVINCIA SELCCIONADA - ", provinciaSeleccionada)
+
+            $q("#provincia").innerHTML = provincias.map(p =>
+                `<option value="${p.idprovincia}" ${p.idprovincia === distrito[0].idprovincia ? "selected" : ""}>${p.provincia}</option>`
+            ).join("");
+
+            // 3️⃣ Obtener todas los departamentos y marcar el correcto
+            let departamentos = await fetch(`${host}recurso.controller.php?operation=obtenerTodosDepartamentos`).then(res => res.json());
+            console.log("TODOS LOS DEPARTAMENTOS OBTENIDOS -> ", departamentos)
+            console.log("LA PROVINCIA SELCCIONADA - ", provinciaSeleccionada)
+            let departamentoSeleccionado = departamentos.find(d => d.iddepartamento === provinciaSeleccionada.iddepartamento);
+            console.log("DEPARTAMENTO SELCCIONADO -> ", departamentoSeleccionado)
+            $q("#departamento").innerHTML = departamentos.map(d =>
+                `<option value="${d.iddepartamento}" ${d.iddepartamento === provinciaSeleccionada.iddepartamento ? "selected" : ""}>${d.departamento}</option>`
+            ).join("");
+
+            // 4️⃣ Obtener todas las nacionalidades y marcar la correcta
+            let nacionalidades = await fetch(`${host}recurso.controller.php?operation=obtenerTodosNacionalidades`).then(res => res.json());
+            console.log("NACIONALIDADES TODAS OBTENIDAS : ", nacionalidades)
+            let nacionalidadSeleccionada = nacionalidades.find(n => n.idnacionalidad === departamentoSeleccionado.idnacionalidad);
+            $q("#nacionalidad").innerHTML = nacionalidades.map(n =>
+                `<option value="${n.idnacionalidad}" ${n.idnacionalidad === departamentoSeleccionado.idnacionalidad ? "selected" : ""}>${n.pais}</option>`
+            ).join("");
+
+            // 5️⃣ Obtener todos los distritos y seleccionar el correcto
+            let distritos = await fetch(`${host}recurso.controller.php?operation=obtenerTodosDistritos`).then(res => res.json());
+            $q("#distrito").innerHTML = distritos.map(d =>
+                `<option value="${d.iddistrito}" ${d.iddistrito === idDistrito ? "selected" : ""}>${d.distrito}</option>`
+            ).join("");
+
+        } catch (error) {
+            console.error("Error cargando ubigeo:", error);
+        }
+    }
+
+
 
     function renderizarDatosUsuario(usuario) {
         $q("#nom_usuario").value = usuario.nom_usuario
@@ -250,7 +329,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         body.append("idsucursal", $q("#sucursal").value ? $q("#sucursal").value : '');
         body.append("fechaingreso", $q("#fechaingreso").value ? $q("#fechaingreso").value : '');
         body.append("idarea", $q("#area").value ? $q("#area").value : '');
-        // body.append("esRepresentante", $q("#esrepresentante").checked ? 1 : 0);
+        body.append("idresponsable", $q("#responsable").value ? $q("#responsable").value : '');
+        body.append("banco", $q("#banco").value ? $q("#banco").value : '');
+        body.append("ncuenta", $q("#ncuenta").value ? $q("#ncuenta").value : '');
 
         const fbody = await fetch(`${host}nomina.controller.php`, {
             method: "POST",
@@ -321,7 +402,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#btnGuardarNuevaArea").addEventListener("click", async () => {
         const arearegistrada = await registrarArea()
         console.log("area registrada -> ", arearegistrada);
-        if($q("#areanueva").value.trim() == "") {
+        if ($q("#areanueva").value.trim() == "") {
             showToast("El campo area no puede estar vacio", "ERROR");
             return
         }

@@ -371,6 +371,38 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
+  
+  public function actualizarEstadoCordinacionTecnica($params = []): bool
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_actualizar_estadoCordinacionTecnica (?,?)");
+      $rpt = $cmd->execute(
+        array(
+          $params['iddetallepresentacion'],
+          $params['estadocordinaciontecnica'],
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+  
+  public function actualizarEstadoCordinacionPublicidad($params = []): bool
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_actualizar_estadoCordinacionPublicidad (?,?)");
+      $rpt = $cmd->execute(
+        array(
+          $params['iddetallepresentacion'],
+          $params['estadocordinacionpublicidad'],
+        )
+      );
+      return $rpt;
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
 
   /* public function asignarLugarDestinoBus($params = []): bool
   {

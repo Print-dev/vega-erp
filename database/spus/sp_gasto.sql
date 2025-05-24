@@ -180,3 +180,39 @@ CALL sp_registrar_gasto_entrada(
     NULL,  -- _impuestos
     NULL   -- _costofinalunit
 );
+
+
+-- ****************************** APARTIR DE ACA SI CONSIDERA *****************************************
+
+CALL sp_registrar_gasto_entrada (@idgastoyentrada, 'asdas', '2025-05-21', 2000, 1, 139, 1, 1, 'sasdads', '','');
+DROP PROCEDURE IF EXISTS `sp_registrar_gasto_entrada`;
+DELIMITER //
+CREATE PROCEDURE sp_registrar_gasto_entrada(
+    OUT _idgastoentrada INT,
+    IN _concepto VARCHAR(200),
+    IN _fecha_gasto date,
+	IN _monto DECIMAL(10,2),
+    IN _tipo INT,
+    IN _iddetallepresentacion INT,
+    IN _idusuario INT,
+    IN _mediopago INT,
+    IN _detalles VARCHAR(200),
+    IN _comprobante_url VARCHAR(100),
+    IN _comprobante_fac_bol VARCHAR(100)
+)
+BEGIN
+    DECLARE existe_error INT DEFAULT 0;
+    
+
+    -- Insertar la notificación
+    INSERT INTO gastosyentradas (concepto, fecha_gasto, monto, tipo, iddetallepresentacion, idusuario, mediopago, detalles, comprobante_url, comprobante_fac_bol)
+    VALUES (nullif(_concepto,''), _fecha_gasto , _monto ,_tipo, _iddetallepresentacion, _idusuario,_mediopago,_detalles,_comprobante_url,_comprobante_fac_bol );
+
+    IF existe_error = 1 THEN
+        SET _idgastoentrada = -1;
+    ELSE
+        SET _idgastoentrada = LAST_INSERT_ID();
+    END IF;
+END //
+DELIMITER ;
+

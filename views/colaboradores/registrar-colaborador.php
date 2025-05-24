@@ -166,7 +166,7 @@
           <div class="row g-2 mt-3">
             <label for="banco" class="col-sm-1 form-label size-label mt-3">Banco</label>
             <div class="col-sm-5">
-              <select name="banco" id="banco" class="form-select" required>
+              <select name="banco" id="banco" class="form-select">
                 <option value="">Selecciona</option>
                 <option value="1">BBVA</option>
                 <option value="2">BCP</option>
@@ -177,7 +177,7 @@
           <div class="row g-2 mt-3">
             <label for="ncuenta" class="col-sm-1 form-label size-label mt-3">N° Cuenta:</label>
             <div class="col-sm-5">
-              <input type="text" id="ncuenta" class="form-control" autocomplete="off" required>
+              <input type="text" id="ncuenta" class="form-control" autocomplete="off">
             </div>
           </div>
       </div>

@@ -272,5 +272,11 @@ FOREIGN KEY (iddetalle_presentacion)
 REFERENCES detalles_presentacion(iddetalle_presentacion)
 ON DELETE CASCADE;
 
-ALTER TABLE detalles_presentacion ADD COLUMN estadoCordinacionTecnica tinyint null default 0;
-ALTER TABLE detalles_presentacion ADD COLUMN estadoCordinacionPublicidad tinyint null default 0;
+-- PARA VEGAPRODUCCIONES.ORG
+ALTER TABLE detalles_presentacion ADD COLUMN estadoCordinacionTecnica BOOLEAN null default false;
+ALTER TABLE detalles_presentacion ADD COLUMN estadoCordinacionPublicidad BOOLEAN null default false;
+
+ALTER TABLE colaboradores ADD COLUMN idresponsable INT NULL;
+ALTER TABLE colaboradores ADD COLUMN banco INT NULL;
+ALTER TABLE colaboradores ADD COLUMN ncuenta CHAR(20) NULL;
+ALTER TABLE colaboradores add CONSTRAINT fk_idresponsable_colaborador foreign key (idresponsable) references usuarios (idusuario) ON DELETE CASCADE 
