@@ -88,6 +88,21 @@ class Gastos extends ExecQuery
         }
     }
 
+
+    public function obtenerGastoEntradaPorId($params = []): array
+    {
+        try {
+            $cmd = parent::execQ("SELECT * FROM gastosyentradas WHERE idgastoentrada = ? ");
+            $cmd->execute(array(
+                $params['idgastoentrada']
+            ));
+            return $cmd->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+    }
+
+
     public function filtrarNominas($params = []): array
     {
         try {
@@ -246,7 +261,7 @@ class Gastos extends ExecQuery
             return -1;
         }
     }
-    
+
     public function registrarGastoYEntrada($params = []): int
     {
         try {
@@ -287,7 +302,32 @@ class Gastos extends ExecQuery
                     $params['mediopago'],
                     $params['detalles'],
                     $params['comprobanteurl'],
-                    $params['comprobantefacbol']                
+                    $params['comprobantefacbol']
+                )
+            );
+
+            return $act;
+        } catch (Exception $e) {
+            error_log("Error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function actualizarGastoEntrada($params = []): bool
+    {
+        try {
+            $pdo = parent::getConexion();
+            $cmd = $pdo->prepare("CALL sp_actualizar_gastoentrada(?,?,?,?,?,?,?,?)");
+            $act = $cmd->execute(
+                array(
+                    $params['idgastoentrada'],
+                    $params['concepto'],
+                    $params['fechagasto'],
+                    $params['monto'],
+                    $params['mediopago'],
+                    $params['detalles'],
+                    $params['comprobanteurl'],
+                    $params['comprobantefacbol']
                 )
             );
 
@@ -305,7 +345,7 @@ class Gastos extends ExecQuery
             $cmd = $pdo->prepare("DELETE FROM gastosyentradas WHERE idgastoentrada = ?;");
             $act = $cmd->execute(
                 array(
-                    $params['idgastoentrada']          
+                    $params['idgastoentrada']
                 )
             );
 
@@ -316,7 +356,7 @@ class Gastos extends ExecQuery
         }
     }
 
-   /*  public function registrarPagoPendiente($params = []): int
+    /*  public function registrarPagoPendiente($params = []): int
     {
         try {
             $pdo = parent::getConexion();

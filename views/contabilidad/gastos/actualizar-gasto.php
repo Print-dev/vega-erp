@@ -4,49 +4,16 @@
     <div class="row d-flex flex-nowrap">
         <div class="card">
             <div class="card-body">
-                <form action="" id="form-registro-gasto">
+                <form action="" id="form-actualizar-gasto">
                     <div class="row g-2 mb-4">
-                        <h1 class="fw-bold">Ingresar</h1>
+                        <h1 class="fw-bold">Actualizar</h1>
                     </div>
                     <div class="row g-2 mb-4">
                         <!-- <div class="text-center my-4 position-relative">
                             <hr>
                             <span class="position-absolute top-50 start-50 translate-middle bg-white px-3">General</span>
                         </div> -->
-                        <div class="col-md-4">
-                            <div class="form-floating">
-                                <select name="referido" id="referido" class="form-select" placeholder="Referido">
-                                    <option value="">Selecciona</option>
-                                    <option value="1">Artistas</option>
-                                    <option value="2">Eventos</option>
-                                </select>
-                                <label for="referido" class="form-label">Referido</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4" id="div-artista">
-                            <div class="form-floating">
-                                <select name="artista" id="artista" class="form-select" placeholder="Referido">
-                                </select>
-                                <label for="artista" class="form-label">Artista</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4" id="div-evento">
-                            <div class="form-floating">
-                                <select name="evento" id="evento" class="form-select" placeholder="Referido">
-                                </select>
-                                <label for="evento" class="form-label">Evento</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-floating">
-                                <select name="estado" id="estado" class="form-select" placeholder="Estado">
-                                    <option value="">Selecciona</option>
-                                    <option value="1">Pendiente</option>
-                                    <option value="2">Pago</option>
-                                </select>
-                                <label for="estado" class="form-label">Estado</label>
-                            </div>
-                        </div>
+                        
                         <div class="col-md-4">
                             <div class="form-floating">
                                 <input type="text" id="concepto" class="form-control" autocomplete="off" placeholder="Concepto">
@@ -107,8 +74,7 @@
                     <hr>
                     <div class="row">
                         <div class="text-end">
-                            <button type="button" class="btn btn-danger" id="btn-resetear">Resetear</button>
-                            <button type="submit" class="btn btn-primary" id="btn-registrar-gasto">Registrar</button>
+                            <button type="submit" class="btn btn-primary" id="btn-registrar-gasto">Actualizar</button>
                         </div>
                     </div>
                 </form>
@@ -120,7 +86,7 @@
 <?php require_once '../../footer.php' ?>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script src="<?= $hostOnlyHeader ?>/js/gastos/registrar-gasto.js"></script>
+<script src="<?= $hostOnlyHeader ?>/js/gastos/actualizar-gasto.js"></script>
 <!-- <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script> -->
 <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
 

@@ -26,7 +26,13 @@ if (isset($_GET['operation'])) {
             ];
             echo json_encode($nomina->obtenerPersonaNumDocColaborador($cleanData));
             break;
- */
+            */
+        case 'obtenerGastoEntradaPorId':
+            $cleanData = [
+                'idgastoentrada'   => $gastos->limpiarCadena($_GET['idgastoentrada']),
+            ];
+            echo json_encode($gastos->obtenerGastoEntradaPorId($cleanData));
+            break;
 
         case 'filtrarGastos':
             $cleanData = [
@@ -105,8 +111,8 @@ if (isset($_POST['operation'])) {
             ]);
 
             // Variables por defecto
-            $secureUrlComprobanteUrl = '';
-            $secureUrlComprobanteFacBol = '';
+            $secureUrlComprobanteUrl = $_POST['publicIdComprobanteAnterior'] ?? '';
+            $secureUrlComprobanteFacBol = $_POST['publicIdFacBolAnterior'] ?? '';
 
             // Subir marca de agua si existe
             if (isset($_FILES['comprobanteurl']) && $_FILES['comprobanteurl']['error'] === UPLOAD_ERR_OK) {
@@ -150,7 +156,7 @@ if (isset($_POST['operation'])) {
             echo json_encode($respuesta);
             break;
 
-        //
+
 
         case 'pagarGastoEntrada':
             $cloudinary = new Cloudinary([
@@ -203,6 +209,63 @@ if (isset($_POST['operation'])) {
             ];
 
             $rpt = $gastos->pagarGastoEntrada($cleanData);
+
+            echo json_encode($rpt);
+            break;
+
+        case 'actualizarGastoEntrada':
+            $cloudinary = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => 'dynpy0r4v',
+                    'api_key'    => '722279687758731',
+                    'api_secret' => 'KsLk7dNUAAjRYEBNUsv2JAV7cPI'
+                ],
+                'url' => ['secure' => true]
+            ]);
+
+            // PUBLIC_ID actuales
+            $comprobanteurlActual = $_POST['publicIdComprobanteAnterior'] ?? '';
+            $comprobanteFacBolActual = $_POST['publicIdFacBolAnterior'] ?? '';
+
+            $secureUrlComprobanteURL = $comprobanteurlActual;
+            $secureUrlComprobanteFacBol = $comprobanteFacBolActual;
+
+            // Si se sube nueva marca de agua
+            if (isset($_FILES['comprobanteurl']) && $_FILES['comprobanteurl']['error'] === UPLOAD_ERR_OK) {
+                if (!empty($comprobanteurlActual)) {
+                    $cloudinary->uploadApi()->destroy($comprobanteurlActual);
+                }
+                $uploadResultComprobanteURL = $cloudinary->uploadApi()->upload(
+                    $_FILES['comprobanteurl']['tmp_name'],
+                    ['folder' => 'comprobantes_vegaproducciones']
+                );
+                $secureUrlComprobanteURL = $uploadResultComprobanteURL['public_id'] ?? '';
+            }
+
+            // Si se sube nueva firma
+            if (isset($_FILES['comprobantefacbol']) && $_FILES['comprobantefacbol']['error'] === UPLOAD_ERR_OK) {
+                if (!empty($comprobanteFacBolActual)) {
+                    $cloudinary->uploadApi()->destroy($comprobanteFacBolActual);
+                }
+                $uploadResultComprobanteFacBol = $cloudinary->uploadApi()->upload(
+                    $_FILES['comprobantefacbol']['tmp_name'],
+                    ['folder' => 'comprobantes_vegaproducciones']
+                );
+                $secureUrlComprobanteFacBol = $uploadResultComprobanteFacBol['public_id'] ?? '';
+            }
+
+            $cleanData = [
+                'idgastoentrada'   => $gastos->limpiarCadena($_POST['idgastoentrada']) ? $gastos->limpiarCadena($_POST['idgastoentrada']) : '',
+                'concepto'   => $gastos->limpiarCadena($_POST['concepto']) ? $gastos->limpiarCadena($_POST['concepto']) : '',
+                'fechagasto' => $gastos->limpiarCadena($_POST['fechagasto']) ? $gastos->limpiarCadena($_POST['fechagasto']) : '',
+                'monto'   => $gastos->limpiarCadena($_POST['monto']) ? $gastos->limpiarCadena($_POST['monto']) : '',
+                'mediopago'   => $gastos->limpiarCadena($_POST['mediopago']) ? $gastos->limpiarCadena($_POST['mediopago']) : '',
+                'detalles'   => $gastos->limpiarCadena($_POST['detalles']) ? $gastos->limpiarCadena($_POST['detalles']) : '',
+                'comprobanteurl' => $secureUrlComprobanteURL,
+                'comprobantefacbol' => $secureUrlComprobanteFacBol,
+            ];
+
+            $rpt = $gastos->actualizarGastoEntrada($cleanData);
 
             echo json_encode($rpt);
             break;

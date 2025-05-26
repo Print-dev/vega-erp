@@ -263,5 +263,33 @@ BEGIN
     
 END //
 DELIMITER ;
+
+
+DROP PROCEDURE if exists sp_actualizar_gastoentrada;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_gastoentrada (
+	IN _idgastoentrada INT,
+	IN _concepto VARCHAR(200),
+	IN _fecha_gasto DATE,
+	IN _monto DECIMAL(10,2),
+	IN _mediopago INT,
+    IN _detalles VARCHAR(200),
+	IN _comprobante_url VARCHAR(200),
+    IN _comprobante_fac_bol VARCHAR(200)
+)
+BEGIN
+		UPDATE gastosyentradas 
+    SET 
+		concepto = NULLIF(_concepto, ''),
+		fecha_gasto = NULLIF(_fecha_gasto, ''),
+        monto = NULLIF(_monto, ''),
+        mediopago = NULLIF(_mediopago, ''),
+        detalles = NULLIF(_detalles, ''),
+        comprobante_url = NULLIF(_comprobante_url, ''),
+        comprobante_fac_bol = NULLIF(_comprobante_fac_bol, '')
+    WHERE idgastoentrada = _idgastoentrada;
+    
+END //
+DELIMITER ;
 -- select * from gastosyentradas
 -- CALL sp_pagar_gastoyentrada (1,2, 1, '', '', '');

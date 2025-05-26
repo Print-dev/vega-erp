@@ -69,6 +69,7 @@ $accesos = [
 
     ['modulo' => 'contabilidad', 'ruta' => 'listar-gastos', 'subruta' => 'gastos', 'texto' => 'Gastos', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-gasto', 'subruta' => 'gastos', 'texto' => '', 'visible' => false, 'icono' => ''],
+    ['modulo' => 'contabilidad', 'ruta' => 'actualizar-gasto', 'subruta' => 'gastos', 'texto' => '', 'visible' => false, 'icono' => ''],
 
     ['modulo' => 'contabilidad', 'ruta' => 'listar-gtxp', 'subruta' => 'gtxp', 'texto' => 'Gastos Por Pagar', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-gtxp', 'subruta' => 'gtxp', 'texto' => '', 'visible' => false, 'icono' => ''],

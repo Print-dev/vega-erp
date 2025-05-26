@@ -125,7 +125,7 @@ switch ($_SESSION['login']['nivelacceso']) {
 
 
   #links {
-    color: #000;
+    color:rgb(66, 66, 66);
     display: flex;
     align-items: center;
     /* Mantener tamaño fijo */
@@ -224,6 +224,16 @@ switch ($_SESSION['login']['nivelacceso']) {
   #sidebarMenu {
     transition: all 0.3s ease;
   }
+
+  .nav-link.active {
+    background-color: #ffcc00;
+    /* Amarillo suave */
+    color:rgb(255, 0, 0);
+    /* Letras blancas */
+    font-weight: bold;
+
+    /* Sombra sutil */
+  }
 </style>
 <!-- <div class="beta-banner">Vega Producciones V.1.0</div>
  -->
@@ -251,7 +261,7 @@ switch ($_SESSION['login']['nivelacceso']) {
   <!-- BOTON HAMBURGUESA EN RESPONSIVE-->
 
   <!-- SIDEBAR -->
-  <nav id="sidebarMenu" class="sidebar bg-white text-white sidebar-visible" data-simplebar>
+  <nav id="sidebarMenu" class="sidebar bg-white text-white sidebar-visible border border-primary" data-simplebar>
 
     <div class=" px-4 pt-3"> <!-- sidebar-inner -->
       <div
@@ -293,11 +303,15 @@ switch ($_SESSION['login']['nivelacceso']) {
         </li>
         <?php
         foreach ($listaAcceso as $access) {
+          $activeClass = ($vistaActual == $access['ruta']) ? 'active' : '';
+          $showClass = ($vistaActual == $access['ruta']) ? 'show' : '';
+          //die($subAccess['ruta']);
+
           if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario" && $access['modulo'] !== "pyp" && $access['modulo'] !== "contabilidad" && $access['modulo'] !== "agenda" && $access['modulo'] !== "comprobantes" && $access['modulo'] !== "colaboradores" && $access['modulo'] !== "gtxp") {
 
             echo "
               <li class='nav-item' >
-                <a href='{$hostOnlyHeader}/views/{$access['modulo']}/{$access['ruta']}' class='nav-link' id='links'>
+                <a href='{$hostOnlyHeader}/views/{$access['modulo']}/{$access['ruta']}' class='nav-link {$activeClass}' id='links'>
                   <i class='{$access['icono']}'></i>
                   <span class='sidebar-text mx-2'>{$access['texto']}</span>
                 </a>
@@ -305,7 +319,7 @@ switch ($_SESSION['login']['nivelacceso']) {
           } else if ($access['modulo'] === "ventas" && $access['visible']) {
             echo "
               <li class='sidebar-item nav-item'>
-                <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#ventas'
+                <a href='#' class='sidebar-link collapsed active sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#ventas'
                   aria-expanded='false' aria-controls='ventas'>
                   <i class='{$access['icono']}'></i>
                   <span class='sidebar-text mx-2'>{$access['texto']}</span>
@@ -318,7 +332,7 @@ switch ($_SESSION['login']['nivelacceso']) {
               if (!$subAccess['visible'] && $subAccess['modulo'] === "ventas" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
                 echo "
                 <li class='sidebar-item nav-item list-ventas'>
-                  <a href='{$hostOnlyHeader}/views/{$subAccess['modulo']}/{$subAccess['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                  <a href='{$hostOnlyHeader}/views/{$subAccess['modulo']}/{$subAccess['ruta']}' class='sidebar-link nav-link {$activeClass} sidebar-text ms-4' id='links'>
                     <i class='{$subAccess['icono']}'></i>
                     <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
                   </a>
@@ -681,6 +695,17 @@ switch ($_SESSION['login']['nivelacceso']) {
       });
     </script>
  -->
+    <script>
+      const links = document.querySelectorAll('#options-sidebar .nav-link');
+
+      links.forEach(link => {
+        link.addEventListener('click', function(e) {
+          links.forEach(el => el.classList.remove('active')); // Quitar "active" de todos
+          this.classList.add('active'); // Agregarlo al clickeado
+        });
+      });
+    </script>
+
     <script>
       const idusuarioLogeado = "<?php echo $_SESSION['login']['idusuario']; ?>"
       const nivelacceso = "<?php echo $_SESSION['login']['nivelacceso']; ?>"

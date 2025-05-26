@@ -1,5 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
     let myTable = null;
+    let idgastoentrada = window.localStorage.getItem("idgastoentrada") || -1
+    let imagenUrlComprobanteURL = ""
+    let imagenUrlComprobanteFacBol = ""
+    let gastoentrada = []
 
     function $q(object = null) {
         return document.querySelector(object);
@@ -14,12 +18,39 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
+    await renderizarGastoEntrada()
+
+    imagenUrlComprobanteURL = gastoentrada[0]?.comprobante_url
+    imagenUrlComprobanteFacBol = gastoentrada[0]?.comprobante_fac_bol
+
     $q("#div-detalles").hidden = true
     $q("#div-comprobante-pago").hidden = true
-    $q("#div-artista").hidden = true
-    $q("#div-evento").hidden = true
 
+    if (gastoentrada[0]?.mediopago == 1) {
+        $q("#div-detalles").hidden = true
+        $q("#div-comprobante-pago").hidden = false
+
+    } else if (gastoentrada[0]?.mediopago == 2) {
+        $q("#div-detalles").hidden = false
+        $q("#div-comprobante-pago").hidden = true
+    } else {
+        $q("#div-detalles").hidden = true
+
+    }
     // ********************************* OBTENER DATOS **********************************
+    async function renderizarGastoEntrada() {
+        gastoentrada = await obtenerGastoEntradaPorId(idgastoentrada)
+        console.log("obtenerGastoEntradaPorId -> ", gastoentrada);
+
+        $q("#concepto").value = gastoentrada[0]?.concepto
+        $q("#fechagasto").value = gastoentrada[0]?.fecha_gasto
+        $q("#monto").value = gastoentrada[0]?.monto
+        $q("#mediopago").value = gastoentrada[0]?.mediopago
+        $q("#detalles").value = gastoentrada[0]?.detalles
+        $q("#previewImagenPago").src = `https://res.cloudinary.com/dynpy0r4v/image/upload/v1748211920/${gastoentrada[0]?.comprobante_url}`
+        $q("#previewImagenFacturaBoleta").src = `https://res.cloudinary.com/dynpy0r4v/image/upload/v1748211920/${gastoentrada[0]?.comprobante_fac_bol}`
+
+    }
 
     async function obtenerUsuariosPorNivel() {
         const params = new URLSearchParams();
@@ -57,6 +88,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         });
         //        return data
+    }
+
+    async function obtenerGastoEntradaPorId(idgastoentrada) {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerGastoEntradaPorId");
+        params.append("idgastoentrada", idgastoentrada);
+        const data = await getDatos(`${host}gastoentrada.controller.php`, params);
+        return data
     }
 
 
@@ -120,20 +159,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // ****************************** REGISTRAR GASTO ********************************
 
-    async function registrarGastoYEntrada(comprobanteurl, comprobantefacbol) {
+    async function actualizarGastoEntrada(idgastoentrada, comprobanteurl, comprobantefacbol) {
+        console.log("imagenUrlComprobanteURL -> ", imagenUrlComprobanteURL);
+        console.log("imagenUrlComprobanteFacBol -> ", imagenUrlComprobanteFacBol);
         const gasto = new FormData();
-        gasto.append("operation", "registrarGastoYEntrada");
+        gasto.append("operation", "actualizarGastoEntrada");
 
-        gasto.append("estado", $q("#estado").value || "");
+        gasto.append("idgastoentrada", idgastoentrada);
         gasto.append("concepto", $q("#concepto").value || "");
         gasto.append("fechagasto", $q("#fechagasto").value || "");
         gasto.append("monto", $q("#monto").value || "");
-        gasto.append("iddetallepresentacion", $q("#evento").value || "");
-        gasto.append("idusuario", $q("#artista").value || "");
         gasto.append("mediopago", $q("#mediopago").value || "");
         gasto.append("detalles", $q("#detalles").value || "");
-        gasto.append("comprobanteurl", comprobanteurl ? comprobanteurl : '');
-        gasto.append("comprobantefacbol", comprobantefacbol ? comprobantefacbol : '');
+        gasto.append("comprobanteurl", comprobanteurl ? comprobanteurl : imagenUrlComprobanteURL);
+        gasto.append("comprobantefacbol", comprobantefacbol ? comprobantefacbol : imagenUrlComprobanteFacBol);
+        gasto.append("publicIdComprobanteAnterior", imagenUrlComprobanteURL);
+        gasto.append("publicIdFacBolAnterior", imagenUrlComprobanteFacBol);
 
         const response = await fetch(`${host}gastoentrada.controller.php`, {
             method: "POST",
@@ -144,7 +185,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return result;
     }
 
-    $q("#form-registro-gasto").addEventListener("submit", async (e) => {
+    $q("#form-actualizar-gasto").addEventListener("submit", async (e) => {
         e.preventDefault()
 
         const imagenInputPago = $q("#upload_widget_pago");
@@ -154,37 +195,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("filePago -> ", filePago);
         console.log("fileFacturaBoleta -> ", fileFacturaBoleta);
 
-        const gastoentradaRegis = await registrarGastoYEntrada(filePago, fileFacturaBoleta)
-        console.log("gasto o entrada registrada -> ", gastoentradaRegis);
-        if (gastoentradaRegis.idgastoentrada) {
+        const gastoentradaAct = await actualizarGastoEntrada(idgastoentrada, filePago, fileFacturaBoleta)
+        console.log("gasto o entrada registrada -> ", gastoentradaAct);
+        if (gastoentradaAct) {
             showToast("Se ha registrado correctamente", "SUCCESS", 1000);
             return
-        }
-    })
-
-    $q("#referido").addEventListener("change", async (e) => {
-        const referido = e.target.value
-        if (referido == "1") {
-            await obtenerUsuariosPorNivel() // SOLO ARTISTAS
-            $q("#div-artista").hidden = false
-            $q("#div-evento").hidden = true
-        } else if (referido == "2") {
-            await obtenerEventos()
-            $q("#div-artista").hidden = true
-            $q("#div-evento").hidden = false
-        }
-    })
-
-    $q("#estado").addEventListener("change", async (e) => {
-        const estado = e.target.value
-        if (estado == "1") {
-            $q("#div-comprobante-pago").hidden = true
-            $q("#div-comprobante-fac-bol").hidden = true
-            $q("#div-mediopago").hidden = true
-        } else if (estado == "2") {
-            $q("#div-comprobante-pago").hidden = true
-            $q("#div-comprobante-fac-bol").hidden = false
-            $q("#div-mediopago").hidden = true
         }
     })
 })

@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let idcolaborador
     let idnomina
     let idgastoentrada
+    let modalComprobantes = new bootstrap.Modal($q("#modal-comprobantes"))
     /*     let modalNuevoProvedor = new bootstrap.Modal($q("#modal-nuevo-proveedor"))
         let modalActualizarProveedor = new bootstrap.Modal($q("#modal-actualizar-proveedor"))
      */
@@ -64,11 +65,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
-    async function obtenerColaboradorPorId(idcolaborador) {
+    async function obtenerGastoEntradaPorId(idgastoentrada) {
         const params = new URLSearchParams();
-        params.append("operation", "obtenerColaboradorPorId");
-        params.append("idcolaborador", idcolaborador);
-        const data = await getDatos(`${host}nomina.controller.php`, params);
+        params.append("operation", "obtenerGastoEntradaPorId");
+        params.append("idgastoentrada", idgastoentrada);
+        const data = await getDatos(`${host}gastoentrada.controller.php`, params);
         return data
     }
 
@@ -262,6 +263,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             </td>
             <td>
                 <button class="btn btn-sm btn-primary btn-actualizar" data-idgastoentrada="${x.idgastoentrada}">Actualizar</button>
+                <button class="btn btn-sm btn-primary btn-comprobante" data-idgastoentrada="${x.idgastoentrada}">Ver Comprobantes</button>
                 <button class="btn btn-sm btn-primary btn-borrar" data-idgastoentrada="${x.idgastoentrada}">Borrar</button>
             </td>
         </tr>
@@ -320,6 +322,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (e.target.classList.contains("btn-actualizar")) {
                         await buttonActualizar(e);
                     }
+                    if (e.target.classList.contains("btn-comprobante")) {
+                        await buttonComprobante(e);
+                    }
                     /* if (e.target.classList.contains("btn-cerrar")) {
                         buttonCerrarCaja(e);
                     }
@@ -343,13 +348,46 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
+    async function buttonComprobante(e) {
+        idgastoentrada = e.target.getAttribute("data-idgastoentrada");
+        console.log("idgastoentrada -> ", idgastoentrada);
+        modalComprobantes.show();
+        const comprobantes = await obtenerGastoEntradaPorId(idgastoentrada);
+        console.log("comprobantes -> ", comprobantes);
+
+        const urlBase = "https://res.cloudinary.com/dynpy0r4v/image/upload/v1748079334/";
+
+        const comprobanteUrl = comprobantes[0]?.comprobante_url;
+        const comprobanteFacBol = comprobantes[0]?.comprobante_fac_bol;
+
+        $q("#div-comprobantes").innerHTML = `
+        <div class="d-flex flex-column gap-4">
+            <div class="mb-3">
+                <h6 class="text-center">Archivo adjunto comprobante</h6>
+                ${comprobanteUrl ?
+                `<img src="${urlBase + comprobanteUrl}" alt="Comprobante 1" class="img-fluid rounded border mx-auto d-block" id="comprobante1-preview">` :
+                `<div class="border rounded text-center p-3 text-muted">Sin archivo adjunto</div>`
+            }
+            </div>
+            <div >
+                <h6 class="text-center">Boleta o factura</h6>
+                ${comprobanteFacBol ?
+                `<img src="${urlBase + comprobanteFacBol}" alt="Comprobante 2" class="img-fluid rounded border mx-auto d-block" id="comprobante2-preview">` :
+                `<div class="border rounded text-center p-3 text-muted">Sin archivo adjunto</div>`
+            }
+            </div>
+        </div>
+    `;
+    }
+
+
+
     async function buttonActualizar(e) {
         idgastoentrada = e.target.getAttribute("data-idgastoentrada");
         console.log("idgastoentrada -> ", idgastoentrada);
-        alert("prueba de actualizadno")
         window.localStorage.clear()
         window.localStorage.setItem("idgastoentrada", idgastoentrada)
-        window.location.href = `${hostOnly}/views/gastos/registrar-gasto`
+        window.location.href = `${hostOnly}/views/contabilidad/gastos/actualizar-gasto`
     }
 
 

@@ -39,14 +39,12 @@ class Comprobante extends ExecQuery
     }
   }
 
-  
+
   public function obtenerUltimoSerieCorrelativo(): array
   {
     try {
       $sp = parent::execQ("SELECT * FROM comprobantes ORDER BY idcomprobante DESC LIMIT 1");
-      $sp->execute(
-      
-      );
+      $sp->execute();
 
       return $sp->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
@@ -54,7 +52,7 @@ class Comprobante extends ExecQuery
     }
   }
 
-  
+
 
   public function obtenerSeriePorTipoDoc($params = []): array
   {
@@ -130,6 +128,7 @@ class Comprobante extends ExecQuery
       die($e->getMessage());
     }
   }
+
 
   public function obtenerComprobantePorTipoDoc($params = []): array
   {
