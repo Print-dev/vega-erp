@@ -20,7 +20,7 @@ BEGIN
     
     -- Insertar la notificación
     INSERT INTO colaboradores (idpersona, idsucursal, fechaingreso, idarea, idresponsable, banco, ncuenta)
-    VALUES (_idpersona, _idsucursal, _fechaingreso , _idarea, _idresponsable, nullif(_banco), nullif(_ncuenta));
+    VALUES (_idpersona, _idsucursal, _fechaingreso , _idarea, _idresponsable, nullif(_banco, ''), nullif(_ncuenta, ''));
 
     IF existe_error = 1 THEN
         SET _idcolaborador = -1;

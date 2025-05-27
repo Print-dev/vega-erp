@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const data = await getDatos(`${host}usuario.controller.php`, params);
 
             console.log(data);
-            $q("#artista").innerHTML = '<option value="">Selecciona</option>'
+            $q("#artista").innerHTML = '<option value="">Todos</option>'
             data.forEach(artista => {
                 $q("#artista").innerHTML += `
                     <option value="${artista.idusuario}">${artista.nom_usuario}</option>
@@ -49,16 +49,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function obtenerEventos() { // PARA OBTENER DATOS DE CLIENTE Y DE EVENTO (NO INCLUYE TARIFARIO NI COSTO EN PRESENTACION DE TAL LOCAL)
         const params = new URLSearchParams();
-        params.append("operation", "filtrarAtenciones");
-        params.append("ncotizacion", "");
-        params.append("ndocumento", "");
-        params.append("nomusuario", "")
-        params.append("establecimiento", "")
-        params.append("fechapresentacion", "")
+        params.append("operation", "obtenerEventosUnicos");
         const data = await getDatos(`${host}detalleevento.controller.php`, params);
-        $q("#evento").innerHTML = '<option value="">Selecciona</option>'
+        $q("#evento").innerHTML = '<option value="">Todos</option>'
         data.forEach(evento => {
-            $q("#evento").innerHTML += `<option value="${evento.iddetalle_presentacion}">${evento.nom_usuario} - ${evento.establecimiento} (${evento.departamento} | ${evento.provincia} | ${evento.distrito}) [${evento.fecha_presentacion}]</option>`
+            $q("#evento").innerHTML += `<option value="${evento.iddetalle_presentacion}">${evento.establecimiento}</option>`
 
         });
         //        return data

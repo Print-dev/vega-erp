@@ -408,6 +408,7 @@ class Gastos extends ExecQuery
         }
     }
 
+
     public function obtenerUltimoSalarioPorColaborador($params = []): array
     {
         try {

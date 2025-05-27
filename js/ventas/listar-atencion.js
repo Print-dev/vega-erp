@@ -890,6 +890,16 @@ document.addEventListener("DOMContentLoaded", async () => {
           await dataFilters();
         });
       }
+      if (x.id === "año_semana") {
+        x.addEventListener("change", async () => {
+          await dataFilters();
+        });
+      }
+      if (x.id === "mes") {
+        x.addEventListener("change", async () => {
+          await dataFilters();
+        });
+      }
     });
   }
 
@@ -899,11 +909,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function dataFilters() {
     const params = new URLSearchParams();
     params.append("operation", "filtrarAtenciones");
-    params.append("ncotizacion",$q("#ncotizacion").value ? $q("#ncotizacion").value : "");
-    params.append("ndocumento",$q("#ndocumento").value ? $q("#ndocumento").value : "");
+    params.append("ncotizacion", $q("#ncotizacion").value ? $q("#ncotizacion").value : "");
+    params.append("ndocumento", $q("#ndocumento").value ? $q("#ndocumento").value : "");
     params.append("nomusuario", $q("#nomusuario").value ? $q("#nomusuario").value : "")
     params.append("establecimiento", $q("#establecimiento").value ? $q("#establecimiento").value : "")
     params.append("fechapresentacion", $q("#fechapresentacion").value ? $q("#fechapresentacion").value : "")
+    params.append("mes", $q("#mes").value || "")
+    let semana = $q("#año_semana").value; // Captura el valor en formato "YYYY-WW"
+    if (semana) {
+      semana = semana.replace("-W", ""); // Convierte "2025-W10" en "202510"
+    }
+    params.append("añosemana", semana || "");
 
     const data = await getDatos(`${host}detalleevento.controller.php`, params);
     console.log("data -> ", data);
@@ -1163,7 +1179,8 @@ document.addEventListener("DOMContentLoaded", async () => {
              <label class="fw-bold">Fecha:</label> <span id="noti-viaje">${formatDate(dpInfo[0]?.fecha_presentacion) ? formatDate(dpInfo[0]?.fecha_presentacion) : ''}</span> <br>
              <label class="fw-bold">Desde - hasta:</label> <span id="noti-viaje">${formatHour(dpInfo[0]?.horainicio) ?? "0:00"} - ${formatHour(dpInfo[0]?.horafinal) ?? "0:00"}</span> <br>
              <label class="fw-bold">Tiempo:</label> <span id="noti-viaje">${calculateDuration(dpInfo[0]?.horainicio ?? "0:00", dpInfo[0]?.horafinal ?? "0:00")}</span> <br>
-             <label class="fw-bold">Ubicacion:</label> <span id="noti-viaje">${ubicacion}</span>
+             <label class="fw-bold">Ubicacion:</label> <span id="noti-viaje">${ubicacion}</span> <br>
+            <label class="fw-bold">Modalidad:</label> <span id="noti-viaje">${dpInfo[0]?.modalidad == 1 ? "Convenio" : dpInfo[0]?.modalidad == 1 ? "Contrato" : ''}</span>
              <hr>
              <div class="mt-3">
               <div class="form-check">
@@ -1184,7 +1201,7 @@ document.addEventListener("DOMContentLoaded", async () => {
      `;
 
     $q("#cordinaciontecnica").addEventListener("change", async (e) => {
-            console.log("cambiando tecnica");
+      console.log("cambiando tecnica");
 
       const estado = e.target.checked ? 1 : 0; // 👈 convierte a número
       const cordtecact = await actualizarEstadoCordinacionTecnica(iddp, estado);

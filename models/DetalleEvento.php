@@ -35,6 +35,18 @@ class DetalleEvento extends ExecQuery
     }
   }
 
+  public function obtenerEventosUnicos(): array
+  {
+    try {
+      $sp = parent::execQ("SELECT * FROM detalles_presentacion GROUP BY establecimiento");
+      $sp->execute();
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+
   public function registrarResponsableBoleteriaContrato($params = []): bool
   {
     try {
@@ -54,7 +66,7 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
-  
+
   public function registrarPrecioEvento($params = []): bool
   {
     try {
@@ -73,7 +85,7 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
-  
+
   public function actualizarResponsableBoleteriaContrato($params = []): bool
   {
     try {
@@ -112,7 +124,7 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
-  
+
   public function obtenerResponsableBoleteriaContrato($params = []): array
   {
     try {
@@ -187,18 +199,18 @@ class DetalleEvento extends ExecQuery
     }
   }
 
-
-
   public function filtrarAtenciones($params = []): array
   {
     try {
-      $cmd = parent::execQ("CALL sp_obtener_detalles_evento (?,?,?,?,?)");
+      $cmd = parent::execQ("CALL sp_obtener_detalles_evento (?,?,?,?,?,?,?)");
       $cmd->execute(array(
         $params['ncotizacion'],
         $params['ndocumento'],
         $params['nomusuario'],
         $params['establecimiento'],
         $params['fechapresentacion'],
+        $params['mes'],
+        $params['añosemana'],
       ));
       return $cmd->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
@@ -371,7 +383,7 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
-  
+
   public function actualizarEstadoCordinacionTecnica($params = []): bool
   {
     try {
@@ -387,7 +399,7 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
-  
+
   public function actualizarEstadoCordinacionPublicidad($params = []): bool
   {
     try {
@@ -528,6 +540,4 @@ class DetalleEvento extends ExecQuery
       die($e->getMessage());
     }
   }
-
-  
 }

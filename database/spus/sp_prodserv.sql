@@ -1,4 +1,3 @@
-USE vega_producciones_erp;
 
 DROP PROCEDURE IF EXISTS `sp_registrar_prodserv`; -- old
 DELIMITER //
@@ -26,9 +25,6 @@ BEGIN
 END //
 DELIMITER ;
 
-CALL sp_registrar_prodserv (@idprodserv, "test", 1, "TC-ASC123", 5, 12312) ;
-
--- ANOTACION: HACER ESTO DESPUES PQ SI
 DROP PROCEDURE IF EXISTS sp_filtrar_prodserv;
 DELIMITER //
 CREATE PROCEDURE sp_filtrar_prodserv(
@@ -37,8 +33,35 @@ CREATE PROCEDURE sp_filtrar_prodserv(
 )
 BEGIN
 	SELECT 
-	*
+	PROD.idprodserv,
+    PROD.nombre as nombre_prodserv,
+    PROD.tipo,
+    PROD.codigo,
+    PRO.nombre as nombre_proveedor,
+    PROD.precio
 	from prodserv PROD
     LEFT JOIN proveedores PRO ON PRO.idproveedor = PROD.idproveedor
     ORDER BY idprodserv DESC;
 END //
+
+DROP PROCEDURE if exists sp_actualizar_prodserv;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_prodserv (
+	IN _idprodserv INT,
+	IN _nombre VARCHAR(80),
+	IN _tipo INT,
+	IN _codigo varchar(10),
+	IN _idproveedor INT,
+    IN _precio DECIMAL(10,2)
+)
+BEGIN
+		UPDATE prodserv 
+    SET 
+		nombre = NULLIF(_nombre, ''),
+		tipo = NULLIF(_tipo, ''),
+        codigo = NULLIF(_codigo, ''),
+        idproveedor = NULLIF(_idproveedor, ''),
+        precio = NULLIF(_precio, '')
+    WHERE idprodserv = _idprodserv;
+END //
+DELIMITER ;

@@ -271,6 +271,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return data;
   }
 
+
   async function obtenerFilmmakerAsociadoEvento(idusuario) {
     const params = new URLSearchParams();
     params.append("operation", "obtenerFilmmakerAsociadoEvento");
@@ -446,6 +447,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     const rviatico = await fviatico.json();
     return rviatico;
   }
+
+
+  async function actualizarEstadoCordinacionTecnica(iddetallepresentacion, estadocordinaciontecnica) {
+    const cordinacion = new FormData();
+    cordinacion.append("operation", "actualizarEstadoCordinacionTecnica");
+    cordinacion.append("iddetallepresentacion", iddetallepresentacion); // id artista
+    cordinacion.append("estadocordinaciontecnica", estadocordinaciontecnica);
+
+    const fcordinacion = await fetch(`${host}detalleevento.controller.php`, {
+      method: "POST",
+      body: cordinacion,
+    });
+    const rcordinacion = await fcordinacion.json();
+    return rcordinacion;
+  }
+
+  async function actualizarEstadoCordinacionPublicidad(iddetallepresentacion, estadocordinacionpublicidad) {
+    const cordinacion = new FormData();
+    cordinacion.append("operation", "actualizarEstadoCordinacionPublicidad");
+    cordinacion.append("iddetallepresentacion", iddetallepresentacion); // id artista
+    cordinacion.append("estadocordinacionpublicidad", estadocordinacionpublicidad);
+
+    const fcordinacion = await fetch(`${host}detalleevento.controller.php`, {
+      method: "POST",
+      body: cordinacion,
+    });
+    const rcordinacion = await fcordinacion.json();
+    return rcordinacion;
+  }
+
 
   async function editarAcuerdoEvento(iddetallepresentacion) {
     const acuerdo = new FormData();
@@ -747,9 +778,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           return
 
         }
-        window.localStorage.clear()
+        /* window.localStorage.clear()
         window.localStorage.setItem("iddp", evento.event.extendedProps.iddetalle_presentacion)
-        window.location.href = `${hostOnly}/views/ventas/actualizar-atencion-cliente`
+        window.location.href = `${hostOnly}/views/ventas/actualizar-atencion-cliente` */
       }
     },
     eventDidMount: function (info) {
@@ -846,6 +877,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             ${nivelacceso == "Administrador" ? `
               <button class="btn btn-primary" id="btnAsignarFilmmaker" style="flex: 1;" data-iddp="${info.event.extendedProps?.iddetalle_presentacion}">Filmmaker</button>
               <button class="btn btn-primary" id="btnEditarAcuerdo" style="flex: 1;" data-iddp="${info.event.extendedProps?.iddetalle_presentacion}">Observaciones</button>
+              <button class="btn btn-primary" id="btnInfo" style="flex: 1;" data-iddp="${info.event.extendedProps?.iddetalle_presentacion}">Info</button>
             ` : ``}
     
             ${nivelacceso == "Artista" ? `
@@ -1252,7 +1284,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return {
         html: `
           <div style="
-            ${arg.event.extendedProps.estadoBadge.text == "Incompleto" ? `background-color: rgb(255, 83, 83);` : ''}
+            
             padding: 4px 6px; 
             word-wrap: break-word; 
             overflow-wrap: break-word; 
@@ -1419,7 +1451,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       editoresAsignados.forEach(editor => {
 
         $q(".contenedor-asignados").innerHTML = `
-    < tr >
+    <tr>
               <td>${editor.nombres && editor.tipotarea == 1 ? editor.nombres : 'No asignado'}</td>
               <td>${editor.nombres && editor.tipotarea == 2 ? editor.nombres : 'No asignado'}</td>
               <td>${editor.nombres && editor.tipotarea == 3 ? editor.nombres : 'No asignado'}</td>
@@ -1503,6 +1535,66 @@ document.addEventListener("DOMContentLoaded", async () => {
       })
 
     }
+    if (e.target && e.target.id === "btnInfo") {
+      iddp = e.target.getAttribute("data-iddp")
+      modalInfoEvento = new bootstrap.Modal($q("#modal-infoevento"))
+      modalInfoEvento.show()
+
+      const dpInfo = await obtenerDPporId(iddp)
+      console.log("dpInfo -> ", dpInfo);
+      const ubicacion = dpInfo[0]?.esExtranjero == 0 ? dpInfo[0]?.departamento + "/" + dpInfo[0]?.provincia + "/" + dpInfo[0]?.distrito : dpInfo[0]?.establecimiento + "/" + dpInfo[0]?.pais
+
+      const contenedorModal = $q(".contenedor-infoevento");
+      contenedorModal.innerHTML = `
+          <div class="mt-3">
+                <h4 class="fw-bold">Promotor:</h4><br>
+                <label class="fw-bold">Nombre/Razon Social:</label> <span id="noti-pasaje">${dpInfo[0]?.razonsocial ? dpInfo[0]?.razonsocial.toUpperCase() : ''}</span> <br>
+                <label class="fw-bold">Celular:</label> <span id="noti-pasaje">${dpInfo[0]?.telefono ? dpInfo[0]?.telefono : 'Sin celular/telefono'}</span> <br>
+
+                <h4 class="fw-bold">Detalles evento:</h4><br>
+                <label class="fw-bold">Artista:</label> <span id="noti-pasaje">${dpInfo[0]?.nom_usuario ? dpInfo[0]?.nom_usuario?.toUpperCase() : ''}</span> <br>
+                <label class="fw-bold">Lugar:</label> <span id="noti-comida">${dpInfo[0]?.establecimiento ? dpInfo[0]?.establecimiento.toUpperCase() : ''}</span> <br>
+                <label class="fw-bold">Fecha:</label> <span id="noti-viaje">${formatDate(dpInfo[0]?.fecha_presentacion) ? formatDate(dpInfo[0]?.fecha_presentacion) : ''}</span> <br>
+                <label class="fw-bold">Desde - hasta:</label> <span id="noti-viaje">${formatHour(dpInfo[0]?.horainicio) ?? "0:00"} - ${formatHour(dpInfo[0]?.horafinal) ?? "0:00"}</span> <br>
+                <label class="fw-bold">Tiempo:</label> <span id="noti-viaje">${calculateDuration(dpInfo[0]?.horainicio ?? "0:00", dpInfo[0]?.horafinal ?? "0:00")}</span> <br>
+                <label class="fw-bold">Ubicacion:</label> <span id="noti-viaje">${ubicacion}</span> <br>
+                <label class="fw-bold">Modalidad:</label> <span id="noti-viaje">${dpInfo[0]?.modalidad == 1 ? "Convenio" : dpInfo[0]?.modalidad == 1 ? "Contrato" : ''}</span>
+                <hr>
+                <div class="mt-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="cordinaciontecnica" ${dpInfo[0]?.estadoCordinacionTecnica == 1 ? "checked" : ""}>
+                    <label class="form-check-label fw-normal" for="cordinaciontecnica">
+                      coordinación técnica (pantalla, luces y sonido)
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="cordinacionpublicidad" ${dpInfo[0]?.estadoCordinacionPublicidad == 1 ? "checked" : ""}>
+                    <label class="form-check-label fw-normal" for="cordinacionpublicidad">
+                      coordinación publicidad
+                    </label>
+                  </div>
+                </div>
+
+              </div>    
+        `;
+
+      $q("#cordinaciontecnica").addEventListener("change", async (e) => {
+        console.log("cambiando tecnica");
+
+        const estado = e.target.checked ? 1 : 0; // 👈 convierte a número
+        const cordtecact = await actualizarEstadoCordinacionTecnica(iddp, estado);
+        console.log("cordtecact", cordtecact);
+      });
+
+      $q("#cordinacionpublicidad").addEventListener("change", async (e) => {
+        console.log("cambiando publicidad");
+        const estado = e.target.checked ? 1 : 0; // 👈 convierte a número
+        const cordpubact = await actualizarEstadoCordinacionPublicidad(iddp, estado);
+        console.log("cordpubact", cordpubact);
+      });
+
+    }
+
     if (e.target && e.target.id === "btnVerMontos") {
       $q(".contenedor-monto").innerHTML = ''
       console.log("CLICK EN VER MONTOS");

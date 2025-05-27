@@ -87,10 +87,16 @@
         margin-bottom: 20px;
     }
 
-    tbody, td, tfoot, th, thead, tr{
+    tbody,
+    td,
+    tfoot,
+    th,
+    thead,
+    tr {
         border-style: none;
         border-bottom: none;
     }
+
     /* Opciones */
 
     /* Ajustar el contenedor de la tabla para evitar desbordamientos */
@@ -128,7 +134,7 @@
             </div>
             <div class="row">
                 <div class="card border-0">
-                    <div class="card-body" hidden>
+                    <div class="card-body">
                         <div class="row g-0 mb-3">
                             <div class="card border-0">
                                 <div class="card-body border-0">
@@ -163,6 +169,32 @@
                                             <div class="form-floating">
                                                 <input type="date" class="form-control filter" id="fechapresentacion" autocomplete="off">
                                                 <label for="fechapresentacion">Fecha de presentacion</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-floating">
+                                                <select id="mes" class="form-control filter">
+                                                    <option value="">Seleccionar Mes</option>
+                                                    <option value="1">Enero</option>
+                                                    <option value="2">Febrero</option>
+                                                    <option value="3">Marzo</option>
+                                                    <option value="4">Abril</option>
+                                                    <option value="5">Mayo</option>
+                                                    <option value="6">Junio</option>
+                                                    <option value="7">Julio</option>
+                                                    <option value="8">Agosto</option>
+                                                    <option value="9">Septiembre</option>
+                                                    <option value="10">Octubre</option>
+                                                    <option value="11">Noviembre</option>
+                                                    <option value="12">Diciembre</option>
+                                                </select>
+                                                <label for="mes">Filtrar por Mes</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-floating">
+                                                <input type="week" id="año_semana" class="form-control filter">
+                                                <label for="año_semana">Filtrar por Semana</label>
                                             </div>
                                         </div>
                                     </div>

@@ -81,33 +81,41 @@
                                 <label for="detalles" class="form-label">Detalles</label>
                             </div>
                         </div>
-                        <div id="div-comprobante-pago">
-                            <div class="col-md-4 d-flex flex-column align-items-center">
-                                <img id="previewImagenPago" src="" class="img-fluid mb-2 border rounded" style="max-height: 180px; object-fit: contain;">
-                                <input id="upload_widget_pago" type="file" name="upload_widget_pago" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
-                                <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Logo (app)
-                                <!--  <div class="mt-3">
-                                <img id="previewImagenLogo" src="" alt="Vista previa" class="img-fluid rounded shadow" style="max-height: 300px;">
-                            </div> -->
+                        <div class="col-md-4">
+                            <div id="div-comprobante-pago">
+                                <div class="col-md-4 d-flex flex-column align-items-center w-100">
+                                    <!-- Vista previa -->
+                                    <img id="previewImagenPago" src="" class="img-fluid mb-3 border rounded" style="max-height: 180px; object-fit: contain;">
+
+                                    <!-- Input de archivo oculto + etiqueta como botón -->
+                                    <input id="upload_widget_pago" type="file" name="upload_widget_pago" class="d-none">
+                                    <label for="upload_widget_pago" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                        <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Comprobante de Pago
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
-                        <div id="div-comprobante-fac-bol">
-                            <div class="col-md-4 d-flex flex-column align-items-center">
-                                <img id="previewImagenFacturaBoleta" src="" class="img-fluid mb-2 border rounded" style="max-height: 180px; object-fit: contain;">
-                                <input id="upload_widget_facturaboleta" type="file" name="upload_widget_facturaboleta" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
-                                <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Logo (app)
-                                <!--  <div class="mt-3">
-                                <img id="previewImagenLogo" src="" alt="Vista previa" class="img-fluid rounded shadow" style="max-height: 300px;">
-                            </div> -->
+                        <div class="col-md-4">
+                            <div id="div-comprobante-fac-bol">
+                                <div class="col-md-4 d-flex flex-column align-items-center w-100">
+                                    <!-- Vista previa -->
+                                    <img id="previewImagenFacturaBoleta" src="" class="img-fluid mb-3 border rounded" style="max-height: 180px; object-fit: contain;">
+
+                                    <!-- Input de archivo oculto + etiqueta como botón -->
+                                    <input id="upload_widget_facturaboleta" type="file" name="upload_widget_facturaboleta" class="d-none">
+                                    <label for="upload_widget_facturaboleta" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                        <i class="fa-solid fa-cloud-upload-alt me-2"></i> Seleccionar Factura o Boleta
+                                    </label>
+                                </div>
                             </div>
+
                         </div>
 
                     </div>
                     <hr>
                     <div class="row">
                         <div class="text-end">
-                            <button type="button" class="btn btn-danger" id="btn-resetear">Resetear</button>
                             <button type="submit" class="btn btn-primary" id="btn-registrar-gasto">Registrar</button>
                         </div>
                     </div>

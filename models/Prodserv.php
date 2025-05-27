@@ -5,7 +5,7 @@ require_once 'ExecQuery.php';
 class Prodserv extends ExecQuery
 {
 
-    /* public function registrarNotificacionViatico($params = []): int
+  /* public function registrarNotificacionViatico($params = []): int
     {
         try {
             $pdo = parent::getConexion();
@@ -26,7 +26,7 @@ class Prodserv extends ExecQuery
         }
     } */
 
-    /*  public function actualizarColaborador($params = []): bool
+  /*  public function actualizarColaborador($params = []): bool
   {
     try {
       $pdo = parent::getConexion();
@@ -70,43 +70,96 @@ class Prodserv extends ExecQuery
     }
   } */
 
-    public function filtrarProdserv(): array
-    {
-        try {
-            $sp = parent::execQ("CALL sp_filtrar_prodserv");
-            $sp->execute(
-                /* array(
+  public function filtrarProdserv(): array
+  {
+    try {
+      $sp = parent::execQ("CALL sp_filtrar_prodserv");
+      $sp->execute(
+        /* array(
           $params["numdoc"],
           $params["idarea"]
         ) */);
-            return $sp->fetchAll(PDO::FETCH_ASSOC);
-        } catch (Exception $e) {
-            die($e->getMessage());
-        }
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
     }
-
-
-
-    public function registrarProdserv($params = []): int
-    {
-        try {
-            $pdo = parent::getConexion();
-            $cmd = $pdo->prepare('CALL sp_registrar_prodserv(@idprodserv,?,?,?,?,?)');
-            $cmd->execute(
-                array(
-                    $params['nombre'],
-                    $params['tipo'],
-                    $params['codigo'],
-                    $params['idproveedor'],
-                    $params['precio'],
-                )
-            );
-
-            $respuesta = $pdo->query("SELECT @idprodserv AS idprodserv")->fetch(PDO::FETCH_ASSOC);
-            return $respuesta['idprodserv'];
-        } catch (Exception $e) {
-            error_log("Error: " . $e->getMessage());
-            return -1;
-        }
+  }
+  public function obenerProdservPorId($params = []): array
+  {
+    try {
+      $sp = parent::execQ("SELECT * FROM prodserv WHERE idprodserv = ?");
+      $sp->execute(
+        array(
+          $params["idprodserv"]
+        )
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
     }
+  }
+
+  public function actualizarProdserv($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("CALL sp_actualizar_prodserv(?,?,?,?,?,?)");
+      $act = $cmd->execute(
+        array(
+          $params['idprodserv'],
+          $params['nombre'],
+          $params['tipo'],
+          $params['codigo'],
+          $params['idproveedor'],
+          $params['precio']
+        )
+      );
+
+      return $act;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+
+  public function eliminarProdserv($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("DELETE FROM prodserv WHERE idprodserv = ?");
+      $act = $cmd->execute(
+        array(
+          $params['idprodserv']
+        )
+      );
+
+      return $act;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
+    }
+  }
+
+  public function registrarProdserv($params = []): int
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('CALL sp_registrar_prodserv(@idprodserv,?,?,?,?,?)');
+      $cmd->execute(
+        array(
+          $params['nombre'],
+          $params['tipo'],
+          $params['codigo'],
+          $params['idproveedor'],
+          $params['precio'],
+        )
+      );
+
+      $respuesta = $pdo->query("SELECT @idprodserv AS idprodserv")->fetch(PDO::FETCH_ASSOC);
+      return $respuesta['idprodserv'];
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return -1;
+    }
+  }
 }

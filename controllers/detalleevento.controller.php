@@ -11,6 +11,10 @@ if (isset($_GET['operation'])) {
       echo json_encode($detalleevento->obtenerCotizacionPorNcot(['ncotizacion' => $_GET['ncotizacion']]));
       break;
 
+    case 'obtenerEventosUnicos':
+      echo json_encode($detalleevento->obtenerEventosUnicos());
+      break;
+
     case 'obtenerDPporId':
       echo json_encode($detalleevento->obtenerDPporId(['iddetallepresentacion' => $_GET['iddetallepresentacion']]));
       break;
@@ -54,6 +58,8 @@ if (isset($_GET['operation'])) {
         'nomusuario' => $_GET['nomusuario'] === "" ? null : $detalleevento->limpiarCadena($_GET['nomusuario']),
         'establecimiento' => $_GET['establecimiento'] === "" ? null : $detalleevento->limpiarCadena($_GET['establecimiento']),
         'fechapresentacion' => $_GET['fechapresentacion'] === "" ? null : $detalleevento->limpiarCadena($_GET['fechapresentacion']),
+        'mes' => $_GET['mes'] === "" ? null : $detalleevento->limpiarCadena($_GET['mes']),
+        'añosemana' => $_GET['añosemana'] === "" ? null : $detalleevento->limpiarCadena($_GET['añosemana']),
       ];
       echo json_encode($detalleevento->filtrarAtenciones($cleanData));
       break;

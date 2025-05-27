@@ -128,6 +128,62 @@
     </div>
 </div>
 
+<div class="modal fade" id="modal-actualizar-prodserv" tabindex="-1" aria-labelledby="modalactualizarprodserv" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalactualizarprodserv">Ingresar producto/servicio</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="" id="formProdservAct">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <input type="text" id="nombreact" name="nombreact" class="form-control" placeholder="Nombre">
+                                <label for="nombreact" class="form-label">Nombre <span class="text-danger">(*)</span></label>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <select name="tipoact" id="tipoact" class="form-select filter" placeholder="Tipo">
+                                    <option value="">Seleccione</option>
+                                    <option value="1">Producto</option>
+                                    <option value="2">Servicio</option>
+                                </select>
+                                <label for="tipoact" class="form-label">Tipo <span class="text-danger">(*)</span></label>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <input type="text" id="codigoact" name="codigo" class="form-control" placeholder="Codigo">
+                                <label for="codigoact" class="form-label">Codigo <span class="text-danger">(*)</span></label>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <select name="proveedoract" id="proveedoract" class="form-select filter" placeholder="Proveedor">
+                                </select>
+                                <label for="proveedoract" class="form-label">Proveedor</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <input type="number" id="precioact" name="precioact" class="form-control" placeholder="Precio" step="any">
+                                <label for="precioact" class="form-label">Precio <span class="text-danger">(*)</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 btnGuardarProdserv">Guardar</button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 <?php require_once '../footer.php' ?>
 

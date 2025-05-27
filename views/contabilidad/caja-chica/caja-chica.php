@@ -110,7 +110,7 @@
                     <div class="card-footer row">
                         <div class="text-end">
                             <a type="button" class="btn btn-success" id="btnGenerarExcelCaja"><i class="fa-solid fa-file-csv"></i> Generar CSV</a>
-                            <a type="button" class="btn btn-success" id="btnGenerarCierreCajaChicaFiltro"> Generar Cierre</a>
+                            <a type="button" class="btn btn-success" id="btnGenerarCierreCajaChicaFiltro"> Resumen</a>
                         </div>
                     </div>
                     <!-- ./Modal Para elegir la especificacion -->

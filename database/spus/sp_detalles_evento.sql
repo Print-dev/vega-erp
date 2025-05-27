@@ -101,7 +101,7 @@ CREATE PROCEDURE `sp_obtener_dp_porid`(
 )
 BEGIN
 	SELECT 		
-		DP.iddetalle_presentacion, USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.tipo_evento, DP.idnacionalidad, NAC.pais, NAC.idnacionalidad, CLI.telefono , CLI.razonsocial, DP.esExtranjero, estadoCordinacionTecnica, estadoCordinacionPublicidad
+		DP.iddetalle_presentacion, USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.tipo_evento, DP.idnacionalidad, NAC.pais, NAC.idnacionalidad, CLI.telefono , CLI.razonsocial, DP.esExtranjero, DP.estadoCordinacionTecnica, DP.estadoCordinacionPublicidad, DP.modalidad
 	FROM detalles_presentacion DP
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
@@ -153,7 +153,9 @@ CREATE PROCEDURE `sp_obtener_detalles_evento`(
     IN _ndocumento CHAR(9),
     IN _nom_usuario CHAR(30),
     IN _establecimiento VARCHAR(80),
-    IN _fecha_presentacion DATE
+    IN _fecha_presentacion DATE,
+    IN _mes INT,
+    IN _año_semana INT
 )
 BEGIN
     SELECT 
@@ -200,10 +202,19 @@ BEGIN
     AND (USU.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%') OR _nom_usuario IS NULL)
     AND (DP.establecimiento LIKE CONCAT('%', COALESCE(_establecimiento, ''), '%') OR _establecimiento IS NULL)
     AND (DP.fecha_presentacion LIKE CONCAT('%', COALESCE(_fecha_presentacion, ''), '%') OR _fecha_presentacion IS NULL)
+    
+    -- Filtrar por mes (cuando _mes es diferente de NULL)
+        AND (_mes IS NULL OR MONTH(DP.fecha_presentacion) = _mes)
+        
+        -- Filtrar por semana del año (cuando _año_semana es diferente de NULL)
+        AND (_año_semana IS NULL OR CONCAT(YEAR(DP.fecha_presentacion), LPAD(WEEK(DP.fecha_presentacion, 3), 2, '0')) = _año_semana)
+    
     GROUP BY DP.iddetalle_presentacion, CO.idcontrato
     ORDER BY iddetalle_presentacion DESC;
 
 END //
+
+call sp_obtener_detalles_evento (null, null, null, null, null, 5, null);
 
 select * from detalles_presentacion ORDER BY iddetalle_presentacion DESC;
 select * from nacionalidades;

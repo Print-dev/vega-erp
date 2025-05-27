@@ -77,6 +77,13 @@ if (isset($_GET['operation'])) {
             echo json_encode($prodserv->filtrarProdserv());
             break;
 
+        case 'obenerProdservPorId':
+            $cleanData = [
+                'idprodserv'   => $prodserv->limpiarCadena($_GET['idprodserv']),
+            ];
+            echo json_encode($prodserv->obenerProdservPorId($cleanData));
+            break;
+
             /* case 'obtenerNotificacionPropuesta':
             $cleanData = [
                 'idreferencia'   => $notificacion->limpiarCadena($_GET['idreferencia']),
@@ -132,6 +139,31 @@ if (isset($_POST['operation'])) {
             }
 
             echo json_encode($respuesta);
+            break;
+
+        case 'actualizarProdserv':
+            $cleanData = [
+                'idprodserv'   => $prodserv->limpiarCadena($_POST['idprodserv']) ? $prodserv->limpiarCadena($_POST['idprodserv']) : '',
+                'nombre'   => $prodserv->limpiarCadena($_POST['nombre']) ? $prodserv->limpiarCadena($_POST['nombre']) : '',
+                'tipo'   => $prodserv->limpiarCadena($_POST['tipo']) ? $prodserv->limpiarCadena($_POST['tipo']) : '',
+                'codigo' => $prodserv->limpiarCadena($_POST['codigo']) ?  $prodserv->limpiarCadena($_POST['codigo']) : "",
+                'idproveedor' => $prodserv->limpiarCadena($_POST['idproveedor']) ?  $prodserv->limpiarCadena($_POST['idproveedor']) : "",
+                'precio' => $prodserv->limpiarCadena($_POST['precio']) ?  $prodserv->limpiarCadena($_POST['precio']) : "",
+            ];
+
+            $rpt = $prodserv->actualizarProdserv($cleanData);
+
+            echo json_encode($rpt);
+            break;
+
+        case 'eliminarProdserv':
+            $cleanData = [
+                'idprodserv'   => $prodserv->limpiarCadena($_POST['idprodserv'])
+            ];
+
+            $rpt = $prodserv->eliminarProdserv($cleanData);
+
+            echo json_encode($rpt);
             break;
     }
 }

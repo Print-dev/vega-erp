@@ -170,7 +170,7 @@
                     <div class="form-floating">
                         <select name="usuario" id="usuario" class="form-select" required>
                         </select>
-                        <label for="usuario" class="form-label">Usuario</label>
+                        <label for="usuario" class="form-label">Artista</label>
                     </div>
                 </div>
             </div>
@@ -352,6 +352,24 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal-infoevento" tabindex="-1" aria-labelledby="modalinfoevento" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalinfoevento">Informacion evento</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="contenedor-infoevento p-3">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 
 <?php require_once '../footer.php' ?>

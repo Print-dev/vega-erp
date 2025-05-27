@@ -210,7 +210,10 @@ create table clientes (
 -- ADD COLUMN modotransporte INT NULL AFTER modalidad;
 ALTER TABLE detalles_presentacion ADD COLUMN estadoCordinacionTecnica tinyint null default 0;
 ALTER TABLE detalles_presentacion ADD COLUMN estadoCordinacionPublicidad tinyint null default 0;
-select * from detalles_presentacion;
+SELECT *
+FROM detalles_presentacion
+GROUP BY establecimiento;
+
 CREATE table detalles_presentacion (
 	iddetalle_presentacion	int auto_increment primary key,
     idusuario			int not null,
@@ -771,5 +774,6 @@ CREATE TABLE prodserv (
     codigo 	varchar(10) null,
     idproveedor INT NULL,
     precio 		DECIMAL(10,2) null,
-	constraint fk_idproveedor foreign key (idproveedor) references proveedores (idproveedor)
+	constraint fk_idproveedor foreign key (idproveedor) references proveedores (idproveedor) ON DELETE CASCADE
 ) ENGINE = INNODB;
+SELECT * FROM prodserv

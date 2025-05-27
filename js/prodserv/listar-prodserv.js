@@ -7,7 +7,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     let salarioObt = []
     let tiempocalculado
     let modalProdserv = new bootstrap.Modal($q("#modal-nuevo-prodserv"))
+    let modalProdservAct = new bootstrap.Modal($q("#modal-actualizar-prodserv"))
     let totalAcumulado = 0
+    let idprodserv
     /*     let modalNuevoProvedor = new bootstrap.Modal($q("#modal-nuevo-proveedor"))
         let modalActualizarProveedor = new bootstrap.Modal($q("#modal-actualizar-proveedor"))
      */
@@ -43,8 +45,23 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <option value="${proveedor.idproveedor}">${proveedor.nombre}</option>
             `;
         });
+        $q("#proveedoract").innerHTML = `
+            <option value="">Seleccione un proveedor</option>
+        `;
+        data.forEach(proveedor => {
+            $q("#proveedoract").innerHTML += `
+                <option value="${proveedor.idproveedor}">${proveedor.nombre}</option>
+            `;
+        });
     }
 
+    async function obenerProdservPorId(idprodserv) {
+        const params = new URLSearchParams();
+        params.append("operation", "obenerProdservPorId");
+        params.append("idprodserv", idprodserv);
+        const data = await getDatos(`${host}prodserv.controller.php`, params);
+        return data
+    }
     /*     async function obtenerColaboradorPorId(idcolaborador) {
             const params = new URLSearchParams();
             params.append("operation", "obtenerColaboradorPorId");
@@ -77,6 +94,37 @@ document.addEventListener("DOMContentLoaded", async () => {
         prodserv.append("codigo", $q("#codigo").value || "");
         prodserv.append("idproveedor", $q("#proveedor").value || "");
         prodserv.append("precio", $q("#precio").value || "");
+
+        const fprodserv = await fetch(`${host}prodserv.controller.php`, {
+            method: "POST",
+            body: prodserv,
+        });
+        const rprodserv = await fprodserv.json();
+        return rprodserv;
+    }
+
+    async function actualizarProdserv(idprodserv) {
+        const prodserv = new FormData();
+        prodserv.append("operation", "actualizarProdserv");
+        prodserv.append("idprodserv", idprodserv);
+        prodserv.append("nombre", $q("#nombreact").value || "");
+        prodserv.append("tipo", $q("#tipoact").value || "");
+        prodserv.append("codigo", $q("#codigoact").value || "");
+        prodserv.append("idproveedor", $q("#proveedoract").value || "");
+        prodserv.append("precio", $q("#precioact").value || "");
+
+        const fprodserv = await fetch(`${host}prodserv.controller.php`, {
+            method: "POST",
+            body: prodserv,
+        });
+        const rprodserv = await fprodserv.json();
+        return rprodserv;
+    }
+
+    async function eliminarProdserv(idprodserv) {
+        const prodserv = new FormData();
+        prodserv.append("operation", "eliminarProdserv");
+        prodserv.append("idprodserv", idprodserv);
 
         const fprodserv = await fetch(`${host}prodserv.controller.php`, {
             method: "POST",
@@ -214,10 +262,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             // Insertar fila con total acumulado calculado
             $q("#table-prodservs tbody").innerHTML += `
                 <tr>
-                    <td>${x.nombre ?? ""}</td>
+                    <td>${x.nombre_prodserv ?? ""}</td>
                     <td>${x.tipo ?? ''}</td>
                     <td>${x.codigo ?? ''}</td>
-                    <td>${x.proveedor ?? ''}</td>
+                    <td>${x.proveedor_proveedor ?? ''}</td>
                     <td>${x.precio ?? 0}</td>
                     <td>
                         <button class="btn btn-sm btn-primary btn-actualizar" data-idprodserv="${x.idprodserv}">Actualizar</button>
@@ -294,14 +342,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         idprodserv = e.target.getAttribute("data-idprodserv");
 
         console.log("idprodserv -> ", idprodserv);
-        alert("prueba de borrando")
+        const prodservEliminado = await eliminarProdserv(idprodserv)
+        console.log("prodservEliminado -> ", prodservEliminado);
+        if (await ask("¿Está seguro de eliminar este producto o servicio?")) {
+            if (prodservEliminado) {
+                showToast("Se eliminó correctamente el producto o servicio", "SUCCESS")
+                await dataFilters()
+                return
+            } else {
+                showToast("No se pudo eliminar el producto o servicio", "ERROR")
+            }
+        }
     }
 
     async function buttonActualizar(e) {
         idprodserv = e.target.getAttribute("data-idprodserv");
 
         console.log("idprodserv -> ", idprodserv);
-        alert("prueba de borrando")
+        modalProdservAct.show()
+        const prodserv = await obenerProdservPorId(idprodserv)
+        console.log("obenerProdservPorId -> ", prodserv);
+        $q("#nombreact").value = prodserv[0]?.nombre
+        $q("#tipoact").value = prodserv[0]?.tipo
+        $q("#codigoact").value = prodserv[0]?.codigo
+        $q("#proveedoract").value = prodserv[0]?.idproveedor
+        $q("#precioact").value = prodserv[0]?.precio
     }
 
     $q("#formProdserv").addEventListener("submit", async (e) => {
@@ -312,6 +377,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         modalProdserv.hide()
 
     })
+
+
+    $q("#formProdservAct").addEventListener("submit", async (e) => {
+        e.preventDefault()
+        const prodservreact = await actualizarProdserv(idprodserv)
+        console.log("prodserv regis- >", prodservreact)
+        if (prodservreact) {
+            showToast("Se actualizó correctamente el producto o servicio", "SUCCESS")
+            await dataFilters()
+            modalProdservAct.hide()
+            return
+        }
+
+
+    })
+
 
 
 })

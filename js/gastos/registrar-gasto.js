@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const data = await getDatos(`${host}usuario.controller.php`, params);
 
             console.log(data);
-            $q("#artista").innerHTML = '<option value="">Todos</option>'
+            $q("#artista").innerHTML = '<option value="">Seleccione</option>'
             data.forEach(artista => {
                 $q("#artista").innerHTML += `
                     <option value="${artista.idusuario}">${artista.nom_usuario}</option>
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    async function obtenerEventos() { // PARA OBTENER DATOS DE CLIENTE Y DE EVENTO (NO INCLUYE TARIFARIO NI COSTO EN PRESENTACION DE TAL LOCAL)
+/*     async function obtenerEventos() { // PARA OBTENER DATOS DE CLIENTE Y DE EVENTO (NO INCLUYE TARIFARIO NI COSTO EN PRESENTACION DE TAL LOCAL)
         const params = new URLSearchParams();
         params.append("operation", "filtrarAtenciones");
         params.append("ncotizacion", "");
@@ -51,14 +51,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         params.append("establecimiento", "")
         params.append("fechapresentacion", "")
         const data = await getDatos(`${host}detalleevento.controller.php`, params);
-        $q("#evento").innerHTML = ``
+        $q("#evento").innerHTML = `<option value="">Seleccione</option>`
         data.forEach(evento => {
             $q("#evento").innerHTML += `<option value="${evento.iddetalle_presentacion}">${evento.nom_usuario} - ${evento.establecimiento} (${evento.departamento} | ${evento.provincia} | ${evento.distrito}) [${evento.fecha_presentacion}]</option>`
 
         });
         //        return data
     }
+ */
+    async function obtenerEventos() { // PARA OBTENER DATOS DE CLIENTE Y DE EVENTO (NO INCLUYE TARIFARIO NI COSTO EN PRESENTACION DE TAL LOCAL)
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerEventosUnicos");
+        const data = await getDatos(`${host}detalleevento.controller.php`, params);
+        $q("#evento").innerHTML = '<option value="">Todos</option>'
+        data.forEach(evento => {
+            $q("#evento").innerHTML += `<option value="${evento.iddetalle_presentacion}">${evento.establecimiento}</option>`
 
+        });
+        //        return data
+    }
 
     $q("#mediopago").addEventListener("change", async (e) => {
         const tipopago = e.target.value
@@ -157,7 +168,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const gastoentradaRegis = await registrarGastoYEntrada(filePago, fileFacturaBoleta)
         console.log("gasto o entrada registrada -> ", gastoentradaRegis);
         if (gastoentradaRegis.idgastoentrada) {
-            showToast("Se ha registrado correctamente", "SUCCESS", 1000);
+            showToast("Se ha registrado correctamente", "SUCCESS", 1000, `${hostOnly}/views/contabilidad/gastos/listar-gastos`);
             return
         }
     })
@@ -174,17 +185,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             $q("#div-evento").hidden = false
         }
     })
-
-    $q("#estado").addEventListener("change", async (e) => {
-        const estado = e.target.value
-        if (estado == "1") {
-            $q("#div-comprobante-pago").hidden = true
-            $q("#div-comprobante-fac-bol").hidden = true
-            $q("#div-mediopago").hidden = true
-        } else if (estado == "2") {
-            $q("#div-comprobante-pago").hidden = true
-            $q("#div-comprobante-fac-bol").hidden = false
-            $q("#div-mediopago").hidden = true
-        }
-    })
+    /* 
+        $q("#estado").addEventListener("change", async (e) => {
+            const estado = e.target.value
+            if (estado == "1") {
+                $q("#div-comprobante-pago").hidden = true
+                $q("#div-comprobante-fac-bol").hidden = true
+                $q("#div-mediopago").hidden = true
+            } else if (estado == "2") {
+                $q("#div-comprobante-pago").hidden = true
+                $q("#div-comprobante-fac-bol").hidden = false
+                $q("#div-mediopago").hidden = false
+            }
+        }) */
 })
