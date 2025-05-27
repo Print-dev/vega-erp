@@ -51,7 +51,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
+
+
     async function obtenerEventos() { // PARA OBTENER DATOS DE CLIENTE Y DE EVENTO (NO INCLUYE TARIFARIO NI COSTO EN PRESENTACION DE TAL LOCAL)
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerEventosUnicos");
+        const data = await getDatos(`${host}detalleevento.controller.php`, params);
+        $q("#evento").innerHTML = '<option value="">Todos</option>'
+        data.forEach(evento => {
+            $q("#evento").innerHTML += `<option value="${evento.iddetalle_presentacion}">${evento.establecimiento}</option>`
+
+        });
+        //        return data
+    }
+
+/*     async function obtenerEventos() { // PARA OBTENER DATOS DE CLIENTE Y DE EVENTO (NO INCLUYE TARIFARIO NI COSTO EN PRESENTACION DE TAL LOCAL)
         const params = new URLSearchParams();
         params.append("operation", "filtrarAtenciones");
         params.append("ncotizacion", "");
@@ -59,6 +73,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         params.append("nomusuario", "")
         params.append("establecimiento", "")
         params.append("fechapresentacion", "")
+        params.append("mes", "")
+        params.append("añosemana", "")
         const data = await getDatos(`${host}detalleevento.controller.php`, params);
         $q("#evento").innerHTML = '<option value="">Todos</option>'
         data.forEach(evento => {
@@ -66,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         });
         //        return data
-    }
+    } */
 
 
     async function obtenerColaboradorPorId(idcolaborador) {

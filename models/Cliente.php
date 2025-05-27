@@ -99,6 +99,33 @@ class Cliente extends ExecQuery
     }
   }
 
+  public function actualizarClienteDp($params = []):  bool
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_actualizar_cliente_dp(?,?)");
+      $rpt = $cmd->execute(array(
+        $params['iddetallepresentacion'],
+        $params['idcliente'],
+      ));
+      return $rpt;
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function eliminarCliente($params = []):  bool
+  {
+    try {
+      $cmd = parent::execQ("CALL sp_eliminar_cliente(?)");
+      $rpt = $cmd->execute(array(
+        $params['idcliente']
+      ));
+      return $rpt;
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function verificarDatosIncompletosCliente($params = []): array
   {
     try {

@@ -262,7 +262,7 @@ class Nomina extends ExecQuery
 
 
 
-  public function registrarNomina($params = []): int
+/*   public function registrarNomina($params = []): int
   {
     try {
       $pdo = parent::getConexion();
@@ -278,6 +278,41 @@ class Nomina extends ExecQuery
           $params['rendimiento'],
           $params['proporcion'],
           $params['acumulado'],
+        )
+      );
+
+      $respuesta = $pdo->query("SELECT @idnomina AS idnomina")->fetch(PDO::FETCH_ASSOC);
+      return $respuesta['idnomina'];
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return -1;
+    }
+  } */
+
+  public function registrarNomina($params = []): int
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('CALL sp_registrar_nomina(@idnomina,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+      $cmd->execute(
+        array(
+          $params['tipo'],
+          $params['nombreapellido'],
+          $params['dni'],
+          $params['idarea'],
+          $params['fnacimiento'],
+          $params['estadocivil'],
+          $params['sexo'],
+          $params['domicilio'],
+          $params['correo'],
+          $params['nivelestudio'],
+          $params['contactoemergencia'],
+          $params['discapacidad'],
+          $params['camisa'],
+          $params['pantalon'],
+          $params['ruc'],
+          $params['clavesol'],
+          $params['ncuenta'],
         )
       );
 

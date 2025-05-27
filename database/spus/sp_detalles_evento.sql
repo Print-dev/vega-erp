@@ -74,7 +74,7 @@ BEGIN
         fecha_presentacion, horainicio, horafinal, establecimiento, 
         referencia, acuerdo, tipo_evento, modotransporte,modalidad, validez, igv, esExtranjero, idnacionalidad
     ) VALUES (
-        _idusuario, _idcliente, NULLIF(_iddistrito, ''), NULLIF(_ncotizacion, ''), 
+        _idusuario, NULLIF(_idcliente,''), NULLIF(_iddistrito, ''), NULLIF(_ncotizacion, ''), 
         _fechapresentacion, _horainicio, _horafinal, NULLIF(_establecimiento, ''), 
         NULLIF(_referencia, ''), NULLIF(_acuerdo, ''), nullif(_tipoevento,''), nullif(_modotransporte,''), nullif(_modalidad,''), _validez, _igv, _esExtranjero, nullif(_idnacionalidad,'')
     );
@@ -83,7 +83,7 @@ BEGIN
 END //
 DELIMITER ;
 
--- CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,88,1183,'0044-2025','2025-05-21','19:00','03:00','oceania (segundo turno)', '', '', 1,1,2,7,0);
+CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,null,1183,'0064-2025','2025-05-21','19:00','03:00','oceania (segundo turno)', '', '', 1,1,2,7,0,0,1);
 -- CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,92, '','','2025-05-24','16:00','21:00','montevideo', '', '', 1,1,1,'',0, 1);
 -- CALL sp_registrar_detalle_presentacion (@iddetalle_presentacion, 8,17, '','0044-2025','2025-05-16','19:00','23:00','coliseo', '', '', 1,1,2,7,0, 1, 35);
 
@@ -129,7 +129,6 @@ BEGIN
 END //
 DELIMITER ;
 
--- CALL sp_obtener_filmmaker_asociado_evento (4)
 drop procedure if exists sp_obtener_filmmaker_asociado_evento;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_filmmaker_asociado_evento`(
@@ -145,7 +144,6 @@ END //
 
 DELIMITER ;
 
-CALL sp_obtener_detalles_evento (null,null,null,null,null);
 drop procedure if exists sp_obtener_detalles_evento;
 DELIMITER //
 CREATE PROCEDURE `sp_obtener_detalles_evento`(

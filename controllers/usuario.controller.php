@@ -73,6 +73,12 @@ $accesos = [
 
     ['modulo' => 'contabilidad', 'ruta' => 'listar-gtxp', 'subruta' => 'gtxp', 'texto' => 'Gastos Por Pagar', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-gtxp', 'subruta' => 'gtxp', 'texto' => '', 'visible' => false, 'icono' => ''],
+
+
+    ['modulo' => 'nominas', 'ruta' => '', 'texto' => 'Nominas', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-calculator'],
+
+    ['modulo' => 'nominas', 'ruta' => 'listar-nominas', 'subruta' => 'nomina', 'texto' => 'Registrados', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'nominas', 'ruta' => 'registrar-nomina', 'subruta' => 'nomina', 'texto' => 'Registrar', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     /* ['modulo' => 'contabilidad', 'ruta' => 'listar-ingresos', 'subruta' => 'ingresos', 'texto' => 'Ingresos', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-ingreso', 'subruta' => 'ingresos', 'visible' => false], */
 
@@ -93,7 +99,7 @@ $accesos = [
     ['modulo' => 'proveedores', 'ruta' => 'proveedores', 'subruta' => '', 'texto' => 'Proveedores', 'visible' => true, 'icono' => 'fa-solid fa-building'],
 
     // REGISTRO DE NOMINAS
-    ['modulo' => 'nominas', 'ruta' => 'listar-nominas', 'subruta' => '', 'texto' => 'Nóminas', 'visible' => true, 'icono' => 'fa-solid fa-building'],
+    //['modulo' => 'nominas', 'ruta' => 'listar-nominas', 'subruta' => '', 'texto' => 'Nóminas', 'visible' => true, 'icono' => 'fa-solid fa-building'],
 
     // REGISTRO DE COLABORADORES
     ['modulo' => 'colaboradores', 'ruta' => '', 'texto' => 'Colaboradores', 'subruta' => '', 'visible' => true, 'icono' => 'fa-solid fa-users'],

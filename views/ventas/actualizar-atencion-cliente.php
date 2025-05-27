@@ -8,8 +8,8 @@
             <div class="card-header">
                 <h1 id="titulo-registrar-at-clientes">ACTUALIZAR DATOS DE EVENTO</h1>
                 <div class="card-body">
-                    <div class="row">                        
-                        <div class="card-body  row g-2 ">                            
+                    <div class="row">
+                        <div class="card-body  row g-2 ">
                             <div class="col-md-2">
                                 <div class="form-floating">
                                     <input type="date" class="form-control" id="fechapresentacion" autocomplete="off">
@@ -55,7 +55,7 @@
                                     </select>
                                     <label for="tipoevento" class="form-label">Tipo evento</label>
                                 </div>
-                            </div>                            
+                            </div>
                             <div class="col-md-2">
                                 <div class="form-floating">
                                     <select name="modotransporte" id="modotransporte" class="form-select">
@@ -65,7 +65,7 @@
                                     </select>
                                     <label for="modotransporte" class="form-label">Modo Transporte</label>
                                 </div>
-                            </div>                            
+                            </div>
                             <div class="col-md-2" id="container-validez">
                                 <div class="form-floating">
                                     <input type="number" id="validez" name="validez"
@@ -110,6 +110,15 @@
                                 <button type="button" class="btn btn-primary" id="btnEditarCliente">Editar Cliente</button>
                             </div>
 
+                            <label for="">¿El cliente ya existe?</label>
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <select name="cliente" id="cliente" class="form-select" ">
+                                    </select>
+                                    <label for="cliente" class="form-label">Seleccione</label>
+                                </div>
+                            </div>
+
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="igv">
                                 <label class="form-check-label" for="igv">
@@ -123,10 +132,10 @@
                 <div class="card-footer d-flex justify-content-end">
                     <div class="d-flex gap-2">
                         <button type="button" id="btnActualizarEvento" class="btn btn-primary">
-                            <i class="fa-solid fa-floppy-disk px-2"></i>Actualizar</button>                        
+                            <i class="fa-solid fa-floppy-disk px-2"></i>Actualizar</button>
                         <a href="<?= $hostOnlyHeader ?>/views/ventas/listar-atencion-cliente" id="btnRegresarAC" class="btn btn-primary">
                             <i class="fa-solid fa-circle-left px-2"></i>Regresar</a>
-                       
+
                     </div>
                 </div>
             </div>
@@ -159,7 +168,7 @@
 <?php require_once '../footer.php' ?>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script src="<?= $hostOnlyHeader ?>/js/ventas/actualizar-evento.js"></script> 
+<script src="<?= $hostOnlyHeader ?>/js/ventas/actualizar-evento.js"></script>
 
 </body>
 

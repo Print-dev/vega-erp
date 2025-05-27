@@ -236,9 +236,9 @@ CREATE table detalles_presentacion (
     tienecaja		tinyint null default 0,
     estado			tinyint null default 1, -- 1: activo, 2:vencido, 3: cancelado
     created_at		date null default now(),
-    constraint fk_idusuario_dp foreign key (idusuario) references usuarios (idusuario), -- artista
-    constraint fk_idcliente_dp foreign key (idcliente) references clientes (idcliente),
-    constraint fk_iddistrito_dp foreign key (iddistrito) references distritos (iddistrito),
+    constraint fk_idusuario_dp foreign key (idusuario) references usuarios (idusuario) ON DELETE CASCADE, -- artista
+    constraint fk_idcliente_dp foreign key (idcliente) references clientes (idcliente) ON DELETE CASCADE,
+    constraint fk_iddistrito_dp foreign key (iddistrito) references distritos (iddistrito) ON DELETE CASCADE,
     constraint    chk_detalle_p          CHECK(modalidad IN(1, 2)),
     constraint ck_estado_dp				check(estado IN (1,2,3)),
     constraint ck_tevento_dp				check(tipo_evento IN (1,2)),
@@ -539,9 +539,9 @@ CREATE TABLE comprobantes (
     monto			decimal(10,2) not null,
     tieneigv 		tinyint not null,
     noperacion	varchar(15) null,	
-	constraint fk_idcliente_comp	foreign key (idcliente) references clientes (idcliente),
-    constraint fk_idsucursal_comp foreign key (idsucursal) references sucursales (idsucursal),
-	constraint fk_iddp_comp foreign key (iddetallepresentacion) references detalles_presentacion (iddetalle_presentacion)
+	constraint fk_idcliente_comp	foreign key (idcliente) references clientes (idcliente) ON DELETE CASCADE,
+    constraint fk_idsucursal_comp foreign key (idsucursal) references sucursales (idsucursal) ON DELETE CASCADE,
+	constraint fk_iddp_comp foreign key (iddetallepresentacion) references detalles_presentacion (iddetalle_presentacion) ON DELETE CASCADE
 ) ENGINE = INNODB;
 CREATE TABLE items_comprobante (
 	iditemcomprobante	int auto_increment primary key,
@@ -558,7 +558,7 @@ CREATE TABLE detalles_comprobante (
     idcomprobante		int not null,
     estado				varchar(10) not null,
     info				varchar(60) not null,
-	constraint fk_iddetallefactura	foreign key (idcomprobante) references comprobantes (idcomprobante)
+	constraint fk_iddetallefactura	foreign key (idcomprobante) references comprobantes (idcomprobante) ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 CREATE TABLE cuotas_comprobante (
@@ -589,7 +589,29 @@ CREATE TABLE areas ( -- AREAS DE UN COLABORADOR, EJEMP: sistemas, diseño, marke
     area VARCHAR(100) NOT NULL
 );
 select * from nivelaccesos;
-SELECT * FROM colaboradores;
+SELECT * FROM nomina;
+
+CREATE TABLE nominas (
+	idnomina int auto_increment primary key,
+    tipo 	INT null,
+    nombreapellido int null,
+    dni		char(15) null,
+    idarea	int null,
+	fnacimiento date null,
+    estadocivil int null,
+    sexo 	int null,
+    domicilio varchar(130) null,
+    correo	varchar(150) null,
+    nivelestudio	varchar(150) null,
+    contactoemergencia	varchar(200) null,
+    discapacidad 	varchar(200) null,
+    camisa			varchar(80) null,
+    pantalon		varchar(80) null,
+    ruc				varchar(80) null,
+    clavesol		varchar(20) null,
+    ncuenta			varchar(20) null
+) ENGINE = INNODB;
+
 CREATE TABLE colaboradores (
     idcolaborador INT AUTO_INCREMENT PRIMARY KEY,
     idpersona INT NOT NULL,
@@ -680,7 +702,7 @@ CREATE TABLE gastosyentradas (
 select * from gastosyentradas;
 -- *************************** APARTIR DE ABAJO NO CONSIDERAR ***************************************
 
-DROP TABLE nomina (
+CREATE TABLE nomina (
 	idnomina INT auto_increment PRIMARY KEY,
 	idcolaborador INT NULL,
 	idresponsable INT NULL,

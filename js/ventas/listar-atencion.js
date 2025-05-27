@@ -1170,7 +1170,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     contenedorModal.innerHTML = `
        <div class="mt-3">
             <h4 class="fw-bold">Promotor:</h4><br>
-             <label class="fw-bold">Nombre/Razon Social:</label> <span id="noti-pasaje">${dpInfo[0]?.razonsocial ? dpInfo[0]?.razonsocial.toUpperCase() : ''}</span> <br>
+             <label class="fw-bold">Nombre/Razon Social:</label> <span id="noti-pasaje">${dpInfo[0]?.razonsocial ? dpInfo[0]?.razonsocial.toUpperCase() : 'Sin dato'}</span> <br>
              <label class="fw-bold">Celular:</label> <span id="noti-pasaje">${dpInfo[0]?.telefono ? dpInfo[0]?.telefono : 'Sin celular/telefono'}</span> <br>
 
              <h4 class="fw-bold">Detalles evento:</h4><br>

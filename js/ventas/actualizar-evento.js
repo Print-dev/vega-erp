@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
     let iddp = window.localStorage.getItem("iddp")
     let idartista = -1
-let idcliente = -1
+    let idcliente = -1
+    let clienteSelect = $q("#cliente")
 
     function $q(object = null) {
         return document.querySelector(object);
@@ -16,6 +17,8 @@ let idcliente = -1
         return data.json();
     }
 
+    await obtenerClientes()
+
     // *************************************** OBTENCION DE DATOS **************************************
     async function obtenerInfoDPporId(iddp) {
         const params = new URLSearchParams();
@@ -24,6 +27,20 @@ let idcliente = -1
         const data = await getDatos(`${host}detalleevento.controller.php`, params);
         return data;
     }
+
+
+    async function obtenerClientes() {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerClientes");
+        const data = await getDatos(`${host}cliente.controller.php`, params);
+        console.log("data .> ", data);
+        clienteSelect.innerHTML = '<option value="">Selecciona</option>'
+        data.forEach(cliente => {
+            clienteSelect.innerHTML += `<option value="${cliente.idcliente}">${cliente.razonsocial}</option>`
+        });
+        return data
+    }
+
 
     async function obtenerDpPorFecha(idusuario, fechapresentacion) {
         const params = new URLSearchParams();
@@ -34,6 +51,8 @@ let idcliente = -1
         console.log(dpfecha);
         return dpfecha
     }
+
+
 
     async function actualizarDetallePresentacion(iddetallepresentacion) {
         const dp = new FormData();
@@ -51,6 +70,21 @@ let idcliente = -1
         dp.append("iddistrito", $q("#distrito2").value ? $q("#distrito2").value : '');
 
         const fdp = await fetch(`${host}detalleevento.controller.php`, {
+            method: "POST",
+            body: dp,
+        });
+        const rdp = await fdp.json();
+        return rdp;
+    }
+
+    async function actualizarClienteDp(iddetallepresentacion) {
+        const dp = new FormData();
+        dp.append("operation", "actualizarClienteDp");
+        dp.append("iddetallepresentacion", iddetallepresentacion); // id artista
+        dp.append("idcliente", $q("#cliente").value ? $q("#cliente").value : '');
+
+
+        const fdp = await fetch(`${host}cliente.controller.php`, {
             method: "POST",
             body: dp,
         });
@@ -252,6 +286,10 @@ let idcliente = -1
 
             }
 
+            idcliente = $q("#cliente").value 
+            const clienteAct = await actualizarClienteDp(iddp);
+            console.log("cliente actualizado ? -> ", clienteAct);
+
             const dpActualizado = await actualizarDetallePresentacion(iddp);
             console.log("dp actualizado ? -> ", dpActualizado);
 
@@ -267,7 +305,6 @@ let idcliente = -1
     });
 
     $q("#btnEditarCliente").addEventListener("click", () => {
-        window.localStorage.clear()
         window.localStorage.setItem("idcliente", idcliente);
         window.location.href = `${hostOnly}/views/utilitario/clientes/actualizar-cliente`;
     })

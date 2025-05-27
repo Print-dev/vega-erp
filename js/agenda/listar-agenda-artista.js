@@ -836,7 +836,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             <div><strong>Tiempo:</strong> ${calculateDuration(
                 info.event.extendedProps?.horainicio,
                 info.event.extendedProps?.horafinal
-              )}</div>` :
+              )}</div>
+            <button class="btn btn-primary w-100" id="btnInfo" style="flex: 1;" data-iddp="${info.event.extendedProps?.iddetalle_presentacion}">Info</button>` :
               `
           <div style="padding: 8px; border-radius: 10px; display: flex; justify-content: space-between; ">
           <div>${horaInicio} - ${horaFinal}</div>
@@ -1533,7 +1534,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           return
         })
       })
-
     }
     if (e.target && e.target.id === "btnInfo") {
       iddp = e.target.getAttribute("data-iddp")
@@ -1548,7 +1548,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       contenedorModal.innerHTML = `
           <div class="mt-3">
                 <h4 class="fw-bold">Promotor:</h4><br>
-                <label class="fw-bold">Nombre/Razon Social:</label> <span id="noti-pasaje">${dpInfo[0]?.razonsocial ? dpInfo[0]?.razonsocial.toUpperCase() : ''}</span> <br>
+                <label class="fw-bold">Nombre/Razon Social:</label> <span id="noti-pasaje">${dpInfo[0]?.razonsocial ? dpInfo[0]?.razonsocial.toUpperCase() : 'Sin datos'}</span> <br>
                 <label class="fw-bold">Celular:</label> <span id="noti-pasaje">${dpInfo[0]?.telefono ? dpInfo[0]?.telefono : 'Sin celular/telefono'}</span> <br>
 
                 <h4 class="fw-bold">Detalles evento:</h4><br>
@@ -1574,7 +1574,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </label>
                   </div>
                 </div>
-
               </div>    
         `;
 

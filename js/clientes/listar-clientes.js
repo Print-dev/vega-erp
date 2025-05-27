@@ -121,6 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${(x.departamento && x.provincia && x.distrito) ? `${x.departamento}/${x.provincia}/${x.distrito}` : 'No aplica'}</td>
                 <td>
                     <button class="btn btn-sm btn-primary btn-actualizar" data-idcliente="${x.idcliente}">Actualizar</button>
+                    <button class="btn btn-sm btn-danger btn-borrar" data-idcliente="${x.idcliente}">Borrar</button>
                 </td>
             </tr>
         `;
@@ -176,6 +177,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (e.target.classList.contains("btn-actualizar")) {
                         buttonActualizar(e);
                     }
+                    if (e.target.classList.contains("btn-borrar")) {
+                        buttonBorrar(e);
+                    }
                     /* if (e.target.classList.contains("btn-cerrar")) {
                         buttonCerrarCaja(e);
                     }
@@ -186,6 +190,18 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
+    async function eliminarCliente(idcliente) {
+        const prodserv = new FormData();
+        prodserv.append("operation", "eliminarCliente");
+        prodserv.append("idcliente", idcliente);
+
+        const fprodserv = await fetch(`${host}cliente.controller.php`, {
+            method: "POST",
+            body: prodserv,
+        });
+        const rprodserv = await fprodserv.json();
+        return rprodserv;
+    }
 
 
     function buttonActualizar(e) {
@@ -193,6 +209,20 @@ document.addEventListener("DOMContentLoaded", function () {
         window.localStorage.clear()
         window.localStorage.setItem("idcliente", idcliente)
         window.location.href = `${hostOnly}/views/utilitario/clientes/actualizar-cliente`;
+    }
+
+    async function buttonBorrar(e) {
+        const idcliente = e.target.getAttribute("data-idcliente")
+        const clienteEliminado = await eliminarCliente(idcliente)
+        if (await ask("¿Confirmar eliminación?")) {
+            showToast("Eliminado!", "SUCCESS")
+            console.log("cliente eliminado -> ", clienteEliminado);
+            await dataFilters()
+            return
+        }
+        /*         window.localStorage.clear()
+                window.localStorage.setItem("idcliente", idcliente)
+                window.location.href = `${hostOnly}/views/utilitario/clientes/actualizar-cliente`; */
     }
 
     // *********************************** eventos ********************************

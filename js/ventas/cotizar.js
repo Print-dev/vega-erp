@@ -846,6 +846,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     await buscarClienteParams();
   });
 
+  $q("#btnNullCliente").addEventListener("click", async () => {
+    idcliente = null
+    bloquearCampos(false)
+  })
+
   $q("#fechapresentacion").addEventListener("change", async () => {
 
   })

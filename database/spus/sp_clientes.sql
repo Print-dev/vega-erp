@@ -109,4 +109,29 @@ END //
 
 select * from clientes
 
+DROP PROCEDURE IF EXISTS sp_actualizar_cliente_dp;
+DELIMITER //
+CREATE PROCEDURE sp_actualizar_cliente_dp
+(
+    IN _iddetalle_presentacion				INT,
+	IN _idcliente			INT
+)
+BEGIN 
+	UPDATE detalles_presentacion SET
+    idcliente = nullif(_idcliente,'')
+    WHERE iddetalle_presentacion = _iddetalle_presentacion;
+END //
+
+DROP PROCEDURE IF EXISTS sp_eliminar_cliente;
+DELIMITER //
+CREATE PROCEDURE sp_eliminar_cliente
+(
+    IN _idcliente INT
+)
+BEGIN	
+	DELETE FROM clientes WHERE idcliente = _idcliente;
+END //
+DELIMITER ;
+
+
 -- CALL sp_actualizar_cliente(2, 74, '72754752', 'ROYER ALEXIS AVLOS ROMEO', '', '938439212', 'alex@gmail.com', 'mi haus 69');

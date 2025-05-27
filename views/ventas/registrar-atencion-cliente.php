@@ -42,8 +42,8 @@
                             <div class="col-md-2">
                                 <div class="form-floating">
                                     <input type="text" id="ndocumento" name="ndocumento"
-                                        class="form-control" placeholder="Nª Documento / RUC.">
-                                    <label for="ndocumento" class="form-label">Nª Documento / RUC.</label>
+                                        class="form-control" placeholder="DNI/RUC.">
+                                    <label for="ndocumento" class="form-label">DNI/RUC.</label>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -116,6 +116,7 @@
                         <div class="card-footer border-0">
                             <div class="text-start">
                                 <button type="button" class="btn btn-primary" id="btnBuscarCliente">Buscar</button>
+                                <button type="button" class="btn btn-info" id="btnNullCliente" title="Puedes agregar los datos luego">Aun no hay datos de promotor</button>
                             </div>
                         </div>
                         <div class="card-body  row g-2 ">

@@ -125,7 +125,7 @@ switch ($_SESSION['login']['nivelacceso']) {
 
 
   #links {
-    color:rgb(66, 66, 66);
+    color: rgb(66, 66, 66);
     display: flex;
     align-items: center;
     /* Mantener tamaño fijo */
@@ -228,7 +228,7 @@ switch ($_SESSION['login']['nivelacceso']) {
   .nav-link.active {
     background-color: #ffcc00;
     /* Amarillo suave */
-    color:rgb(255, 0, 0);
+    color: rgb(255, 0, 0);
     /* Letras blancas */
     font-weight: bold;
 
@@ -307,7 +307,7 @@ switch ($_SESSION['login']['nivelacceso']) {
           $showClass = ($vistaActual == $access['ruta']) ? 'show' : '';
           //die($subAccess['ruta']);
 
-          if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario" && $access['modulo'] !== "pyp" && $access['modulo'] !== "contabilidad" && $access['modulo'] !== "agenda" && $access['modulo'] !== "comprobantes" && $access['modulo'] !== "colaboradores" && $access['modulo'] !== "gtxp") {
+          if ($access['visible'] && $access['modulo'] !== "ventas" && $access['modulo'] !== "utilitario" && $access['modulo'] !== "pyp" && $access['modulo'] !== "contabilidad" && $access['modulo'] !== "agenda" && $access['modulo'] !== "comprobantes" && $access['modulo'] !== "colaboradores" && $access['modulo'] !== "gtxp" && $access['modulo'] !== "nominas") {
 
             echo "
               <li class='nav-item' >
@@ -540,6 +540,30 @@ switch ($_SESSION['login']['nivelacceso']) {
               }
             }
             echo "</ul>";
+          } else if ($access['modulo'] === "nominas" && $access['visible']) {
+            echo "
+              <li class='sidebar-item nav-item'>
+                <a href='#' class='sidebar-link collapsed nav-link sidebar-text d-flex align-items-center' data-bs-toggle='collapse' id='links' data-bs-target='#nominas'
+                  aria-expanded='false' aria-controls='nominas'>
+                  <i class='{$access['icono']}'></i>
+                  <span class='sidebar-text mx-2'>{$access['texto']}</span>
+                  <i class='fa-solid fa-angle-down ms-auto mt-2 toggle-icon'></i>
+                </a>              
+              </li> 
+              <ul id='nominas' class='sidebar-dropdown list-unstyled collapse' data-bs-parent='#nominas'>";
+
+            foreach ($listaAcceso as $subAccess) {
+              if (!$subAccess['visible'] && $subAccess['modulo'] === "nominas" && !empty($subAccess['texto']) && !empty($subAccess['icono'])) {
+                echo "
+                <li class='sidebar-item nav-item list-nominas'>
+                  <a href='{$hostOnlyHeader}/views/{$subAccess['modulo']}/{$subAccess['ruta']}' class='sidebar-link nav-link sidebar-text ms-4' id='links'>
+                    <i class='{$subAccess['icono']}'></i>
+                    <span class='sidebar-text mx-2'>{$subAccess['texto']}</span>
+                  </a>
+                </li>";
+              }
+            }
+            echo "</ul>";
           }
         }
         ?>
@@ -569,6 +593,19 @@ switch ($_SESSION['login']['nivelacceso']) {
           </div>
           <!-- Navbar links (PERFIL USUARIO) -->
           <ul class="navbar-nav align-items-center">
+            <!-- LOGO ACTUALIZACIONES -->
+            <!-- <li class="nav-item dropdown" id="not-actualizaciones">
+              <a
+                class="nav-link text-dark notification-bell unread dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+                <i class="fa-solid fa-circle-exclamation"></i>
+              </a>
+
+            </li> -->
+
             <!-- LOGO NOTIFICACION -->
             <li class="nav-item dropdown">
               <a
@@ -586,6 +623,7 @@ switch ($_SESSION['login']['nivelacceso']) {
                     d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
                 </svg>
               </a>
+
               <div class="dropdown-menu dropdown-menu-lg dropdown-menu-center mt-2 py-0 ml-3">
                 <div class="list-group list-group-flush">
                   <a href="#" class="text-center text-primary fw-bold border-bottom border-light py-3">
@@ -696,6 +734,18 @@ switch ($_SESSION['login']['nivelacceso']) {
     </script>
  -->
     <script>
+      function $q(object = null) {
+        return document.querySelector(object);
+      }
+
+      function $all(object = null) {
+        return document.querySelectorAll(object);
+      }
+
+      async function getDatos(link, params) {
+        let data = await fetch(`${link}?${params}`);
+        return data.json();
+      }
       const links = document.querySelectorAll('#options-sidebar .nav-link');
 
       links.forEach(link => {
@@ -742,6 +792,11 @@ switch ($_SESSION['login']['nivelacceso']) {
           }
         });
       }
+
+      /*       $q("#not-actualizaciones").addEventListener("click", async () => {
+              
+            })
+             */
       /* function mostrarNotificacionViatico() {
         if (Notification.permission === "granted") {
           new Notification("¡Nueva Notificación!", {

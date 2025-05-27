@@ -139,17 +139,17 @@
                             <div class="card border-0">
                                 <div class="card-body border-0">
                                     <label for="">Filtros</label>
-                                    <div class="row" style="font-size: 0.5rem;">
-                                        <div class="col-md-2">
+                                    <div class="row">
+                                        <div class="col-md-1">
                                             <div class="form-floating">
                                                 <input type="text" class="form-control filter" id="ncotizacion" autocomplete="off">
-                                                <label for="ncotizacion">Nº Cotizacion</label>
+                                                <label for="ncotizacion">N° Cot</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <div class="form-floating">
                                                 <input type="text" class="form-control filter" id="ndocumento" autocomplete="off">
-                                                <label for="ndocumento">Nº Documento/RUC</label>
+                                                <label for="ndocumento">DNI/RUC</label>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -162,19 +162,19 @@
                                         <div class="col-md-2">
                                             <div class="form-floating">
                                                 <input type="text" class="form-control filter" id="establecimiento" autocomplete="off">
-                                                <label for="establecimiento">Lugar/establecimiento</label>
+                                                <label for="establecimiento">Lugar</label>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-floating">
                                                 <input type="date" class="form-control filter" id="fechapresentacion" autocomplete="off">
-                                                <label for="fechapresentacion">Fecha de presentacion</label>
+                                                <label for="fechapresentacion">Fecha</label>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-floating">
                                                 <select id="mes" class="form-control filter">
-                                                    <option value="">Seleccionar Mes</option>
+                                                    <option value="">Seleccionar</option>
                                                     <option value="1">Enero</option>
                                                     <option value="2">Febrero</option>
                                                     <option value="3">Marzo</option>
@@ -188,13 +188,13 @@
                                                     <option value="11">Noviembre</option>
                                                     <option value="12">Diciembre</option>
                                                 </select>
-                                                <label for="mes">Filtrar por Mes</label>
+                                                <label for="mes">Mes</label>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-floating">
                                                 <input type="week" id="año_semana" class="form-control filter">
-                                                <label for="año_semana">Filtrar por Semana</label>
+                                                <label for="año_semana">Semana</label>
                                             </div>
                                         </div>
                                     </div>

@@ -399,7 +399,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function cargarNotificacionDpIndividualEnModal(notificacion) {
-    const ubicacion = notificacion?.esExtranjero == 0 ? notificacion?.departamento +"/"+ notificacion?.provincia +"/"+ notificacion?.distrito : notificacion?.establecimiento +"/"+ notificacion?.pais
+    const ubicacion = notificacion?.esExtranjero == 0 ? notificacion?.departamento + "/" + notificacion?.provincia + "/" + notificacion?.distrito : notificacion?.establecimiento + "/" + notificacion?.pais
     console.log("notificacion en dp modal _> ", notificacion);
     const contenedorModal = $q(".contenedor-notificacion");
     contenedorModal.innerHTML = `

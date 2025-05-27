@@ -217,7 +217,7 @@ if (isset($_POST['operation'])) {
             echo json_encode($rpt);
             break;
 
-        case 'registrarNomina':
+        /*         case 'registrarNomina':
             $cleanData = [
                 'idcolaborador'   => $nomina->limpiarCadena($_POST['idcolaborador']),
                 'salariousado'   => $nomina->limpiarCadena($_POST['salariousado']),
@@ -228,6 +228,38 @@ if (isset($_POST['operation'])) {
                 'rendimiento' => $nomina->limpiarCadena($_POST['rendimiento']) ? $nomina->limpiarCadena($_POST['rendimiento']) : '',
                 'proporcion' => $nomina->limpiarCadena($_POST['proporcion']) ? $nomina->limpiarCadena($_POST['proporcion']) : '',
                 'acumulado' => $nomina->limpiarCadena($_POST['acumulado']) ? $nomina->limpiarCadena($_POST['acumulado']) : '',
+            ];
+
+            $respuesta = ['idnomina' => -1];
+
+            $idnomina = $nomina->registrarNomina($cleanData);
+
+            if ($idnomina > 0) {
+                $respuesta['idnomina'] = $idnomina;
+            }
+
+            echo json_encode($respuesta);
+            break; */
+
+        case 'registrarNomina':
+            $cleanData = [
+                'tipo'               => $nomina->limpiarCadena($_POST['tipo']) ? $nomina->limpiarCadena($_POST['tipo']) : '',
+                'nombreapellido'     => $nomina->limpiarCadena($_POST['nombreapellido']) ? $nomina->limpiarCadena($_POST['nombreapellido']) : '',
+                'dni'                => $nomina->limpiarCadena($_POST['dni']) ? $nomina->limpiarCadena($_POST['dni']) : '',
+                'idarea'             => $nomina->limpiarCadena($_POST['idarea']) ? $nomina->limpiarCadena($_POST['idarea']) : '',
+                'fnacimiento'        => $nomina->limpiarCadena($_POST['fnacimiento']) ? $nomina->limpiarCadena($_POST['fnacimiento']) : '',
+                'estadocivil'        => $nomina->limpiarCadena($_POST['estadocivil']) ? $nomina->limpiarCadena($_POST['estadocivil']) : '',
+                'sexo'               => $nomina->limpiarCadena($_POST['sexo']) ? $nomina->limpiarCadena($_POST['sexo']) : '',
+                'domicilio'          => $nomina->limpiarCadena($_POST['domicilio']) ? $nomina->limpiarCadena($_POST['domicilio']) : '',
+                'correo'             => $nomina->limpiarCadena($_POST['correo']) ? $nomina->limpiarCadena($_POST['correo']) : '',
+                'nivelestudio'       => $nomina->limpiarCadena($_POST['nivelestudio']) ? $nomina->limpiarCadena($_POST['nivelestudio']) : '',
+                'contactoemergencia' => $nomina->limpiarCadena($_POST['contactoemergencia']) ? $nomina->limpiarCadena($_POST['contactoemergencia']) : '',
+                'discapacidad'       => $nomina->limpiarCadena($_POST['discapacidad']) ? $nomina->limpiarCadena($_POST['discapacidad']) : '',
+                'camisa'             => $nomina->limpiarCadena($_POST['camisa']) ? $nomina->limpiarCadena($_POST['camisa']) : '',
+                'pantalon'           => $nomina->limpiarCadena($_POST['pantalon']) ? $nomina->limpiarCadena($_POST['pantalon']) : '',
+                'ruc'                => $nomina->limpiarCadena($_POST['ruc']) ? $nomina->limpiarCadena($_POST['ruc']) : '',
+                'clavesol'           => $nomina->limpiarCadena($_POST['clavesol']) ? $nomina->limpiarCadena($_POST['clavesol']) : '',
+                'ncuenta'            => $nomina->limpiarCadena($_POST['ncuenta']) ? $nomina->limpiarCadena($_POST['ncuenta']) : '',
             ];
 
             $respuesta = ['idnomina' => -1];

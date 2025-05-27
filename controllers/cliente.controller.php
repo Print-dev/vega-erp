@@ -97,5 +97,26 @@ if (isset($_POST['operation'])) {
 
         echo json_encode($update);
         break;
+
+      case 'actualizarClienteDp':
+        $cleanData = [
+          'iddetallepresentacion' => $cliente->limpiarCadena($_POST['iddetallepresentacion']) ? $cliente->limpiarCadena($_POST['iddetallepresentacion']) : '',
+          'idcliente' => $cliente->limpiarCadena($_POST['idcliente']) ? $cliente->limpiarCadena($_POST['idcliente']) : '',
+        ];
+    
+        $update = $cliente->actualizarClienteDp($cleanData);
+
+        echo json_encode($update);
+        break;
+
+      case 'eliminarCliente':
+        $cleanData = [
+          'idcliente' => $cliente->limpiarCadena($_POST['idcliente']) ? $cliente->limpiarCadena($_POST['idcliente']) : '',
+        ];
+    
+        $update = $cliente->eliminarCliente($cleanData);
+
+        echo json_encode($update);
+        break;
   }
 }

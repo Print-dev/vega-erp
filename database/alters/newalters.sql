@@ -279,4 +279,60 @@ ALTER TABLE detalles_presentacion ADD COLUMN estadoCordinacionPublicidad BOOLEAN
 ALTER TABLE colaboradores ADD COLUMN idresponsable INT NULL;
 ALTER TABLE colaboradores ADD COLUMN banco INT NULL;
 ALTER TABLE colaboradores ADD COLUMN ncuenta CHAR(20) NULL;
-ALTER TABLE colaboradores add CONSTRAINT fk_idresponsable_colaborador foreign key (idresponsable) references usuarios (idusuario) ON DELETE CASCADE 
+ALTER TABLE colaboradores add CONSTRAINT fk_idresponsable_colaborador foreign key (idresponsable) references usuarios (idusuario) ON DELETE CASCADE;
+
+ALTER TABLE detalles_presentacion 
+MODIFY COLUMN idcliente INT NULL;
+
+-- ACTUALIZAR DESDE ACA 
+
+ALTER TABLE detalles_presentacion DROP FOREIGN KEY fk_idusuario_dp;
+ALTER TABLE detalles_presentacion DROP FOREIGN KEY fk_idcliente_dp;
+ALTER TABLE detalles_presentacion DROP FOREIGN KEY fk_iddistrito_dp;
+
+
+
+ALTER TABLE detalles_presentacion
+ADD CONSTRAINT fk_idusuario_dp
+FOREIGN KEY (idusuario) REFERENCES usuarios(idusuario) ON DELETE CASCADE;
+
+ALTER TABLE detalles_presentacion
+ADD CONSTRAINT fk_idcliente_dp
+FOREIGN KEY (idcliente) REFERENCES clientes(idcliente) ON DELETE CASCADE;
+
+ALTER TABLE detalles_presentacion
+ADD CONSTRAINT fk_iddistrito_dp
+FOREIGN KEY (iddistrito) REFERENCES distritos(iddistrito) ON DELETE CASCADE;
+
+
+ALTER TABLE comprobantes DROP FOREIGN KEY fk_idcliente_comp;
+ALTER TABLE comprobantes DROP FOREIGN KEY fk_idsucursal_comp;
+ALTER TABLE comprobantes DROP FOREIGN KEY fk_iddp_comp;
+
+ALTER TABLE comprobantes
+ADD CONSTRAINT fk_idcliente_comp
+FOREIGN KEY (idcliente) REFERENCES clientes(idcliente) ON DELETE CASCADE;
+
+ALTER TABLE comprobantes
+ADD CONSTRAINT fk_idsucursal_comp
+FOREIGN KEY (idsucursal) REFERENCES sucursales(idsucursal) ON DELETE CASCADE;
+
+ALTER TABLE comprobantes
+ADD CONSTRAINT fk_iddp_comp
+FOREIGN KEY (iddetallepresentacion) REFERENCES detalles_presentacion(iddetalle_presentacion) ON DELETE CASCADE;
+
+
+ALTER TABLE detalles_comprobante 
+DROP FOREIGN KEY fk_iddetallefactura;
+
+ALTER TABLE detalles_comprobante 
+ADD CONSTRAINT fk_iddetallefactura
+FOREIGN KEY (idcomprobante) REFERENCES comprobantes(idcomprobante) ON DELETE CASCADE;
+
+ALTER TABLE items_comprobante 
+DROP FOREIGN KEY fk_items_factura;
+
+ALTER TABLE items_comprobante 
+ADD CONSTRAINT fk_items_factura
+FOREIGN KEY (idcomprobante) REFERENCES comprobantes(idcomprobante) ON DELETE CASCADE;
+
