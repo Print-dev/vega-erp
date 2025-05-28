@@ -171,13 +171,8 @@ CREATE PROCEDURE sp_registrar_nomina(
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
     
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
-    BEGIN
-        SET existe_error = 1;
-    END;
-    
     -- Insertar la notificación
-    INSERT INTO nominas (tipo, nombreapellido, dni, idarea, fnacimiento, estadocivil, sexo, domicilio, correo, nivelestudio, discapacidad, camisa, pantalon, ruc, clavesol, ncuenta)
+    INSERT INTO nominas (tipo, nombreapellido, dni, idarea, fnacimiento, estadocivil, sexo, domicilio, correo, nivelestudio, contactoemergencia,discapacidad, camisa, pantalon, ruc, clavesol, ncuenta)
     VALUES (nullif(_tipo,''), nullif(_nombreapellido,''), nullif(_dni,''), nullif(_idarea,''), nullif(_fnacimiento,''), nullif(_estadocivil, '') , nullif(_sexo, ''), nullif(_domicilio,''), nullif(_correo,''), nullif(_nivelestudio, ''), nullif(_contactoemergencia,''), nullif(_discapacidad, ''), nullif(_camisa,''), nullif(_pantalon,''), nullif(_ruc,''), nullif(_clavesol,''), nullif(_ncuenta, ''));
 
     IF existe_error = 1 THEN
@@ -187,6 +182,28 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
+
+CALL sp_registrar_nomina(
+    @idnomina,      -- OUT
+    NULL,           -- _tipo
+    NULL,           -- _nombreapellido
+    NULL,           -- _dni
+    NULL,           -- _idarea
+    NULL,           -- _fnacimiento
+    NULL,           -- _estadocivil
+    NULL,           -- _sexo
+    NULL,           -- _domicilio
+    NULL,           -- _correo
+    NULL,           -- _nivelestudio
+    NULL,           -- _contactoemergencia
+    NULL,           -- _discapacidad
+    NULL,           -- _camisa
+    NULL,           -- _pantalon
+    NULL,           -- _ruc
+    NULL,           -- _clavesol
+    NULL            -- _ncuenta
+);
+
 
 DROP PROCEDURE IF EXISTS sp_obtener_ultimanomina_por_colaborador;
 DELIMITER //

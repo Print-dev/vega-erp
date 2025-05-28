@@ -90,6 +90,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 
+
     /*     async function actualizarProveedor(idproveedor) {
             const proveedor = new FormData();
             proveedor.append("operation", "actualizarProveedor");
@@ -212,32 +213,32 @@ document.addEventListener("DOMContentLoaded", async () => {
         listCajas = []
 
         for (const x of data) {
-            const acumuladosNomina = await obtenerAcumuladosNomina(x.idnomina);
+            //const acumuladosNomina = await obtenerAcumuladosNomina(x.idnomina);
 
             // Sumar todos los montos
-            const totalAcumulado = acumuladosNomina.reduce((sum, item) => {
-                return sum + parseFloat(item.monto || 0);
-            }, 0);
+            //const totalAcumulado = acumuladosNomina.reduce((sum, item) => {
+            //    return sum + parseFloat(item.monto || 0);
+            //}, 0);
+            //<td>${totalAcumulado.toFixed(2)}</td>
 
             // Insertar fila con total acumulado calculado
             $q("#table-nominas tbody").innerHTML += `
-        <tr>
-            <td>${x.nombres && x.apellidos ? x.nombres + " " + x.apellidos : ''}</td>
-            <td>${x.fechaingreso ?? ''}</td>
-            <td>${x.salario_usado ?? ''}</td>
-            <td>${x.horas ?? ''}</td>
-            <td>${x.periodo == 1 ? "Quincenal" : x.periodo == 2 ? "Semanal" : x.periodo == 3 ? "Mensual" : ''}</td>
-            <td>${x.area ?? ''}</td>
-            <td>${x.tiempo ?? ''}</td>
-            <td>${x.rendimiento ?? 0}</td>
-            <td>${x.proporcion ?? 0}</td>
-            <td>${totalAcumulado.toFixed(2)}</td>
-            <td>
-                <button class="btn btn-sm btn-primary btn-acumulados" data-idnomina="${x.idnomina}">Ver Acumulados</button>
-                <button class="btn btn-sm btn-danger btn-borrar" data-idnomina="${x.idnomina}">Borrar</button>
-            </td>
-        </tr>
-    `;
+                <tr>
+                    <td>${x.nombres && x.apellidos ? x.nombres + " " + x.apellidos : ''}</td>
+                    <td>${x.fechaingreso ?? ''}</td>
+                    <td>${x.salario_usado ?? ''}</td>
+                    <td>${x.horas ?? ''}</td>
+                    <td>${x.periodo == 1 ? "Quincenal" : x.periodo == 2 ? "Semanal" : x.periodo == 3 ? "Mensual" : ''}</td>
+                    <td>${x.area ?? ''}</td>
+                    <td>${x.tiempo ?? ''}</td>
+                    <td>${x.rendimiento ?? 0}</td>
+                    <td>${x.proporcion ?? 0}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary btn-acumulados" data-idnomina="${x.idnomina}">Ver Acumulados</button>
+                        <button class="btn btn-sm btn-danger btn-borrar" data-idnomina="${x.idnomina}">Borrar</button>
+                    </td>
+                </tr>
+            `;
         }
 
 

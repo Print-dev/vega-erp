@@ -57,7 +57,7 @@
                                                 <th>Tiempo</th>
                                                 <th>Rendimiento</th>
                                                 <th>Proporción</th>
-                                                <th>Acumulado</th>
+                                                <!-- <th>Acumulado</th> -->
                                                 <th>Opciones</th>
                                             </tr>
                                         </thead>

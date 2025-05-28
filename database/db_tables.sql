@@ -609,7 +609,8 @@ CREATE TABLE nominas (
     pantalon		varchar(80) null,
     ruc				varchar(80) null,
     clavesol		varchar(20) null,
-    ncuenta			varchar(20) null
+    ncuenta			varchar(20) null,
+    constraint fk_idarea_nom foreign key (idarea) references areas (idarea)
 ) ENGINE = INNODB;
 
 CREATE TABLE colaboradores (

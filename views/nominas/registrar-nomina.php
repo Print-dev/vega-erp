@@ -4,7 +4,7 @@
     <div class="row d-flex flex-nowrap">
         <div class="card">
             <div class="card-body">
-                <form action="" id="form-registro-gasto">
+                <form action="" id="form-registro-nomina">
                     <div class="row g-2 mb-4">
                         <h1 class="fw-bold">Registrar nuevo</h1>
                     </div>
@@ -156,7 +156,7 @@
                     <hr>
                     <div class="row">
                         <div class="text-end">
-                            <button type="submit" class="btn btn-primary" id="btn-registrar-gasto">Registrar</button>
+                            <button type="submit" class="btn btn-primary" id="btn-registrar-nomina">Registrar</button>
                         </div>
                     </div>
                 </form>
@@ -168,7 +168,7 @@
 <?php require_once '../footer.php' ?>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script src="<?= $hostOnlyHeader ?>/js/gastos/registrar-gasto.js"></script>
+<script src="<?= $hostOnlyHeader ?>/js/nominas/registrar-nomina.js"></script>
 <!-- <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script> -->
 <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
 
