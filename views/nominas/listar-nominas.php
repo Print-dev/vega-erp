@@ -73,10 +73,23 @@
                                     <table class="table" id="table-nominas">
                                         <thead class="text-center">
                                             <tr>
+<<<<<<< HEAD
                                                 <th>Tipo</th>
                                                 <th>Nombres y Apellidos</th>
                                                 <th>Cargo</th>
                                                 <th>Correo</th>
+=======
+                                                <th>Nombre</th>
+                                                <th>Fecha Ingreso</th>
+                                                <th>Salario</th>
+                                                <th>Horas</th>
+                                                <th>Periodo</th>
+                                                <th>Área</th>
+                                                <th>Tiempo</th>
+                                                <th>Rendimiento</th>
+                                                <th>Proporción</th>
+                                                <!-- <th>Acumulado</th> -->
+>>>>>>> 6547466ed9a558a8c204afd89554b4da58b2d656
                                                 <th>Opciones</th>
                                             </tr>
                                         </thead>

@@ -4,11 +4,20 @@
     <div class="row d-flex flex-nowrap">
         <div class="card">
             <div class="card-body">
+<<<<<<< HEAD
                 <div class="row g-2 mb-4">
                     <h1 class="fw-bold">Registrar nuevo</h1>
                 </div>
                 <div class="row g-2 mb-4">
                     <!-- <div class="text-center my-4 position-relative">
+=======
+                <form action="" id="form-registro-nomina">
+                    <div class="row g-2 mb-4">
+                        <h1 class="fw-bold">Registrar nuevo</h1>
+                    </div>
+                    <div class="row g-2 mb-4">
+                        <div class="text-center my-4 position-relative">
+>>>>>>> 6547466ed9a558a8c204afd89554b4da58b2d656
                             <hr>
                             <span class="position-absolute top-50 start-50 translate-middle bg-white px-3">Datos generales</span>
                         </div> -->
@@ -236,7 +245,7 @@
                 <!-- <hr>
                     <div class="row">
                         <div class="text-end">
-                            <button type="submit" class="btn btn-primary" id="btn-registrar-gasto">Registrar</button>
+                            <button type="submit" class="btn btn-primary" id="btn-registrar-nomina">Registrar</button>
                         </div>
                     </div> -->
             </div>

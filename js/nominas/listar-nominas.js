@@ -121,6 +121,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
+
     /*     async function actualizarProveedor(idproveedor) {
             const proveedor = new FormData();
             proveedor.append("operation", "actualizarProveedor");
@@ -298,12 +299,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         listNominas = []
 
         for (const x of data) {
-            /* const acumuladosNomina = await obtenerAcumuladosNomina(x.idnomina);
+            const acumuladosNomina = await obtenerAcumuladosNomina(x.idnomina);
 
             // Sumar todos los montos
             const totalAcumulado = acumuladosNomina.reduce((sum, item) => {
                 return sum + parseFloat(item.monto || 0);
-            }, 0); */
+            }, 0);
 
             // Insertar fila con total acumulado calculado
 
@@ -332,18 +333,23 @@ document.addEventListener("DOMContentLoaded", async () => {
             })
 
             $q("#table-nominas tbody").innerHTML += `
-                <tr>
-                    <td>${x.tipo == 1 ? "Planilla" : x.tipo == 2 ? "Contrato" : x.tipo == 3 ? "Locación" : ''}</td>
-                    <td>${x.nombreapellidos ?? ''}</td>
-                    <td>${x.cargo ?? ''}</td>
-                    <td>${x.correo ?? ''}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary btn-info" data-idnomina="${x.idnomina}">Info</button>
-                        <button class="btn btn-sm btn-primary btn-actualizar" data-idnomina="${x.idnomina}">Actualizar</button>
-                        <button class="btn btn-sm btn-danger btn-borrar" data-idnomina="${x.idnomina}">Borrar</button>
-                    </td>
-                </tr>
-            `;
+        <tr>
+            <td>${x.nombres && x.apellidos ? x.nombres + " " + x.apellidos : ''}</td>
+            <td>${x.fechaingreso ?? ''}</td>
+            <td>${x.salario_usado ?? ''}</td>
+            <td>${x.horas ?? ''}</td>
+            <td>${x.periodo == 1 ? "Quincenal" : x.periodo == 2 ? "Semanal" : x.periodo == 3 ? "Mensual" : ''}</td>
+            <td>${x.area ?? ''}</td>
+            <td>${x.tiempo ?? ''}</td>
+            <td>${x.rendimiento ?? 0}</td>
+            <td>${x.proporcion ?? 0}</td>
+            <td>${totalAcumulado.toFixed(2)}</td>
+            <td>
+                <button class="btn btn-sm btn-primary btn-acumulados" data-idnomina="${x.idnomina}">Ver Acumulados</button>
+                <button class="btn btn-sm btn-danger btn-borrar" data-idnomina="${x.idnomina}">Borrar</button>
+            </td>
+        </tr>
+    `;
         }
 
 
