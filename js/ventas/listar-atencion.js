@@ -958,7 +958,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <button type="button" class="btn btn-sm btn-primary btn-actualizar" data-id=${x.iddetalle_presentacion} title="Actualizar Evento">
                         Actualizar
                       </button>                     
-                      ` : x.estado_convenio == 3 ? 'Desaprobado' : x.estado == 3 ? 'Cancelado' : `
+                      ` : x.estado_convenio == 3 ? 'Desaprobado' : x.estado == 3 ? `
+                      <button type="button" class="btn btn-sm btn-primary btn-infoevento" data-id=${x.iddetalle_presentacion} title="Mas información">
+                          Info
+                        </button> 
+                         <button type="button" class="btn btn-sm btn-danger btn-reactivar" data-id=${x.iddetalle_presentacion} title="Reactivar Evento">
+                        Reactivar
+                      </button>
+                      <span class="text-danger">Cancelado</span>
+                      ` : `
                         ${x.estado == 2 ? '' : parseInt(x.estado_convenio) == 2 ? `
                         <button type="button" class="btn btn-sm btn-warning btn-propuesta" data-idusuario="${x.idusuario}" data-fechapresentacion="${x.fecha_presentacion}" data-id=${x.iddetalle_presentacion} title="Detalles propuesta">
                             Detalles Propuesta
@@ -995,7 +1003,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                       ${x.tienecaja == 1 ? '' : x.modalidad == 1 ? '' : `<button type="button" class="btn btn-sm btn-warning btn-caja" data-id=${x.iddetalle_presentacion} title="Caja Chica">
                           Caja Chica  
                       </button> `
-          }
+        }
                        ${x.modalidad == 1 ? `<button type="button" class="btn btn-sm btn-secondary btn-precioentrada" data-id=${x.iddetalle_presentacion} title="Precios de entrada">
                           Precios de entrada
                         </button>` : ''}
@@ -1142,6 +1150,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (e.target.classList.contains("btn-infoevento")) {
             await buttonInfoEvento(e);
           }
+          if (e.target.classList.contains("btn-reactivar")) {
+            await buttonReactivar(e);
+          }
           /* if(e.target.classList.contains("show-espec")){//abre el sidebar
           await btnSBUpdateActivo(e);
         }
@@ -1180,7 +1191,7 @@ document.addEventListener("DOMContentLoaded", async () => {
              <label class="fw-bold">Desde - hasta:</label> <span id="noti-viaje">${formatHour(dpInfo[0]?.horainicio) ?? "0:00"} - ${formatHour(dpInfo[0]?.horafinal) ?? "0:00"}</span> <br>
              <label class="fw-bold">Tiempo:</label> <span id="noti-viaje">${calculateDuration(dpInfo[0]?.horainicio ?? "0:00", dpInfo[0]?.horafinal ?? "0:00")}</span> <br>
              <label class="fw-bold">Ubicacion:</label> <span id="noti-viaje">${ubicacion}</span> <br>
-            <label class="fw-bold">Modalidad:</label> <span id="noti-viaje">${dpInfo[0]?.modalidad == 1 ? "Convenio" : dpInfo[0]?.modalidad == 1 ? "Contrato" : ''}</span>
+            <label class="fw-bold">Modalidad:</label> <span id="noti-viaje">${dpInfo[0]?.modalidad == 1 ? "Convenio" : dpInfo[0]?.modalidad == 2 ? "Contrato" : ''}</span>
              <hr>
              <div class="mt-3">
               <div class="form-check">
@@ -1216,6 +1227,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  async function buttonReactivar(e) {
+    iddp = e.target.getAttribute("data-id")
+    window.localStorage.clear()
+    if (await ask("¿Reactivar Evento?")) {
+      const cancelado = await actualizarEstadoDp(iddp, 1)
+      console.log("cancelado ?>???? ", cancelado);
+    }
+    await dataFilters()
+    return
+  }
 
 
   async function buttonCaja(e) {

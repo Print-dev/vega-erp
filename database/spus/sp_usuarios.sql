@@ -207,14 +207,16 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS sp_filtrar_colaboradores;
 DELIMITER //
 CREATE PROCEDURE sp_filtrar_colaboradores(
-	IN _num_doc VARCHAR(20),
-    IN _idarea INT
+	IN _num_doc VARCHAR(20)
+    -- IN _idcargo INT
 )
 BEGIN
     SELECT * FROM colaboradores	COL
-	left JOIN personas PE ON PE.idpersona = COL.idpersona
-    LEFT JOIN areas AR ON AR.idarea = COL.idarea
-    WHERE (PE.num_doc LIKE CONCAT('%', COALESCE(_num_doc, ''), '%') OR PE.num_doc IS NULL)
-	AND (_idarea IS NULL OR AR.idarea = _idarea)
+	left JOIN personas_colaboradores PE ON PE.idpersonacolaborador = COL.idpersonacolaborador
+    -- LEFT JOIN cargos CAR ON CAR.idcargo = COL.idcargo
+    WHERE (PE.dni LIKE CONCAT('%', COALESCE(_num_doc, ''), '%') OR PE.dni IS NULL)
+	-- AND (_idcargo IS NULL OR CAR.idcargo = _idcargo)
     ORDER BY idcolaborador DESC;
 END //
+
+CALL sp_filtrar_colaboradores(NULL)

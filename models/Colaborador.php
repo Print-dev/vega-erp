@@ -2,7 +2,7 @@
 
 require_once 'ExecQuery.php';
 
-class Nomina extends ExecQuery
+class Colaborador extends ExecQuery
 {
 
   /* public function registrarNotificacionViatico($params = []): int
@@ -76,11 +76,11 @@ class Nomina extends ExecQuery
   public function filtrarColaboradores($params = []): array
   {
     try {
-      $sp = parent::execQ("CALL sp_filtrar_colaboradores(?)");
+      $sp = parent::execQ("CALL sp_filtrar_colaboradores(?,?)");
       $sp->execute(
         array(
           $params["numdoc"],
-          //$params["idarea"]
+          $params["idarea"]
         )
       );
       return $sp->fetchAll(PDO::FETCH_ASSOC);
@@ -108,17 +108,11 @@ class Nomina extends ExecQuery
   public function filtrarNominas($params = []): array
   {
     try {
-      $sp = parent::execQ("CALL sp_filtrar_nominas (?,?,?,?,?,?,?)");
+      $sp = parent::execQ("CALL sp_filtrar_nominas");
       $sp->execute(
         array(
-          $params["mesindividual"],
-          $params["anoindividual"],
-          $params["mesrangoinicio"],
-          $params["anorangoinicio"],
-          $params["mesrangofin"],
-          $params["anorangofin"],
-          $params["idcolaborador"],
-        )
+          /* $params["nombres"],
+          $params["numdoc"] */)
       );
       return $sp->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
@@ -154,20 +148,6 @@ class Nomina extends ExecQuery
     }
   }
 
-  public function obtnerNominaPorId($params = []): array
-  {
-    try {
-      $cmd = parent::execQ("CALL sp_obtener_nomina_porid (?)");
-      $cmd->execute(
-        array($params['idnomina'])
-      );
-      return $cmd->fetchAll(PDO::FETCH_ASSOC);
-    } catch (Exception $e) {
-      error_log("Error: " . $e->getMessage());
-      return [];
-    }
-  }
-
   public function obtenerSalarioPorId($params = []): array
   {
     try {
@@ -182,10 +162,10 @@ class Nomina extends ExecQuery
     }
   }
 
-  public function obtenerAreas(): array
+  public function obtenerCargos(): array
   {
     try {
-      $sp = parent::execQ("SELECT * FROM areas");
+      $sp = parent::execQ("SELECT * FROM cargos");
       $sp->execute();
       return $sp->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
@@ -193,14 +173,14 @@ class Nomina extends ExecQuery
     }
   }
 
-  public function registrarArea($params = []): bool
+  public function registrarCargo($params = []): bool
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('INSERT INTO areas (area) VALUES (?)');
+      $cmd = $pdo->prepare('INSERT INTO cargos (cargo) VALUES (?)');
       $rpt = $cmd->execute(
         array(
-          $params['area'],
+          $params['cargo'],
         )
       );
 
@@ -211,7 +191,7 @@ class Nomina extends ExecQuery
     }
   }
 
-  public function registrarColaborador($params = []): int
+  /*   public function registrarColaborador($params = []): int
   {
     try {
       $pdo = parent::getConexion();
@@ -225,6 +205,57 @@ class Nomina extends ExecQuery
           $params['idresponsable'],
           $params['banco'],
           $params['ncuenta'],
+        )
+      );
+
+      $respuesta = $pdo->query("SELECT @idcolaborador AS idcolaborador")->fetch(PDO::FETCH_ASSOC);
+      return $respuesta['idcolaborador'];
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return -1;
+    }
+  }
+ */
+
+  public function registrarPersonaColaborador($params = []): int
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('CALL sp_registrar_persona_colaborador(@idpersonacolaborador,?,?,?,?,?,?,?,?,?,?)');
+      $cmd->execute(
+        array(
+          $params['nombreapellidos'],
+          $params['dni'],
+          $params['fnacimiento'],
+          $params['estadocivil'],
+          $params['sexo'],
+          $params['domicilio'],
+          $params['correo'],
+          $params['nivelestudio'],
+          $params['contactoemergencia'],
+          $params['discapacidad'],
+        )
+      );
+
+      $respuesta = $pdo->query("SELECT @idpersonacolaborador AS idpersonacolaborador")->fetch(PDO::FETCH_ASSOC);
+      return $respuesta['idpersonacolaborador'];
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return -1;
+    }
+  }
+
+  public function registrarColaborador($params = []): int
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('CALL sp_registrar_colaborador(@idcolaborador,?,?,?,?)');
+      $cmd->execute(
+        array(
+          $params['idpersonacolaborador'],
+          $params['camisa'],
+          $params['pantalon'],
+          $params['zapatos'],
         )
       );
 
@@ -309,7 +340,7 @@ class Nomina extends ExecQuery
     }
   } */
 
-  /*   public function registrarNomina($params = []): int
+  public function registrarNomina($params = []): int
   {
     try {
       $pdo = parent::getConexion();
@@ -333,33 +364,6 @@ class Nomina extends ExecQuery
           $params['ruc'],
           $params['clavesol'],
           $params['ncuenta'],
-        )
-      );
-
-      $respuesta = $pdo->query("SELECT @idnomina AS idnomina")->fetch(PDO::FETCH_ASSOC);
-      return $respuesta['idnomina'];
-    } catch (Exception $e) {
-      error_log("Error: " . $e->getMessage());
-      return -1;
-    }
-  }
-
- */
-
-  public function registrarNomina($params = []): int
-  {
-    try {
-      $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_nomina(@idnomina,?,?,?,?,?,?,?)');
-      $cmd->execute(
-        array(
-          $params['idcolaborador'],
-          $params['tipo'],
-          $params['fechaingreso'],
-          $params['idcargo'],
-          $params['ruc'],
-          $params['clavesol'],
-          $params['ncuenta']
         )
       );
 

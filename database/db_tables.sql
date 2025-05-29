@@ -584,48 +584,47 @@ CREATE TABLE pagos_cuota (
 ) ENGINE = INNODB;
 
 -- ***************************************************** SECCION RECURSOS HUMANOS ************************************************************************
-CREATE TABLE areas ( -- AREAS DE UN COLABORADOR, EJEMP: sistemas, diseño, marketing, etc.
-    idarea INT AUTO_INCREMENT PRIMARY KEY,
-    area VARCHAR(100) NOT NULL
+-- select*from cargos
+CREATE TABLE cargos ( -- AREAS DE UN COLABORADOR, EJEMP: sistemas, diseño, marketing, etc.
+    idcargo INT AUTO_INCREMENT PRIMARY KEY,
+    cargo VARCHAR(100) NOT NULL
 );
-select * from nivelaccesos;
-SELECT * FROM nomina;
 
-CREATE TABLE nominas (
-	idnomina int auto_increment primary key,
-    tipo 	INT null,
-    nombreapellido int null,
-    dni		char(15) null,
-    idarea	int null,
-	fnacimiento date null,
-    estadocivil int null,
-    sexo 	int null,
-    domicilio varchar(130) null,
-    correo	varchar(150) null,
-    nivelestudio	varchar(150) null,
+CREATE TABLE personas_colaboradores (
+	idpersonacolaborador int auto_increment primary key,
+    nombreapellidos 	varchar(150) null,
+    dni					varchar(8) null,
+    fnacimiento 		date null,
+    estadocivil			SMALLINT null, -- 1: soltero, 2: casado, 3: divorciado, 4: conviviente. 5: viudo
+    sexo				CHAR(1) null,
+    domicilio			varchar(200) null,
+    correo				varchar(200) null,
+    nivelestudio		varchar(200) null,
     contactoemergencia	varchar(200) null,
-    discapacidad 	varchar(200) null,
-    camisa			varchar(80) null,
-    pantalon		varchar(80) null,
-    ruc				varchar(80) null,
-    clavesol		varchar(20) null,
-    ncuenta			varchar(20) null
-) ENGINE = INNODB;
+    discapacidad 		varchar(200) null
+) ENGINE = INNODB;	
 
+-- ALTER TABLE colaboradores ADD COLUMN zapatos VARCHAR(80) NULL
 CREATE TABLE colaboradores (
     idcolaborador INT AUTO_INCREMENT PRIMARY KEY,
-    idpersona INT NOT NULL,
-	idsucursal INT NOT NULL,
-    fechaingreso DATE NOT NULL,
-    idarea INT NULL,
-    idresponsable INT NULL,
-    banco INT NULL,
-    ncuenta CHAR(20) NULL,
-    activo TINYINT DEFAULT 1,
-    CONSTRAINT fk_idpersona_colaborador foreign key (idpersona) references personas (idpersona) ON DELETE CASCADE,
-    CONSTRAINT fk_idarea_colaborador foreign key (idarea) references areas (idarea) ON DELETE CASCADE,
-	CONSTRAINT fk_idsucursal_colaborador FOREIGN KEY (idsucursal) REFERENCES sucursales (idsucursal) ON DELETE CASCADE,
-    CONSTRAINT fk_idresponsable_colaborador foreign key (idresponsable) references usuarios (idusuario) ON DELETE CASCADE
+    idpersonacolaborador INT NOT NULL,
+	camisa			varchar(80) null,
+    pantalon		varchar(80) null,
+    zapatos			varchar(80) null,
+    CONSTRAINT fk_idper_col foreign key (idpersonacolaborador) references personas_colaboradores (idpersonacolaborador) ON DELETE CASCADE
+) ENGINE = INNODB;
+-- select *  from nominas
+CREATE TABLE nominas (
+	idnomina int auto_increment primary key,
+    idcolaborador INT NULL,
+    tipo 	INT null, -- 1: planilla, 2: contrato, 3: locacion
+    fechaingreso	DATE NULL,
+    idcargo			int null,
+    ruc				varchar(20) null,
+    clavesol		varchar(20) null,
+    ncuenta			varchar(20) null,
+	constraint fk_idcolaborador_nomina foreign key (idcolaborador) references colaboradores (idcolaborador) ON DELETE CASCADE,
+    constraint fk_idcargo_nomina foreign key (idcargo) references cargos(idcargo) ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 

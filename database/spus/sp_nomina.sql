@@ -1,5 +1,20 @@
 USE vega_producciones_erp;
 
+DROP PROCEDURE IF EXISTS sp_obtener_nomina_porid;
+DELIMITER //
+CREATE PROCEDURE sp_obtener_nomina_porid(
+	IN _idnomina INT
+)
+BEGIN
+	SELECT * 
+	FROM nominas NOM
+	LEFT JOIN colaboradores COL ON COL.idcolaborador = NOM.idcolaborador
+    LEFT JOIN personas_colaboradores PERCO ON PERCO.idpersonacolaborador = COL.idpersonacolaborador
+	WHERE NOM.idnomina = _idnomina
+	ORDER BY NOM.idnomina DESC;
+END //
+DELIMITER ;
+
 DROP PROCEDURE IF EXISTS `sp_registrar_colaborador`;
 DELIMITER //
 
@@ -115,14 +130,12 @@ DELIMITER //
 CREATE PROCEDURE sp_registrar_nomina(
     OUT _idnomina INT,
     IN _idcolaborador int,
-    IN _salario_usado DECIMAL(10,2),
-    IN _periodo INT,
-    IN _idarea INT,
-    IN _horas DECIMAL(10,2),
-    IN _tiempo DECIMAL(10,2),
-    IN _rendimiento DECIMAL(10,2),
-    IN _proporcion DECIMAL(10,2),
-    IN _acumulado DECIMAL(10,2)
+    IN _tipo INT,
+    IN _fechaingreso DATE,
+    IN _idcargo INT,
+    IN _ruc varchar(20),
+    IN _clavesol varchar(20),
+    IN _ncuenta varchar(20)
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
@@ -133,8 +146,8 @@ BEGIN
     END;
     
     -- Insertar la notificación
-    INSERT INTO nomina (idcolaborador, salario_usado, periodo, idarea ,horas, tiempo, rendimiento, proporcion,acumulado)
-    VALUES (_idcolaborador , _salario_usado, _periodo, _idarea,_horas,nullif(_tiempo, '') , nullif(_rendimiento, ''), nullif(_proporcion,''), nullif(_acumulado,''));
+    INSERT INTO nominas (idcolaborador, tipo, fechaingreso, idcargo, ruc, clavesol, ncuenta)
+    VALUES (nullif(_idcolaborador,'') , nullif(_tipo,''), nullif(_fechaingreso,''), nullif(_idcargo,''), nullif(_ruc,''), nullif(_clavesol, '') , nullif(_ncuenta, ''));
 
     IF existe_error = 1 THEN
         SET _idnomina = -1;
@@ -204,6 +217,8 @@ BEGIN
 END //
 DELIMITER ;
 
+
+
 DROP PROCEDURE IF EXISTS sp_obtener_acumulados_nomina;
 DELIMITER //
 CREATE PROCEDURE sp_obtener_acumulados_nomina(
@@ -252,33 +267,71 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS sp_filtrar_nominas;
 DELIMITER //
 CREATE PROCEDURE sp_filtrar_nominas(
-	-- IN _nombres VARCHAR(100),
-	-- IN _num_doc VARCHAR(20)
+    IN _mesindividual INT,
+    IN _anoindividual INT,
+    IN _mesrangoinicio INT,
+    IN _anorangoinicio INT,
+    IN _mesrangofin INT,
+    IN _anorangofin INT,
+    IN _idcolaborador INT
 )
 BEGIN
-	SELECT 
-	NOM.idnomina, 
-    COL.idcolaborador, 
-    PE.nombres, 
-    PE.apellidos, 
-    COL.fechaingreso, 
-    NOM.salario_usado,
-    NOM.periodo,
-    NOM.horas,
-    AR.area,
-    AR.idarea, 
-    NOM.tiempo, 
-    NOM.rendimiento,
-    NOM.proporcion, 
-    NOM.acumulado
-    FROM nomina NOM
-	LEFT JOIN colaboradores	COL ON COL.idcolaborador = NOM.idcolaborador
-	left JOIN personas PE ON PE.idpersona = COL.idpersona
-    LEFT JOIN areas AR ON AR.idarea = NOM.idarea
-    ORDER BY NOM.idcolaborador DESC;
+    SELECT 
+        PERCO.nombreapellidos,
+        PERCO.dni,
+        CAR.cargo,
+        PERCO.fnacimiento,
+        PERCO.estadocivil,
+        PERCO.sexo,
+        PERCO.domicilio,
+        PERCO.correo,
+        PERCO.nivelestudio,
+        PERCO.contactoemergencia,
+        PERCO.discapacidad,
+        COL.idcolaborador,
+        COL.camisa, 
+        COL.pantalon,
+        COL.zapatos,
+        NOM.ruc,
+        NOM.idnomina,
+        NOM.clavesol,
+        NOM.ncuenta,
+        NOM.tipo,
+        NOM.fechaingreso
+    FROM nominas NOM
+    LEFT JOIN cargos CAR ON CAR.idcargo = NOM.idcargo
+    LEFT JOIN colaboradores COL ON COL.idcolaborador = NOM.idcolaborador
+    LEFT JOIN personas_colaboradores PERCO ON PERCO.idpersonacolaborador = COL.idpersonacolaborador
+    WHERE 
+        (
+            -- Filtro individual
+            (_mesindividual IS NOT NULL AND _anoindividual IS NOT NULL AND 
+             MONTH(NOM.fechaingreso) = _mesindividual AND YEAR(NOM.fechaingreso) = _anoindividual)
+            OR
+            -- Filtro por rango
+            (_mesrangoinicio IS NOT NULL AND _anorangoinicio IS NOT NULL AND 
+             _mesrangofin IS NOT NULL AND _anorangofin IS NOT NULL AND
+             NOM.fechaingreso BETWEEN 
+                 STR_TO_DATE(CONCAT('01/', _mesrangoinicio, '/', _anorangoinicio), '%d/%m/%Y') AND
+                 LAST_DAY(STR_TO_DATE(CONCAT('01/', _mesrangofin, '/', _anorangofin), '%d/%m/%Y'))
+            )
+            OR
+            -- Sin filtros de fecha
+            (_mesindividual IS NULL AND _anoindividual IS NULL AND
+             _mesrangoinicio IS NULL AND _anorangoinicio IS NULL AND
+             _mesrangofin IS NULL AND _anorangofin IS NULL)
+        )
+        AND 
+        -- Filtro por colaborador (opcional)
+        (_idcolaborador IS NULL OR COL.idcolaborador = _idcolaborador)
+    ORDER BY NOM.fechaingreso DESC, NOM.idnomina DESC;
 END //
+DELIMITER ;
 
-select * from colaboradores;
+select*from nominas;
+CALL sp_filtrar_nominas(NULL, NULL, 1, 2025, 5, 2025, NULL);
+
+-- Muestra solo nóminas de junio 2023select * from colaboradores;
 DROP PROCEDURE IF EXISTS sp_filtrar_salarios;
 DELIMITER //
 CREATE PROCEDURE sp_filtrar_salarios(

@@ -60,17 +60,30 @@ if (isset($_GET['operation'])) {
         case 'filtrarColaboradores':
             $cleanData = [
                 'numdoc' => empty($_GET['numdoc']) ? null : $nomina->limpiarCadena($_GET['numdoc']),
-                'idarea' => empty($_GET['idarea']) ? null : $nomina->limpiarCadena($_GET['idarea']),
+                //'idarea' => empty($_GET['idarea']) ? null : $nomina->limpiarCadena($_GET['idarea']),
             ];
             echo json_encode($nomina->filtrarColaboradores($cleanData));
             break;
 
+        case 'obtnerNominaPorId':
+            $cleanData = [
+                'idnomina' => empty($_GET['idnomina']) ? null : $nomina->limpiarCadena($_GET['idnomina']),
+                //'idarea' => empty($_GET['idarea']) ? null : $nomina->limpiarCadena($_GET['idarea']),
+            ];
+            echo json_encode($nomina->obtnerNominaPorId($cleanData));
+            break;
+
         case 'filtrarNominas':
-            /* $cleanData = [
-                'numdoc' => empty($_GET['numdoc']) ? null : $nomina->limpiarCadena($_GET['numdoc']),
-                'idarea' => empty($_GET['idarea']) ? null : $nomina->limpiarCadena($_GET['idarea']),
-            ]; */
-            echo json_encode($nomina->filtrarNominas());
+            $cleanData = [
+                'mesindividual' => empty($_GET['mesindividual']) ? null : $nomina->limpiarCadena($_GET['mesindividual']),
+                'anoindividual' => empty($_GET['anoindividual']) ? null : $nomina->limpiarCadena($_GET['anoindividual']),
+                'mesrangoinicio' => empty($_GET['mesrangoinicio']) ? null : $nomina->limpiarCadena($_GET['mesrangoinicio']),
+                'anorangoinicio' => empty($_GET['anorangoinicio']) ? null : $nomina->limpiarCadena($_GET['anorangoinicio']),
+                'mesrangofin' => empty($_GET['mesrangofin']) ? null : $nomina->limpiarCadena($_GET['mesrangofin']),
+                'anorangofin' => empty($_GET['anorangofin']) ? null : $nomina->limpiarCadena($_GET['anorangofin']),
+                'idcolaborador' => empty($_GET['idcolaborador']) ? null : $nomina->limpiarCadena($_GET['idcolaborador']),
+            ];
+            echo json_encode($nomina->filtrarNominas($cleanData));
             break;
 
         case 'filtrarSalarios':
@@ -241,7 +254,7 @@ if (isset($_POST['operation'])) {
             echo json_encode($respuesta);
             break; */
 
-        case 'registrarNomina':
+        /*         case 'registrarNomina':
             $cleanData = [
                 'tipo'               => $nomina->limpiarCadena($_POST['tipo']) ? $nomina->limpiarCadena($_POST['tipo']) : '',
                 'nombreapellido'     => $nomina->limpiarCadena($_POST['nombreapellido']) ? $nomina->limpiarCadena($_POST['nombreapellido']) : '',
@@ -260,6 +273,29 @@ if (isset($_POST['operation'])) {
                 'ruc'                => $nomina->limpiarCadena($_POST['ruc']) ? $nomina->limpiarCadena($_POST['ruc']) : '',
                 'clavesol'           => $nomina->limpiarCadena($_POST['clavesol']) ? $nomina->limpiarCadena($_POST['clavesol']) : '',
                 'ncuenta'            => $nomina->limpiarCadena($_POST['ncuenta']) ? $nomina->limpiarCadena($_POST['ncuenta']) : '',
+            ];
+
+            $respuesta = ['idnomina' => -1];
+
+            $idnomina = $nomina->registrarNomina($cleanData);
+
+            if ($idnomina > 0) {
+                $respuesta['idnomina'] = $idnomina;
+            }
+
+            echo json_encode($respuesta);
+            break; */
+
+        case 'registrarNomina':
+            $cleanData = [
+                'idcolaborador'               => $nomina->limpiarCadena($_POST['idcolaborador']) ? $nomina->limpiarCadena($_POST['idcolaborador']) : '',
+                'tipo'     => $nomina->limpiarCadena($_POST['tipo']) ? $nomina->limpiarCadena($_POST['tipo']) : '',
+                'fechaingreso'                => $nomina->limpiarCadena($_POST['fechaingreso']) ? $nomina->limpiarCadena($_POST['fechaingreso']) : '',
+                'idcargo'             => $nomina->limpiarCadena($_POST['idcargo']) ? $nomina->limpiarCadena($_POST['idcargo']) : '',
+                'ruc'        => $nomina->limpiarCadena($_POST['ruc']) ? $nomina->limpiarCadena($_POST['ruc']) : '',
+                'clavesol'        => $nomina->limpiarCadena($_POST['clavesol']) ? $nomina->limpiarCadena($_POST['clavesol']) : '',
+                'ncuenta'               => $nomina->limpiarCadena($_POST['ncuenta']) ? $nomina->limpiarCadena($_POST['ncuenta']) : '',
+
             ];
 
             $respuesta = ['idnomina' => -1];

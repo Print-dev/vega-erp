@@ -1558,7 +1558,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <label class="fw-bold">Desde - hasta:</label> <span id="noti-viaje">${formatHour(dpInfo[0]?.horainicio) ?? "0:00"} - ${formatHour(dpInfo[0]?.horafinal) ?? "0:00"}</span> <br>
                 <label class="fw-bold">Tiempo:</label> <span id="noti-viaje">${calculateDuration(dpInfo[0]?.horainicio ?? "0:00", dpInfo[0]?.horafinal ?? "0:00")}</span> <br>
                 <label class="fw-bold">Ubicacion:</label> <span id="noti-viaje">${ubicacion}</span> <br>
-                <label class="fw-bold">Modalidad:</label> <span id="noti-viaje">${dpInfo[0]?.modalidad == 1 ? "Convenio" : dpInfo[0]?.modalidad == 1 ? "Contrato" : ''}</span>
+                <label class="fw-bold">Modalidad:</label> <span id="noti-viaje">${dpInfo[0]?.modalidad == 1 ? "Convenio" : dpInfo[0]?.modalidad == 2 ? "Contrato" : ''}</span>
                 <hr>
                 <div class="mt-3">
                   <div class="form-check">

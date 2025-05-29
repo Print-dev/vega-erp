@@ -14,50 +14,69 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h1>Nóminas</h1>
+                    <h1>Nómina de colaboradores</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <button class="btn btn-info" id="btnNuevoColaboradorNomina" data-bs-toggle="modal" data-bs-target="#modal-nuevo-colaborador-nomina">Asignar Colaborador</button>
+                    <a href="<?= $hostOnlyHeader ?>/views/nominas/registrar-nomina" class="btn btn-primary">Nueva Registro</a>
+
+                    <button class="btn btn-success" id="btnGenerarExcel"><i class="fa-solid fa-file-excel"></i> Descargar en Excel</button>
                 </div>
             </div>
             <div class="row">
                 <div class="card border-0">
                     <div class="card-body">
                         <div class="row g-0 mb-3">
-                            <!-- <div class="card border-0">
+                            <div class="card border-0">
                                 <div class="card-body border-0">
                                     <div class="row">
-                                        <div class="col-md-2">
+                                        <div class="col-md-2 mb-3">
                                             <div class="form-floating">
-                                                <input type="text" class="form-control filter" id="nombre" autocomplete="off" placeholder="Nombre">
-                                                <label for="nombre">Nombre</label>
+                                                <select name="tipo" id="tipo" class="form-select" placeholder="Tipo">
+                                                    <option value="-1">Selecciona</option>
+                                                    <option value="1">Individual</option>
+                                                    <option value="2">Rango</option>
+                                                </select>
+                                                <label for="tipo" class="form-label">Tipo</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-2 mb-3">
                                             <div class="form-floating">
-                                                <input type="text" class="form-control filter" id="dni" autocomplete="off" placeholder="Dni">
-                                                <label for="dni">Dni</label>
+                                                <input type="month" class="form-control filter" id="mesanoindividual" autocomplete="off" placeholder="mesanoindividual">
+                                                <label for="mesanoindividual">Mes/Año</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 mb-3">
+                                            <div class="form-floating">
+                                                <input type="month" class="form-control filter" id="mesanorangoincio" autocomplete="off" placeholder="Mes/Año">
+                                                <label for="mesanorangoincio">Mes/Año</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 mb-3">
+                                            <div class="form-floating">
+                                                <input type="month" class="form-control filter" id="mesanorangofin" autocomplete="off" placeholder="Mes/Año">
+                                                <label for="mesanorangofin">Mes/Año</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 mb-3">
+                                            <div class="form-floating">
+                                                <select name="colaborador" id="colaborador" class="form-select filter" placeholder="Colaborador">
+                                                </select>
+                                                <label for="colaborador" class="form-label">Colaborador</label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div> -->
+                            </div>
                             <hr>
                             <div class="row g-1">
                                 <div class="table-responsive">
                                     <table class="table" id="table-nominas">
                                         <thead class="text-center">
                                             <tr>
-                                                <th>Nombre</th>
-                                                <th>Fecha Ingreso</th>
-                                                <th>Salario</th>
-                                                <th>Horas</th>
-                                                <th>Periodo</th>
-                                                <th>Área</th>
-                                                <th>Tiempo</th>
-                                                <th>Rendimiento</th>
-                                                <th>Proporción</th>
-                                                <th>Acumulado</th>
+                                                <th>Tipo</th>
+                                                <th>Nombres y Apellidos</th>
+                                                <th>Cargo</th>
+                                                <th>Correo</th>
                                                 <th>Opciones</th>
                                             </tr>
                                         </thead>
@@ -150,15 +169,31 @@
                                 </tr>
                             </thead>
                             <tbody id="div-acumulado">
-                            
+
                             </tbody>
                             <tfoot id="div-totalacumulado">
-                                
+
                             </tfoot>
                         </table>
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-info" tabindex="-1" aria-labelledby="modallabel-info" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modaltitle-acumulado">info</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="div-info">
+                
+
+                <!-- HACER UN DIV PARA MOSTRAR LA INFORMACION DEL COLABORADOR TANTO DE SU NOMINA ACTUAL -->
+            </div>
         </div>
     </div>
 </div>
@@ -238,6 +273,8 @@
 <?php require_once '../footer.php' ?>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js" integrity="sha512-dlPw+ytv/6JyepmelABrgeYgHI0O+frEwgfnPdXDTOIZz+eDgfW07QXG02/O8COfivBdGNINy+Vex+lYmJ5rxw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/exceljs.min.js"></script>
 <script src="<?= $hostOnlyHeader ?>/js/nominas/listar-nominas.js"></script>
 <!-- <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script> -->
 
