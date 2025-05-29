@@ -601,20 +601,8 @@ CREATE TABLE personas_colaboradores (
     correo				varchar(200) null,
     nivelestudio		varchar(200) null,
     contactoemergencia	varchar(200) null,
-<<<<<<< HEAD
     discapacidad 		varchar(200) null
 ) ENGINE = INNODB;	
-=======
-    discapacidad 	varchar(200) null,
-    camisa			varchar(80) null,
-    pantalon		varchar(80) null,
-    ruc				varchar(80) null,
-    clavesol		varchar(20) null,
-    ncuenta			varchar(20) null,
-    constraint fk_idarea_nom foreign key (idarea) references areas (idarea)
-) ENGINE = INNODB;
->>>>>>> 6547466ed9a558a8c204afd89554b4da58b2d656
-
 -- ALTER TABLE colaboradores ADD COLUMN zapatos VARCHAR(80) NULL
 CREATE TABLE colaboradores (
     idcolaborador INT AUTO_INCREMENT PRIMARY KEY,
