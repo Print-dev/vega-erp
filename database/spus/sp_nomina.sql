@@ -316,9 +316,9 @@ BEGIN
         NOM.tipo,
         NOM.fechaingreso
     FROM nominas NOM
-    LEFT JOIN cargos CAR ON CAR.idcargo = NOM.idcargo
     LEFT JOIN colaboradores COL ON COL.idcolaborador = NOM.idcolaborador
     LEFT JOIN personas_colaboradores PERCO ON PERCO.idpersonacolaborador = COL.idpersonacolaborador
+	LEFT JOIN cargos CAR ON CAR.idcargo = PERCO.idcargo
     WHERE 
         (
             -- Filtro individual
@@ -346,7 +346,7 @@ END //
 DELIMITER ;
 
 select*from nominas;
-CALL sp_filtrar_nominas(NULL, NULL, 1, 2025, 5, 2025, NULL);
+CALL sp_filtrar_nominas(NULL, NULL, 04, 2025, 08, 2025, NULL);
 
 -- Muestra solo nóminas de junio 2023select * from colaboradores;
 DROP PROCEDURE IF EXISTS sp_filtrar_salarios;

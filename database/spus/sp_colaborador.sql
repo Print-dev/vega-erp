@@ -40,7 +40,8 @@ CREATE PROCEDURE sp_registrar_persona_colaborador(
     IN _correo varchar(200),
     IN _nivelestudio VARCHAR(200),
     IN _contactoemergencia varchar(200),
-    IN _discapacidad VARCHAR(200)
+    IN _discapacidad VARCHAR(200),
+    IN _foto VARCHAR(80)
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
@@ -51,8 +52,8 @@ BEGIN
     END;
     
     -- Insertar la notificación
-    INSERT INTO personas_colaboradores (nombreapellidos, dni, fnacimiento, estadocivil, sexo, domicilio, correo, nivelestudio, contactoemergencia, discapacidad)
-    VALUES (nullif(_nombreapellidos,'') , nullif(_dni,''), nullif(_fnacimiento,''), nullif(_estadocivil,''), nullif(_sexo,''), nullif(_domicilio,''), nullif(_correo,''), nullif(_nivelestudio,''), nullif(_contactoemergencia,''), nullif(_discapacidad,''));
+    INSERT INTO personas_colaboradores (nombreapellidos, dni, fnacimiento, estadocivil, sexo, domicilio, correo, nivelestudio, contactoemergencia, discapacidad, foto)
+    VALUES (nullif(_nombreapellidos,'') , nullif(_dni,''), nullif(_fnacimiento,''), nullif(_estadocivil,''), nullif(_sexo,''), nullif(_domicilio,''), nullif(_correo,''), nullif(_nivelestudio,''), nullif(_contactoemergencia,''), nullif(_discapacidad,''), nullif(_foto, ''));
 
     IF existe_error = 1 THEN
         SET _idpersonacolaborador = -1;
@@ -62,3 +63,21 @@ BEGIN
 END //
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS sp_ficha_colaborador;
+DELIMITER //
+CREATE PROCEDURE sp_ficha_colaborador(
+	IN _idnomina INT
+	-- IN _nombres VARCHAR(100),
+	-- IN _num_doc VARCHAR(20)
+)
+BEGIN
+	SELECT 
+	*
+    FROM nominas NOM
+	LEFT JOIN colaboradores	COL ON COL.idcolaborador = NOM.idcolaborador
+    LEFT JOIN personas_colaboradores PERCO ON PERCO.idpersonacolaborador = COL.idpersonacolaborador
+    WHERE (_idnomina IS NULL OR NOM.idnomina = _idnomina);
+END //
+select * from empresa
+call sp_ficha_colaborador (4);
+select * from personas_colaboradores

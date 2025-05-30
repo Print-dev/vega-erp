@@ -6,14 +6,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     let colaboradorObt = []
     let salarioObt = []
     let tiempocalculado
-<<<<<<< HEAD
     let modalNuevoCargo = new bootstrap.Modal($q("#modal-nuevocargo"))
     let totalAcumulado = 0
     let idpersonacolaboradorObt = -1
     let idcolaboradorObt = -1
-=======
-    let totalAcumulado = 0
->>>>>>> 6547466ed9a558a8c204afd89554b4da58b2d656
     /*     let modalNuevoProvedor = new bootstrap.Modal($q("#modal-nuevo-proveedor"))
         let modalActualizarProveedor = new bootstrap.Modal($q("#modal-actualizar-proveedor"))
      */
@@ -30,7 +26,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
-<<<<<<< HEAD
     await obtenerCargos()
     bloquearCamposDatosFisicos(true)
     bloquearCamposInformacionPago(true)
@@ -82,9 +77,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         $q("#btnInformacionPago").disabled = isblock
     }
 
-=======
-    await obtenerAreas()
->>>>>>> 6547466ed9a558a8c204afd89554b4da58b2d656
     // ************************************ REGISTRAR DATOS ********************************
 
     async function obtenerColaboradores() {
@@ -103,7 +95,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-<<<<<<< HEAD
 
     async function obtenerCargos() {
         const data = await getDatos(`${host}colaborador.controller.php`, "operation=obtenerCargos");
@@ -111,15 +102,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         $q("#cargo").innerHTML = "<option value=''>Selecciona</option>";
         data.forEach(cargo => {
             $q("#cargo").innerHTML += `<option value="${cargo.idcargo}">${cargo.cargo}</option>`;
-=======
-    async function obtenerAreas() {
-        const data = await getDatos(`${host}nomina.controller.php`, "operation=obtenerAreas");
-        console.log(data);
-        $q("#cargo").innerHTML = "<option value=''>Selecciona</option>";
-
-        data.forEach(niveles => {
-            $q("#cargo").innerHTML += `<option value="${niveles.idarea}">${niveles.area}</option>`;
->>>>>>> 6547466ed9a558a8c204afd89554b4da58b2d656
         });
 
     }
@@ -148,32 +130,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data
     }
 
-<<<<<<< HEAD
-    async function registrarPersonaColaborador() {
+    async function registrarPersonaColaborador(fotoColaborador) {
         const colaborador = new FormData();
         colaborador.append("operation", "registrarPersonaColaborador");
         colaborador.append("nombreapellidos", $q("#nombreapellido").value || "");
         colaborador.append("dni", $q("#dni").value || '');
         colaborador.append("fnacimiento", $q("#fnacimiento").value || '');
         colaborador.append("estadocivil", $q("#estadocivil").value || '');
-=======
-    async function registrarNomina() {
-        const colaborador = new FormData();
-        colaborador.append("operation", "registrarNomina");
-        colaborador.append("tipo", $q("#tipo").value || '');
-        colaborador.append("nombreapellido", $q("#nombreapellido").value || '');
-        colaborador.append("dni", $q("#dni").value || '');
-        colaborador.append("idarea", $q("#cargo").value || '');
-        colaborador.append("fnacimiento", $q("#fnacimiento").value || '');
-        colaborador.append("estadocivil", $q("#estadocivil").value);
->>>>>>> 6547466ed9a558a8c204afd89554b4da58b2d656
         colaborador.append("sexo", $q("#sexo").value || '');
         colaborador.append("domicilio", $q("#domicilio").value || '');
         colaborador.append("correo", $q("#correo").value || '');
         colaborador.append("nivelestudio", $q("#nivelestudio").value || '');
         colaborador.append("contactoemergencia", $q("#contactoemergencia").value || '');
         colaborador.append("discapacidad", $q("#discapacidad").value || '');
-<<<<<<< HEAD
+        colaborador.append("foto", fotoColaborador);
 
         const fcolaborador = await fetch(`${host}colaborador.controller.php`, {
             method: "POST",
@@ -227,10 +197,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         colaborador.append("tipo", $q("#tipo").value || '');
         colaborador.append("fechaingreso", $q("#fechaingresonomina").value || '');
         colaborador.append("idcargo", $q("#cargo").value || '');
-=======
-        colaborador.append("camisa", $q("#camisa").value || '');
-        colaborador.append("pantalon", $q("#pantalon").value || '');
->>>>>>> 6547466ed9a558a8c204afd89554b4da58b2d656
         colaborador.append("ruc", $q("#ruc").value || '');
         colaborador.append("clavesol", $q("#clavesol").value || '');
         colaborador.append("ncuenta", $q("#ncuenta").value || '');
@@ -243,11 +209,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         return rcolaborador;
     }
 
-<<<<<<< HEAD
     // ******************** EVENTOS DE BOTONES **********************************************
     $q("#btnDatosGenerales").addEventListener("click", async () => {
+        /*         const imagenInputPago = $q("#upload_widget_pago");
+                const filePago = imagenInputPago.files[0]; */
+        const imagenInputFotoColaborador = $q("#upload_widget_colaborador");
+        const fileFotoColaborador = imagenInputFotoColaborador.files[0];
+        //console.log("filePago -> ", filePago);
+        console.log("fileFotoColaborador -> ", fileFotoColaborador);
+
         //console.log("butttoooon");
-        const personacolaborador = await registrarPersonaColaborador();
+        const personacolaborador = await registrarPersonaColaborador(fileFotoColaborador);
         console.log("personacolaborador -> ", personacolaborador);
         if (personacolaborador.idpersonacolaborador) {
             idpersonacolaboradorObt = personacolaborador.idpersonacolaborador
@@ -272,12 +244,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     $q("#btnInformacionPago").addEventListener("click", async () => {
         const nominaRegis = await registrarNomina(idcolaboradorObt)
-        console.log("nominaRegis -> " , nominaRegis);
-        if(nominaRegis.idnomina){
+        console.log("nominaRegis -> ", nominaRegis);
+        if (nominaRegis.idnomina) {
             bloquearCamposDatosFisicos(true)
             bloquearCamposInformacionPago(true)
             showToast("Nomina Registrada", "SUCCESS", 3000, `${hostOnly}/views/nominas/listar-nominas`)
-            
+
         }
     })
 
@@ -297,6 +269,26 @@ document.addEventListener("DOMContentLoaded", async () => {
             showToast("Error al registrar el area", "ERROR");
         }
     })
+
+    $q("#upload_widget_colaborador").addEventListener("change", function (e) {
+        console.log("cambiando...");
+        const file = e.target.files[0];
+        console.log("file de imagen event -> ", file);
+        const preview = $q("#previewImagenColaborador");
+
+        if (file && file.type.startsWith("image/")) {
+            console.log("renderizando ,,,,");
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "";
+            preview.style.display = "none";
+        }
+    });
 
     /*     $q("#colaborador").addEventListener("change", async (e) => {
             idcolaborador = e.target.value;
@@ -323,55 +315,4 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
     
         }) */
-=======
-
-
-    /*     async function actualizarProveedor(idproveedor) {
-            const proveedor = new FormData();
-            proveedor.append("operation", "actualizarProveedor");
-            proveedor.append("idproveedor", idproveedor);
-            proveedor.append("empresa", $q("#empresaactualizar").value || '');
-            proveedor.append("nombre", $q("#nombreempresaactualizar").value || '');
-            proveedor.append("contacto", $q("#contactoactualizar").value || '');
-            proveedor.append("correo", $q("#correoactualizar").value || '');
-            proveedor.append("dni", $q("#dniempresaactualizar").value || '');
-            proveedor.append("banco", $q("#bancoactualizar").value || '');
-            proveedor.append("ctabancaria", $q("#ctabancariaactualizar").value || '');
-            proveedor.append("servicio", $q("#servicioactualizar").value || '');
-            proveedor.append("nproveedor", $q("#nproveedoractualizar").value || '');
-    
-            const fproveedor = await fetch(`${host}proveedor.controller.php`, {
-                method: "POST",
-                body: proveedor,
-            });
-            const rproveedor = await fproveedor.json();
-            return rproveedor;
-        } */
-
-    // *********************************** OBTENER DATOS ********************************
-
-    /*     async function obtenerProveedorPorId(idproveedor) {
-            const params = new URLSearchParams();
-            params.append("operation", "obtenerProveedorPorId");
-            params.append("idproveedor", idproveedor);
-            const data = await getDatos(`${host}proveedor.controller.php`, params);
-            return data;
-        } */
-
-
-    $q("#form-registro-nomina").addEventListener("submit", async (e) => {
-        e.preventDefault()
-        console.log("form-registro-nomina");
-        /*         console.log("oj de colaborador -> ", colaboradorObt[0]);
-                console.log("idarea de colaborador -> ", colaboradorObt[0]?.idarea); */
-        const nominaRegistrada = await registrarNomina();
-        console.log("nominaRegistrada -> ", nominaRegistrada);
-        if (nominaRegistrada) {
-            showToast("Nomina registrada correctamente", "SUCCESS", 2000, `${hostOnly}/views/nominas/listar-nominas`);
-            $q("#form-registro-nomina").reset();
-            await dataFilters();
-        }
-
-    })
->>>>>>> 6547466ed9a558a8c204afd89554b4da58b2d656
 })

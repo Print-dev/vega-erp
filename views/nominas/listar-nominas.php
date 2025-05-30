@@ -20,6 +20,7 @@
                     <a href="<?= $hostOnlyHeader ?>/views/nominas/registrar-nomina" class="btn btn-primary">Nueva Registro</a>
 
                     <button class="btn btn-success" id="btnGenerarExcel"><i class="fa-solid fa-file-excel"></i> Descargar en Excel</button>
+                    <button class="btn btn-info" id="btnGenerarFicha"><i class="fa-regular fa-file-lines"></i>  Descargar Ficha(s)</button>
                 </div>
             </div>
             <div class="row">
@@ -39,19 +40,19 @@
                                                 <label for="tipo" class="form-label">Tipo</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-2 mb-3">
+                                        <div class="col-md-2 mb-3" id="div-mesanoindividual">
                                             <div class="form-floating">
                                                 <input type="month" class="form-control filter" id="mesanoindividual" autocomplete="off" placeholder="mesanoindividual">
                                                 <label for="mesanoindividual">Mes/Año</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-2 mb-3">
+                                        <div class="col-md-2 mb-3" id="div-mesanorangoincio">
                                             <div class="form-floating">
                                                 <input type="month" class="form-control filter" id="mesanorangoincio" autocomplete="off" placeholder="Mes/Año">
                                                 <label for="mesanorangoincio">Mes/Año</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-2 mb-3">
+                                        <div class="col-md-2 mb-3" id="div-mesanorangofin">
                                             <div class="form-floating">
                                                 <input type="month" class="form-control filter" id="mesanorangofin" autocomplete="off" placeholder="Mes/Año">
                                                 <label for="mesanorangofin">Mes/Año</label>
@@ -190,7 +191,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="div-info">
-                
+
 
                 <!-- HACER UN DIV PARA MOSTRAR LA INFORMACION DEL COLABORADOR TANTO DE SU NOMINA ACTUAL -->
             </div>

@@ -125,6 +125,7 @@ class Nomina extends ExecQuery
       die($e->getMessage());
     }
   }
+  
   public function filtrarSalarios($params = []): array
   {
     try {

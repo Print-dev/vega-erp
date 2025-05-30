@@ -1,4 +1,10 @@
 <?php
+
+require '../vendor/autoload.php';
+
+use Cloudinary\Cloudinary;
+use Cloudinary\Configuration\Configuration;
+
 require_once '../models/Colaborador.php';
 header("Access-Control-Allow-Origin: *");
 header("Content-type: application/json; charset=utf-8");
@@ -11,6 +17,13 @@ if (isset($_GET['operation'])) {
     switch ($_GET['operation']) {
         case 'obtenerCargos':
             echo json_encode($colaborador->obtenerCargos());
+            break;
+
+        case 'obtenerFichaColaborador':
+            $cleanData = [
+                'idnomina'   => $colaborador->limpiarCadena($_GET['idnomina']),
+            ];
+            echo json_encode($colaborador->obtenerFichaColaborador($cleanData));
             break;
     }
 }
@@ -49,6 +62,29 @@ if (isset($_POST['operation'])) {
             break;
 
         case 'registrarPersonaColaborador':
+            $cloudinary = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => 'dynpy0r4v',
+                    'api_key'    => '722279687758731',
+                    'api_secret' => 'KsLk7dNUAAjRYEBNUsv2JAV7cPI'
+                ],
+                'url' => [
+                    'secure' => true
+                ]
+            ]);
+
+            // Variables por defecto
+            $secureUrlFotoColaborador = $_POST['publicIdFotoColaboradorAnterior'] ?? '';
+
+            // Subir marca de agua si existe
+            if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+                $uploadResultFotoColaboradorUrl = $cloudinary->uploadApi()->upload(
+                    $_FILES['foto']['tmp_name'],
+                    ['folder' => 'fotocolaboradores_vegaproducciones']
+                );
+                $secureUrlFotoColaborador = $uploadResultFotoColaboradorUrl['public_id'] ?? '';
+            }
+
             $cleanData = [
                 'nombreapellidos'   => $colaborador->limpiarCadena($_POST['nombreapellidos']),
                 'dni'   => $colaborador->limpiarCadena($_POST['dni']),
@@ -59,7 +95,8 @@ if (isset($_POST['operation'])) {
                 'correo'   => $colaborador->limpiarCadena($_POST['correo']),
                 'nivelestudio'   => $colaborador->limpiarCadena($_POST['nivelestudio']),
                 'contactoemergencia'   => $colaborador->limpiarCadena($_POST['contactoemergencia']),
-                'discapacidad'   => $colaborador->limpiarCadena($_POST['discapacidad'])
+                'discapacidad'   => $colaborador->limpiarCadena($_POST['discapacidad']),
+                'foto'   => $secureUrlFotoColaborador ? $secureUrlFotoColaborador : ''
             ];
 
             $respuesta = ['idpersonacolaborador' => -1];

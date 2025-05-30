@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const params = new URLSearchParams();
         params.append("operation", "filtrarColaboradores");
         params.append("numdoc", "");
-        params.append("idarea", "");
+        //params.append("idarea", "");
 
         const data = await getDatos(`${host}nomina.controller.php`, params);
         console.log("data -> ", data);
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data
     }
 
-    async function registrarPersonaColaborador(fotoColaborador) {
+    async function registrarPersonaColaborador() {
         const colaborador = new FormData();
         colaborador.append("operation", "registrarPersonaColaborador");
         colaborador.append("nombreapellidos", $q("#nombreapellido").value || "");
@@ -143,7 +143,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         colaborador.append("nivelestudio", $q("#nivelestudio").value || '');
         colaborador.append("contactoemergencia", $q("#contactoemergencia").value || '');
         colaborador.append("discapacidad", $q("#discapacidad").value || '');
-        colaborador.append("foto", fotoColaborador);
 
         const fcolaborador = await fetch(`${host}colaborador.controller.php`, {
             method: "POST",
@@ -211,15 +210,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // ******************** EVENTOS DE BOTONES **********************************************
     $q("#btnDatosGenerales").addEventListener("click", async () => {
-        /*         const imagenInputPago = $q("#upload_widget_pago");
-                const filePago = imagenInputPago.files[0]; */
-        const imagenInputFotoColaborador = $q("#upload_widget_colaborador");
-        const fileFotoColaborador = imagenInputFotoColaborador.files[0];
-        //console.log("filePago -> ", filePago);
-        console.log("fileFotoColaborador -> ", fileFotoColaborador);
-
         //console.log("butttoooon");
-        const personacolaborador = await registrarPersonaColaborador(fileFotoColaborador);
+        const personacolaborador = await registrarPersonaColaborador();
         console.log("personacolaborador -> ", personacolaborador);
         if (personacolaborador.idpersonacolaborador) {
             idpersonacolaboradorObt = personacolaborador.idpersonacolaborador
@@ -244,12 +236,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     $q("#btnInformacionPago").addEventListener("click", async () => {
         const nominaRegis = await registrarNomina(idcolaboradorObt)
-        console.log("nominaRegis -> ", nominaRegis);
-        if (nominaRegis.idnomina) {
+        console.log("nominaRegis -> " , nominaRegis);
+        if(nominaRegis.idnomina){
             bloquearCamposDatosFisicos(true)
             bloquearCamposInformacionPago(true)
             showToast("Nomina Registrada", "SUCCESS", 3000, `${hostOnly}/views/nominas/listar-nominas`)
-
+            
         }
     })
 
@@ -269,26 +261,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             showToast("Error al registrar el area", "ERROR");
         }
     })
-
-    $q("#upload_widget_colaborador").addEventListener("change", function (e) {
-        console.log("cambiando...");
-        const file = e.target.files[0];
-        console.log("file de imagen event -> ", file);
-        const preview = $q("#previewImagenColaborador");
-
-        if (file && file.type.startsWith("image/")) {
-            console.log("renderizando ,,,,");
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-                preview.style.display = "block";
-            };
-            reader.readAsDataURL(file);
-        } else {
-            preview.src = "";
-            preview.style.display = "none";
-        }
-    });
 
     /*     $q("#colaborador").addEventListener("change", async (e) => {
             idcolaborador = e.target.value;

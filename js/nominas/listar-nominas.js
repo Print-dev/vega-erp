@@ -26,12 +26,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
-    await obtenerColaboradores()
 
     /*     $q("#mesindividual").addEventListener("change", async (e) => {
             console.log(e.target.value);
         })
      */
+
+    $q("#div-mesanoindividual").hidden = true
+    $q("#div-mesanorangoincio").hidden = true
+    $q("#div-mesanorangofin").hidden = true
     // ************************************ REGISTRAR DATOS ********************************
 
     async function obtenerColaboradores() {
@@ -39,16 +42,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         params.append("operation", "filtrarColaboradores");
         params.append("numdoc", "");
         //params.append("idarea", "");
-
+        console.log("holaaaa");
         const data = await getDatos(`${host}nomina.controller.php`, params);
+        $q("#colaborador").innerHTML = `<option value="">Todos</option>`;
         console.log("data -> ", data);
-        $q("#colaborador").innerHTML = `<option value="">Seleccione</option>`;
+
         data.forEach(nomina => {
             $q("#colaborador").innerHTML += `
-            <option value="${nomina.idcolaborador}">${nomina.nombres} ${nomina.apellidos}</option>
+            <option value="${nomina.idcolaborador}">${nomina.nombreapellidos}</option>
         `;
         });
     }
+
 
     /* async function obtenerColaboradorPorId(idcolaborador) {
         const params = new URLSearchParams();
@@ -95,27 +100,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         return rcolaborador;
     }
  */
-    async function obtenerColaboradores() {
-        const params = new URLSearchParams();
-        params.append("operation", "filtrarColaboradores");
-        params.append("numdoc", "");
-        params.append("idarea", "");
 
-        const data = await getDatos(`${host}nomina.controller.php`, params);
-        console.log("data -> ", data);
-        $q("#colaborador").innerHTML = `<option value="">Todos</option>`;
-        data.forEach(nomina => {
-            $q("#colaborador").innerHTML += `
-            <option value="${nomina.idcolaborador}">${nomina.nombres} ${nomina.apellidos}</option>
-        `;
-        });
-    }
     async function obtnerNominaPorId(idnomina) {
         const params = new URLSearchParams();
         params.append("operation", "obtnerNominaPorId");
         params.append("idnomina", idnomina);
 
         const data = await getDatos(`${host}nomina.controller.php`, params);
+        console.log("data -> ", data);
+        return data
+    }
+
+    async function obtenerFichaColaborador(idnomina) {
+        const params = new URLSearchParams();
+        params.append("operation", "obtenerFichaColaborador");
+        params.append("idnomina", idnomina);
+
+        const data = await getDatos(`${host}colaborador.controller.php`, params);
         console.log("data -> ", data);
         return data
     }
@@ -191,6 +192,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     (async () => {
         await dataFilters();
+        await obtenerColaboradores()
+
     })();
 
     changeByFilters();
@@ -247,33 +250,44 @@ document.addEventListener("DOMContentLoaded", async () => {
         params.append("operation", "filtrarNominas");
         //if (tipo === "1") { // Individual
         const mesIndividual = $q("#mesanoindividual").value;
-        if (mesIndividual) {
-            const [ano, mes] = mesIndividual.split('-');
-            params.append("mesindividual", mes);
-            params.append("anoindividual", ano);
-        }
-        //}
-        /// else if (tipo === "2") { // Rango
+        //if (mesIndividual) {
         const inicio = $q("#mesanorangoincio").value;
         const fin = $q("#mesanorangofin").value;
+        const [ano, mes] = mesIndividual.split('-');
+        const [anoInicio, mesInicio] = inicio.split('-');
+        const [anoFin, mesFin] = fin.split('-');
+        const idColaborador = $q("#colaborador").value;
 
-        if (inicio) {
-            const [anoInicio, mesInicio] = inicio.split('-');
-            params.append("mesrangoincio", mesInicio);
-            params.append("anorangoinicio", anoInicio);
-        }
+        const tipo = $q("#tipo").value;
 
-        if (fin) {
-            const [anoFin, mesFin] = fin.split('-');
-            params.append("mesrangofin", mesFin);
-            params.append("anorangofin", anoFin);
+        if (tipo === "1") { // Individual
+            params.append("mesindividual", mes || "");
+            params.append("anoindividual", ano || "");
+            params.append("mesrangoinicio", "");
+            params.append("anorangoinicio", "");
+            params.append("mesrangofin", "");
+            params.append("anorangofin", "");
+            params.append("idcolaborador", idColaborador || "");
+
+        } else if (tipo === "2") { // Rango
+            params.append("mesindividual", "");
+            params.append("anoindividual", "");
+            params.append("mesrangoinicio", mesInicio || "");
+            params.append("anorangoinicio", anoInicio || "");
+            params.append("mesrangofin", mesFin || "");
+            params.append("anorangofin", anoFin || "");
+            params.append("idcolaborador", idColaborador || "");
+
+        } else {
+            params.append("mesindividual", "");
+            params.append("anoindividual", "");
+            params.append("mesrangoinicio", "");
+            params.append("anorangoinicio", "");
+            params.append("mesrangofin", "");
+            params.append("anorangofin", "");
+            params.append("idcolaborador", idColaborador || "");
         }
         //}
-
-        const idColaborador = $q("#colaborador").value;
-        if (idColaborador) {
-            params.append("idcolaborador", idColaborador);
-        }
 
         /*         params.append("mesindividual", $q("#mesindividual").value || "");
                 params.append("anoindividual", $q("#anoindividual").value || "");
@@ -299,7 +313,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         listNominas = []
 
         for (const x of data) {
-            
+
             // Insertar fila con total acumulado calculado
 
             //INSERTANDO A LA LISTA DE NOMINAS
@@ -327,18 +341,18 @@ document.addEventListener("DOMContentLoaded", async () => {
             })
 
             $q("#table-nominas tbody").innerHTML += `
-        <tr>
-            <td>${x.tipo ?? ''}</td>
-            <td>${x.nombreapellidos ?? ''}</td>
-            <td>${x.cargo ?? ''}</td>
-            <td>${x.correo ?? ''}</td>
-            <td>
-                <button class="btn btn-sm btn-primary btn-info" data-idnomina="${x.idnomina}">Info</button>
-                <button class="btn btn-sm btn-primary btn-acumulados" data-idnomina="${x.idnomina}">Ver Acumulados</button>
-                <button class="btn btn-sm btn-danger btn-borrar" data-idnomina="${x.idnomina}">Borrar</button>
-            </td>
-        </tr>
-    `;
+                <tr>
+                    <td>${x.tipo == 1 ? "Planilla" : x.tipo == 2 ? "Contrato" : x.tipo == 3 ? "Locación" : ''}</td>
+                    <td>${x.nombreapellidos ?? ''}</td>
+                    <td>${x.cargo ?? ''}</td>
+                    <td>${x.correo ?? ''}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary btn-info" data-idnomina="${x.idnomina}">Info</button>
+                        <button class="btn btn-sm btn-primary btn-actualizar" data-idnomina="${x.idnomina}">Actualizar</button>
+                        <button class="btn btn-sm btn-danger btn-borrar" data-idnomina="${x.idnomina}">Borrar</button>
+                    </td>
+                </tr>
+            `;
         }
 
 
@@ -392,8 +406,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (e.target.classList.contains("btn-borrar")) {
                         await buttonBorrar(e);
                     }
-                    if (e.target.classList.contains("btn-acumulados")) {
-                        await buttonAcumulados(e);
+                    if (e.target.classList.contains("btn-actualizar")) {
+                        await buttonActualizar(e);
                     }
                     if (e.target.classList.contains("btn-info")) {
                         await buttonInfo(e);
@@ -406,6 +420,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                     } */
                 }
             });
+    }
+
+    async function buttonActualizar(e) {
+        idnomina = e.target.getAttribute("data-idnomina");
+        window.localStorage.clear()
+
+        window.localStorage.setItem("idnomina", idnomina)
+        window.location.href = `${hostOnly}/views/nominas/actualizar-nomina`;
     }
 
     async function buttonBorrar(e) {
@@ -466,6 +488,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     $q("#btnGenerarExcel").addEventListener("click", async () => {
         console.log("listNominas -> ", listNominas);
+
         if (listNominas.length === 0) {
             showToast("No hay datos para exportar.", "ERROR");
             return;
@@ -474,60 +497,70 @@ document.addEventListener("DOMContentLoaded", async () => {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet("Nómina de colaboradores");
 
-        const headers = [
-            "Tipo",
-            "Dni",
-            "Cargo",
-            "Fecha de nacimiento",
-            "Estado Civil",
-            "Sexo",
-            "Domicilio",
-            "Correo Electronico",
-            "Nivel de estudio",
-            "Contacto de emergencia",
-            "Discapacidad/Enfermedad",
-            "Camisa/Casaca",
-            "Pantalon",
-            "Zapatos",
-            "Ruc",
-            "Clave Sol",
-            "Cuenta de banco",
+        // TÍTULO DEL REPORTE
+        worksheet.mergeCells('A1:R1');
+        const titleCell = worksheet.getCell('A1');
+        titleCell.value = 'REPORTE    ENERO    2025';
+        titleCell.font = { bold: true, size: 12 };
+        titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+        titleCell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFFF00' } // Amarillo
+        };
+
+        // Fila vacía
+        worksheet.addRow([]);
+
+        // ENCABEZADOS DE SECCIONES
+        const sectionHeaders = [
+            { text: 'DATOS GENERALES', start: 'A', end: 'E' },
+            { text: 'DATOS PERSONALES', start: 'F', end: 'K' },
+            { text: 'DATOS FÍSICOS', start: 'L', end: 'N' },
+            { text: 'INFORMACIÓN DE PAGOS', start: 'O', end: 'R' }
         ];
 
-        // Agrega encabezados
-        worksheet.addRow(headers);
+        // Agregar encabezados de sección
+        const sectionRow = worksheet.addRow([]);
+        sectionHeaders.forEach(section => {
+            const startCol = section.start.charCodeAt(0) - 64; // A=1, B=2, etc.
+            const endCol = section.end.charCodeAt(0) - 64;
 
-        // Agrega los datos
-        listNominas.forEach((nomina) => {
-            worksheet.addRow([
-                nomina.tipo == 1 ? "Planilla" : nomina.tipo == 2 ? "Contrato" : nomina.tipo == 3 ? "Locación" : '',,
-                nomina.dni || "",
-                nomina.cargo || "",
-                nomina.fnacimiento || "",
-                nomina.estadocivil == 1 ? "Soltero" : nomina.estadocivil == 2 ? "Casado" : nomina.estadocivil == 3 ? "Divorciado" : nomina.estadocivil == 4 ? "Conviviente" : nomina.estadocivil == 5 ? "Viudo" : "",
-                nomina.sexo || "",
-                nomina.domicilio || '',
-                nomina.correo || "",
-                nomina.nivelestudio || "",
-                nomina.contactoemergencia || "",
-                nomina.discapacidad || "",
-                nomina.camisa || "", 
-                nomina.pantalon || "",
-                nomina.zapatos || "", 
-                nomina.ruc || "",
-                nomina.clavesol || "",
-                nomina.ncuenta || ""
-            ]);
+            // Merge cells para cada sección
+            worksheet.mergeCells(`${section.start}3:${section.end}3`);
+            const sectionCell = worksheet.getCell(`${section.start}3`);
+            sectionCell.value = section.text;
+            sectionCell.font = { bold: true, color: { argb: 'FFFFFF' } };
+            sectionCell.alignment = { horizontal: 'center', vertical: 'middle' };
+            sectionCell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: '000000' } // Negro
+            };
         });
 
-        // Estilo: encabezados en negrita y centrados
-        worksheet.getRow(1).eachCell((cell) => {
-            cell.font = { bold: true };
-            cell.alignment = { horizontal: 'center' };
+        // ENCABEZADOS DE COLUMNAS
+        const detailHeaders = [
+            // DATOS GENERALES
+            'TIPO', 'NOMBRE Y APELLIDOS', 'DNI', 'CARGO', 'F. NACIMIENTO', 'ESTADO CIVIL',
+            // DATOS PERSONALES  
+            'SEXO', 'DOMICILIO', 'CORREO ELECTRONICO', 'NIVEL DE ESTUDIO', 'CONTACTO DE EMERGENCIA (NOMBRE Y APELLIDOS)', 'DISCAPACIDAD / ENFERMEDAD',
+            // DATOS FÍSICOS
+            'CAMISA/CASA CA', 'PANTALON', 'ZAPATOS',
+            // INFORMACIÓN DE PAGOS
+            'RUC', 'CLAVE SOL', 'CUENTA DE BANCO'
+        ];
+
+        const headerRow = worksheet.addRow(detailHeaders);
+
+        // Estilo para encabezados de columnas
+        headerRow.eachCell((cell, index) => {
+            cell.font = { bold: true, size: 9 };
+            cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
             cell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
-                fgColor: { argb: 'D9EAD3' } // Verde claro
+                fgColor: { argb: 'FFFF00' } // Amarillo
             };
             cell.border = {
                 top: { style: 'thin' },
@@ -537,30 +570,118 @@ document.addEventListener("DOMContentLoaded", async () => {
             };
         });
 
-        // Ajustar ancho de columnas automáticamente
-        worksheet.columns.forEach((column) => {
-            let maxLength = 10;
-            column.eachCell({ includeEmpty: true }, (cell) => {
-                const length = cell.value ? cell.value.toString().length : 0;
-                if (length > maxLength) maxLength = length;
+        // FILA TIPO - ELIMINAR ESTA SECCIÓN
+        // Ya no necesitamos una fila separada para TIPO
+
+        // AGREGAR DATOS
+        listNominas.forEach((nomina, index) => {
+            const dataRow = worksheet.addRow([
+                nomina.tipo || '', // Columna A - Tipo
+                nomina.nombreapellidos || '', // Nombre completo
+                nomina.dni || '',
+                nomina.cargo || '',
+                nomina.fnacimiento || '',
+                nomina.estadocivil || '',
+                nomina.sexo || '',
+                nomina.domicilio || '',
+                nomina.correo || '',
+                nomina.nivelestudio || '',
+                nomina.contactoemergencia || '',
+                nomina.discapacidad || '',
+                nomina.camisa || '',
+                nomina.pantalon || '',
+                nomina.zapatos || '',
+                nomina.ruc || '',
+                nomina.clavesol || '',
+                nomina.ncuenta || ''
+            ]);
+
+            // Estilo para filas de datos
+            dataRow.eachCell((cell, colIndex) => {
+                cell.border = {
+                    top: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    left: { style: 'thin' },
+                    right: { style: 'thin' }
+                };
+                cell.alignment = { horizontal: 'left', vertical: 'middle' };
             });
-            column.width = maxLength + 2;
         });
 
-        // Descargar archivo en navegador
-        const buffer = await workbook.xlsx.writeBuffer();
-        const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-        const url = URL.createObjectURL(blob);
+        // AJUSTAR DIMENSIONES
+        // Altura de filas
+        worksheet.getRow(1).height = 25; // Título
+        worksheet.getRow(3).height = 30; // Encabezados de sección
+        worksheet.getRow(4).height = 50; // Encabezados de columnas
 
+        // Ancho de columnas
+        const columnWidths = [
+            12, // A - Tipo
+            25, // B - Nombre
+            12, // C - DNI
+            20, // D - Cargo
+            15, // E - F. Nacimiento
+            15, // F - Estado Civil
+            8,  // G - Sexo
+            30, // H - Domicilio
+            25, // I - Correo
+            20, // J - Nivel Estudio
+            30, // K - Contacto Emergencia
+            25, // L - Discapacidad
+            12, // M - Camisa
+            12, // N - Pantalón
+            12, // O - Zapatos
+            15, // P - RUC
+            15, // Q - Clave Sol
+            20  // R - Cuenta Banco
+        ];
+
+        worksheet.columns.forEach((column, index) => {
+            if (columnWidths[index]) {
+                column.width = columnWidths[index];
+            }
+        });
+
+        // DESCARGAR ARCHIVO
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        });
+        const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "caja_chica.xlsx";
+        a.download = `nomina_${new Date().getFullYear()}_${new Date().getMonth() + 1}.xlsx`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     });
 
+    $q("#tipo").addEventListener("change", async (e) => {
+        const tipo = e.target.value
+        if (tipo == 1) {
+            $q("#div-mesanoindividual").hidden = false
+            $q("#div-mesanorangoincio").hidden = true
+            $q("#div-mesanorangofin").hidden = true
+
+            $q("#mesanoindividual").value = ""
+            $q("#mesanorangoincio").value = ""
+            $q("#mesanorangofin").value = ""
+        } else if (tipo == 2) {
+            $q("#div-mesanoindividual").hidden = true
+            $q("#div-mesanorangoincio").hidden = false
+            $q("#div-mesanorangofin").hidden = false
+            $q("#mesanoindividual").value = ""
+            $q("#mesanorangoincio").value = ""
+            $q("#mesanorangofin").value = ""
+        }
+    })
+
+    $q("#btnGenerarFicha").addEventListener("click", async () => {
+        //const ficha = await obtenerFichaColaborador(1)
+        window.open(`${hostOnly}/generators/generadores_pdf/ficha_colaborador/fichacolaborador.php?idnomina=${4}`, '_blank');
+        return
+    })
 
     /* async function buttonAcumulados(e) {
         idnomina = e.target.getAttribute("data-idnomina");

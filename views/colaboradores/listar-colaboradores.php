@@ -7,7 +7,7 @@
         min-height: 100vh;
     }
 
-        #table-colaboradores {
+    #table-colaboradores {
         font-size: 12px;
         /* Reducir el tamaño de la fuente */
         width: 100%;
@@ -81,7 +81,12 @@
         margin-bottom: 20px;
     }
 
-    tbody, td, tfoot, th, thead, tr{
+    tbody,
+    td,
+    tfoot,
+    th,
+    thead,
+    tr {
         border-style: none;
         border-bottom: none;
     }
@@ -112,12 +117,21 @@
                                                 <label for="num_doc">N° Documento</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <!-- <div class="col-md-4">
                                             <div class="form-floating">
                                                 <select name="idarea" id="idarea" class="form-select filter">
 
                                                 </select>
                                                 <label for="idarea" class="form-label">Área</label>                                                
+                                            </div>
+                                        </div> -->
+                                        <div class="col-md-3 mb-3">
+                                            <div class="form-floating">
+                                                <select name="cargo" id="cargo" class="form-select" placeholder="cargo">
+
+                                                </select>
+                                                <label for="cargo" class="form-label">Cargo</label>
+                                                <i class="bi bi-plus-circle fs-4 text-primary" role="button" title="Nueva Cargo" data-bs-toggle="modal" data-bs-target="#modal-nuevocargo"></i>
                                             </div>
                                         </div>
                                     </div>

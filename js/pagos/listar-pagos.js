@@ -20,14 +20,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // **************************************** OBTENER DATA *****************************************************
 
-/*     async function obtenerDetallesComprobante(idcomprobante) {
-        const params = new URLSearchParams();
-        params.append("operation", "obtenerDetallesComprobante");
-        params.append("idcomprobante", idcomprobante);
-        const data = await getDatos(`${host}comprobante.controller.php`, params);
-        return data
-    }
- */
+    /*     async function obtenerDetallesComprobante(idcomprobante) {
+            const params = new URLSearchParams();
+            params.append("operation", "obtenerDetallesComprobante");
+            params.append("idcomprobante", idcomprobante);
+            const data = await getDatos(`${host}comprobante.controller.php`, params);
+            return data
+        }
+     */
     // ***************************** REGISTROS DE DATA **************************************************************
 
     /* async function descargarXML(archivo) {
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const params = new URLSearchParams();
         params.append("operation", "obtenerPagosContrato");
         params.append("idcliente", $q("#idcliente").value ? $q("#idcliente").value : '');
-        
+
         //alert("asdasdd")
         const data = await getDatos(`${host}contrato.controller.php`, params);
         //console.log(data);
@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>S/${x.monto}</td>
                 <td>${x.tipo_pago == 2 ? "Contado" : 'Transferencia'}</td>
                 <td>${x.noperacion ?? "No aplica"}</td>                                                                            
-                <td>${x.fecha_pago }</td>                                                                            
+                <td>${x.fecha_pago}</td>                                                                            
                 
               </tr>
               `;
@@ -294,7 +294,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             clienteSelect.innerHTML += `<option value="${cliente.idcliente}">${cliente.razonsocial} - ${cliente.ndocumento}</option>`
         });
         return data
-    }   
+    }
 
     await obtenerClientes()
 

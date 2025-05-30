@@ -79,6 +79,7 @@ $accesos = [
 
     ['modulo' => 'nominas', 'ruta' => 'listar-nominas', 'subruta' => 'nomina', 'texto' => 'Registrados', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'nominas', 'ruta' => 'registrar-nomina', 'subruta' => 'nomina', 'texto' => 'Registrar', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
+    ['modulo' => 'nominas', 'ruta' => 'actualizar-nomina', 'subruta' => 'nomina', 'texto' => '', 'visible' => false, 'icono' => ''],
     /* ['modulo' => 'contabilidad', 'ruta' => 'listar-ingresos', 'subruta' => 'ingresos', 'texto' => 'Ingresos', 'visible' => false, 'icono' => 'fa-solid fa-list', 'only' => true],
     ['modulo' => 'contabilidad', 'ruta' => 'registrar-ingreso', 'subruta' => 'ingresos', 'visible' => false], */
 

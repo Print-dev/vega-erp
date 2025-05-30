@@ -5,7 +5,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="row g-2 mb-4">
-                    <h1 class="fw-bold">Registrar nuevo</h1>
+                    <h1 class="fw-bold">Actualizar Nómina</h1>
                 </div>
                 <div class="row g-2 mb-4">
                     <!-- <div class="text-center my-4 position-relative">
@@ -16,112 +16,94 @@
 
                     <div class="row">
                         <div class="row mb-4">
-                            <button class="btn btn-primary w-100" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseDatosGenerales" aria-expanded="false" aria-controls="collapseDatosGenerales">
+
+                            <button class="btn btn-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDatosGenerales" aria-expanded="false" aria-controls="collapseDatosGenerales">
                                 Datos Generales y Personales
                             </button>
+
                         </div>
                         <div class="collapse show" id="collapseDatosGenerales">
-                            <div class="row">
-                                <!-- Inputs en dos columnas -->
-                                <div class="col-md-8">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-floating">
-                                                <input type="text" id="nombreapellido" class="form-control" placeholder="Nombre y Apellidos">
-                                                <label for="nombreapellido">Nombre y Apellidos</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-floating">
-                                                <input type="text" id="dni" class="form-control" placeholder="DNI">
-                                                <label for="dni">DNI</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-floating">
-                                                <input type="date" id="fnacimiento" class="form-control" placeholder="Fecha de nacimiento">
-                                                <label for="fnacimiento">Fecha de nacimiento</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-floating">
-                                                <select name="estadocivil" id="estadocivil" class="form-select">
-                                                    <option value="">Selecciona</option>
-                                                    <option value="1">Soltero(a)</option>
-                                                    <option value="2">Casado(a)</option>
-                                                    <option value="4">Divorciado(a)</option>
-                                                    <option value="5">Conviviente</option>
-                                                    <option value="6">Viudo(a)</option>
-                                                </select>
-                                                <label for="estadocivil">Estado Civil</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-floating">
-                                                <select name="sexo" id="sexo" class="form-select">
-                                                    <option value="">Selecciona</option>
-                                                    <option value="M">Masculino</option>
-                                                    <option value="F">Femenino</option>
-                                                </select>
-                                                <label for="sexo">Sexo</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-floating">
-                                                <input type="text" id="domicilio" class="form-control" placeholder="Domicilio">
-                                                <label for="domicilio">Domicilio</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-floating">
-                                                <input type="text" id="correo" class="form-control" placeholder="Correo">
-                                                <label for="correo">Correo</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-floating">
-                                                <input type="text" id="nivelestudio" class="form-control" placeholder="Nivel de estudio">
-                                                <label for="nivelestudio">Nivel de estudio</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-floating">
-                                                <input type="text" id="contactoemergencia" class="form-control" placeholder="Contacto de emergencia">
-                                                <label for="contactoemergencia">Contacto de emergencia</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-floating">
-                                                <input type="text" id="discapacidad" class="form-control" placeholder="Discapacidad">
-                                                <label for="discapacidad">Discapacidad</label>
-                                            </div>
-                                        </div>
+                            <div class="row"> <!-- Esta fila agrupa las columnas correctamente -->
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" id="nombreapellido" class="form-control" autocomplete="off" placeholder="Nombre y Apellidos" autofocus>
+                                        <label for="nombreapellido" class="form-label">Nombre y Apellidos</label>
                                     </div>
                                 </div>
-
-                                <!-- Imagen a la derecha -->
-                                <div class="col-md-4 d-flex flex-column align-items-center justify-content-start">
-                                    <div class="border mb-3" style="height: 80%; width: 90%; max-width: 250px; aspect-ratio: 1/1; background-color: #f0f0f0;">
-                                        <img id="previewImagenColaborador" src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1717209573/desconocido_wzzhyk.jpg" class="img-fluid h-100 w-100 object-fit-contain" alt="Vista previa de la foto">
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" id="dni" class="form-control" autocomplete="off" placeholder="Dni">
+                                        <label for="dni" class="form-label">Dni</label>
                                     </div>
-
-                                    <input type="file" id="upload_widget_colaborador" class="d-none" accept="image/*">
-                                    <label for="upload_widget_colaborador" class="btn btn-dark w-100 text-center">
-                                        Subir Foto
-                                    </label>
                                 </div>
-
-                                <!-- Botón de continuar -->
-                                <div class="col-md-12 mt-4">
-                                    <button class="btn btn-primary w-100" id="btnDatosGenerales">
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-floating">
+                                        <input type="date" id="fnacimiento" class="form-control" autocomplete="off" placeholder="Fecha de nacimiento">
+                                        <label for="fnacimiento" class="form-label">Fecha de nacimiento</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-floating">
+                                        <select name="estadocivil" id="estadocivil" class="form-select" placeholder="Estado Civil">
+                                            <option value="">Selecciona</option>
+                                            <option value="1">Soltero(a)</option>
+                                            <option value="2">Casado(a)</option>
+                                            <option value="4">Divorciado(a)</option>
+                                            <option value="5">Conviviente</option>
+                                            <option value="6">Viudo(a)</option>
+                                        </select>
+                                        <label for="estadocivil" class="form-label">Estado Civil</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-floating">
+                                        <select name="sexo" id="sexo" class="form-select" placeholder="Sexo">
+                                            <option value="">Selecciona</option>
+                                            <option value="M">Masculino</option>
+                                            <option value="F">Femenino</option>
+                                        </select>
+                                        <label for="sexo" class="form-label">Sexo</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" id="domicilio" class="form-control" autocomplete="off" placeholder="Domicilio">
+                                        <label for="domicilio" class="form-label">Domicilio</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" id="correo" class="form-control" autocomplete="off" placeholder="Correo">
+                                        <label for="correo" class="form-label">Correo</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" id="nivelestudio" class="form-control" autocomplete="off" placeholder="Nivel de estudio">
+                                        <label for="nivelestudio" class="form-label">Nivel de estudio</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" id="contactoemergencia" class="form-control" autocomplete="off" placeholder="Contacto de emergencia">
+                                        <label for="contactoemergencia" class="form-label">Contacto de emergencia</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" id="discapacidad" class="form-control" autocomplete="off" placeholder="Discapacidad">
+                                        <label for="discapacidad" class="form-label">Discapacidad</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <button class="btn btn-primary h-100 " id="btnDatosGenerales">
                                         Continuar
                                     </button>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                     <!-- <div class="row">
 
                         </div> -->
@@ -292,7 +274,7 @@
 <?php require_once '../footer.php' ?>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script src="<?= $hostOnlyHeader ?>/js/nominas/registrar-nomina.js"></script>
+<script src="<?= $hostOnlyHeader ?>/js/nominas/actualizar-nomina.js"></script>
 <!-- <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script> -->
 <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
 

@@ -589,7 +589,10 @@ CREATE TABLE cargos ( -- AREAS DE UN COLABORADOR, EJEMP: sistemas, diseño, mark
     idcargo INT AUTO_INCREMENT PRIMARY KEY,
     cargo VARCHAR(100) NOT NULL
 );
-
+-- ALTER TABLE personas_colaboradores ADD COLUMN idcargo INT NULL
+-- ALTER TABLE nominas DROP CONSTRAINT fk_idcargo_nomina
+-- ALTER TABLE personas_colaboradores ADD constraint fk_idcargo_nomina foreign key (idcargo) references cargos(idcargo) ON DELETE CASCADE
+ 
 CREATE TABLE personas_colaboradores (
 	idpersonacolaborador int auto_increment primary key,
     nombreapellidos 	varchar(150) null,
@@ -601,9 +604,11 @@ CREATE TABLE personas_colaboradores (
     correo				varchar(200) null,
     nivelestudio		varchar(200) null,
     contactoemergencia	varchar(200) null,
-    discapacidad 		varchar(200) null
+    discapacidad 		varchar(200) null,
+    foto				VARCHAR(80) NULL,
+	idcargo			int null
 ) ENGINE = INNODB;	
--- ALTER TABLE colaboradores ADD COLUMN zapatos VARCHAR(80) NULL
+-- select * from colaboradores
 CREATE TABLE colaboradores (
     idcolaborador INT AUTO_INCREMENT PRIMARY KEY,
     idpersonacolaborador INT NOT NULL,
@@ -613,17 +618,16 @@ CREATE TABLE colaboradores (
     CONSTRAINT fk_idper_col foreign key (idpersonacolaborador) references personas_colaboradores (idpersonacolaborador) ON DELETE CASCADE
 ) ENGINE = INNODB;
 -- select *  from nominas
+-- select *  from nominas
 CREATE TABLE nominas (
 	idnomina int auto_increment primary key,
     idcolaborador INT NULL,
     tipo 	INT null, -- 1: planilla, 2: contrato, 3: locacion
     fechaingreso	DATE NULL,
-    idcargo			int null,
     ruc				varchar(20) null,
     clavesol		varchar(20) null,
     ncuenta			varchar(20) null,
-	constraint fk_idcolaborador_nomina foreign key (idcolaborador) references colaboradores (idcolaborador) ON DELETE CASCADE,
-    constraint fk_idcargo_nomina foreign key (idcargo) references cargos(idcargo) ON DELETE CASCADE
+	constraint fk_idcolaborador_nomina foreign key (idcolaborador) references colaboradores (idcolaborador) ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 

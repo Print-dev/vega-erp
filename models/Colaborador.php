@@ -221,7 +221,7 @@ class Colaborador extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_persona_colaborador(@idpersonacolaborador,?,?,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_persona_colaborador(@idpersonacolaborador,?,?,?,?,?,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['nombreapellidos'],
@@ -234,6 +234,7 @@ class Colaborador extends ExecQuery
           $params['nivelestudio'],
           $params['contactoemergencia'],
           $params['discapacidad'],
+          $params['foto'],
         )
       );
 
@@ -393,6 +394,21 @@ class Colaborador extends ExecQuery
       $sp->execute(
         array(
           $params["numdoc"]
+        )
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerFichaColaborador($params = []): array
+  {
+    try {
+      $sp = parent::execQ("CALL sp_ficha_colaborador(?)");
+      $sp->execute(
+        array(
+          $params["idnomina"]
         )
       );
       return $sp->fetchAll(PDO::FETCH_ASSOC);

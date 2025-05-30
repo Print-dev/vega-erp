@@ -18,8 +18,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
+    await obtenerCargos()
 
-    async function obtenerAreas() {
+
+/*     async function obtenerAreas() {
         const data = await getDatos(`${host}nomina.controller.php`, "operation=obtenerAreas");
         console.log(data);
         $q("#idarea").innerHTML = `<option value="">Seleccione</option>`
@@ -31,9 +33,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         );
 
         return data
+    } */
+
+    async function obtenerCargos() {
+        const data = await getDatos(`${host}colaborador.controller.php`, "operation=obtenerCargos");
+        console.log(data);
+        $q("#cargo").innerHTML = "<option value=''>Selecciona</option>";
+        data.forEach(cargo => {
+            $q("#cargo").innerHTML += `<option value="${cargo.idcargo}">${cargo.cargo}</option>`;
+        });
+
     }
 
-    await obtenerAreas()
+
+    //await obtenerAreas()
 
     // ************************************ REGISTRAR DATOS ********************************
 
@@ -165,7 +178,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const params = new URLSearchParams();
         params.append("operation", "filtrarColaboradores");
         params.append("numdoc", $q("#num_doc").value || "");
-        params.append("idarea", $q("#idarea").value || "");
+        params.append("cargo", $q("#cargo").value || "");
 
         const data = await getDatos(`${host}nomina.controller.php`, params);
         console.log("data -> ", data);
@@ -312,11 +325,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         modalActualizarProveedor.show()
     }
 
-/*     function buttonDeshabilitar(e) {
-        idproveedor = e.target.getAttribute("data-idproveedor");
-        console.log("idproveedor -> ", idproveedor);
-    }
- */
+    /*     function buttonDeshabilitar(e) {
+            idproveedor = e.target.getAttribute("data-idproveedor");
+            console.log("idproveedor -> ", idproveedor);
+        }
+     */
     function buttonSalario(e) {
         idcolaborador = e.target.getAttribute("data-idcolaborador");
         window.localStorage.clear()

@@ -124,7 +124,7 @@
 
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
-    <script src="<?= $hostOnlyHeader ?> /js/pagos/listar-pagos.js"></script>
+    <script src="<?= $hostOnlyHeader ?>/js/pagos/listar-pagos.js"></script>
 
     </body>
 
