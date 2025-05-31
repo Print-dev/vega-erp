@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let colaboradorObt = []
     let salarioObt = []
     let tiempocalculado
-    let modalNuevoCargo = new bootstrap.Modal($q("#modal-nuevocargo"))
+    //let modalNuevoCargo = new bootstrap.Modal($q("#modal-nuevocargo"))
     let totalAcumulado = 0
     let idpersonacolaboradorObt = -1
     let idcolaboradorObt = -1
@@ -26,9 +26,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
-    await obtenerCargos()
-    bloquearCamposDatosFisicos(true)
-    bloquearCamposInformacionPago(true)
+    //await obtenerCargos()
+    /* bloquearCamposDatosFisicos(true)
+    bloquearCamposInformacionPago(true) */
     // *************************************** SECCION DE BLOQUEAR CAMPOS ****************************
 
     async function registrarCargo() {
@@ -46,36 +46,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
-    function bloquearDatosGenerales(isblock) {
-        $q("#nombreapellido").disabled = isblock;
-        $q("#dni").disabled = isblock;
-        $q("#fnacimiento").disabled = isblock;
-        $q("#estadocivil").disabled = isblock
-        $q("#sexo").disabled = isblock
-        $q("#domicilio").disabled = isblock
-        $q("#correo").disabled = isblock
-        $q("#nivelestudio").disabled = isblock
-        $q("#contactoemergencia").disabled = isblock
-        $q("#discapacidad").disabled = isblock
-        $q("#btnDatosGenerales").disabled = isblock
-    }
-
-    function bloquearCamposDatosFisicos(isblock) {
-        $q("#camisa").disabled = isblock;
-        $q("#pantalon").disabled = isblock;
-        $q("#zapatos").disabled = isblock;
-        $q("#btnDatosFisicos").disabled = isblock
-    }
-
-    function bloquearCamposInformacionPago(isblock) {
-        $q("#tipo").disabled = isblock;
-        $q("#fechaingresonomina").disabled = isblock;
-        $q("#cargo").disabled = isblock;
-        $q("#ruc").disabled = isblock;
-        $q("#clavesol").disabled = isblock;
-        $q("#ncuenta").disabled = isblock;
-        $q("#btnInformacionPago").disabled = isblock
-    }
+    /*     function bloquearDatosGenerales(isblock) {
+            $q("#nombreapellido").disabled = isblock;
+            $q("#dni").disabled = isblock;
+            $q("#fnacimiento").disabled = isblock;
+            $q("#estadocivil").disabled = isblock
+            $q("#sexo").disabled = isblock
+            $q("#domicilio").disabled = isblock
+            $q("#correo").disabled = isblock
+            $q("#nivelestudio").disabled = isblock
+            $q("#contactoemergencia").disabled = isblock
+            $q("#discapacidad").disabled = isblock
+            $q("#btnDatosGenerales").disabled = isblock
+        }
+     */
+    /*  function bloquearCamposDatosFisicos(isblock) {
+         $q("#camisa").disabled = isblock;
+         $q("#pantalon").disabled = isblock;
+         $q("#zapatos").disabled = isblock;
+         $q("#btnDatosFisicos").disabled = isblock
+     }
+  */
+    /*     function bloquearCamposInformacionPago(isblock) {
+            $q("#tipo").disabled = isblock;
+            $q("#fechaingresonomina").disabled = isblock;
+            //$q("#cargo").disabled = isblock;
+            $q("#ruc").disabled = isblock;
+            $q("#clavesol").disabled = isblock;
+            $q("#ncuenta").disabled = isblock;
+            $q("#btnInformacionPago").disabled = isblock
+        } */
 
     // ************************************ REGISTRAR DATOS ********************************
 
@@ -96,15 +96,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
-    async function obtenerCargos() {
-        const data = await getDatos(`${host}colaborador.controller.php`, "operation=obtenerCargos");
-        console.log(data);
-        $q("#cargo").innerHTML = "<option value=''>Selecciona</option>";
-        data.forEach(cargo => {
-            $q("#cargo").innerHTML += `<option value="${cargo.idcargo}">${cargo.cargo}</option>`;
-        });
-
-    }
+    /*     async function obtenerCargos() {
+            const data = await getDatos(`${host}colaborador.controller.php`, "operation=obtenerCargos");
+            console.log(data);
+            $q("#cargo").innerHTML = "<option value=''>Selecciona</option>";
+            data.forEach(cargo => {
+                $q("#cargo").innerHTML += `<option value="${cargo.idcargo}">${cargo.cargo}</option>`;
+            });
+    
+        } */
 
     async function obtenerColaboradorPorId(idcolaborador) {
         const params = new URLSearchParams();
@@ -196,7 +196,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         colaborador.append("idcolaborador", idcolaborador);
         colaborador.append("tipo", $q("#tipo").value || '');
         colaborador.append("fechaingreso", $q("#fechaingresonomina").value || '');
-        colaborador.append("idcargo", $q("#cargo").value || '');
         colaborador.append("ruc", $q("#ruc").value || '');
         colaborador.append("clavesol", $q("#clavesol").value || '');
         colaborador.append("ncuenta", $q("#ncuenta").value || '');
@@ -210,67 +209,64 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // ******************** EVENTOS DE BOTONES **********************************************
-    $q("#btnDatosGenerales").addEventListener("click", async () => {
-        /*         const imagenInputPago = $q("#upload_widget_pago");
-                const filePago = imagenInputPago.files[0]; */
-        const imagenInputFotoColaborador = $q("#upload_widget_colaborador");
-        const fileFotoColaborador = imagenInputFotoColaborador.files[0];
-        //console.log("filePago -> ", filePago);
-        console.log("fileFotoColaborador -> ", fileFotoColaborador);
-
-        //console.log("butttoooon");
-        const personacolaborador = await registrarPersonaColaborador(fileFotoColaborador);
-        console.log("personacolaborador -> ", personacolaborador);
-        if (personacolaborador.idpersonacolaborador) {
-            idpersonacolaboradorObt = personacolaborador.idpersonacolaborador
-            bloquearDatosGenerales(true) // BLOQUEAR ESTO Y DESBLOQUEAR LOS DATOS FISICOS
-            bloquearCamposDatosFisicos(false)
-            $q("#collapseDatosFisicos").classList.add("show")
-            $q("#collapseDatosGenerales").classList.remove("show")
-        }
-    })
-
-    $q("#btnDatosFisicos").addEventListener("click", async () => {
-        const colaboradorRegis = await registrarColaborador(idpersonacolaboradorObt)
-        console.log("colaboradorRegis -> ", colaboradorRegis);
-        if (colaboradorRegis.idcolaborador) {
-            idcolaboradorObt = colaboradorRegis.idcolaborador
-            bloquearCamposDatosFisicos(true)
-            bloquearCamposInformacionPago(false)
-            $q("#collapseInformacionPago").classList.add("show")
-            $q("#collapseDatosFisicos").classList.remove("show")
-        }
-    })
+    /*     $q("#btnDatosGenerales").addEventListener("click", async () => {
+            const imagenInputFotoColaborador = $q("#upload_widget_colaborador");
+            const fileFotoColaborador = imagenInputFotoColaborador.files[0];
+            //console.log("filePago -> ", filePago);
+            console.log("fileFotoColaborador -> ", fileFotoColaborador);
+    
+            const personacolaborador = await registrarPersonaColaborador(fileFotoColaborador);
+            console.log("personacolaborador -> ", personacolaborador);
+            if (personacolaborador.idpersonacolaborador) {
+                idpersonacolaboradorObt = personacolaborador.idpersonacolaborador
+                bloquearDatosGenerales(true) // BLOQUEAR ESTO Y DESBLOQUEAR LOS DATOS FISICOS
+                bloquearCamposDatosFisicos(false)
+                $q("#collapseDatosFisicos").classList.add("show")
+                $q("#collapseDatosGenerales").classList.remove("show")
+            }
+        }) */
+    /* 
+        $q("#btnDatosFisicos").addEventListener("click", async () => {
+            const colaboradorRegis = await registrarColaborador(idpersonacolaboradorObt)
+            console.log("colaboradorRegis -> ", colaboradorRegis);
+            if (colaboradorRegis.idcolaborador) {
+                idcolaboradorObt = colaboradorRegis.idcolaborador
+                bloquearCamposDatosFisicos(true)
+                bloquearCamposInformacionPago(false)
+                $q("#collapseInformacionPago").classList.add("show")
+                $q("#collapseDatosFisicos").classList.remove("show")
+            }
+        }) */
 
     $q("#btnInformacionPago").addEventListener("click", async () => {
         const nominaRegis = await registrarNomina(idcolaboradorObt)
         console.log("nominaRegis -> ", nominaRegis);
         if (nominaRegis.idnomina) {
-            bloquearCamposDatosFisicos(true)
-            bloquearCamposInformacionPago(true)
+            //bloquearCamposDatosFisicos(true)
+            //bloquearCamposInformacionPago(true)
             showToast("Nomina Registrada", "SUCCESS", 3000, `${hostOnly}/views/nominas/listar-nominas`)
 
         }
     })
+    /* 
+        $q("#btnGuardarNuevoCargo").addEventListener("click", async () => {
+            const arearegistrada = await registrarCargo()
+            console.log("area registrada -> ", arearegistrada);
+            if ($q("#cargonuevo").value.trim() == "") {
+                showToast("El campo area no puede estar vacio", "ERROR");
+                return
+            }
+            if (arearegistrada) {
+                showToast("Area registrada correctamente", "SUCCESS");
+                //$q("#cargo").value = '';
+                //await obtenerCargos()
+                modalNuevoCargo.hide()
+            } else {
+                showToast("Error al registrar el area", "ERROR");
+            }
+        }) */
 
-    $q("#btnGuardarNuevoCargo").addEventListener("click", async () => {
-        const arearegistrada = await registrarCargo()
-        console.log("area registrada -> ", arearegistrada);
-        if ($q("#cargonuevo").value.trim() == "") {
-            showToast("El campo area no puede estar vacio", "ERROR");
-            return
-        }
-        if (arearegistrada) {
-            showToast("Area registrada correctamente", "SUCCESS");
-            $q("#cargo").value = '';
-            await obtenerCargos()
-            modalNuevoCargo.hide()
-        } else {
-            showToast("Error al registrar el area", "ERROR");
-        }
-    })
-
-    $q("#upload_widget_colaborador").addEventListener("change", function (e) {
+    /* $q("#upload_widget_colaborador").addEventListener("change", function (e) {
         console.log("cambiando...");
         const file = e.target.files[0];
         console.log("file de imagen event -> ", file);
@@ -288,7 +284,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             preview.src = "";
             preview.style.display = "none";
         }
-    });
+    }); */
 
     /*     $q("#colaborador").addEventListener("change", async (e) => {
             idcolaborador = e.target.value;

@@ -132,7 +132,6 @@ CREATE PROCEDURE sp_registrar_nomina(
     IN _idcolaborador int,
     IN _tipo INT,
     IN _fechaingreso DATE,
-    IN _idcargo INT,
     IN _ruc varchar(20),
     IN _clavesol varchar(20),
     IN _ncuenta varchar(20)

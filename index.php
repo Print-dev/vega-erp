@@ -250,7 +250,7 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
       async function actualizarContrasenaUsuario(idpersonaObtenido) {
         const body = new FormData();
         body.append("operation", "actualizarContrasenaUsuario");
-        body.append("idpersona" ,idpersonaObtenido);
+        body.append("idpersona", idpersonaObtenido);
         body.append("claveacceso", $q("#nuevacontrasena").value ? $q("#nuevacontrasena").value : '');
 
         const fbody = await fetch(`http://localhost/vega-erp/controllers/usuario.controller.php`, {
@@ -263,7 +263,7 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
 
       $q("#btnEnviarCorreo").addEventListener("click", async () => {
         const persona = await obtenerPersonaCorreo()
-        console.log("persona -> " , persona);
+        console.log("persona -> ", persona);
         if (persona.length > 0) {
           const codigo = await solicitarCodigoParaCambiarContrasena()
           console.log("codigo -> ", codigo);
@@ -287,7 +287,7 @@ if (isset($_SESSION['login']) && $_SESSION['login']['estado']) {
       $q("#btnCambiarContrasena").addEventListener("click", async () => {
         if (codigoObtenido == $q("#codigo").value) {
           console.log("idpersonaObtenido -> ", idpersonaObtenido);
-          console.log("nuev a ontraña_ ",  $q("#nuevacontrasena").value);
+          console.log("nuev a ontraña_ ", $q("#nuevacontrasena").value);
           const usuarioActualizado = await actualizarContrasenaUsuario(idpersonaObtenido)
           console.log("usuarioActualizado -> ", usuarioActualizado);
           if (usuarioActualizado) {

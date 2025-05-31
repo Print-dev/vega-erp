@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let salarioObt = []
     let tiempocalculado
     let modalNuevoCargo = new bootstrap.Modal($q("#modal-nuevocargo"))
+
     let totalAcumulado = 0
     let idpersonacolaboradorObt = -1
     let idcolaboradorObt = -1
@@ -26,9 +27,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
-    await obtenerCargos()
+    //await obtenerCargos()
     bloquearCamposDatosFisicos(true)
-    bloquearCamposInformacionPago(true)
+    //bloquearCamposInformacionPago(true)
     // *************************************** SECCION DE BLOQUEAR CAMPOS ****************************
 
     async function registrarCargo() {
@@ -67,7 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         $q("#btnDatosFisicos").disabled = isblock
     }
 
-    function bloquearCamposInformacionPago(isblock) {
+/*     function bloquearCamposInformacionPago(isblock) {
         $q("#tipo").disabled = isblock;
         $q("#fechaingresonomina").disabled = isblock;
         $q("#cargo").disabled = isblock;
@@ -76,7 +77,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         $q("#ncuenta").disabled = isblock;
         $q("#btnInformacionPago").disabled = isblock
     }
-
+ */
     // ************************************ REGISTRAR DATOS ********************************
 
     async function obtenerColaboradores() {
@@ -96,7 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
-    async function obtenerCargos() {
+/*     async function obtenerCargos() {
         const data = await getDatos(`${host}colaborador.controller.php`, "operation=obtenerCargos");
         console.log(data);
         $q("#cargo").innerHTML = "<option value=''>Selecciona</option>";
@@ -105,7 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
     }
-
+ */
     async function obtenerColaboradorPorId(idcolaborador) {
         const params = new URLSearchParams();
         params.append("operation", "obtenerColaboradorPorId");
@@ -223,6 +224,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("personacolaborador -> ", personacolaborador);
         if (personacolaborador.idpersonacolaborador) {
             idpersonacolaboradorObt = personacolaborador.idpersonacolaborador
+            $q("#div-subirfoto").hidden = true
+
             bloquearDatosGenerales(true) // BLOQUEAR ESTO Y DESBLOQUEAR LOS DATOS FISICOS
             bloquearCamposDatosFisicos(false)
             $q("#collapseDatosFisicos").classList.add("show")
@@ -236,22 +239,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (colaboradorRegis.idcolaborador) {
             idcolaboradorObt = colaboradorRegis.idcolaborador
             bloquearCamposDatosFisicos(true)
-            bloquearCamposInformacionPago(false)
-            $q("#collapseInformacionPago").classList.add("show")
+            //bloquearCamposInformacionPago(false)
+            //$q("#collapseInformacionPago").classList.add("show")
             $q("#collapseDatosFisicos").classList.remove("show")
         }
     })
 
-    $q("#btnInformacionPago").addEventListener("click", async () => {
+   /*  $q("#btnInformacionPago").addEventListener("click", async () => {
         const nominaRegis = await registrarNomina(idcolaboradorObt)
         console.log("nominaRegis -> ", nominaRegis);
         if (nominaRegis.idnomina) {
             bloquearCamposDatosFisicos(true)
-            bloquearCamposInformacionPago(true)
+            //bloquearCamposInformacionPago(true)
             showToast("Nomina Registrada", "SUCCESS", 3000, `${hostOnly}/views/nominas/listar-nominas`)
 
         }
-    })
+    }) */
 
     $q("#btnGuardarNuevoCargo").addEventListener("click", async () => {
         const arearegistrada = await registrarCargo()
@@ -263,7 +266,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (arearegistrada) {
             showToast("Area registrada correctamente", "SUCCESS");
             $q("#cargo").value = '';
-            await obtenerCargos()
+            //await obtenerCargos()
             modalNuevoCargo.hide()
         } else {
             showToast("Error al registrar el area", "ERROR");

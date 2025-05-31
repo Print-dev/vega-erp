@@ -21,19 +21,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     await obtenerCargos()
 
 
-/*     async function obtenerAreas() {
-        const data = await getDatos(`${host}nomina.controller.php`, "operation=obtenerAreas");
-        console.log(data);
-        $q("#idarea").innerHTML = `<option value="">Seleccione</option>`
-        data.forEach((x) => {
-            $q("#idarea").innerHTML += `
-                <option value="${x.idarea}">${x.area}</option>
-            `;
-        }
-        );
-
-        return data
-    } */
+    /*     async function obtenerAreas() {
+            const data = await getDatos(`${host}nomina.controller.php`, "operation=obtenerAreas");
+            console.log(data);
+            $q("#idarea").innerHTML = `<option value="">Seleccione</option>`
+            data.forEach((x) => {
+                $q("#idarea").innerHTML += `
+                    <option value="${x.idarea}">${x.area}</option>
+                `;
+            }
+            );
+    
+            return data
+        } */
 
     async function obtenerCargos() {
         const data = await getDatos(`${host}colaborador.controller.php`, "operation=obtenerCargos");
@@ -199,15 +199,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             $q("#table-colaboradores tbody").innerHTML += `
             <tr>
-                <td>${x.num_doc ?? ''}</td>
-                <td>${x.nombres ?? ''}</td>
-                <td>${x.apellidos ?? ''}</td>
-                <td>${x.fechaingreso ?? "no aplica"}</td>
-                <td>${x.area ?? ''}</td>
+                <td>${x.dni ?? ''}</td>
+                <td>${x.nombreapellidos ?? ''}</td>
                 <td>
-                    <button class="btn btn-sm btn-primary btn-salario" data-idcolaborador="${x.idcolaborador}">Salario</button>
-                    <button class="btn btn-sm btn-primary btn-actualizar" data-idcolaborador="${x.idcolaborador}">Actualizar</button>
-                    <button class="btn btn-sm btn-danger btn-deshabilitar" data-idcolaborador="${x.idcolaborador}">Deshabilitar</button>
+                    <button class="btn btn-sm btn-primary btn-cargo" data-idpersonacolaborador="${x.idpersonacolaborador}">Cargo</button>
+                    <button class="btn btn-sm btn-primary btn-salario" data-idpersonacolaborador="${x.idpersonacolaborador}">Salario</button>
+                    <button class="btn btn-sm btn-primary btn-actualizar" data-idpersonacolaborador="${x.idpersonacolaborador}">Actualizar</button>
+                    <button class="btn btn-sm btn-danger btn-deshabilitar" data-idpersonacolaborador="${x.idpersonacolaborador}">Deshabilitar</button>
                 </td>
             </tr>
         `;
@@ -267,6 +265,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     if (e.target.classList.contains("btn-salario")) {
                         buttonSalario(e);
                     }
+                    if (e.target.classList.contains("btn-cargo")) {
+                        buttonCargo(e);
+                    }
                     /* if (e.target.classList.contains("btn-cerrar")) {
                         buttonCerrarCaja(e);
                     }
@@ -325,11 +326,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         modalActualizarProveedor.show()
     }
 
-    /*     function buttonDeshabilitar(e) {
-            idproveedor = e.target.getAttribute("data-idproveedor");
-            console.log("idproveedor -> ", idproveedor);
-        }
-     */
+    function buttonCargo(e) {
+        idcolaborador = e.target.getAttribute("data-idcolaborador");
+        console.log("idcolaborador -> ", idcolaborador);
+        window.localStorage.clear()
+        window.localStorage.setItem("idcolaborador", idcolaborador);
+        window.location.href = `${hostOnly}/views/colaboradores/cargos-colaborador`;
+    }
+
     function buttonSalario(e) {
         idcolaborador = e.target.getAttribute("data-idcolaborador");
         window.localStorage.clear()

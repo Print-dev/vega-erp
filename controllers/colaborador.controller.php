@@ -19,11 +19,22 @@ if (isset($_GET['operation'])) {
             echo json_encode($colaborador->obtenerCargos());
             break;
 
+        case 'filtrarCargos':
+            echo json_encode($colaborador->filtrarCargos());
+            break;
+
         case 'obtenerFichaColaborador':
             $cleanData = [
                 'idnomina'   => $colaborador->limpiarCadena($_GET['idnomina']),
             ];
             echo json_encode($colaborador->obtenerFichaColaborador($cleanData));
+            break;
+
+        case 'obtenerCargoColaboradorPorId':
+            $cleanData = [
+                'idcargocolaborador'   => $colaborador->limpiarCadena($_GET['idcargocolaborador']),
+            ];
+            echo json_encode($colaborador->obtenerCargoColaboradorPorId($cleanData));
             break;
     }
 }
@@ -57,6 +68,18 @@ if (isset($_POST['operation'])) {
             ];
 
             $rpt = $colaborador->registrarCargo($cleanData);
+
+            echo json_encode($rpt);
+            break;
+
+        case 'registrarCargoColaborador':
+            $cleanData = [
+                'idpersonacolaborador'   => $colaborador->limpiarCadena($_POST['idpersonacolaborador']),
+                'cargo'   => $colaborador->limpiarCadena($_POST['cargo']),
+                'fechainicio'   => $colaborador->limpiarCadena($_POST['fechainicio'])
+            ];
+
+            $rpt = $colaborador->registrarCargoColaborador($cleanData);
 
             echo json_encode($rpt);
             break;

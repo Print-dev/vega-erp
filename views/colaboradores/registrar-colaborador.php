@@ -105,10 +105,12 @@
                                         <img id="previewImagenColaborador" src="https://res.cloudinary.com/dynpy0r4v/image/upload/v1717209573/desconocido_wzzhyk.jpg" class="img-fluid h-100 w-100 object-fit-contain" alt="Vista previa de la foto">
                                     </div>
 
-                                    <input type="file" id="upload_widget_colaborador" class="d-none" accept="image/*">
-                                    <label for="upload_widget_colaborador" class="btn btn-dark w-100 text-center">
-                                        Subir Foto
-                                    </label>
+                                    <div id="div-subirfoto">
+                                        <input type="file" id="upload_widget_colaborador" class="d-none" accept="image/*">
+                                        <label for="upload_widget_colaborador" class="btn btn-dark w-100 text-center">
+                                            Subir Foto
+                                        </label>
+                                    </div>
                                 </div>
 
                                 <!-- Botón de continuar -->

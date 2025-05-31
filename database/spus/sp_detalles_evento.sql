@@ -12,6 +12,7 @@ CREATE PROCEDURE sp_actualizar_detalle_presentacion (
     IN _establecimiento TEXT,
     IN _referencia VARCHAR(200),
     IN _tipoevento int,
+    IN _modalidad INT,
     IN _modotransporte	int,
 	IN _validez int,
     IN _iddistrito int,
@@ -25,6 +26,7 @@ BEGIN
 	establecimiento = _establecimiento,
 	referencia = nullif(_referencia, ''),
 	tipo_evento = _tipoevento,
+	modalidad = nullif(_modalidad,''),
     modotransporte = nullif(_modotransporte, ''),
 	validez = nullif(_validez, ''),
 	iddistrito = _iddistrito,
@@ -33,6 +35,10 @@ BEGIN
 END //
 
 DELIMITER ;
+select * from detalles_presentacion
+SELECT *
+FROM detalles_presentacion
+WHERE ncotizacion IS NOT NULL AND ncotizacion != '';
 
 DROP PROCEDURE IF EXISTS sp_registrar_detalle_presentacion;
 DELIMITER //
@@ -101,7 +107,7 @@ CREATE PROCEDURE `sp_obtener_dp_porid`(
 )
 BEGIN
 	SELECT 		
-		DP.iddetalle_presentacion, USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.tipo_evento, DP.idnacionalidad, NAC.pais, NAC.idnacionalidad, CLI.telefono , CLI.razonsocial, DP.esExtranjero, DP.estadoCordinacionTecnica, DP.estadoCordinacionPublicidad, DP.modalidad
+		DP.iddetalle_presentacion, DP.modalidad,USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.tipo_evento, DP.idnacionalidad, NAC.pais, NAC.idnacionalidad, CLI.telefono , CLI.razonsocial, DP.esExtranjero, DP.estadoCordinacionTecnica, DP.estadoCordinacionPublicidad, DP.modalidad
 	FROM detalles_presentacion DP
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario

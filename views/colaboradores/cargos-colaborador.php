@@ -14,11 +14,11 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h1>Salarios</h1>
+                    <h1>Cargos</h1>
                 </div>
                 <div class="col-md-6 text-end">
                     <a href="<?= $hostOnlyHeader ?>/views/colaboradores/listar-colaboradores" class="btn btn-info">Regresar</a>
-                    <button class="btn btn-info" id="btnNuevoSalario" data-bs-toggle="modal" data-bs-target="#modal-nuevo-salario">Nuevo Salario</button>
+                    <button class="btn btn-info" id="btnNuevoCargo" data-bs-toggle="modal" data-bs-target="#modal-nuevo-cargo">Nuevo Cargo</button>
                 </div>
             </div>
             <div class="row">
@@ -28,20 +28,17 @@
 
                             <div class="row g-1">
                                 <div class="table-responsive">
-                                    <table class="table" id="table-salarios">
+                                    <table class="table" id="table-cargos">
                                         <thead class="text-center">
                                             <tr>
                                                 <th>#</th>
-                                                <th>Salario (s/.)</th>
-                                                <th>Costo x Hora</th>
-                                                <th>Periodo</th>
-                                                <th>Horas</th>
-                                                <th>Fecha Ingreso</th>
-                                                <th>Fecha Fin</th>
+                                                <th>Cargo</th>
+                                                <th>Fecha de inicio</th>
+                                                <th>FECHA de fin</th>
                                                 <th>Opciones</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="tb-body-salario">
+                                        <tbody id="tb-body-cargo">
                                         </tbody>
                                     </table>
 
@@ -80,44 +77,33 @@
     </div>
 </div> -->
 
-<div class="modal fade" id="modal-nuevo-salario" tabindex="-1" aria-labelledby="modalnuevo-salario" aria-hidden="true">
+<div class="modal fade" id="modal-nuevo-cargo" tabindex="-1" aria-labelledby="modalnuevo-cargo" aria-hidden="true">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalnuevo-salario">Nuevo salario</h1>
+                <h1 class="modal-title fs-5" id="modalnuevo-cargo">Nuevo cargo</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="" id="formsalario">
+            <form action="" id="formcargo">
                 <div class="modal-body">
                     <div class="col-md-12 mb-3">
                         <div class="form-floating">
-                            <input type="number" id="salario" name="salario" class="form-control" placeholder="Salario (S/.)">
-                            <label for="salario" class="form-label">Salario (S/.)</label>
+                            <input type="text" id="cargo" name="cargo" class="form-control" placeholder="cargo (S/.)">
+                            <label for="cargo" class="form-label">Cargo</label>
                         </div>
                     </div>
                     <div class="col-md-12 mb-3">
                         <div class="form-floating">
-                            <select name="periodo" id="periodo" class="form-select" placeholder="Periodo">
-                                <option value="">Selecciona</option>
-                                <option value="1">Quincenal</option>
-                                <option value="2">Semanal</option>
-                                <option value="3">Mensual</option>
-                            </select>
-                            <label for="periodo" class="form-label">Periodo</label>
+                            <input type="date" id="fechainicio" name="fechainicio" class="form-control" placeholder="Fecha Inicio">
+                            <label for="fechainicio" class="form-label">Fecha Inicio</label>
                         </div>
                     </div>
-                    <div class="col-md-12 mb-3">
+                    <!-- <div class="col-md-12 mb-3">
                         <div class="form-floating">
-                            <input type="number" id="horas" name="horas" class="form-control" placeholder="Horas">
-                            <label for="horas" class="form-label">Horas</label>
+                            <input type="date" id="costohora" name="costohora" class="form-control" placeholder="Costo x Hora">
+                            <label for="costohora" class="form-label">Fecha Fin</label>
                         </div>
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        <div class="form-floating">
-                            <input type="number" id="costohora" name="costohora" class="form-control" placeholder="Costo x Hora">
-                            <label for="costohora" class="form-label">Costo x Hora</label>
-                        </div>
-                    </div>
+                    </div> -->
                     <!-- <div class="col-md-12 mb-3">
                         <div class="form-floating">
                             <input type="date" id="nombreempresa" name="nombreempresa" class="form-control" placeholder="Nombre">
@@ -131,7 +117,7 @@
                         </div>
                     </div> -->
 
-                    <button class="btn btn-primary w-100" type="submit" id="btnGuardarSalario">Guardar</button>
+                    <button class="btn btn-primary w-100" type="submit" id="btnGuardarCargo">Guardar</button>
                 </div>
             </form>
         </div>
@@ -139,48 +125,26 @@
 </div>
 
 
-<div class="modal fade" id="modal-actualizar-salario" tabindex="-1" aria-labelledby="modalactualizar-salario" aria-hidden="true">
+<div class="modal fade" id="modal-actualizar-cargo" tabindex="-1" aria-labelledby="modalactualizar-cargo" aria-hidden="true">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalactualizar-salario">Actualizar salario</h1>
+                <h1 class="modal-title fs-5" id="modalactualizar-cargo">Actualizar Cargo</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="" id="formActualizarSalario">
+            <form action="" id="formActualizarCargo">
                 <div class="modal-body">
                     <div class="col-md-12 mb-3">
                         <div class="form-floating">
-                            <input type="number" id="salarioactualizar" name="salarioactualizar" class="form-control" placeholder="Salario (S/.)">
-                            <label for="salarioactualizar" class="form-label">Salario (S/.)</label>
+                            <input type="text" id="cargoactualizar" name="cargoactualizar" class="form-control" placeholder="Cargo">
+                            <label for="cargoactualizar" class="form-label">Cargo</label>
                         </div>
                     </div>
+
                     <div class="col-md-12 mb-3">
                         <div class="form-floating">
-                            <select name="periodoactualizar" id="periodoactualizar" class="form-select" placeholder="Periodo">
-                                <option value="">Selecciona</option>
-                                <option value="1">Semanal</option>
-                                <option value="2">Quincenal</option>
-                                <option value="3">Mensual</option>
-                            </select>
-                            <label for="periodoactualizar" class="form-label">Periodo</label>
-                        </div>
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        <div class="form-floating">
-                            <input type="number" id="horasactualizar" name="horasactualizar" class="form-control" placeholder="Horas">
-                            <label for="horasactualizar" class="form-label">Horas</label>
-                        </div>
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        <div class="form-floating">
-                            <input type="number" id="costohoraactualizar" name="costohoraactualizar" class="form-control" placeholder="Costo x Hora">
-                            <label for="costohoraactualizar" class="form-label">Costo x Hora</label>
-                        </div>
-                    </div>
-                    <div class="col-md-12 mb-3">
-                        <div class="form-floating">
-                            <input type="date" id="fechainicioactualizar" name="fechainicioactualizar" class="form-control" placeholder="Fecha de ingreso">
-                            <label for="fechainicioactualizar" class="form-label">Fecha de ingreso</label>
+                            <input type="date" id="fechainicioactualizar" name="fechainicioactualizar" class="form-control" placeholder="Fecha de inicio">
+                            <label for="fechainicioactualizar" class="form-label">Fecha de inicio</label>
                         </div>
                     </div>
                     <!-- <div class="col-md-12 mb-3">
@@ -196,7 +160,7 @@
                         </div>
                     </div> -->
 
-                    <button class="btn btn-primary w-100" type="submit" id="btnActualizarSalario">Guardar</button>
+                    <button class="btn btn-primary w-100" type="submit" id="btnActualizarcargo">Guardar</button>
                 </div>
             </form>
         </div>
@@ -208,7 +172,7 @@
 <?php require_once '../footer.php' ?>
 
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script src="<?= $hostOnlyHeader ?>/js/colaboradores/salario-colaborador.js"></script>
+<script src="<?= $hostOnlyHeader ?>/js/colaboradores/cargos-colaborador.js"></script>
 <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
 
 </body>

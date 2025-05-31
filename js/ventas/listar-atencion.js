@@ -740,6 +740,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     return rpagado50;
   }
 
+  async function borrarEventoArtista(iddetallepresentacion) {
+    const pagado50 = new FormData();
+    pagado50.append("operation", "borrarEventoArtista");
+    pagado50.append("iddetallepresentacion", iddetallepresentacion);
+
+
+    const fpagado50 = await fetch(`${host}detalleevento.controller.php`, {
+      method: "POST",
+      body: pagado50,
+    });
+    const rpagado50 = await fpagado50.json();
+    return rpagado50;
+  }
+
   async function actualizarEstadoContrato(idcontrato, estado) {
     const contrato = new FormData();
     contrato.append("operation", "actualizarEstadoContrato");
@@ -1019,6 +1033,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <button type="button" class="btn btn-sm btn-danger btn-cancelar" data-id=${x.iddetalle_presentacion} title="Cancelar Evento">
                         Cancelar
                       </button>
+                    <button type="button" class="btn btn-sm btn-danger btn-borrar" data-id=${x.iddetalle_presentacion} title="Borrar Evento">
+                        Borrar
+                      </button>
                       `}
                 </td>
             </tr>
@@ -1153,6 +1170,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (e.target.classList.contains("btn-reactivar")) {
             await buttonReactivar(e);
           }
+          if (e.target.classList.contains("btn-borrar")) {
+            await buttonBorrar(e);
+          }
           /* if(e.target.classList.contains("show-espec")){//abre el sidebar
           await btnSBUpdateActivo(e);
         }
@@ -1233,6 +1253,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (await ask("¿Reactivar Evento?")) {
       const cancelado = await actualizarEstadoDp(iddp, 1)
       console.log("cancelado ?>???? ", cancelado);
+    }
+    await dataFilters()
+    return
+  }
+
+  async function buttonBorrar(e) {
+    iddp = e.target.getAttribute("data-id")
+    if (await ask("¿Estas seguro de borrar el evento?")) {
+      if (await ask("¿Estas seguro? (Confirmacion x2)")) {
+        const borrado = await borrarEventoArtista(iddp)
+        console.log("borrado ?>???? ", borrado);
+        await dataFilters()
+      }
     }
     await dataFilters()
     return

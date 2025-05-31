@@ -291,7 +291,6 @@ if (isset($_POST['operation'])) {
                 'idcolaborador'               => $nomina->limpiarCadena($_POST['idcolaborador']) ? $nomina->limpiarCadena($_POST['idcolaborador']) : '',
                 'tipo'     => $nomina->limpiarCadena($_POST['tipo']) ? $nomina->limpiarCadena($_POST['tipo']) : '',
                 'fechaingreso'                => $nomina->limpiarCadena($_POST['fechaingreso']) ? $nomina->limpiarCadena($_POST['fechaingreso']) : '',
-                'idcargo'             => $nomina->limpiarCadena($_POST['idcargo']) ? $nomina->limpiarCadena($_POST['idcargo']) : '',
                 'ruc'        => $nomina->limpiarCadena($_POST['ruc']) ? $nomina->limpiarCadena($_POST['ruc']) : '',
                 'clavesol'        => $nomina->limpiarCadena($_POST['clavesol']) ? $nomina->limpiarCadena($_POST['clavesol']) : '',
                 'ncuenta'               => $nomina->limpiarCadena($_POST['ncuenta']) ? $nomina->limpiarCadena($_POST['ncuenta']) : '',

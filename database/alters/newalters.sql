@@ -336,3 +336,39 @@ ALTER TABLE items_comprobante
 ADD CONSTRAINT fk_items_factura
 FOREIGN KEY (idcomprobante) REFERENCES comprobantes(idcomprobante) ON DELETE CASCADE;
 
+-- NUEVO ----------------------------------------
+
+ALTER TABLE pagos_contrato
+DROP FOREIGN KEY fk_idcontrato;
+
+ALTER TABLE pagos_contrato
+ADD CONSTRAINT fk_idcontrato
+FOREIGN KEY (idcontrato) REFERENCES contratos(idcontrato)
+ON DELETE CASCADE;
+
+ALTER TABLE agenda_edicion
+DROP FOREIGN KEY fk_iddp_ag_edicion;
+
+ALTER TABLE agenda_edicion
+ADD CONSTRAINT fk_iddp_ag_edicion
+FOREIGN KEY (iddetalle_presentacion)
+REFERENCES detalles_presentacion(iddetalle_presentacion)
+ON DELETE CASCADE;
+
+ALTER TABLE cajachica
+DROP FOREIGN KEY fk_iddp_cajachicaa;
+
+ALTER TABLE cajachica
+DROP FOREIGN KEY fk_idmonto_caja;
+
+ALTER TABLE cajachica
+ADD CONSTRAINT fk_iddp_cajachicaa
+FOREIGN KEY (iddetalle_presentacion)
+REFERENCES detalles_presentacion(iddetalle_presentacion)
+ON DELETE CASCADE;
+
+ALTER TABLE cajachica
+ADD CONSTRAINT fk_idmonto_caja
+FOREIGN KEY (idmonto)
+REFERENCES montoCajaChica(idmonto)
+ON DELETE CASCADE;

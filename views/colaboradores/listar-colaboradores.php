@@ -144,10 +144,7 @@
                                         <thead class="text-center">
                                             <tr>
                                                 <th>N° Doc</th>
-                                                <th>Nombres</th>
-                                                <th>Apellidos</th>
-                                                <th>F. Ingreso</th>
-                                                <th>Área</th>
+                                                <th>Nombres y apellidos</th>                                                                                                
                                                 <th>Opciones</th>
                                             </tr>
                                         </thead>

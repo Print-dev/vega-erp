@@ -78,6 +78,18 @@ BEGIN
     LEFT JOIN personas_colaboradores PERCO ON PERCO.idpersonacolaborador = COL.idpersonacolaborador
     WHERE (_idnomina IS NULL OR NOM.idnomina = _idnomina);
 END //
-select * from empresa
-call sp_ficha_colaborador (4);
-select * from personas_colaboradores
+
+
+DROP PROCEDURE IF EXISTS sp_obtener_colaborador_con_cargo;
+DELIMITER //
+CREATE PROCEDURE sp_obtener_colaborador_con_cargo(
+	-- IN _nombres VARCHAR(100),
+	-- IN _num_doc VARCHAR(20)
+)
+BEGIN
+	SELECT 
+	*
+	FROM colaboradores
+    LEFT JOIN personas_colaboradores PERCO ON PERCO.idpersonacolaborador = COL.idpersonacolaborador
+    WHERE 
+END //

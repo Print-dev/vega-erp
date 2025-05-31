@@ -58,6 +58,16 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-floating">
+                                    <select name="modalidad" id="modalidad" class="form-select">
+                                        <option value="">Selecciona</option>
+                                        <option value="1">Convenio</option>
+                                        <option value="2">Contrato</option>
+                                    </select>
+                                    <label for="modalidad" class="form-label">Modalidad</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-floating">
                                     <select name="modotransporte" id="modotransporte" class="form-select">
                                         <option value="">Selecciona</option>
                                         <option value="1">Tierra</option>
@@ -115,7 +125,7 @@
                                 <div class="form-floating">
                                     <select name="cliente" id="cliente" class="form-select" ">
                                     </select>
-                                    <label for="cliente" class="form-label">Seleccione</label>
+                                    <label for=" cliente" class="form-label">Seleccione</label>
                                 </div>
                             </div>
 

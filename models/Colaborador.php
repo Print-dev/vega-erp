@@ -89,6 +89,32 @@ class Colaborador extends ExecQuery
     }
   }
 
+  public function filtrarCargos(): array
+  {
+    try {
+      $sp = parent::execQ("SELECT * FROM cargos_colaboradores ORDER BY idcargocolaborador DESC");
+      $sp->execute();
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerCargoColaboradorPorId($params = []): array
+  {
+    try {
+      $sp = parent::execQ("SELECT * FROM cargos_colaboradores where idcargocolaborador = ?");
+      $sp->execute(
+        array(
+          $params["idcargocolaborador"],
+        )
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
   public function filtrarGastos($params = []): array
   {
     try {
@@ -181,6 +207,26 @@ class Colaborador extends ExecQuery
       $rpt = $cmd->execute(
         array(
           $params['cargo'],
+        )
+      );
+
+      return $rpt;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return -1;
+    }
+  }
+
+  public function registrarCargoColaborador($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare('INSERT INTO cargos_colaboradores (idpersonacolaborador, cargo, fechainicio) VALUES (?,?,?)');
+      $rpt = $cmd->execute(
+        array(
+          $params['idpersonacolaborador'],
+          $params['cargo'],
+          $params['fechainicio'],
         )
       );
 
@@ -406,6 +452,21 @@ class Colaborador extends ExecQuery
   {
     try {
       $sp = parent::execQ("CALL sp_ficha_colaborador(?)");
+      $sp->execute(
+        array(
+          $params["idnomina"]
+        )
+      );
+      return $sp->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+      die($e->getMessage());
+    }
+  }
+
+  public function obtenerColaboradoresConCargo($params = []): array
+  {
+    try {
+      $sp = parent::execQ("SELECT * FROM personas_");
       $sp->execute(
         array(
           $params["idnomina"]

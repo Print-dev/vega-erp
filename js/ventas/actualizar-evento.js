@@ -19,6 +19,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     await obtenerClientes()
 
+    $q("#modalidad").addEventListener("change", async (e) => {
+        const mod = e.target.value
+        if (mod == 1) {
+            $q("#container-validez").hidden = true
+        } else {
+            $q("#container-validez").hidden = false
+        }
+
+    })
+
     // *************************************** OBTENCION DE DATOS **************************************
     async function obtenerInfoDPporId(iddp) {
         const params = new URLSearchParams();
@@ -64,6 +74,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         dp.append("establecimiento", $q("#establecimiento").value ? $q("#establecimiento").value : '');
         dp.append("referencia", $q("#referencia").value ? $q("#referencia").value : '');
         dp.append("tipoevento", $q("#tipoevento").value ? $q("#tipoevento").value : '');
+        dp.append("modalidad", $q("#modalidad").value ? $q("#modalidad").value : '');
         dp.append("modotransporte", $q("#modotransporte").value ? $q("#modotransporte").value : '');
         dp.append("validez", $q("#validez").value ? $q("#validez").value : '');
         dp.append("igv", $q("#igv").checked ? 1 : 0);
@@ -105,6 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         $q("#establecimiento").value = infoDp[0]?.establecimiento
         $q("#referencia").value = infoDp[0]?.referencia
         $q("#tipoevento").value = infoDp[0]?.tipo_evento
+        $q("#modalidad").value = infoDp[0]?.modalidad
         $q("#modotransporte").value = infoDp[0]?.modotransporte
         $q("#validez").value = infoDp[0]?.validez
         $q("#igv").checked = infoDp[0]?.igv == 1 ? true : 0
@@ -117,6 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (infoDp[0]?.iddistrito) {
             await cargarUbigeoDesdeDistrito(infoDp[0]?.iddistrito);
         }
+
     }
 
     async function obtenerDepartamentos() {
@@ -268,15 +281,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log("¿Existe superposición de horarios?", horarioSuperpuesto);
 
             // ❌ Si hay otro evento en la misma fecha y se superpone en el horario, NO permitir registrar
-            if (horarioSuperpuesto) {
+            /* if (horarioSuperpuesto) {
                 if (!(iddp == fechaOcupada[0].iddetalle_presentacion)) {
                     showToast("No se puede registrar el evento: ya existe otro en la misma fecha y horario.", "ERROR");
                     return;
                 }
             }
-
+ */
             // ✅ Si hay al menos un evento vencido (estado == 2) o no hay conflicto de horarios, permitir registrar
-            if (hayEventoVencido || fechaOcupada.length === 0 || !horarioSuperpuesto) {
+            /* if (hayEventoVencido || fechaOcupada.length === 0 || !horarioSuperpuesto) {
                 permitirRegistrar = true;
             } else {
                 if (!(iddp == fechaOcupada[0].iddetalle_presentacion)) {
@@ -284,9 +297,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     return;
                 }
 
-            }
+            } */
 
-            idcliente = $q("#cliente").value 
+            idcliente = $q("#cliente").value
             const clienteAct = await actualizarClienteDp(iddp);
             console.log("cliente actualizado ? -> ", clienteAct);
 

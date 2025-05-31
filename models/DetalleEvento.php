@@ -8,7 +8,7 @@ class DetalleEvento extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_actualizar_detalle_presentacion(?,?,?,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_actualizar_detalle_presentacion(?,?,?,?,?,?,?,?,?,?,?,?)');
       $act = $cmd->execute(
         array(
           $params['iddetallepresentacion'],
@@ -18,6 +18,7 @@ class DetalleEvento extends ExecQuery
           $params['establecimiento'],
           $params['referencia'],
           $params['tipoevento'],
+          $params['modalidad'],
           $params['modotransporte'],
           $params['validez'],
           $params['iddistrito'],
@@ -32,6 +33,24 @@ class DetalleEvento extends ExecQuery
 
       // Retornar detalles del error
       die($e->getMessage());
+    }
+  }
+
+  public function borrarEventoArtista($params = []): bool
+  {
+    try {
+      $pdo = parent::getConexion();
+      $cmd = $pdo->prepare("DELETE FROM detalles_presentacion WHERE iddetalle_presentacion = ?");
+      $act = $cmd->execute(
+        array(
+          $params['iddetallepresentacion']
+        )
+      );
+
+      return $act;
+    } catch (Exception $e) {
+      error_log("Error: " . $e->getMessage());
+      return false;
     }
   }
 
@@ -434,11 +453,13 @@ class DetalleEvento extends ExecQuery
     }
   }
  */
-  public function obtenerCotizacionesPorModalidad($params = []): array
+  public function obtenerCotizacionesPorModalidad(): array
   {
     try {
-      $cmd = parent::execQ("SELECT * FROM detalles_presentacion WHERE modalidad = ?");
-      $cmd->execute(array($params['modalidad']));
+      $cmd = parent::execQ("SELECT *
+FROM detalles_presentacion
+WHERE ncotizacion IS NOT NULL AND ncotizacion != '';");
+      $cmd->execute();
       return $cmd->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
       die($e->getMessage());

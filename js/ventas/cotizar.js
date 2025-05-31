@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   async function obtenerCotizacionesPorModalidad() {
     const params = new URLSearchParams();
     params.append("operation", "obtenerCotizacionesPorModalidad");
-    params.append("modalidad", 2);
+    /* params.append("modalidad", 2); */
     const fpersona = await getDatos(`${host}detalleevento.controller.php`, params)
     console.log(fpersona);
     return fpersona
