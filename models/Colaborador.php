@@ -89,11 +89,15 @@ class Colaborador extends ExecQuery
     }
   }
 
-  public function filtrarCargos(): array
+  public function filtrarCargos($params = []): array
   {
     try {
-      $sp = parent::execQ("SELECT * FROM cargos_colaboradores ORDER BY idcargocolaborador DESC");
-      $sp->execute();
+      $sp = parent::execQ("SELECT * FROM cargos_colaboradores WHERE idpersonacolaborador = ? ORDER BY idcargocolaborador DESC");
+      $sp->execute(
+        array(
+          $params["idpersonacolaborador"],
+        )
+      );
       return $sp->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
       die($e->getMessage());
@@ -466,7 +470,7 @@ class Colaborador extends ExecQuery
   public function obtenerColaboradoresConCargo($params = []): array
   {
     try {
-      $sp = parent::execQ("SELECT * FROM personas_");
+      $sp = parent::execQ("SELECT * FROM personas WHERE ");
       $sp->execute(
         array(
           $params["idnomina"]

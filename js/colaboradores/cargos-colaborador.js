@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     $q("#formcargo").addEventListener("submit", async (e) => {
         console.log("llego -> ");
         e.preventDefault()
-        const colaboradorRegistrado = await registrarCargoColaborador(idcolaborador)
+        const colaboradorRegistrado = await registrarCargoColaborador(idpersonacolaborador)
         console.log("colaboradorRegistrado -> ", colaboradorRegistrado);
         if (colaboradorRegistrado) {
             showToast("Asignado!", "SUCCESS")
@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function dataFilters() {
         const params = new URLSearchParams();
         params.append("operation", "filtrarCargos");
-        params.append("idpersonacolaborador", "idpersonacolaborador");
+        params.append("idpersonacolaborador", idpersonacolaborador);
         const data = await getDatos(`${host}colaborador.controller.php`, params);
         console.log("data -> ", data);
 
@@ -353,8 +353,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const cargoCol = await obtenerCargoColaboradorPorId(idcargocolaborador)
         console.log("cargoCol .> ", cargoCol);
         $q("#cargoactualizar").value = cargoCol[0].cargo;
-        $q("#fechainicioactualizar").value = cargoCol[0].fechainicio;    
-        
+        $q("#fechainicioactualizar").value = cargoCol[0].fechainicio;
+
         modalActualizarCargo.show()
     }
 

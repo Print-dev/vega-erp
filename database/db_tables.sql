@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS vega_producciones_erp;
-CREATE DATABASE vega_producciones_erp;
-USE vega_producciones_erp;
-
+-- DROP DATABASE IF EXISTS vega_producciones_erp;
+-- CREATE DATABASE vega_producciones_erp;
+-- USE vega_producciones_erp;
+select * from nivelaccesos;
 CREATE TABLE nacionalidades (
     idnacionalidad INT AUTO_INCREMENT PRIMARY KEY,
     nacionalidad VARCHAR(100) NOT NULL
@@ -39,7 +39,27 @@ CREATE TABLE empresa (
     nombreapp 		varchar(120) null,
     direccion		varchar(120)  null,
     web				varchar(120)  null
+    -- usuariosol		char(8) null,
+    -- clavesol		char(12) null,
+    -- certificado		text null,
+    -- correo			varchar(120) null,
+    -- contrasenagmailapp varchar(120) null
 ) ENGINE = INNODB;
+
+-- ALTER TABLE empresa
+-- MODIFY COLUMN logoempresa VARCHAR(80) NULL;
+-- ALTER TABLE empresa ADD COLUMN correo			varchar(120) null;
+-- ALTER TABLE empresa ADD COLUMN contrasenagmailapp			varchar(120) null;
+-- ALTER TABLE empresa ADD COLUMN ncuenta	varchar(30) null;
+-- ALTER TABLE empresa ADD COLUMN ncci	varchar(30) null;
+-- ALTER TABLE empresa ADD COLUMN banco varchar(30) null;
+-- ALTER TABLE empresa ADD COLUMN moneda varchar(30) null;
+
+-- ALTER TABLE empresa
+ -- DROP COLUMN usuariosol,
+ -- DROP COLUMN clavesol,
+  -- DROP COLUMN certificado;
+
 
 CREATE TABLE sucursales (
 	idsucursal		int auto_increment primary key,
@@ -75,7 +95,7 @@ CREATE TABLE personas
     CONSTRAINT 	  uk_correo			  UNIQUE(correo),
     constraint	  fk_iddistrito 	  foreign key (iddistrito) references distritos (iddistrito)
 )ENGINE=INNODB;
-
+select*from usuarios;
 CREATE TABLE nivelaccesos
 (
 	idnivelacceso INT AUTO_INCREMENT PRIMARY KEY,
@@ -121,7 +141,11 @@ CREATE TABLE proveedores (
     servicio VARCHAR(120) NULL,
     nproveedor VARCHAR(40) NULL    
 )  ENGINE=INNODB;
-
+SELECT * FROM proveedores order by idproveedor DESC;
+-- ALTER TABLE usuarios
+-- MODIFY COLUMN marcaagua VARCHAR(120) NULL,
+-- MODIFY COLUMN firma VARCHAR(120) NULL;
+-- ALTER TABLE usuarios ADD COLUMN idsucursal int not null;
 
 CREATE TABLE conceptos (
     idconcepto INT AUTO_INCREMENT PRIMARY KEY,
@@ -136,7 +160,7 @@ CREATE TABLE subtipos (
     subtipo	VARCHAR(120) NULL,
     constraint fk_idsubtipo foreign key (idconcepto) references conceptos(idconcepto)
 )  ENGINE=INNODB;
-
+select* from subtipos;
 CREATE TABLE tarifario (
 	idtarifario int auto_increment primary key,
     idusuario		int not null,
@@ -146,7 +170,15 @@ CREATE TABLE tarifario (
     constraint fk_idartista_tar foreign key (idusuario) references usuarios (idusuario),
     constraint fk_provincia_tarifario_art foreign key (idprovincia) references provincias (idprovincia)
 ) ENGINE = INNODB;
-
+-- ALTER TABLE tarifario ADD COLUMN tipo_evento INT NOT NULL;
+select * from tarifario;
+-- ALTER TABLE tarifario
+	-- ADD COLUMN idnacionalidad INT NULL,
+	-- ADD CONSTRAINT fk_idnacionalidad_tarifario FOREIGN KEY (idnacionalidad) REFERENCES nacionalidades(idnacionalidad);
+-- ALTER TABLE tarifario
+ -- MODIFY COLUMN idprovincia INT NULL;
+SELECT * FROM tarifario;
+-- SELECT * FROM tarifario WHERE idprovincia = 1 and tipo_evento = 2;
 CREATE TABLE permisos (
     idpermiso INT AUTO_INCREMENT PRIMARY KEY,
     idnivelacceso INT NOT NULL,
@@ -174,7 +206,13 @@ create table clientes (
     constraint 	uk_numdocumento_cli	unique(ndocumento),
     constraint chk_tipodoc		check(tipodoc IN (1,2))
 )engine=innodb;
-
+-- ALTER TABLE detalles_presentacion
+-- ADD COLUMN modotransporte INT NULL AFTER modalidad;
+ALTER TABLE detalles_presentacion ADD COLUMN estadoCordinacionTecnica tinyint null default 0;
+ALTER TABLE detalles_presentacion ADD COLUMN estadoCordinacionPublicidad tinyint null default 0;
+SELECT *
+FROM detalles_presentacion
+GROUP BY establecimiento;
 
 CREATE table detalles_presentacion (
 	iddetalle_presentacion	int auto_increment primary key,
@@ -207,7 +245,17 @@ CREATE table detalles_presentacion (
     constraint	uk_ncotizacion 			UNIQUE(ncotizacion),
     constraint uk_idp 					UNIQUE(iddetalle_presentacion)
 )engine=innodb;
+select * from detalles_presentacion;
+UPDATE detalles_presentacion
+SET esExtranjero = 0,
+    idnacionalidad = 31;
+-- ALTER TABLE detalles_presentacion ADD COLUMN esExtranjero TINYINT AFTER created_at;
+-- ALTER TABLE detalles_presentacion
+-- ADD COLUMN idnacionalidad INT NULL,
+-- ADD CONSTRAINT fk_idnacionalidad_dp FOREIGN KEY (idnacionalidad) REFERENCES nacionalidades(idnacionalidad);
 
+
+-- select  * from detalles_presentacion;
 CREATE TABLE responsables_boleteria_contratoreservasreservas (
 	idresponsablecontrato	int auto_increment primary key,
     iddetalle_presentacion 	int not null,
@@ -217,7 +265,9 @@ CREATE TABLE responsables_boleteria_contratoreservasreservas (
     constraint fk_idusuario_contrato foreign key (idusuarioContrato) references usuarios (idusuario)
 ) ENGINE = INNODB;
 
+select  * from colaboradores;
 
+-- ESTA TABLA SOLO SERA PARA EVENTOS DE TIPO CONVENIO
 CREATE TABLE precios_entrada_evento ( 
 	idprecioentradaevento	int auto_increment primary key,
     iddetalle_presentacion 	int not null,
@@ -225,6 +275,11 @@ CREATE TABLE precios_entrada_evento (
     preciovip		decimal(10,2) null,
     constraint fk_iddp_entrada_convenio foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 ) ENGINE = INNODB;
+
+ALTER TABLE precios_entrada_evento
+  DROP COLUMN preciogeneral,
+  DROP COLUMN preciovip,
+  ADD COLUMN entradas TEXT NULL;
 
 CREATE TABLE reportes_artista_evento (
 	idreporte	int auto_increment primary key,
@@ -257,7 +312,6 @@ create table convenios (
     constraint fk_dp_cv foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
     constraint ck_estado check(estado IN(1,2,3))
 ) engine = innodb;
-
 create table contratos (
 	idcontrato	int auto_increment primary key,
     iddetalle_presentacion	int not null,
@@ -267,7 +321,8 @@ create table contratos (
     constraint fk_dp_cs foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
     constraint ck_estado	check(estado IN (1,2,3))
 ) engine = innodb;
-
+-- select * from pagos_contrato (idcontrato, monto, tipopago, noperacion) values ();
+-- select * from contratos;
 create table pagos_contrato (
 	idpagocontrato		int auto_increment primary key,
     idcontrato	int not null,
@@ -281,7 +336,8 @@ create table pagos_contrato (
     constraint ck_tipopago_pc	check (tipo_pago IN (1,2)),
     constraint ck_estado_pc	check (estado IN (1, 3))
 ) engine = innodb;
-
+select * from pagos_contrato;
+-- cambiar este camp
 create table reservas (
 	idreserva		int auto_increment primary key,
     idpagocontrato	int not null,
@@ -289,7 +345,7 @@ create table reservas (
     fechacreada		date not null,
     constraint fk_idpagocontrato_res foreign key (idpagocontrato) references pagos_contrato (idpagocontrato)
 ) engine = innodb;
-
+select * from reservas;
 CREATE TABLE viaticos (
 	idviatico		int auto_increment primary key,
     iddetalle_presentacion int not null,
@@ -303,7 +359,7 @@ CREATE TABLE viaticos (
     constraint fk_idusuario_v foreign key (idusuario) references usuarios (idusuario)
 ) engine = innodb;
 
-
+-- CONTABILIDAD 
 CREATE TABLE montoCajaChica (
     idmonto INT AUTO_INCREMENT PRIMARY KEY,
     monto DECIMAL(10,2) NOT NULL  -- Monto total disponible para caja chica
@@ -324,7 +380,11 @@ CREATE TABLE cajachica (
     constraint fk_iddp_cajachicaa foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion),
     constraint fk_idmonto_caja foreign key (idmonto) references montoCajaChica (idmonto)
 ) engine = innodb;
-
+-- ALTER TABLE cajachica DROP COLUMN abiertopor;
+-- ALTER TABLE cajachica DROP FOREIGN KEY fk_idusuario_abiertopor;
+-- ALTER TABLE cajachica ADD COLUMN creadopor INT NULL;
+-- ALTER TABLE cajachica ADD CONSTRAINT fk_idusuario_abierto foreign key (creadopor) references usuarios (idusuario);
+-- select * from cajachica;
 CREATE TABLE gastos_cajachica (
 	idgasto		int auto_increment primary key,
     idcajachica		int not null,
@@ -357,7 +417,9 @@ CREATE TABLE notificaciones (
     constraint fk_usuario_rem foreign key (idusuariorem) references usuarios(idusuario),
     constraint chk_estado_not check(estado IN (1,2))
 );
-
+select * from notificaciones;
+select * from usuarios;
+select * from detalles_presentacion where iddetalle_presentacion = 138;
 CREATE TABLE reparticion_ingresos (
 	idreparticion	int auto_increment primary key,
     iddetalle_presentacion int not null,    
@@ -393,12 +455,15 @@ CREATE TABLE agenda_edicion ( -- tabla que envuelve la tabla agenda editores
     iddetalle_presentacion INT NOT NULL,  -- Relación con la agenda del evento
     constraint fk_iddp_ag_edicion foreign key (iddetalle_presentacion) references detalles_presentacion (iddetalle_presentacion)
 );
+select * from detalles_presentacion;
+select * from agenda_edicion;
 
 CREATE TABLE tipotarea (
 	idtipotarea	int auto_increment primary key,
     tipotarea varchar(30) not null
 ) engine = innodb;
  
+-- ALTER TABLE agenda_editores ADD COLUMN altoketicket INT NULL DEFAULT 1 AFTER estado;
 CREATE TABLE agenda_editores (
 	idagendaeditor	int auto_increment primary key,
     idagendaedicion int not null,
@@ -453,8 +518,12 @@ CREATE TABLE tareas_diaria_asignacion (
     constraint fk_idusuario	foreign key (idusuario) references usuarios (idusuario),
     constraint fk_idtareadiaria_asig foreign key (idtareadiaria) references tareas_diarias (idtareadiaria)
 ) engine = innodb;
+select * from tareas_diaria_asignacion;
 -- --------------------------------------------- TABLAS FACTURA Y BOLETA -----------------------------------------------
-
+-- ALTER TABLE comprobantes
+-- ADD COLUMN iddetallepresentacion INT not NULL AFTER idcomprobante;
+-- ALTER TABLE comprobantes ADD CONSTRAINT fk_iddp_compr foreign key (iddetallepresentacion) references detalles_presentacion (iddetalle_presentacion)
+-- ALTER TABLE comprobantes ADD COLUMN noperacion	varchar(15) null;
 CREATE TABLE comprobantes (
 	idcomprobante		INT auto_increment PRIMARY KEY,
     iddetallepresentacion	int not null,
@@ -474,7 +543,6 @@ CREATE TABLE comprobantes (
     constraint fk_idsucursal_comp foreign key (idsucursal) references sucursales (idsucursal) ON DELETE CASCADE,
 	constraint fk_iddp_comp foreign key (iddetallepresentacion) references detalles_presentacion (iddetalle_presentacion) ON DELETE CASCADE
 ) ENGINE = INNODB;
-
 CREATE TABLE items_comprobante (
 	iditemcomprobante	int auto_increment primary key,
     idcomprobante	int not null,
@@ -516,11 +584,25 @@ CREATE TABLE pagos_cuota (
 ) ENGINE = INNODB;
 
 -- ***************************************************** SECCION RECURSOS HUMANOS ************************************************************************
-
+-- select*from cargos
 CREATE TABLE cargos ( -- AREAS DE UN COLABORADOR, EJEMP: sistemas, diseño, marketing, etc.
     idcargo INT AUTO_INCREMENT PRIMARY KEY,
     cargo VARCHAR(100) NOT NULL
 );
+
+select*from cargos_colaboradores CO
+INNER JOIN personas_colaboradores PC ON PC.idpersonacolaborador = CO.idpersonacolaborador
+ORDER BY CO.idpersonacolaborador;
+CREATE TABLE `cargos_colaboradores` (
+  `idcargocolaborador` int(11) NOT NULL AUTO_INCREMENT,
+  `idpersonacolaborador` int(11) DEFAULT NULL,
+  `fechainicio` date DEFAULT NULL,
+  `fechafin` date DEFAULT NULL,
+  `cargo` varchar(80) DEFAULT NULL,
+  PRIMARY KEY (`idcargocolaborador`),
+  KEY `fk_idpersonacolaborador_cargoss` (`idpersonacolaborador`),
+  CONSTRAINT `fk_idpersonacolaborador_cargoss` FOREIGN KEY (`idpersonacolaborador`) REFERENCES `personas_colaboradores` (`idpersonacolaborador`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE personas_colaboradores (
 	idpersonacolaborador int auto_increment primary key,
@@ -534,18 +616,10 @@ CREATE TABLE personas_colaboradores (
     nivelestudio		varchar(200) null,
     contactoemergencia	varchar(200) null,
     discapacidad 		varchar(200) null,
-    foto				VARCHAR(80) NULL
+    foto				VARCHAR(80) NULL,
+	idcargo			int null
 ) ENGINE = INNODB;	
-
-CREATE TABLE cargos_colaboradores (
-	idcargocolaborador int auto_increment primary key,
-    idpersonacolaborador int null,
-    cargo			varchar(80) NUll,
-    fechainicio		DATE NULL,
-    fechafin 		DATE NULL,
-    constraint fk_idpersonacolaborador_cargoss foreign key (idpersonacolaborador) references personas_colaboradores (idpersonacolaborador) 
-) ENGINE = INNODB;
-
+-- select * from colaboradores
 CREATE TABLE colaboradores (
     idcolaborador INT AUTO_INCREMENT PRIMARY KEY,
     idpersonacolaborador INT NOT NULL,
@@ -554,7 +628,8 @@ CREATE TABLE colaboradores (
     zapatos			varchar(80) null,
     CONSTRAINT fk_idper_col foreign key (idpersonacolaborador) references personas_colaboradores (idpersonacolaborador) ON DELETE CASCADE
 ) ENGINE = INNODB;
--- ALTER TABLE nominas ADD COLUMN cargo varchar(80) null;
+-- select *  from nominas
+-- select *  from nominas
 CREATE TABLE nominas (
 	idnomina int auto_increment primary key,
     idcolaborador INT NULL,
@@ -563,9 +638,9 @@ CREATE TABLE nominas (
     ruc				varchar(20) null,
     clavesol		varchar(20) null,
     ncuenta			varchar(20) null,
-    cargo			varchar(80) null,
 	constraint fk_idcolaborador_nomina foreign key (idcolaborador) references colaboradores (idcolaborador) ON DELETE CASCADE
 ) ENGINE = INNODB;
+
 
 CREATE TABLE salarios (
     idsalario INT AUTO_INCREMENT PRIMARY KEY,
@@ -576,9 +651,50 @@ CREATE TABLE salarios (
     costohora DECIMAL(10, 2) NOT NULL,
     fechainicio DATE DEFAULT NOW(),
     fechafin DATE DEFAULT NULL,
-	idcargo			int null,
     CONSTRAINT fk_idcolaborador_salario FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador) ON DELETE CASCADE
 ) ENGINE = INNODB;
+
+-- ********************************************** MODIFICAR DESDE AQUI ---
+
+CREATE TABLE pagos_trabajadores (
+  idpagotrabajadores INT AUTO_INCREMENT PRIMARY KEY,
+  idtrabajador INT NOT NULL,
+  periodo_inicio DATE NOT NULL,
+  periodo_fin DATE NOT NULL,
+  fecha_deposito DATE,
+  monto_a_pagar DECIMAL(10,2),
+  tipo_pago ENUM('QUINCENA', 'MENSUAL') NOT NULL,
+  boucher_url TEXT,
+  observaciones TEXT,
+  FOREIGN KEY (idtrabajador) REFERENCES trabajadores(idtrabajador)
+);
+
+CREATE TABLE detalle_pago_artista (
+  iddetallepagoartista INT AUTO_INCREMENT PRIMARY KEY,
+  idpagotrabajadores INT NOT NULL,
+  total_eventos_asistidos INT DEFAULT 0,
+  adelantos DECIMAL(10,2) DEFAULT 0.00,
+  CONSTRAINT fk_pagoartista FOREIGN KEY (idpagotrabajadores) REFERENCES pagos_trabajadores(idpagotrabajadores) ON DELETE CASCADE
+);
+
+CREATE TABLE detalle_pago_empresa (
+  iddetallepagoempresa INT AUTO_INCREMENT PRIMARY KEY,
+  idpagotrabajadores INT NOT NULL,
+  total_dias_laborados INT DEFAULT 0,
+  adelantos DECIMAL(10,2) DEFAULT 0.00,
+  saldo_a_favor DECIMAL(10,2) DEFAULT 0.00,
+  bono_productividad DECIMAL(10,2) DEFAULT 0.00,
+  CONSTRAINT fk_pagoempresa FOREIGN KEY (idpagotrabajadores) REFERENCES pagos_trabajadores(idpagotrabajadores) ON DELETE CASCADE
+);
+
+CREATE TABLE adelantos_trabajadores (
+  idadelanto INT AUTO_INCREMENT PRIMARY KEY,
+  idcolaborador INT NOT NULL,
+  fecha DATE NOT NULL,
+  monto DECIMAL(10,2),
+  motivo TEXT,
+  CONSTRAINT fk_idcolaborador_adelanto FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador)
+);
 
 -- ********************************************** GASTOS *********************************************
 CREATE TABLE gastosyentradas (
@@ -596,6 +712,95 @@ CREATE TABLE gastosyentradas (
   CONSTRAINT fk_idusuario_gastoentrada FOREIGN KEY (idusuario) REFERENCES usuarios (idusuario) ON DELETE CASCADE,
   CONSTRAINT fk_iddp_gastoentrada FOREIGN KEY (iddetallepresentacion) REFERENCES detalles_presentacion (iddetalle_presentacion) ON DELETE CASCADE
 );
+select * from gastosyentradas;
+-- *************************** APARTIR DE ABAJO NO CONSIDERAR ***************************************
+
+CREATE TABLE nomina (
+	idnomina INT auto_increment PRIMARY KEY,
+	idcolaborador INT NULL,
+	idresponsable INT NULL,
+    salario_usado INT NOT NULL,
+    adelanto 	INT NULL,
+    fechadeposito DATETIME NULL,
+    cuenta		INT NULL,
+    quincena 	DECIMAL(10,2) NULL,
+    totaleventos int null,
+    constraint fk_idnomina foreign key (idcolaborador) references colaboradores (idcolaborador) ON DELETE CASCADE,
+    constraint fk_idresponsable_artista foreign key (idusuario) references usuarios (idusuario)
+) ENGINE = INNODB;
+
+create TABLE nomina (
+    idnomina INT AUTO_INCREMENT PRIMARY KEY,
+    idcolaborador INT NOT NULL,
+    salario_usado INT NOT NULL,
+    periodo INT NOT NULL,
+	idarea	INT NOT NULL,
+    horas DECIMAL(10,2) NOT NULL,
+	tiempo DECIMAL(10,2) NOT NULL,
+    rendimiento DECIMAL(10,2) NULL,
+    proporcion DECIMAL(10,2) null,
+    acumulado DECIMAL(10,2)  null,
+    created_at DATETIME DEFAULT NOW(),
+    CONSTRAINT fk_idempleado_nomina FOREIGN KEY (idcolaborador) REFERENCES colaboradores(idcolaborador) ON DELETE CASCADE,
+    CONSTRAINT fk_idarea_nomina foreign key (idarea) references areas (idarea) ON DELETE CASCADE
+)ENGINE = INNODB;
+
+DROP TABLE gastos_nomina (
+    idgastonomina INT AUTO_INCREMENT PRIMARY KEY,
+    idnomina INT NOT NULL,
+    descripcion TEXT,
+    monto DECIMAL(10,2) NOT NULL,
+    created_at DATETIME DEFAULT NOW(),
+    CONSTRAINT fk_gasto_nomina FOREIGN KEY (idnomina) REFERENCES nomina(idnomina) ON DELETE CASCADE
+) ENGINE=INNODB;
+select * from gastos_nomina;
+
+CREATE TABLE acumulados_nomina (
+	idacumulado_nomina INT auto_increment primary key,
+    idnomina INT NOT NULL,
+    acumulado DECIMAL(10,2) not null,
+    CONSTRAINT fk_idnomina_acumulado foreign key (idnomina) references nominas (idnomina)
+) ENGINE = INNODB;
+
+CREATE TABLE gastosentradas ( -- SE PENSARA EN AGREGAR
+	idgastoentrada INT auto_increment primary key,
+	estadopago INT NULL,
+	fgasto DATE NULL,
+	fvencimiento DATE NULL,          -- como 'bonificación', 'descuento', 'aporte', etc.
+    tipo INT NULL,
+    concepto VARCHAR(40) NULL,
+    idproveedor INT NULL
+) ENGINE = INNODB;
+
+CREATE TABLE gastosentradas (
+    idgastoentrada INT AUTO_INCREMENT PRIMARY KEY,
+    estadopago INT NULL,
+    fgasto DATE NULL,
+    fvencimiento DATE NULL,          -- como 'bonificación', 'descuento', 'aporte', etc.
+    tipo INT NULL,  -- 1: fijo, 2: variable
+    concepto INT NULL,
+    subtipo INT NULL,
+    idproveedor INT NULL,
+    idcolaborador INT NULL,
+    gasto DECIMAL(10,2) NULL,
+    cunitario DECIMAL(10,2) NULL,
+    pagado DECIMAL(10,2) NULL, -- pago anticipado
+    idproducto INT NULL,
+    cantidad INT NULL,
+    unidades INT NULL,
+    formapago INT NULL,
+    cuenta	  INT NULL,
+    foliofactura VARCHAR(13) NULL, 
+    emision	 DATE NULL,
+    descripcion TEXT NULL,
+    costofinal DECIMAL(10,2) NULL,
+    egreso 	DECIMAL(10,2) NULL,
+    montopdte DECIMAL(10,2) NULL,
+    impuestos DECIMAL(10,2) NULL,
+    costofinalunit DECIMAL(10,2) NULL,
+    created_at DATETIME DEFAULT NOW(),
+    CONSTRAINT fk_subtipo_gastoentrada foreign key (subtipo) references subtipos (idsubtipo) ON DELETE CASCADE
+) ENGINE = INNODB;
 
 CREATE TABLE prodserv (
 	idprodserv INT auto_increment primary key,
@@ -606,3 +811,4 @@ CREATE TABLE prodserv (
     precio 		DECIMAL(10,2) null,
 	constraint fk_idproveedor foreign key (idproveedor) references proveedores (idproveedor) ON DELETE CASCADE
 ) ENGINE = INNODB;
+SELECT * FROM prodserv

@@ -20,7 +20,10 @@ if (isset($_GET['operation'])) {
             break;
 
         case 'filtrarCargos':
-            echo json_encode($colaborador->filtrarCargos());
+            $cleanData = [
+                'idpersonacolaborador'   => $colaborador->limpiarCadena($_GET['idpersonacolaborador']),
+            ];
+            echo json_encode($colaborador->filtrarCargos($cleanData));
             break;
 
         case 'obtenerFichaColaborador':

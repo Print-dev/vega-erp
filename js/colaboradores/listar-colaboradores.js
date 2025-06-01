@@ -327,10 +327,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function buttonCargo(e) {
-        idcolaborador = e.target.getAttribute("data-idcolaborador");
-        console.log("idcolaborador -> ", idcolaborador);
+        idpersonacolaborador = e.target.getAttribute("data-idpersonacolaborador");
+        console.log("idpersonacolaborador -> ", idpersonacolaborador);
         window.localStorage.clear()
-        window.localStorage.setItem("idcolaborador", idcolaborador);
+        window.localStorage.setItem("idpersonacolaborador", idpersonacolaborador);
         window.location.href = `${hostOnly}/views/colaboradores/cargos-colaborador`;
     }
 

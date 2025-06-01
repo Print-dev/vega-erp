@@ -590,6 +590,9 @@ switch ($_SESSION['login']['nivelacceso']) {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M3 6h18M3 18h18" />
               </svg>
             </button> -->
+            <div id="sidebar-toggle" class="sidebar-toggle me-3 btn btn-icon-only d-none d-lg-inline-block align-items-center justify-content-center">
+
+            </div>
           </div>
           <!-- Navbar links (PERFIL USUARIO) -->
           <ul class="navbar-nav align-items-center">
@@ -747,6 +750,9 @@ switch ($_SESSION['login']['nivelacceso']) {
         return data.json();
       }
       const links = document.querySelectorAll('#options-sidebar .nav-link');
+      const sidebarToggleDesktop = document.getElementById('sidebar-toggle');
+      const sidebarmenu = $q("#sidebarMenu")
+
 
       links.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -754,7 +760,31 @@ switch ($_SESSION['login']['nivelacceso']) {
           this.classList.add('active'); // Agregarlo al clickeado
         });
       });
+
+      /* $q("#sidebarToggleDesktop").addEventListener("click", async (e) => {
+        sidebarmenu.classList.
+      }) */
+
+
+      /* 
+            function toggleSidebar() {
+              if (window.innerWidth >= 992) {
+                // Desktop: alternar entre contracted y sidebar-visible
+                if (sidebar.classList.contains('contracted')) {
+                  sidebar.classList.remove('contracted', 'collapse');
+                  sidebar.classList.add('sidebar-visible');
+                } else {
+                  sidebar.classList.remove('sidebar-visible');
+                  sidebar.classList.add('contracted', 'collapse');
+                }
+              } else {
+                // Mobile: funcionalidad diferente
+                // ... código para mobile
+              }
+            } */
     </script>
+
+
 
     <script>
       const idusuarioLogeado = "<?php echo $_SESSION['login']['idusuario']; ?>"
