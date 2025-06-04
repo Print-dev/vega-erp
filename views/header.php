@@ -234,6 +234,7 @@ switch ($_SESSION['login']['nivelacceso']) {
 
     /* Sombra sutil */
   }
+
 </style>
 <!-- <div class="beta-banner">Vega Producciones V.1.0</div>
  -->
@@ -261,7 +262,7 @@ switch ($_SESSION['login']['nivelacceso']) {
   <!-- BOTON HAMBURGUESA EN RESPONSIVE-->
 
   <!-- SIDEBAR -->
-  <nav id="sidebarMenu" class="sidebar bg-white text-white sidebar-visible border border-primary" data-simplebar>
+  <nav id="sidebarMenu" class="sidebar bg-white text-white sidebar-visible border-primary" data-simplebar>
 
     <div class=" px-4 pt-3"> <!-- sidebar-inner -->
       <div
@@ -585,11 +586,11 @@ switch ($_SESSION['login']['nivelacceso']) {
           id="navbarSupportedContent">
           <div class="d-flex align-items-center">
             <!-- Botón para colapsar sidebar en escritorio -->
-            <!-- <button id="toggleSidebar" class="btn btn-sm btn-outline-dark d-none d-lg-inline-block me-2">
+            <button id="toggleSidebar" class="btn btn-sm btn-outline-dark d-none d-lg-inline-block me-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M3 6h18M3 18h18" />
               </svg>
-            </button> -->
+            </button>
             <div id="sidebar-toggle" class="sidebar-toggle me-3 btn btn-icon-only d-none d-lg-inline-block align-items-center justify-content-center">
 
             </div>
@@ -784,6 +785,33 @@ switch ($_SESSION['login']['nivelacceso']) {
             } */
     </script>
 
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const sidebar = document.getElementById("sidebarMenu");
+        const toggleBtn = document.getElementById("toggleSidebar");
+
+        // Restaurar el estado contraído desde localStorage
+        const isContracted = localStorage.getItem("sidebarContracted") === "true";
+        if (isContracted) sidebar.classList.add("contracted");
+
+        // Botón de toggle manual (fijo)
+        toggleBtn.addEventListener("click", function() {
+          sidebar.classList.toggle("contracted");
+          localStorage.setItem("sidebarContracted", sidebar.classList.contains("contracted"));
+        });
+
+        // Solo aplicar hover dinámico si está contraído
+        sidebar.addEventListener("mouseenter", function() {
+          if (sidebar.classList.contains("contracted")) {
+            sidebar.classList.remove("contracted");
+          }
+        });
+
+        sidebar.addEventListener("mouseleave", function() {
+          sidebar.classList.add("contracted");
+        });
+      });
+    </script>
 
 
     <script>
