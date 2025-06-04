@@ -395,23 +395,13 @@ class Colaborador extends ExecQuery
   {
     try {
       $pdo = parent::getConexion();
-      $cmd = $pdo->prepare('CALL sp_registrar_nomina(@idnomina,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+      $cmd = $pdo->prepare('CALL sp_registrar_nomina(@idnomina,?,?,?,?,?,?)');
       $cmd->execute(
         array(
           $params['tipo'],
-          $params['nombreapellido'],
-          $params['dni'],
-          $params['idarea'],
-          $params['fnacimiento'],
-          $params['estadocivil'],
-          $params['sexo'],
-          $params['domicilio'],
-          $params['correo'],
-          $params['nivelestudio'],
-          $params['contactoemergencia'],
-          $params['discapacidad'],
-          $params['camisa'],
-          $params['pantalon'],
+          $params['idpersonacolaborador'],
+          $params['tipo'],
+          $params['fechaingreso'],
           $params['ruc'],
           $params['clavesol'],
           $params['ncuenta'],
@@ -467,14 +457,22 @@ class Colaborador extends ExecQuery
     }
   }
 
-  public function obtenerColaboradoresConCargo($params = []): array
+  public function obtenerColaboradoresConCargo(): array
   {
     try {
-      $sp = parent::execQ("SELECT * FROM personas WHERE ");
-      $sp->execute(
-        array(
-          $params["idnomina"]
-        )
+      $sp = parent::execQ("SELECT PC.*, CO.*
+FROM personas_colaboradores PC
+INNER JOIN (
+    SELECT *
+    FROM cargos_colaboradores
+    WHERE idcargocolaborador IN (
+        SELECT MAX(idcargocolaborador)
+        FROM cargos_colaboradores
+        GROUP BY idpersonacolaborador
+    )
+) CO ON PC.idpersonacolaborador = CO.idpersonacolaborador
+ORDER BY PC.idpersonacolaborador");
+      $sp->execute(      
       );
       return $sp->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {

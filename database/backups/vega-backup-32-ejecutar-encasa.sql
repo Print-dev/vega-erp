@@ -63,7 +63,7 @@ CREATE TABLE `agenda_edicion` (
   PRIMARY KEY (`idagendaedicion`),
   KEY `fk_iddp_ag_edicion` (`iddetalle_presentacion`),
   CONSTRAINT `fk_iddp_ag_edicion` FOREIGN KEY (`iddetalle_presentacion`) REFERENCES `detalles_presentacion` (`iddetalle_presentacion`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=459 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=463 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `agenda_edicion` */
 
@@ -193,7 +193,10 @@ insert  into `agenda_edicion`(`idagendaedicion`,`iddetalle_presentacion`) values
 (455,135),
 (456,136),
 (457,137),
-(458,138);
+(458,138),
+(459,139),
+(461,143),
+(462,144);
 
 /*Table structure for table `agenda_editores` */
 
@@ -224,25 +227,6 @@ insert  into `agenda_editores`(`idagendaeditor`,`idagendaedicion`,`idusuario`,`i
 (2,450,7,1,3,2,'2025-05-08 15:40:15','2025-05-08','15:45:00'),
 (3,440,7,1,3,2,'2025-05-09 09:51:50','2025-05-09','09:54:00');
 
-/*Table structure for table `areas` */
-
-DROP TABLE IF EXISTS `areas`;
-
-CREATE TABLE `areas` (
-  `idarea` int(11) NOT NULL AUTO_INCREMENT,
-  `area` varchar(100) NOT NULL,
-  PRIMARY KEY (`idarea`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-/*Data for the table `areas` */
-
-insert  into `areas`(`idarea`,`area`) values 
-(1,'sistemas'),
-(2,'diseño'),
-(3,''),
-(4,'diseño premium'),
-(5,'marketing');
-
 /*Table structure for table `cajachica` */
 
 DROP TABLE IF EXISTS `cajachica`;
@@ -263,8 +247,8 @@ CREATE TABLE `cajachica` (
   KEY `fk_iddp_cajachicaa` (`iddetalle_presentacion`),
   KEY `fk_idmonto_caja` (`idmonto`),
   KEY `fk_idusuario_abierto` (`creadopor`),
-  CONSTRAINT `fk_iddp_cajachicaa` FOREIGN KEY (`iddetalle_presentacion`) REFERENCES `detalles_presentacion` (`iddetalle_presentacion`),
-  CONSTRAINT `fk_idmonto_caja` FOREIGN KEY (`idmonto`) REFERENCES `montocajachica` (`idmonto`),
+  CONSTRAINT `fk_iddp_cajachicaa` FOREIGN KEY (`iddetalle_presentacion`) REFERENCES `detalles_presentacion` (`iddetalle_presentacion`) ON DELETE CASCADE,
+  CONSTRAINT `fk_idmonto_caja` FOREIGN KEY (`idmonto`) REFERENCES `montocajachica` (`idmonto`) ON DELETE CASCADE,
   CONSTRAINT `fk_idusuario_abierto` FOREIGN KEY (`creadopor`) REFERENCES `usuarios` (`idusuario`),
   CONSTRAINT `ck_estado_cajch` CHECK (`estado` in (1,2))
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -273,11 +257,58 @@ CREATE TABLE `cajachica` (
 
 insert  into `cajachica`(`idcajachica`,`iddetalle_presentacion`,`idmonto`,`ccinicial`,`incremento`,`decremento`,`ccfinal`,`estado`,`fecha_cierre`,`fecha_apertura`,`creadopor`) values 
 (1,NULL,1,0.00,0.00,0.00,0.00,1,NULL,'2025-05-06 21:44:10',1),
-(2,121,1,0.00,0.00,0.00,0.00,1,NULL,'2025-05-09 17:55:25',1),
+(2,121,1,0.00,0.00,0.00,-1021.70,2,'2025-05-26 18:54:46','2025-05-09 17:55:25',1),
 (3,138,1,0.00,0.00,0.00,0.00,1,NULL,'2025-05-12 11:21:41',1),
 (4,NULL,1,0.00,0.00,0.00,0.00,1,NULL,'2025-05-12 17:23:52',1),
 (5,NULL,1,0.00,0.00,0.00,0.00,1,NULL,'2025-05-12 17:24:11',2),
 (6,NULL,1,0.00,0.00,0.00,0.00,1,NULL,'2025-05-12 17:53:29',1);
+
+/*Table structure for table `cargos` */
+
+DROP TABLE IF EXISTS `cargos`;
+
+CREATE TABLE `cargos` (
+  `idcargo` int(11) NOT NULL AUTO_INCREMENT,
+  `cargo` varchar(100) NOT NULL,
+  PRIMARY KEY (`idcargo`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `cargos` */
+
+insert  into `cargos`(`idcargo`,`cargo`) values 
+(1,'Diseñador'),
+(2,'sistemas');
+
+/*Table structure for table `cargos_colaboradores` */
+
+DROP TABLE IF EXISTS `cargos_colaboradores`;
+
+CREATE TABLE `cargos_colaboradores` (
+  `idcargocolaborador` int(11) NOT NULL AUTO_INCREMENT,
+  `idpersonacolaborador` int(11) DEFAULT NULL,
+  `fechainicio` date DEFAULT NULL,
+  `fechafin` date DEFAULT NULL,
+  `cargo` varchar(80) DEFAULT NULL,
+  PRIMARY KEY (`idcargocolaborador`),
+  KEY `fk_idpersonacolaborador_cargoss` (`idpersonacolaborador`),
+  CONSTRAINT `fk_idpersonacolaborador_cargoss` FOREIGN KEY (`idpersonacolaborador`) REFERENCES `personas_colaboradores` (`idpersonacolaborador`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `cargos_colaboradores` */
+
+insert  into `cargos_colaboradores`(`idcargocolaborador`,`idpersonacolaborador`,`fechainicio`,`fechafin`,`cargo`) values 
+(1,NULL,'2025-01-01',NULL,NULL),
+(2,NULL,'2025-01-01',NULL,NULL),
+(5,13,'2025-05-31',NULL,NULL),
+(6,13,'0000-00-00',NULL,'sistema'),
+(7,13,'0000-00-00',NULL,'sistema'),
+(8,13,'0000-00-00',NULL,'sistema'),
+(9,13,'0000-00-00',NULL,'diseño'),
+(10,13,'0000-00-00',NULL,'HOLA'),
+(11,13,'2025-05-15',NULL,'marketing'),
+(12,13,'2025-06-02',NULL,'diseñador'),
+(13,15,'2025-06-02',NULL,'marketing'),
+(14,15,'2025-06-05',NULL,'SISGTEMA');
 
 /*Table structure for table `clientes` */
 
@@ -299,7 +330,7 @@ CREATE TABLE `clientes` (
   KEY `fk_iddistrito_cli` (`iddistrito`),
   CONSTRAINT `fk_iddistrito_cli` FOREIGN KEY (`iddistrito`) REFERENCES `distritos` (`iddistrito`),
   CONSTRAINT `chk_tipodoc` CHECK (`tipodoc` in (1,2))
-) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `clientes` */
 
@@ -398,26 +429,32 @@ DROP TABLE IF EXISTS `colaboradores`;
 
 CREATE TABLE `colaboradores` (
   `idcolaborador` int(11) NOT NULL AUTO_INCREMENT,
-  `idpersona` int(11) NOT NULL,
-  `idsucursal` int(11) NOT NULL,
-  `fechaingreso` date NOT NULL,
-  `idarea` int(11) DEFAULT NULL,
-  `activo` tinyint(4) DEFAULT 1,
+  `idpersonacolaborador` int(11) NOT NULL,
+  `camisa` varchar(80) DEFAULT NULL,
+  `pantalon` varchar(80) DEFAULT NULL,
+  `zapatos` varchar(80) DEFAULT NULL,
   PRIMARY KEY (`idcolaborador`),
-  KEY `fk_idpersona_colaborador` (`idpersona`),
-  KEY `fk_idarea_colaborador` (`idarea`),
-  KEY `fk_idsucursal_colaborador` (`idsucursal`),
-  CONSTRAINT `fk_idarea_colaborador` FOREIGN KEY (`idarea`) REFERENCES `areas` (`idarea`),
-  CONSTRAINT `fk_idpersona_colaborador` FOREIGN KEY (`idpersona`) REFERENCES `personas` (`idpersona`),
-  CONSTRAINT `fk_idsucursal_colaborador` FOREIGN KEY (`idsucursal`) REFERENCES `sucursales` (`idsucursal`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  KEY `fk_idper_col` (`idpersonacolaborador`),
+  CONSTRAINT `fk_idper_col` FOREIGN KEY (`idpersonacolaborador`) REFERENCES `personas_colaboradores` (`idpersonacolaborador`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `colaboradores` */
 
-insert  into `colaboradores`(`idcolaborador`,`idpersona`,`idsucursal`,`fechaingreso`,`idarea`,`activo`) values 
-(1,1,1,'2025-01-01',1,1),
-(2,14,1,'2025-02-28',1,1),
-(3,15,1,'2025-04-27',2,1);
+insert  into `colaboradores`(`idcolaborador`,`idpersonacolaborador`,`camisa`,`pantalon`,`zapatos`) values 
+(1,3,'cuello S con talla W','smoll',NULL),
+(2,4,'asdasda','dasdasd',NULL),
+(3,5,'asdasd','sddasd',NULL),
+(4,6,'weweqe','wqeqewqe',NULL),
+(5,7,'adasds','dadasd',NULL),
+(6,8,'asdasd','sada',NULL),
+(7,9,'sdasdasd','dasdasd',NULL),
+(8,10,'dasdd','dadsda',NULL),
+(9,11,'asdasnd','asda',NULL),
+(10,12,'adadsa','sdd',NULL),
+(11,13,'dadsad','addas',NULL),
+(12,15,'talla SM','50','42'),
+(13,17,NULL,NULL,NULL),
+(14,25,'12','3','42');
 
 /*Table structure for table `comprobantes` */
 
@@ -442,17 +479,18 @@ CREATE TABLE `comprobantes` (
   KEY `fk_idcliente_comp` (`idcliente`),
   KEY `fk_idsucursal_comp` (`idsucursal`),
   KEY `fk_iddp_comp` (`iddetallepresentacion`),
-  CONSTRAINT `fk_idcliente_comp` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`),
-  CONSTRAINT `fk_iddp_comp` FOREIGN KEY (`iddetallepresentacion`) REFERENCES `detalles_presentacion` (`iddetalle_presentacion`),
-  CONSTRAINT `fk_idsucursal_comp` FOREIGN KEY (`idsucursal`) REFERENCES `sucursales` (`idsucursal`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  CONSTRAINT `fk_idcliente_comp` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`) ON DELETE CASCADE,
+  CONSTRAINT `fk_iddp_comp` FOREIGN KEY (`iddetallepresentacion`) REFERENCES `detalles_presentacion` (`iddetalle_presentacion`) ON DELETE CASCADE,
+  CONSTRAINT `fk_idsucursal_comp` FOREIGN KEY (`idsucursal`) REFERENCES `sucursales` (`idsucursal`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `comprobantes` */
 
 insert  into `comprobantes`(`idcomprobante`,`iddetallepresentacion`,`idsucursal`,`idcliente`,`idtipodoc`,`tipopago`,`fechaemision`,`horaemision`,`nserie`,`correlativo`,`tipomoneda`,`monto`,`tieneigv`,`noperacion`) values 
 (3,132,1,17,'01',1,'2025-05-09','00:10:41','F001','00000001','PEN',1309.80,1,NULL),
 (4,135,1,1,'02',3,'2025-05-09','08:13:51','2025','00000001','PEN',1110.00,0,'231232412312'),
-(5,9,1,1,'02',1,'2025-05-09','08:19:53','2025','00000002','PEN',81700.00,0,NULL);
+(5,9,1,1,'02',1,'2025-05-09','08:19:53','2025','00000002','PEN',81700.00,0,NULL),
+(6,9,1,1,'02',3,'2025-05-23','12:20:13','2025','00000003','PEN',81700.00,0,'312310390123012');
 
 /*Table structure for table `conceptos` */
 
@@ -470,7 +508,7 @@ insert  into `conceptos`(`idconcepto`,`concepto`) values
 (1,'oficina'),
 (2,'ventas'),
 (3,'costos'),
-(4,'produccion'),
+(4,'videoclips'),
 (5,'proyecto'),
 (6,'fiscal'),
 (7,'otros'),
@@ -490,7 +528,7 @@ CREATE TABLE `contratos` (
   KEY `fk_dp_cs` (`iddetalle_presentacion`),
   CONSTRAINT `fk_dp_cs` FOREIGN KEY (`iddetalle_presentacion`) REFERENCES `detalles_presentacion` (`iddetalle_presentacion`) ON DELETE CASCADE,
   CONSTRAINT `ck_estado` CHECK (`estado` in (1,2,3))
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `contratos` */
 
@@ -503,7 +541,8 @@ insert  into `contratos`(`idcontrato`,`iddetalle_presentacion`,`estado`,`created
 (6,124,2,'2025-05-07 08:17:47','2025-05-07 08:17:54'),
 (7,126,1,'2025-05-07 08:33:56',NULL),
 (8,131,1,'2025-05-08 23:04:19',NULL),
-(9,115,1,'2025-05-20 12:24:03',NULL);
+(9,115,1,'2025-05-20 12:24:03',NULL),
+(10,130,1,'2025-05-25 16:48:33',NULL);
 
 /*Table structure for table `convenios` */
 
@@ -524,7 +563,7 @@ CREATE TABLE `convenios` (
   KEY `fk_dp_cv` (`iddetalle_presentacion`),
   CONSTRAINT `fk_dp_cv` FOREIGN KEY (`iddetalle_presentacion`) REFERENCES `detalles_presentacion` (`iddetalle_presentacion`) ON DELETE CASCADE,
   CONSTRAINT `ck_estado` CHECK (`estado` in (1,2,3))
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `convenios` */
 
@@ -615,7 +654,7 @@ CREATE TABLE `detalles_comprobante` (
   `info` varchar(60) NOT NULL,
   PRIMARY KEY (`iddetallecomprobante`),
   KEY `fk_iddetallefactura` (`idcomprobante`),
-  CONSTRAINT `fk_iddetallefactura` FOREIGN KEY (`idcomprobante`) REFERENCES `comprobantes` (`idcomprobante`)
+  CONSTRAINT `fk_iddetallefactura` FOREIGN KEY (`idcomprobante`) REFERENCES `comprobantes` (`idcomprobante`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `detalles_comprobante` */
@@ -630,7 +669,7 @@ DROP TABLE IF EXISTS `detalles_presentacion`;
 CREATE TABLE `detalles_presentacion` (
   `iddetalle_presentacion` int(11) NOT NULL AUTO_INCREMENT,
   `idusuario` int(11) NOT NULL,
-  `idcliente` int(11) NOT NULL,
+  `idcliente` int(11) DEFAULT NULL,
   `iddistrito` int(11) DEFAULT NULL,
   `ncotizacion` char(9) DEFAULT NULL,
   `fecha_presentacion` date NOT NULL,
@@ -651,6 +690,8 @@ CREATE TABLE `detalles_presentacion` (
   `created_at` date DEFAULT current_timestamp(),
   `esExtranjero` tinyint(4) DEFAULT NULL,
   `idnacionalidad` int(11) DEFAULT NULL,
+  `estadoCordinacionTecnica` tinyint(1) DEFAULT 0,
+  `estadoCordinacionPublicidad` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`iddetalle_presentacion`),
   UNIQUE KEY `uk_idp` (`iddetalle_presentacion`),
   UNIQUE KEY `uk_ncotizacion` (`ncotizacion`),
@@ -658,147 +699,151 @@ CREATE TABLE `detalles_presentacion` (
   KEY `fk_idcliente_dp` (`idcliente`),
   KEY `fk_iddistrito_dp` (`iddistrito`),
   KEY `fk_idnacionalidad_dp` (`idnacionalidad`),
-  CONSTRAINT `fk_idcliente_dp` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`),
-  CONSTRAINT `fk_iddistrito_dp` FOREIGN KEY (`iddistrito`) REFERENCES `distritos` (`iddistrito`),
+  CONSTRAINT `fk_idcliente_dp` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`) ON DELETE CASCADE,
+  CONSTRAINT `fk_iddistrito_dp` FOREIGN KEY (`iddistrito`) REFERENCES `distritos` (`iddistrito`) ON DELETE CASCADE,
   CONSTRAINT `fk_idnacionalidad_dp` FOREIGN KEY (`idnacionalidad`) REFERENCES `nacionalidades` (`idnacionalidad`),
-  CONSTRAINT `fk_idusuario_dp` FOREIGN KEY (`idusuario`) REFERENCES `usuarios` (`idusuario`),
+  CONSTRAINT `fk_idusuario_dp` FOREIGN KEY (`idusuario`) REFERENCES `usuarios` (`idusuario`) ON DELETE CASCADE,
   CONSTRAINT `chk_detalle_p` CHECK (`modalidad` in (1,2)),
   CONSTRAINT `ck_estado_dp` CHECK (`estado` in (1,2,3)),
   CONSTRAINT `ck_tevento_dp` CHECK (`tipo_evento` in (1,2))
-) ENGINE=InnoDB AUTO_INCREMENT=139 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=145 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `detalles_presentacion` */
 
-insert  into `detalles_presentacion`(`iddetalle_presentacion`,`idusuario`,`idcliente`,`iddistrito`,`ncotizacion`,`fecha_presentacion`,`horainicio`,`horafinal`,`establecimiento`,`referencia`,`acuerdo`,`tipo_evento`,`modalidad`,`modotransporte`,`validez`,`igv`,`reserva`,`pagado50`,`tienecaja`,`estado`,`created_at`,`esExtranjero`,`idnacionalidad`) values 
-(1,2,1,1269,NULL,'2025-04-19','00:00:00','00:00:00','Local praxigas ex finca Nario',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(2,3,1,1269,NULL,'2025-04-19','00:00:00','00:00:00','Local praxigas ex finca Nario',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(3,3,2,221,NULL,'2025-04-20','18:00:00','21:30:00','Aniversario de azucena /pisina',NULL,NULL,1,1,1,NULL,0,0,0,0,1,'2025-04-16',0,31),
-(4,2,3,1183,NULL,'2025-04-30','21:00:00','02:00:00','Casa grande Club Gema de Casa grande',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(5,2,4,613,NULL,'2025-05-04','00:00:00','00:00:00',NULL,NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(6,2,4,1,NULL,'2025-05-04','00:00:00','00:00:00',NULL,NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(7,2,5,1577,NULL,'2025-05-31','22:00:00','00:00:00',NULL,NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(8,3,5,1577,NULL,'2025-05-31','00:30:00','03:00:00',NULL,NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(9,2,6,979,'0001-2025','2025-04-26','00:00:00','04:00:00','Sindicato de obreros',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31),
-(10,2,7,1183,'0002-2025','2025-04-27','01:30:00','04:00:00','Tabaco marino',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31),
-(11,2,8,1104,'0003-2025','2025-05-01','00:00:00','00:00:00','Recepciones Marcelita muruhuay',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31),
-(12,3,9,495,'0004-2025','2025-05-01','23:00:00','03:00:00','Centro poblado Santa filomena',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31),
-(13,2,9,1342,'0005-2025','2025-05-03','16:00:00','20:00:00',NULL,NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31),
-(14,2,10,672,'0006-2025','2025-05-09','20:00:00','22:00:00',NULL,NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31),
-(15,2,11,1154,'0007-2025','2025-05-10','23:00:00','01:00:00','retamaz','fiesta patronal honor a la santisima virgen de la puerta y dia de la madre',NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31),
-(16,2,12,323,'0043-2025','2025-05-11','22:00:00','02:00:00','cerro colorado',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31),
-(17,2,13,323,'0008-2025','2025-05-17','00:00:00','00:00:00','rio grande iquipi',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31),
-(18,2,13,326,'0009-2025','2025-05-18','00:00:00','00:00:00','estadio municipal',NULL,NULL,2,2,1,7,0,0,0,0,1,'2025-04-16',0,31),
-(19,4,14,1034,'0010-2025','2025-10-25','00:00:00','00:00:00','huancayo, aun no hay locacion',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31),
-(20,2,15,964,NULL,'2025-04-13','22:00:00','02:00:00','discoteca 10 lukas',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(21,2,16,1338,NULL,'2025-04-12','23:00:00','03:00:00','discoteca tropical',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(22,2,17,1225,NULL,'2025-04-06','18:00:00','22:00:00','aventura  park 7 aniversario',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(23,2,18,1337,NULL,'2025-04-04','22:00:00','00:30:00','yacumama',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(24,2,19,1293,NULL,'2025-03-30','18:00:00','22:30:00','piscina las palmeras',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(25,2,20,1153,NULL,'2025-03-23','20:00:00','00:00:00','recreo municipal',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(26,2,21,1270,NULL,'2025-03-22','21:00:00','01:00:00','coco bongo',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(27,2,22,1345,NULL,'2025-03-15','23:00:00','03:00:00','el aguaje',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(28,2,23,1352,NULL,'2025-03-14','22:00:00','01:00:00','discoteca anubis boulevard la hacienda',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(29,2,24,1225,NULL,'2025-03-09','22:00:00','02:00:00',NULL,'El día 8 de Marzo día de la Mujer desde las 8 pm hasta las 4 am',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(30,2,25,667,NULL,'2025-03-08','23:00:00','03:00:00','bailodromo','BAILODROMO de la Av. Tomas Valle #Mz E Lt 2 Urb El condor Callao..Callao',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(31,2,3,546,NULL,'2025-03-02','00:00:00','00:00:00','punta sal',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(32,2,17,1118,NULL,'2025-03-01','00:00:00','00:00:00','discoteca',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(33,2,2,1568,NULL,'2025-02-16','22:00:00','02:00:00','coliseo cerrado huadalupe ruiz',NULL,NULL,1,1,1,NULL,0,0,0,0,1,'2025-04-16',0,31),
-(34,3,2,1568,NULL,'2025-02-16','18:00:00','21:00:00','coliseo cerrado huadalupe',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(35,2,2,1546,NULL,'2025-02-15','18:00:00','21:00:00','Calle Bolognesi','Calle Bolognesi',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(36,3,2,1546,NULL,'2025-02-15','21:00:00','00:00:00','calle bolognesi','calle bolognesi',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(37,2,26,1547,NULL,'2025-02-15','00:00:00','03:00:00','yunce rosado \"el progreso\"','san martin occidente',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(38,4,27,1293,NULL,'2025-02-09','17:00:00','19:30:00','piscina las palmeras','el valle de anexo 22',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(39,2,28,1338,NULL,'2025-02-09','16:00:00','19:00:00','piscina el paraiso',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(40,2,27,1293,NULL,'2025-02-09','20:00:00','23:00:00','piscina las palmeras','el valle de anexo 22',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(41,3,29,672,NULL,'2025-02-09','19:00:00','21:00:00','parasol',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(42,2,30,672,NULL,'2025-02-08','01:00:00','04:00:00','arius disco',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(43,2,31,1359,NULL,'2025-02-08','21:00:00','00:00:00','frontis municipalidad','feliz 63 aniversario, distrito lugar frontis municipalidad',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(44,3,31,1359,NULL,'2025-02-08','21:00:00','00:00:00','frontis municipalidad','feliz 63 aniversario distrito lugar frontis municipalidad',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(45,2,32,601,NULL,'2025-02-04','21:00:00','01:00:00','coliseo municipal',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(46,2,3,1115,NULL,'2025-02-02','15:00:00','19:00:00','playa mal abrigo',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(47,2,33,1563,NULL,'2025-02-01','22:00:00','02:00:00','calle cristobal','calle cristobal colon sin numero a la espalda del mercadillo',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(48,2,34,1183,NULL,'2025-01-28','00:00:00','00:00:00','coliseo municipal de simbal',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(49,2,35,672,NULL,'2025-01-26','15:00:00','19:00:00','centro recreacional parasol piscina','piscina',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(50,3,36,1804,NULL,'2025-01-20','21:00:00','01:00:00','club libertad',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(51,2,2,1535,NULL,'2025-01-19','20:00:00','00:00:00','club deportivo el caysa',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(52,2,2,1537,NULL,'2025-01-19','15:00:00','19:00:00','calle 2 de mayo',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(53,4,37,1345,NULL,'2025-01-19','20:00:00','02:00:00','aguaje',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(54,2,36,1578,NULL,'2025-01-18','21:00:00','01:00:00','mz d1 el san sebastian',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(55,2,38,1128,NULL,'2025-01-17','23:00:00','03:00:00','local casa vieja','32 aniversario identica de chepen',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(56,2,39,1570,NULL,'2025-01-13','22:30:00','02:30:00','fiesta patronal','gran fiesta patronal san francisco',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(57,2,17,1203,NULL,'2025-01-12','15:00:00','19:00:00','playa lagunas mocupe',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(58,2,17,1206,NULL,'2025-01-12','21:00:00','00:00:00',NULL,'feliz aniversario santa rosa',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(59,2,40,1263,NULL,'2025-01-10','23:00:00','03:00:00','estadio san luis','feliz 154 aniversario distrito san luis cañete',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(60,2,41,1355,NULL,'2025-01-05','21:00:00','01:00:00','el mueble internacional',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(61,2,3,1115,NULL,'2025-01-02','20:00:00','01:00:00','estadio municipal de chicama','Distrito de chicama celebrar 168 años de creación política Local Estadío Municipal de Chicama',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(62,2,42,971,NULL,'2025-01-01','22:00:00','01:00:00','piscinazo bailable',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(63,2,43,964,NULL,'2025-01-01','18:30:00','21:30:00','piscina club el tumi',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31),
-(65,2,44,1327,'0011-2025','2025-03-22','23:00:00','01:00:00','garden palace',NULL,NULL,2,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(66,5,45,1188,'0012-2025','2025-03-22','22:00:00','00:00:00',NULL,'cumpleaños sorpresa',NULL,2,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(67,2,46,672,'0013-2025','2025-03-16','16:00:00','18:00:00','aquapark','aquapark/ventanilla',NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(68,4,47,1104,'0014-2025','2025-03-11','00:00:00','00:00:00',NULL,NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(69,4,48,1707,'0015-2025','2025-03-01','21:00:00','03:00:00','San martin de alao - C.P: Sinami','San martin de alao - C.P: Sinami',NULL,2,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(70,3,49,1345,'0016-2025','2025-02-23','00:00:00','00:00:00','piscinazo el anden',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(71,2,50,722,'0017-2025','2025-02-23','20:00:00','23:00:00','oropeza cusco',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(72,2,51,1793,'0018-2025','2025-02-22','22:00:00','01:00:00','el local chololo - pocollay',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(73,4,52,138,'0019-2025','2025-02-21','00:00:00','00:00:00',NULL,NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(74,4,53,1352,'0020-2025','2025-02-16','20:00:00','22:00:00','villa de armas - zarate',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(75,4,54,1293,'0021-2025','2025-02-16','00:00:00','00:00:00','club el padrino',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(76,4,55,1015,'0022-2025','2025-02-15','00:00:00','00:00:00',NULL,NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(77,4,56,1034,'0023-2025','2025-02-15','00:00:00','00:00:00','local mil maravillas',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(78,2,57,1167,'0024-2025','2025-02-14','22:00:00','01:00:00','pedregal disco lounge',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(79,4,58,1322,'0025-2025','2025-02-14','04:00:00','06:00:00','local angaraes',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(80,4,58,1355,'0026-2025','2025-02-14','23:00:00','01:00:00','unicachi',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(81,4,58,1352,'0027-2025','2025-02-14','20:00:00','22:00:00','crucero del amor','estacion san carlos',NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(82,4,59,910,'0028-2025','2025-02-11','22:00:00','00:00:00','llata',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(83,2,60,546,'0029-2025','2025-02-10','22:00:00','01:00:00','cajabamba',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(84,4,61,1331,'0030-2025','2025-02-08','01:00:00','03:00:00','larcay',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(85,2,62,214,'0031-2025','2025-02-02','00:30:00','03:30:00','discoteca explanada beta disco',NULL,NULL,2,2,1,7,0,1,0,0,1,'2025-04-21',0,31),
-(86,4,58,1352,'0032-2025','2025-01-25','00:00:00','00:00:00','crucero del amor','estacion san carlos',NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(87,2,37,1338,'0033-2025','2025-01-25','03:00:00','04:00:00','local mia club',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(88,4,63,1062,'0034-2025','2025-01-22','01:00:00','03:00:00','local cour de basket',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(89,4,64,1331,'0035-2025','2025-01-18','23:30:00','00:00:00','local ilarcay',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(90,4,65,824,'0036-2025','2025-01-14','23:00:00','02:00:00','local plaza principal de paucara','plaza principal de paucara',NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(91,4,66,1034,'0037-2025','2025-01-12','00:30:00','03:00:00','aniversario artista sunqucha','aniversario artista sunqucha',NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(92,4,1,1490,'0038-2025','2025-01-11','21:00:00','23:00:00','69 aniversario santa ana de tusi','69 aniversario santa ana de tusi',NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(93,2,67,1345,'0039-2025','2025-01-05','03:40:00','05:40:00','piscina chepita royer','changrila',NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(94,4,68,824,'0040-2025','2025-01-02','21:30:00','00:30:00','villa san francisco',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31),
-(95,3,9,1104,'0041-2025','2025-05-01','23:00:00','03:00:00','Centro poblado Santa filomena',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-25',0,31),
-(96,2,69,1557,NULL,'2025-05-04','00:00:00','00:00:00','salsa de la cumbia',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-25',0,31),
-(97,8,70,1214,NULL,'2025-04-30','22:00:00','03:00:00','Local de la Institución Educativa Antoni Raimondi de Saltur',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31),
-(98,8,71,1183,'0042-2025','2025-05-01','18:00:00','21:00:00','Explanada de Huanchaco',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-05',0,31),
-(99,8,72,214,NULL,'2025-05-01','00:00:00','04:00:00','beta disco lounge',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31),
-(100,8,73,1,NULL,'2025-05-02','22:00:00','02:00:00','discoteca la hacienda',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31),
-(101,8,74,625,NULL,'2025-05-03','22:00:00','02:00:00','Paramo Centro Recreacional',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31),
-(102,8,75,1701,NULL,'2025-05-04','15:00:00','18:00:00','La Choza CutervinaMedio Dia',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31),
-(103,8,76,78,NULL,'2025-05-04','20:00:00','00:00:00','Discoteca La Hacienda Noche',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31),
-(104,8,77,1183,NULL,'2025-05-09','19:00:00','03:00:00','el barco primer turno',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31),
-(112,8,85,1557,NULL,'2025-05-12','22:00:00','02:00:00','la casa de la cumbia',NULL,'hola',1,1,1,0,0,0,0,0,1,'2025-05-05',0,31),
-(113,2,86,1335,NULL,'2025-05-17','19:00:00','03:00:00','Estadio Municipal Mi Perú',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31),
-(115,8,17,NULL,'0044-2025','2025-05-16','19:00:00','23:00:00','coliseo',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-06',0,31),
-(116,5,17,955,'0045-2025','2025-05-08','13:00:00','18:00:00','plaza de armas',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-06',0,31),
-(117,8,17,959,'0046-2025','2025-05-10','17:00:00','23:00:00','plaza nueva',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-06',0,31),
-(118,8,17,NULL,'0047-2025','2025-05-21','14:00:00','16:00:00','casa',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-06',0,31),
-(119,2,17,NULL,'0048-2025','2025-05-21','19:00:00','23:00:00','luri',NULL,NULL,1,2,1,7,0,1,1,0,1,'2025-05-06',0,31),
-(120,8,17,NULL,NULL,'2025-05-29','18:00:00','23:00:00','larcomar',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-06',0,31),
-(121,8,17,955,'0049-2025','2025-05-07','13:00:00','21:00:00','plaza falsa',NULL,NULL,1,2,1,8,0,1,1,0,1,'2025-05-06',0,31),
-(122,8,17,NULL,'0050-2025','2025-05-08','13:00:00','23:00:00','cuarto',NULL,NULL,1,2,1,7,0,1,1,0,1,'2025-05-07',0,31),
-(123,8,17,NULL,NULL,'2025-05-21','07:00:00','13:00:00','hola',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-07',0,31),
-(124,8,17,955,'0051-2025','2025-05-08','06:00:00','08:00:00','equisde',NULL,NULL,1,2,1,7,1,0,1,0,1,'2025-05-07',0,31),
-(125,8,17,NULL,NULL,'2025-05-08','09:00:00','11:00:00','palacio',NULL,NULL,1,1,1,0,1,0,0,0,1,'2025-05-07',0,31),
-(126,8,17,NULL,'0052-2025','2025-05-09','15:00:00','16:00:00','san antonio',NULL,NULL,1,2,1,7,0,1,0,0,1,'2025-05-07',0,31),
-(127,8,87,NULL,'0053-2025','2025-05-16','19:00:00','03:00:00','montevideo',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-07',0,31),
-(128,8,17,NULL,'0054-2025','2025-05-16','07:00:00','12:00:00','montevideo',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-07',1,35),
-(129,8,17,NULL,'0055-2025','2025-05-02','15:03:00','18:00:00','fose',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-08',1,35),
-(130,8,17,NULL,'0056-2025','2025-05-02','19:00:00','20:00:00','fugas',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-08',1,35),
-(131,8,17,NULL,'0057-2025','2025-05-09','22:00:00','23:00:00','calle',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-08',1,35),
-(132,8,17,NULL,'0058-2025','2025-05-09','01:00:00','03:00:00','larco',NULL,NULL,1,2,1,7,1,0,0,0,1,'2025-05-08',1,35),
-(133,8,17,NULL,NULL,'2025-05-10','01:00:00','03:00:00','chacha',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-09',1,35),
-(134,8,17,NULL,NULL,'2025-05-10','04:00:00','06:00:00','atm',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-09',1,35),
-(135,8,17,NULL,'0059-2025','2025-05-10','07:00:00','08:00:00','xd',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-09',1,35),
-(136,8,17,NULL,'0060-2025','2025-05-11','01:00:00','03:00:00','vega',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-10',1,35),
-(137,2,17,NULL,'0061-2025','2025-05-11','02:00:00','03:00:00','prod',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-10',1,35),
-(138,8,17,NULL,'0062-2025','2025-05-11','04:00:00','08:00:00','breña',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-10',1,35);
+insert  into `detalles_presentacion`(`iddetalle_presentacion`,`idusuario`,`idcliente`,`iddistrito`,`ncotizacion`,`fecha_presentacion`,`horainicio`,`horafinal`,`establecimiento`,`referencia`,`acuerdo`,`tipo_evento`,`modalidad`,`modotransporte`,`validez`,`igv`,`reserva`,`pagado50`,`tienecaja`,`estado`,`created_at`,`esExtranjero`,`idnacionalidad`,`estadoCordinacionTecnica`,`estadoCordinacionPublicidad`) values 
+(1,2,1,1269,NULL,'2025-04-19','00:00:00','00:00:00','Local praxigas ex finca Nario',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(2,3,1,1269,NULL,'2025-04-19','00:00:00','00:00:00','Local praxigas ex finca Nario',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(3,3,2,221,NULL,'2025-04-20','18:00:00','21:30:00','Aniversario de azucena /pisina',NULL,NULL,1,1,1,NULL,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(4,2,3,1183,NULL,'2025-04-30','21:00:00','02:00:00','Casa grande Club Gema de Casa grande',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(5,2,4,613,NULL,'2025-05-04','00:00:00','00:00:00',NULL,NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(6,2,4,1,NULL,'2025-05-04','00:00:00','00:00:00',NULL,NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(7,2,5,1577,NULL,'2025-05-31','22:00:00','00:00:00',NULL,NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(8,3,5,1577,NULL,'2025-05-31','00:30:00','03:00:00',NULL,NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(9,2,6,979,'0001-2025','2025-04-26','00:00:00','04:00:00','Sindicato de obreros',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(10,2,7,1183,'0002-2025','2025-04-27','01:30:00','04:00:00','Tabaco marino',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(11,2,8,1104,'0003-2025','2025-05-01','00:00:00','00:00:00','Recepciones Marcelita muruhuay',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(12,3,9,495,'0004-2025','2025-05-01','23:00:00','03:00:00','Centro poblado Santa filomena',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(13,2,9,1342,'0005-2025','2025-05-03','16:00:00','20:00:00',NULL,NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(14,2,10,672,'0006-2025','2025-05-09','20:00:00','22:00:00',NULL,NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(15,2,11,1154,'0007-2025','2025-05-10','23:00:00','01:00:00','retamaz','fiesta patronal honor a la santisima virgen de la puerta y dia de la madre',NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(16,2,12,323,'0043-2025','2025-05-11','22:00:00','02:00:00','cerro colorado',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(17,2,13,323,'0008-2025','2025-05-17','00:00:00','00:00:00','rio grande iquipi',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(18,2,13,326,'0009-2025','2025-05-18','00:00:00','00:00:00','estadio municipal',NULL,NULL,2,2,1,7,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(19,4,14,1034,'0010-2025','2025-10-25','00:00:00','00:00:00','huancayo, aun no hay locacion',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(20,2,15,964,NULL,'2025-04-13','22:00:00','02:00:00','discoteca 10 lukas',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(21,2,16,1338,NULL,'2025-04-12','23:00:00','03:00:00','discoteca tropical',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(22,2,17,1225,NULL,'2025-04-06','18:00:00','22:00:00','aventura  park 7 aniversario',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(23,2,18,1337,NULL,'2025-04-04','22:00:00','00:30:00','yacumama',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(24,2,19,1293,NULL,'2025-03-30','18:00:00','22:30:00','piscina las palmeras',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(25,2,20,1153,NULL,'2025-03-23','20:00:00','00:00:00','recreo municipal',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(26,2,21,1270,NULL,'2025-03-22','21:00:00','01:00:00','coco bongo',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(27,2,22,1345,NULL,'2025-03-15','23:00:00','03:00:00','el aguaje',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(28,2,23,1352,NULL,'2025-03-14','22:00:00','01:00:00','discoteca anubis boulevard la hacienda',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(29,2,24,1225,NULL,'2025-03-09','22:00:00','02:00:00',NULL,'El día 8 de Marzo día de la Mujer desde las 8 pm hasta las 4 am',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(30,2,25,667,NULL,'2025-03-08','23:00:00','03:00:00','bailodromo','BAILODROMO de la Av. Tomas Valle #Mz E Lt 2 Urb El condor Callao..Callao',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(31,2,3,546,NULL,'2025-03-02','00:00:00','00:00:00','punta sal',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(32,2,17,1118,NULL,'2025-03-01','00:00:00','00:00:00','discoteca',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(33,2,2,1568,NULL,'2025-02-16','22:00:00','02:00:00','coliseo cerrado huadalupe ruiz',NULL,NULL,1,1,1,NULL,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(34,3,2,1568,NULL,'2025-02-16','18:00:00','21:00:00','coliseo cerrado huadalupe',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(35,2,2,1546,NULL,'2025-02-15','18:00:00','21:00:00','Calle Bolognesi','Calle Bolognesi',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(36,3,2,1546,NULL,'2025-02-15','21:00:00','00:00:00','calle bolognesi','calle bolognesi',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(37,2,26,1547,NULL,'2025-02-15','00:00:00','03:00:00','yunce rosado \"el progreso\"','san martin occidente',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(38,4,27,1293,NULL,'2025-02-09','17:00:00','19:30:00','piscina las palmeras','el valle de anexo 22',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(39,2,28,1338,NULL,'2025-02-09','16:00:00','19:00:00','piscina el paraiso',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(40,2,27,1293,NULL,'2025-02-09','20:00:00','23:00:00','piscina las palmeras','el valle de anexo 22',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(41,3,29,672,NULL,'2025-02-09','19:00:00','21:00:00','parasol',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(42,2,30,672,NULL,'2025-02-08','01:00:00','04:00:00','arius disco',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(43,2,31,1359,NULL,'2025-02-08','21:00:00','00:00:00','frontis municipalidad','feliz 63 aniversario, distrito lugar frontis municipalidad',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(44,3,31,1359,NULL,'2025-02-08','21:00:00','00:00:00','frontis municipalidad','feliz 63 aniversario distrito lugar frontis municipalidad',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(45,2,32,601,NULL,'2025-02-04','21:00:00','01:00:00','coliseo municipal',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(46,2,3,1115,NULL,'2025-02-02','15:00:00','19:00:00','playa mal abrigo',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(47,2,33,1563,NULL,'2025-02-01','22:00:00','02:00:00','calle cristobal','calle cristobal colon sin numero a la espalda del mercadillo',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(48,2,34,1183,NULL,'2025-01-28','00:00:00','00:00:00','coliseo municipal de simbal',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(49,2,35,672,NULL,'2025-01-26','15:00:00','19:00:00','centro recreacional parasol piscina','piscina',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(50,3,36,1804,NULL,'2025-01-20','21:00:00','01:00:00','club libertad',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(51,2,2,1535,NULL,'2025-01-19','20:00:00','00:00:00','club deportivo el caysa',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(52,2,2,1537,NULL,'2025-01-19','15:00:00','19:00:00','calle 2 de mayo',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(53,4,37,1345,NULL,'2025-01-19','20:00:00','02:00:00','aguaje',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(54,2,36,1578,NULL,'2025-01-18','21:00:00','01:00:00','mz d1 el san sebastian',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(55,2,38,1128,NULL,'2025-01-17','23:00:00','03:00:00','local casa vieja','32 aniversario identica de chepen',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(56,2,39,1570,NULL,'2025-01-13','22:30:00','02:30:00','fiesta patronal','gran fiesta patronal san francisco',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(57,2,17,1203,NULL,'2025-01-12','15:00:00','19:00:00','playa lagunas mocupe',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(58,2,17,1206,NULL,'2025-01-12','21:00:00','00:00:00',NULL,'feliz aniversario santa rosa',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(59,2,40,1263,NULL,'2025-01-10','23:00:00','03:00:00','estadio san luis','feliz 154 aniversario distrito san luis cañete',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(60,2,41,1355,NULL,'2025-01-05','21:00:00','01:00:00','el mueble internacional',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(61,2,3,1115,NULL,'2025-01-02','20:00:00','01:00:00','estadio municipal de chicama','Distrito de chicama celebrar 168 años de creación política Local Estadío Municipal de Chicama',NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(62,2,42,971,NULL,'2025-01-01','22:00:00','01:00:00','piscinazo bailable',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(63,2,43,964,NULL,'2025-01-01','18:30:00','21:30:00','piscina club el tumi',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-16',0,31,0,0),
+(65,2,44,1327,'0011-2025','2025-03-22','23:00:00','01:00:00','garden palace',NULL,NULL,2,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(66,5,45,1188,'0012-2025','2025-03-22','22:00:00','00:00:00',NULL,'cumpleaños sorpresa',NULL,2,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(67,2,46,672,'0013-2025','2025-03-16','16:00:00','18:00:00','aquapark','aquapark/ventanilla',NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(68,4,47,1104,'0014-2025','2025-03-11','00:00:00','00:00:00',NULL,NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(69,4,48,1707,'0015-2025','2025-03-01','21:00:00','03:00:00','San martin de alao - C.P: Sinami','San martin de alao - C.P: Sinami',NULL,2,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(70,3,49,1345,'0016-2025','2025-02-23','00:00:00','00:00:00','piscinazo el anden',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(71,2,50,722,'0017-2025','2025-02-23','20:00:00','23:00:00','oropeza cusco',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(72,2,51,1793,'0018-2025','2025-02-22','22:00:00','01:00:00','el local chololo - pocollay',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(73,4,52,138,'0019-2025','2025-02-21','00:00:00','00:00:00',NULL,NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(74,4,53,1352,'0020-2025','2025-02-16','20:00:00','22:00:00','villa de armas - zarate',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(75,4,54,1293,'0021-2025','2025-02-16','00:00:00','00:00:00','club el padrino',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(76,4,55,1015,'0022-2025','2025-02-15','00:00:00','00:00:00',NULL,NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(77,4,56,1034,'0023-2025','2025-02-15','00:00:00','00:00:00','local mil maravillas',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(78,2,57,1167,'0024-2025','2025-02-14','22:00:00','01:00:00','pedregal disco lounge',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(79,4,58,1322,'0025-2025','2025-02-14','04:00:00','06:00:00','local angaraes',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(80,4,58,1355,'0026-2025','2025-02-14','23:00:00','01:00:00','unicachi',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(81,4,58,1352,'0027-2025','2025-02-14','20:00:00','22:00:00','crucero del amor','estacion san carlos',NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(82,4,59,910,'0028-2025','2025-02-11','22:00:00','00:00:00','llata',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(83,2,60,546,'0029-2025','2025-02-10','22:00:00','01:00:00','cajabamba',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(84,4,61,1331,'0030-2025','2025-02-08','01:00:00','03:00:00','larcay',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(85,2,62,214,'0031-2025','2025-02-02','00:30:00','03:30:00','discoteca explanada beta disco',NULL,NULL,2,2,1,7,0,1,0,0,1,'2025-04-21',0,31,0,0),
+(86,4,58,1352,'0032-2025','2025-01-25','00:00:00','00:00:00','crucero del amor','estacion san carlos',NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(87,2,37,1338,'0033-2025','2025-01-25','03:00:00','04:00:00','local mia club',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(88,4,63,1062,'0034-2025','2025-01-22','01:00:00','03:00:00','local cour de basket',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(89,4,64,1331,'0035-2025','2025-01-18','23:30:00','00:00:00','local ilarcay',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(90,4,65,824,'0036-2025','2025-01-14','23:00:00','02:00:00','local plaza principal de paucara','plaza principal de paucara',NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(91,4,66,1034,'0037-2025','2025-01-12','00:30:00','03:00:00','aniversario artista sunqucha','aniversario artista sunqucha',NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(92,4,1,1490,'0038-2025','2025-01-11','21:00:00','23:00:00','69 aniversario santa ana de tusi','69 aniversario santa ana de tusi',NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(93,2,67,1345,'0039-2025','2025-01-05','03:40:00','05:40:00','piscina chepita royer','changrila',NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(94,4,68,824,'0040-2025','2025-01-02','21:30:00','00:30:00','villa san francisco',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-21',0,31,0,0),
+(95,3,9,1104,'0041-2025','2025-05-01','23:00:00','03:00:00','Centro poblado Santa filomena',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-04-25',0,31,0,0),
+(96,2,69,1557,NULL,'2025-05-04','00:00:00','00:00:00','salsa de la cumbia',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-04-25',0,31,0,0),
+(97,8,70,1214,NULL,'2025-04-30','22:00:00','03:00:00','Local de la Institución Educativa Antoni Raimondi de Saltur',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31,0,0),
+(98,8,71,1183,'0042-2025','2025-05-01','18:00:00','21:00:00','Explanada de Huanchaco',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-05',0,31,0,0),
+(99,8,72,214,NULL,'2025-05-01','00:00:00','04:00:00','beta disco lounge',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31,0,0),
+(100,8,73,1,NULL,'2025-05-02','22:00:00','02:00:00','discoteca la hacienda',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31,0,0),
+(101,8,74,625,NULL,'2025-05-03','22:00:00','02:00:00','Paramo Centro Recreacional',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31,0,0),
+(102,8,75,1701,NULL,'2025-05-04','15:00:00','18:00:00','La Choza CutervinaMedio Dia',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31,0,0),
+(103,8,76,78,NULL,'2025-05-04','20:00:00','00:00:00','Discoteca La Hacienda Noche',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31,0,0),
+(104,8,77,1183,NULL,'2025-05-09','19:00:00','03:00:00','el barco primer turno',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31,0,0),
+(112,8,85,1557,NULL,'2025-05-12','22:00:00','02:00:00','la casa de la cumbia',NULL,'hola',1,1,1,0,0,0,0,0,1,'2025-05-05',0,31,0,0),
+(113,2,86,1335,NULL,'2025-05-17','19:00:00','03:00:00','Estadio Municipal Mi Perú',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-05',0,31,0,0),
+(115,8,17,NULL,'0044-2025','2025-05-16','19:00:00','23:00:00','coliseo',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-06',0,31,0,0),
+(116,5,17,955,'0045-2025','2025-05-08','13:00:00','18:00:00','plaza de armas',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-06',0,31,0,0),
+(117,8,17,959,'0046-2025','2025-05-10','17:00:00','23:00:00','plaza nueva',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-06',0,31,0,0),
+(118,8,17,NULL,'0047-2025','2025-05-21','14:00:00','16:00:00','casa',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-06',0,31,0,0),
+(119,2,17,NULL,'0048-2025','2025-05-21','19:00:00','23:00:00','luri',NULL,NULL,1,2,1,7,0,1,1,0,1,'2025-05-06',0,31,0,0),
+(120,8,17,NULL,NULL,'2025-05-29','18:00:00','23:00:00','larcomar',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-06',0,31,0,0),
+(121,8,17,955,'0049-2025','2025-05-07','13:00:00','21:00:00','plaza falsa',NULL,NULL,1,2,1,8,0,1,1,0,1,'2025-05-06',0,31,0,0),
+(122,8,17,NULL,'0050-2025','2025-05-08','13:00:00','23:00:00','cuarto',NULL,NULL,1,2,1,7,0,1,1,0,1,'2025-05-07',0,31,0,0),
+(123,8,17,NULL,NULL,'2025-05-21','07:00:00','13:00:00','hola',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-07',0,31,0,0),
+(124,8,17,955,'0051-2025','2025-05-08','06:00:00','08:00:00','equisde',NULL,NULL,1,2,1,7,1,0,1,0,1,'2025-05-07',0,31,0,0),
+(125,8,17,NULL,NULL,'2025-05-08','09:00:00','11:00:00','palacio',NULL,NULL,1,1,1,0,1,0,0,0,1,'2025-05-07',0,31,0,0),
+(126,8,17,NULL,'0052-2025','2025-05-09','15:00:00','16:00:00','san antonio',NULL,NULL,1,2,1,7,0,1,0,0,1,'2025-05-07',0,31,0,0),
+(127,8,87,NULL,'0053-2025','2025-05-16','19:00:00','03:00:00','montevideo',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-07',0,31,0,0),
+(128,8,17,NULL,'0054-2025','2025-05-16','07:00:00','12:00:00','montevideo',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-07',1,35,0,0),
+(129,8,17,NULL,'0055-2025','2025-05-02','15:03:00','18:00:00','fose',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-08',1,35,0,0),
+(130,8,17,NULL,'0056-2025','2025-05-02','19:00:00','20:00:00','fugas',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-08',1,35,0,0),
+(131,8,17,NULL,'0057-2025','2025-05-09','22:00:00','23:00:00','calle',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-08',1,35,0,0),
+(132,8,17,NULL,'0058-2025','2025-05-09','01:00:00','03:00:00','larco',NULL,NULL,1,2,1,7,1,0,0,0,1,'2025-05-08',1,35,0,0),
+(133,8,17,NULL,NULL,'2025-05-10','01:00:00','03:00:00','chacha',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-09',1,35,0,0),
+(134,8,17,NULL,NULL,'2025-05-10','04:00:00','06:00:00','atm',NULL,NULL,1,1,1,0,0,0,0,0,1,'2025-05-09',1,35,0,0),
+(135,8,17,NULL,'0059-2025','2025-05-10','07:00:00','08:00:00','xd',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-09',1,35,0,0),
+(136,8,17,NULL,'0060-2025','2025-05-11','01:00:00','03:00:00','vega',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-10',1,35,0,0),
+(137,2,17,NULL,'0061-2025','2025-05-11','02:00:00','03:00:00','prod',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-10',1,35,1,0),
+(138,8,17,NULL,'0062-2025','2025-05-11','04:00:00','08:00:00','breña',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-10',1,35,0,1),
+(139,8,NULL,1573,'0063-2025','2025-05-06','19:00:00','03:00:00','talara',NULL,NULL,2,2,1,8,0,0,0,0,1,'2025-05-22',0,31,1,1),
+(141,8,NULL,1183,'0064-2025','2025-05-30','19:00:00','03:00:00','oceania segundo turno',NULL,NULL,1,1,1,7,0,0,0,0,1,'2025-05-27',0,1,0,0),
+(143,2,NULL,1152,NULL,'2025-05-22','19:00:00','22:00:00','amadksaq',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-30',0,31,0,0),
+(144,2,17,1335,'0065-2025','2026-01-22','19:00:00','23:00:00','amakodmsad',NULL,NULL,1,2,1,7,0,0,0,0,1,'2025-05-30',0,31,0,0);
 
 /*Table structure for table `distritos` */
 
@@ -2747,9 +2792,46 @@ CREATE TABLE `gastosentradas` (
   PRIMARY KEY (`idgastoentrada`),
   KEY `fk_subtipo_gastoentrada` (`subtipo`),
   CONSTRAINT `fk_subtipo_gastoentrada` FOREIGN KEY (`subtipo`) REFERENCES `subtipos` (`idsubtipo`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `gastosentradas` */
+
+insert  into `gastosentradas`(`idgastoentrada`,`estadopago`,`fgasto`,`fvencimiento`,`tipo`,`concepto`,`subtipo`,`idproveedor`,`idcolaborador`,`gasto`,`cunitario`,`pagado`,`idproducto`,`cantidad`,`unidades`,`formapago`,`cuenta`,`foliofactura`,`emision`,`descripcion`,`costofinal`,`egreso`,`montopdte`,`impuestos`,`costofinalunit`,`created_at`) values 
+(1,2,NULL,NULL,2,1,2,NULL,3,300.00,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'F',NULL,'null',354.00,354.00,NULL,54.00,NULL,'2025-05-22 09:59:17'),
+(2,2,NULL,NULL,NULL,1,2,NULL,3,300.00,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'F',NULL,'null',354.00,354.00,NULL,54.00,NULL,'2025-05-22 10:04:31'),
+(3,2,NULL,NULL,NULL,1,2,NULL,3,300.00,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'null',NULL,'null',300.00,300.00,NULL,NULL,NULL,'2025-05-22 10:21:52'),
+(4,2,NULL,NULL,NULL,1,2,NULL,3,1200.00,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'null',NULL,'PAGO DE FIN DE MES',1200.00,1200.00,NULL,NULL,NULL,'2025-05-22 10:22:24'),
+(5,2,NULL,NULL,NULL,1,2,NULL,3,1500.00,NULL,NULL,NULL,NULL,NULL,1,2147483647,'null',NULL,'PAGO + BONO EXTRA ok',1500.00,1500.00,NULL,NULL,NULL,'2025-05-22 11:34:26');
+
+/*Table structure for table `gastosyentradas` */
+
+DROP TABLE IF EXISTS `gastosyentradas`;
+
+CREATE TABLE `gastosyentradas` (
+  `idgastoentrada` int(11) NOT NULL AUTO_INCREMENT,
+  `estado` int(11) NOT NULL,
+  `concepto` varchar(200) DEFAULT NULL,
+  `fecha_gasto` date NOT NULL,
+  `monto` decimal(10,2) NOT NULL,
+  `iddetallepresentacion` int(11) DEFAULT NULL,
+  `idusuario` int(11) DEFAULT NULL,
+  `mediopago` int(11) DEFAULT NULL,
+  `detalles` varchar(200) DEFAULT NULL,
+  `comprobante_url` varchar(200) DEFAULT NULL,
+  `comprobante_fac_bol` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`idgastoentrada`),
+  KEY `fk_idusuario_gastoentrada` (`idusuario`),
+  KEY `fk_iddp_gastoentrada` (`iddetallepresentacion`),
+  CONSTRAINT `fk_iddp_gastoentrada` FOREIGN KEY (`iddetallepresentacion`) REFERENCES `detalles_presentacion` (`iddetalle_presentacion`),
+  CONSTRAINT `fk_idusuario_gastoentrada` FOREIGN KEY (`idusuario`) REFERENCES `usuarios` (`idusuario`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `gastosyentradas` */
+
+insert  into `gastosyentradas`(`idgastoentrada`,`estado`,`concepto`,`fecha_gasto`,`monto`,`iddetallepresentacion`,`idusuario`,`mediopago`,`detalles`,`comprobante_url`,`comprobante_fac_bol`) values 
+(4,2,'xxd','2025-05-25',30.00,NULL,4,NULL,NULL,NULL,'comprobantes_vegaproducciones/sgixjmda6zwxmoiiuaq7'),
+(6,2,'assadadasd','2025-05-29',213123.00,92,NULL,1,NULL,'comprobantes_vegaproducciones/vpjdthp6nv8soetphxcw','comprobantes_vegaproducciones/zkkdj0balea3vadhdxbl'),
+(7,1,'xzcxzxz','2025-05-15',4444.00,92,NULL,-1,NULL,'','');
 
 /*Table structure for table `ingresos_evento` */
 
@@ -2783,8 +2865,8 @@ CREATE TABLE `items_comprobante` (
   `valortotal` decimal(10,2) NOT NULL,
   PRIMARY KEY (`iditemcomprobante`),
   KEY `fk_items_factura` (`idcomprobante`),
-  CONSTRAINT `fk_items_factura` FOREIGN KEY (`idcomprobante`) REFERENCES `comprobantes` (`idcomprobante`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  CONSTRAINT `fk_items_factura` FOREIGN KEY (`idcomprobante`) REFERENCES `comprobantes` (`idcomprobante`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `items_comprobante` */
 
@@ -2794,7 +2876,9 @@ insert  into `items_comprobante`(`iditemcomprobante`,`idcomprobante`,`cantidad`,
 (9,4,1,'Presentación artística de Nataly Ramirez',510.00,510.00),
 (10,4,1,'Puesto en la locación de null',600.00,600.00),
 (11,5,1,'Presentación artística de Azucena Calvay',80000.00,80000.00),
-(12,5,1,'Puesto en la locación de Nazca',1700.00,1700.00);
+(12,5,1,'Puesto en la locación de Nazca',1700.00,1700.00),
+(13,6,1,'Presentación artística de Azucena Calvay',80000.00,80000.00),
+(14,6,1,'Puesto en la locación de Nazca',1700.00,1700.00);
 
 /*Table structure for table `montocajachica` */
 
@@ -2809,7 +2893,7 @@ CREATE TABLE `montocajachica` (
 /*Data for the table `montocajachica` */
 
 insert  into `montocajachica`(`idmonto`,`monto`) values 
-(1,0.00);
+(1,-1021.70);
 
 /*Table structure for table `nacionalidades` */
 
@@ -2872,7 +2956,7 @@ CREATE TABLE `nivelaccesos` (
   `create_at` datetime NOT NULL DEFAULT current_timestamp(),
   `update_at` datetime DEFAULT NULL,
   PRIMARY KEY (`idnivelacceso`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `nivelaccesos` */
 
@@ -2887,41 +2971,31 @@ insert  into `nivelaccesos`(`idnivelacceso`,`nivelacceso`,`create_at`,`update_at
 (8,'Community Manager','2025-04-16 00:31:03',NULL),
 (9,'Contabilidad','2025-04-16 00:31:03',NULL),
 (10,'Edicion y Produccion','2025-04-16 00:31:03',NULL),
-(11,'Filmmaker','2025-04-16 00:31:03',NULL);
+(11,'Filmmaker','2025-04-16 00:31:03',NULL),
+(12,'Organizador','2025-05-22 17:12:15',NULL);
 
-/*Table structure for table `nomina` */
+/*Table structure for table `nominas` */
 
-DROP TABLE IF EXISTS `nomina`;
+DROP TABLE IF EXISTS `nominas`;
 
-CREATE TABLE `nomina` (
+CREATE TABLE `nominas` (
   `idnomina` int(11) NOT NULL AUTO_INCREMENT,
-  `idcolaborador` int(11) NOT NULL,
-  `salario_usado` int(11) NOT NULL,
-  `periodo` int(11) NOT NULL,
-  `idarea` int(11) NOT NULL,
-  `horas` decimal(10,2) NOT NULL,
-  `tiempo` decimal(10,2) NOT NULL,
-  `rendimiento` decimal(10,2) DEFAULT NULL,
-  `proporcion` decimal(10,2) DEFAULT NULL,
-  `acumulado` decimal(10,2) DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp(),
+  `idpersonacolaborador` int(11) DEFAULT NULL,
+  `tipo` int(11) DEFAULT NULL,
+  `fechaingreso` date DEFAULT NULL,
+  `ruc` varchar(20) DEFAULT NULL,
+  `clavesol` varchar(20) DEFAULT NULL,
+  `ncuenta` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`idnomina`),
-  KEY `fk_idempleado_nomina` (`idcolaborador`),
-  KEY `fk_idarea_nomina` (`idarea`),
-  CONSTRAINT `fk_idarea_nomina` FOREIGN KEY (`idarea`) REFERENCES `areas` (`idarea`) ON DELETE CASCADE,
-  CONSTRAINT `fk_idempleado_nomina` FOREIGN KEY (`idcolaborador`) REFERENCES `colaboradores` (`idcolaborador`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  KEY `fk_idcolaborador_nomina` (`idpersonacolaborador`),
+  CONSTRAINT `fk_idcolaborador_nomina` FOREIGN KEY (`idpersonacolaborador`) REFERENCES `personas_colaboradores` (`idpersonacolaborador`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-/*Data for the table `nomina` */
+/*Data for the table `nominas` */
 
-insert  into `nomina`(`idnomina`,`idcolaborador`,`salario_usado`,`periodo`,`idarea`,`horas`,`tiempo`,`rendimiento`,`proporcion`,`acumulado`,`created_at`) values 
-(4,3,1500,1,5,25.00,120.00,NULL,NULL,NULL,'2025-05-21 18:24:42'),
-(5,3,1500,1,2,25.00,120.00,NULL,NULL,NULL,'2025-05-21 18:25:30'),
-(6,1,1200,1,1,141.00,200.50,NULL,NULL,NULL,'2025-05-21 18:37:16'),
-(7,1,1200,1,1,141.00,200.50,NULL,NULL,NULL,'2025-05-21 18:37:46'),
-(8,1,1200,1,1,141.00,200.50,NULL,NULL,NULL,'2025-05-21 18:37:50'),
-(9,3,1500,1,2,25.00,120.00,NULL,NULL,NULL,'2025-05-21 18:38:58'),
-(10,1,1200,1,1,141.00,200.50,NULL,NULL,NULL,'2025-05-21 18:39:00');
+insert  into `nominas`(`idnomina`,`idpersonacolaborador`,`tipo`,`fechaingreso`,`ruc`,`clavesol`,`ncuenta`) values 
+(1,5,1,'2025-05-20','aadasdds','adasdadad','asdasdasd'),
+(2,15,1,'2025-05-20','iasdasdqjew','9193123','sjdiajds');
 
 /*Table structure for table `notificaciones` */
 
@@ -2942,7 +3016,7 @@ CREATE TABLE `notificaciones` (
   CONSTRAINT `fk_usuario_notif` FOREIGN KEY (`idusuariodest`) REFERENCES `usuarios` (`idusuario`),
   CONSTRAINT `fk_usuario_rem` FOREIGN KEY (`idusuariorem`) REFERENCES `usuarios` (`idusuario`),
   CONSTRAINT `chk_estado_not` CHECK (`estado` in (1,2))
-) ENGINE=InnoDB AUTO_INCREMENT=192 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=197 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `notificaciones` */
 
@@ -3135,7 +3209,12 @@ insert  into `notificaciones`(`idnotificacion`,`idusuariodest`,`idusuariorem`,`t
 (188,1,8,6,8,'Nataly Ramirez ha acaba de salir el 10 de Mayo de 2025 a las 3:48 PM, click para mas detalles',1,'2025-05-10 15:48:21'),
 (189,6,8,6,8,'Nataly Ramirez ha acaba de salir el 10 de Mayo de 2025 a las 3:48 PM, click para mas detalles',1,'2025-05-10 15:48:21'),
 (190,1,8,6,9,'Nataly Ramirez ha acaba de salir el 10 de Mayo de 2025 a las 5:18 PM, click para mas detalles',1,'2025-05-10 17:18:06'),
-(191,6,8,6,9,'Nataly Ramirez ha acaba de salir el 10 de Mayo de 2025 a las 5:18 PM, click para mas detalles',1,'2025-05-10 17:18:06');
+(191,6,8,6,9,'Nataly Ramirez ha acaba de salir el 10 de Mayo de 2025 a las 5:18 PM, click para mas detalles',1,'2025-05-10 17:18:06'),
+(192,8,1,2,139,'Royer Alexis Te ha asignado a un nuevo evento para el 6 de Mayo de 2025!, revisa tu agenda.',1,'2025-05-22 18:22:31'),
+(193,2,1,2,142,'Royer Alexis Te ha asignado a un nuevo evento para el 31 de Marzo de 2025!, revisa tu agenda.',1,'2025-05-27 10:45:40'),
+(194,1,1,4,142,'Una nueva propuesta ha llegado, haz click para revisarlo.',1,'2025-05-27 11:06:40'),
+(195,2,1,2,143,'Royer Alexis Te ha asignado a un nuevo evento para el 22 de Mayo de 2025!, revisa tu agenda.',1,'2025-05-30 16:46:26'),
+(196,2,1,2,144,'Royer Alexis Te ha asignado a un nuevo evento para el 22 de Enero de 2026!, revisa tu agenda.',1,'2025-05-30 16:47:28');
 
 /*Table structure for table `notificaciones_viatico` */
 
@@ -3264,7 +3343,7 @@ CREATE TABLE `personas` (
   KEY `fk_iddistrito` (`iddistrito`),
   CONSTRAINT `fk_iddistrito` FOREIGN KEY (`iddistrito`) REFERENCES `distritos` (`iddistrito`),
   CONSTRAINT `chk_genero` CHECK (`genero` in ('M','F'))
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `personas` */
 
@@ -3283,7 +3362,65 @@ insert  into `personas`(`idpersona`,`num_doc`,`apellidos`,`nombres`,`genero`,`di
 (12,NULL,NULL,'royer',NULL,NULL,NULL,NULL,NULL,NULL,'2025-05-19 18:19:01',NULL),
 (13,NULL,'avalos','royer',NULL,NULL,NULL,NULL,NULL,NULL,'2025-05-19 18:19:28',NULL),
 (14,'778875321',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2025-05-19 18:22:40','2025-05-21 16:34:25'),
-(15,'727574123','apellido col lrueba','colaborador prueba',NULL,NULL,NULL,NULL,NULL,NULL,'2025-05-19 18:26:53','2025-05-21 16:34:06');
+(15,'727574123','apellido col lrueba','colaborador prueba',NULL,NULL,NULL,NULL,NULL,NULL,'2025-05-19 18:26:53','2025-05-21 16:34:06'),
+(16,NULL,'PRUEBA','WENDY',NULL,NULL,NULL,NULL,NULL,NULL,'2025-05-22 14:12:55',NULL),
+(17,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2025-05-22 17:40:27',NULL),
+(18,NULL,'Doe','Jhon',NULL,NULL,NULL,NULL,NULL,NULL,'2025-05-22 18:46:24',NULL),
+(19,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2025-05-23 11:32:02',NULL),
+(20,NULL,'DEVELOP','SANTI','M',NULL,'999000333','999000333','johanbama28@gmail.com',1,'2025-05-23 12:02:34','2025-05-23 12:43:25');
+
+/*Table structure for table `personas_colaboradores` */
+
+DROP TABLE IF EXISTS `personas_colaboradores`;
+
+CREATE TABLE `personas_colaboradores` (
+  `idpersonacolaborador` int(11) NOT NULL AUTO_INCREMENT,
+  `nombreapellidos` varchar(150) DEFAULT NULL,
+  `dni` varchar(8) DEFAULT NULL,
+  `fnacimiento` date DEFAULT NULL,
+  `estadocivil` smallint(6) DEFAULT NULL,
+  `sexo` char(1) DEFAULT NULL,
+  `domicilio` varchar(200) DEFAULT NULL,
+  `correo` varchar(200) DEFAULT NULL,
+  `nivelestudio` varchar(200) DEFAULT NULL,
+  `contactoemergencia` varchar(200) DEFAULT NULL,
+  `discapacidad` varchar(200) DEFAULT NULL,
+  `foto` varchar(80) DEFAULT NULL,
+  `idcargo` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idpersonacolaborador`),
+  KEY `fk_idcargo_nomina` (`idcargo`),
+  CONSTRAINT `fk_idcargo_nomina` FOREIGN KEY (`idcargo`) REFERENCES `cargos` (`idcargo`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `personas_colaboradores` */
+
+insert  into `personas_colaboradores`(`idpersonacolaborador`,`nombreapellidos`,`dni`,`fnacimiento`,`estadocivil`,`sexo`,`domicilio`,`correo`,`nivelestudio`,`contactoemergencia`,`discapacidad`,`foto`,`idcargo`) values 
+(1,'asdaasd','1231321','2025-06-20',1,'M','sdasdsada','dasdasdad','sdadasdsad','asasd2112313','asasdasd',NULL,NULL),
+(2,'ombre test','7272771','2025-06-26',1,'M','adasdad','ale@gmadas.com','adasda','sadasdads','dasdsadasd',NULL,NULL),
+(3,'test 2','72771237','2026-06-26',1,'M','123sddsad','ssa aroba','secu completa','999933312323 Madre','no hay',NULL,NULL),
+(4,'adasdads','7371273','2025-06-25',5,'F','adasdadsad','sasdsad','sdadsad','adasd','sdads',NULL,NULL),
+(5,'dadsasad','sadadsad','2025-05-23',2,'M','sasdsadad','asdasdsad','sdadasd','sdasdasd','asdasd',NULL,NULL),
+(6,'dadasdsad','dadsd','2025-06-29',1,'M','dsdadas','dda','dadads','sdasdasd','sadasd',NULL,NULL),
+(7,'asdasdsad','assad','2025-05-20',1,'M','adsdad','sajdoasdo','sodaosjd','sodajod','ojsaodjasd',NULL,NULL),
+(8,'asasddn','nsadnasj','2025-05-20',1,'M','dadasd','asadasdasd','asdasd','asdasd','sadsad',NULL,NULL),
+(9,'dasdasd','aasdasd','2025-06-20',1,'M','dadasda','dsadasda','sdasdasdasd','asdad','adsadsad',NULL,NULL),
+(10,'djsodasodj','iajsdoas','2025-06-20',1,'M','adasdad','dsadads','adasd','saad','sadasd',NULL,NULL),
+(11,'mvcvxcv','askadkm','2025-05-20',1,'M','asdjasd','sdasnd','sadsd','asdasd','dsadad',NULL,NULL),
+(12,'adadasd','nsdin','2025-05-20',1,'M','asdadsad','sadssd','sdsad','dsadad','dsdsd',NULL,NULL),
+(13,'sadhsad','sadnadn','2025-05-20',1,'M','dadasdasd','sdasd','dsdads','adasd','asdasd',NULL,NULL),
+(14,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
+(15,'Royer Alexis Avalos Romero','72754752','2025-06-26',1,'M','asent humano 123','test@gmail.com','estudios completados','999333000 madre','no tiene','fotocolaboradores_vegaproducciones/ng7maockyrxsf9pwtuh2',1),
+(16,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
+(17,'Azucena',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'fotocolaboradores_vegaproducciones/ng7maockyrxsf9pwtuh2',NULL),
+(18,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
+(19,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
+(20,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
+(21,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
+(22,'saasdas','dsdad','2025-05-13',NULL,'M','dsad','sadsadasdsadsa','sadasdasd','sadasda','asdada','fotocolaboradores_vegaproducciones/nep1hgl7hkotxtkpx7ad',NULL),
+(23,'adadasdasd','asdasda',NULL,1,NULL,'asdasdsad',NULL,NULL,NULL,NULL,'fotocolaboradores_vegaproducciones/brn7ahxw1dnawpk5uik4',NULL),
+(24,'adadas','adasda',NULL,2,'M','asdads','sada','asdasd','dasdsa','sda','fotocolaboradores_vegaproducciones/anujnxwinecagdeatwdo',NULL),
+(25,'JHON SANTANA','77732172',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'fotocolaboradores_vegaproducciones/pv9fymhxfu2vdpy5u8t2',NULL),
+(26,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 
 /*Table structure for table `precios_entrada_evento` */
 
@@ -3310,6 +3447,29 @@ insert  into `precios_entrada_evento`(`idprecioentradaevento`,`iddetalle_present
 (7,1,'box 40'),
 (8,2,'ageneral 230'),
 (9,3,'general: 30 vip 50');
+
+/*Table structure for table `prodserv` */
+
+DROP TABLE IF EXISTS `prodserv`;
+
+CREATE TABLE `prodserv` (
+  `idprodserv` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(80) DEFAULT NULL,
+  `tipo` int(11) DEFAULT NULL,
+  `codigo` varchar(10) DEFAULT NULL,
+  `idproveedor` int(11) DEFAULT NULL,
+  `precio` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`idprodserv`),
+  KEY `fk_idproveedor` (`idproveedor`),
+  CONSTRAINT `fk_idproveedor` FOREIGN KEY (`idproveedor`) REFERENCES `proveedores` (`idproveedor`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `prodserv` */
+
+insert  into `prodserv`(`idprodserv`,`nombre`,`tipo`,`codigo`,`idproveedor`,`precio`) values 
+(2,'test',1,'TC-ASC123',5,12312.00),
+(3,'test3',2,'XD-123',5,12.00),
+(4,'hbb',NULL,NULL,NULL,NULL);
 
 /*Table structure for table `proveedores` */
 
@@ -3563,7 +3723,7 @@ CREATE TABLE `reparticion_ingresos` (
   KEY `fk_rep_ing` (`iddetalle_presentacion`),
   CONSTRAINT `fk_rep_ing` FOREIGN KEY (`iddetalle_presentacion`) REFERENCES `detalles_presentacion` (`iddetalle_presentacion`) ON DELETE CASCADE,
   CONSTRAINT `fk_estado_ing` CHECK (`estado` in (1,2))
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `reparticion_ingresos` */
 
@@ -3623,7 +3783,8 @@ insert  into `reparticion_ingresos`(`idreparticion`,`iddetalle_presentacion`,`es
 (53,63,1),
 (55,96,1),
 (56,133,1),
-(57,134,1);
+(57,134,1),
+(59,143,1);
 
 /*Table structure for table `reportes_artista_evento` */
 
@@ -3711,16 +3872,10 @@ CREATE TABLE `salarios` (
   `fechainicio` date DEFAULT current_timestamp(),
   `fechafin` date DEFAULT NULL,
   PRIMARY KEY (`idsalario`),
-  KEY `fk_idcolaborador_salario` (`idcolaborador`),
-  CONSTRAINT `fk_idcolaborador_salario` FOREIGN KEY (`idcolaborador`) REFERENCES `colaboradores` (`idcolaborador`) ON DELETE CASCADE
+  KEY `fk_idcolaborador_salario` (`idcolaborador`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `salarios` */
-
-insert  into `salarios`(`idsalario`,`idcolaborador`,`salario`,`periodo`,`horas`,`costohora`,`fechainicio`,`fechafin`) values 
-(1,1,1200.00,1,200.50,30.00,'2025-05-21',NULL),
-(2,3,1200.00,3,300.00,20.00,'2025-05-21',NULL),
-(3,3,1500.00,1,120.00,20.00,'2025-05-21',NULL);
 
 /*Table structure for table `subidas_agenda_edicion` */
 
@@ -3777,12 +3932,12 @@ insert  into `subtipos`(`idsubtipo`,`idconcepto`,`subtipo`) values
 (18,3,'envios'),
 (19,2,'comisiones'),
 (20,2,'pago a cliente'),
-(21,4,'materia prima'),
+(21,4,'artistas'),
 (22,3,'materiales'),
 (23,2,'cajas'),
 (24,2,'envolturas'),
 (25,5,'mano de obra'),
-(26,3,'materia prima'),
+(26,3,'artistas'),
 (27,2,'contratacion'),
 (28,2,'extras'),
 (29,7,'impuestos'),
@@ -3880,7 +4035,7 @@ CREATE TABLE `tarifario` (
   CONSTRAINT `fk_idartista_tar` FOREIGN KEY (`idusuario`) REFERENCES `usuarios` (`idusuario`),
   CONSTRAINT `fk_idnacionalidad_tarifario` FOREIGN KEY (`idnacionalidad`) REFERENCES `nacionalidades` (`idnacionalidad`),
   CONSTRAINT `fk_provincia_tarifario_art` FOREIGN KEY (`idprovincia`) REFERENCES `provincias` (`idprovincia`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `tarifario` */
 
@@ -3901,7 +4056,8 @@ insert  into `tarifario`(`idtarifario`,`idusuario`,`idprovincia`,`precio`,`tipo_
 (14,2,100,80000.00,1,NULL,15000.00),
 (15,2,100,80000.00,1,NULL,344.00),
 (16,2,100,667.00,1,NULL,776.00),
-(17,8,122,80000.00,1,31,NULL);
+(17,8,122,80000.00,1,31,NULL),
+(18,8,161,30000.00,2,31,NULL);
 
 /*Table structure for table `tipotarea` */
 
@@ -3949,7 +4105,7 @@ CREATE TABLE `usuarios` (
   CONSTRAINT `fk_idpersona` FOREIGN KEY (`idpersona`) REFERENCES `personas` (`idpersona`),
   CONSTRAINT `fk_idsucursal` FOREIGN KEY (`idsucursal`) REFERENCES `sucursales` (`idsucursal`),
   CONSTRAINT `ck_estado_usuario` CHECK (`estado` in (1,2))
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `usuarios` */
 
@@ -3962,7 +4118,8 @@ insert  into `usuarios`(`idusuario`,`idsucursal`,`idnivelacceso`,`idpersona`,`no
 (6,1,3,6,'Nayade Admin','$2y$10$mcm7C34YJZzVyAmCbosun.125FGAuD7V7ztQDolurUULedbi/8tDS','#000000',NULL,NULL,NULL,1,'2025-04-16 12:55:39',NULL),
 (7,1,10,7,'andre','$2y$10$dQ3NfB7BZlOXod3O2vC4VenxnR5aUXkltYA16sV52wO4De2Gvj6sK','#000000',NULL,NULL,NULL,1,'2025-04-16 18:11:44',NULL),
 (8,1,6,8,'Nataly Ramirez','$2y$10$aerfMPtTcMgare/akrlZ1OlcuDtJzX0QyPJcLjRIlmR51JMbZkbaa','#0091ff',50,NULL,NULL,1,'2025-05-05 09:55:44',NULL),
-(9,1,11,9,'ray','$2y$10$ahzosIVAqElIJXu1nFt/WeKOY6hvDuZHIKowyJuCJBAwK3wZwNRXa','#000000',NULL,NULL,NULL,1,'2025-05-09 12:28:19',NULL);
+(9,1,11,9,'ray','$2y$10$ahzosIVAqElIJXu1nFt/WeKOY6hvDuZHIKowyJuCJBAwK3wZwNRXa','#000000',NULL,NULL,NULL,1,'2025-05-09 12:28:19',NULL),
+(10,1,12,17,'VEGA PRODUCCIONES','$2y$10$z0pWmbLRFt/K1QaPkWqUkuDdcsJ6Lq2rYL6ZOTcv5r6CuFzeGePYy','#000000',NULL,NULL,NULL,1,'2025-05-22 17:40:27',NULL);
 
 /*Table structure for table `viaticos` */
 
@@ -4238,6 +4395,23 @@ BEGIN
 END */$$
 DELIMITER ;
 
+/* Procedure structure for procedure `sp_actualizar_cliente_dp` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `sp_actualizar_cliente_dp` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_cliente_dp`(
+    IN _iddetalle_presentacion				INT,
+	IN _idcliente			INT
+)
+BEGIN 
+	UPDATE detalles_presentacion SET
+    idcliente = nullif(_idcliente,'')
+    WHERE iddetalle_presentacion = _iddetalle_presentacion;
+END */$$
+DELIMITER ;
+
 /* Procedure structure for procedure `sp_actualizar_colaborador` */
 
 /*!50003 DROP PROCEDURE IF EXISTS  `sp_actualizar_colaborador` */;
@@ -4248,16 +4422,21 @@ DELIMITER $$
 	IN _idcolaborador int,
 	IN _idsucursal INT,
     IN _fechaingreso DATE,
-    IN _idarea INT
+    IN _idarea INT,
+    IN _idresponsable INT,
+    IN _banco INT,
+    IN _ncuenta CHAR(20)
 )
 BEGIN
 		UPDATE colaboradores 
     SET 
 		idsucursal = NULLIF(_idsucursal, ''),
         fechaingreso = NULLIF(_fechaingreso, ''),
-        idarea = NULLIF(_idarea, '')
+        idarea = NULLIF(_idarea, ''),
+        idresponsable = NULLIF(_idresponsable, ''),
+        banco = NULLIF(_banco, ''),
+        ncuenta = nullif(_ncuenta ,'')
     WHERE idcolaborador = _idcolaborador;
-
 END */$$
 DELIMITER ;
 
@@ -4334,9 +4513,10 @@ DELIMITER $$
     IN _fechapresentacion date,
     IN _horainicio time,
     IN _horafinal time,
-    IN _establecimiento VARCHAR(80),
+    IN _establecimiento TEXT,
     IN _referencia VARCHAR(200),
     IN _tipoevento int,
+    IN _modalidad INT,
     IN _modotransporte	int,
 	IN _validez int,
     IN _iddistrito int,
@@ -4350,6 +4530,7 @@ BEGIN
 	establecimiento = _establecimiento,
 	referencia = nullif(_referencia, ''),
 	tipo_evento = _tipoevento,
+	modalidad = nullif(_modalidad,''),
     modotransporte = nullif(_modotransporte, ''),
 	validez = nullif(_validez, ''),
 	iddistrito = _iddistrito,
@@ -4402,6 +4583,40 @@ BEGIN
     banco = nullif(_banco , ''),
     moneda = nullif(_moneda , '')
     WHERE idempresa = _idempresa; 
+END */$$
+DELIMITER ;
+
+/* Procedure structure for procedure `sp_actualizar_estadoCordinacionPublicidad` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `sp_actualizar_estadoCordinacionPublicidad` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_estadoCordinacionPublicidad`(
+	IN _iddetalle_presentacion INT,
+    IN _estadoCordinacionPublicidad BOOLEAN
+)
+BEGIN
+	UPDATE detalles_presentacion SET
+    estadoCordinacionPublicidad = _estadoCordinacionPublicidad
+    WHERE iddetalle_presentacion = _iddetalle_presentacion; 
+END */$$
+DELIMITER ;
+
+/* Procedure structure for procedure `sp_actualizar_estadoCordinacionTecnica` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `sp_actualizar_estadoCordinacionTecnica` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_estadoCordinacionTecnica`(
+	IN _iddetalle_presentacion INT,
+    IN _estadoCordinacionTecnica BOOLEAN
+)
+BEGIN
+	UPDATE detalles_presentacion SET
+    estadoCordinacionTecnica = _estadoCordinacionTecnica
+    WHERE iddetalle_presentacion = _iddetalle_presentacion; 
 END */$$
 DELIMITER ;
 
@@ -4579,6 +4794,37 @@ BEGIN
 END */$$
 DELIMITER ;
 
+/* Procedure structure for procedure `sp_actualizar_gastoentrada` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `sp_actualizar_gastoentrada` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_gastoentrada`(
+	IN _idgastoentrada INT,
+	IN _concepto VARCHAR(200),
+	IN _fecha_gasto DATE,
+	IN _monto DECIMAL(10,2),
+	IN _mediopago INT,
+    IN _detalles VARCHAR(200),
+	IN _comprobante_url VARCHAR(200),
+    IN _comprobante_fac_bol VARCHAR(200)
+)
+BEGIN
+		UPDATE gastosyentradas 
+    SET 
+		concepto = NULLIF(_concepto, ''),
+		fecha_gasto = NULLIF(_fecha_gasto, ''),
+        monto = NULLIF(_monto, ''),
+        mediopago = NULLIF(_mediopago, ''),
+        detalles = NULLIF(_detalles, ''),
+        comprobante_url = NULLIF(_comprobante_url, ''),
+        comprobante_fac_bol = NULLIF(_comprobante_fac_bol, '')
+    WHERE idgastoentrada = _idgastoentrada;
+    
+END */$$
+DELIMITER ;
+
 /* Procedure structure for procedure `sp_actualizar_incremento` */
 
 /*!50003 DROP PROCEDURE IF EXISTS  `sp_actualizar_incremento` */;
@@ -4711,6 +4957,32 @@ BEGIN
 		UPDATE precios_entrada_evento SET
     entradas = nullif(_entradas, '')
     WHERE idprecioentradaevento = _idprecioentradaevento; 
+END */$$
+DELIMITER ;
+
+/* Procedure structure for procedure `sp_actualizar_prodserv` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `sp_actualizar_prodserv` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizar_prodserv`(
+	IN _idprodserv INT,
+	IN _nombre VARCHAR(80),
+	IN _tipo INT,
+	IN _codigo varchar(10),
+	IN _idproveedor INT,
+    IN _precio DECIMAL(10,2)
+)
+BEGIN
+		UPDATE prodserv 
+    SET 
+		nombre = NULLIF(_nombre, ''),
+		tipo = NULLIF(_tipo, ''),
+        codigo = NULLIF(_codigo, ''),
+        idproveedor = NULLIF(_idproveedor, ''),
+        precio = NULLIF(_precio, '')
+    WHERE idprodserv = _idprodserv;
 END */$$
 DELIMITER ;
 
@@ -5174,6 +5446,39 @@ BEGIN
 END */$$
 DELIMITER ;
 
+/* Procedure structure for procedure `sp_eliminar_cliente` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `sp_eliminar_cliente` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_eliminar_cliente`(
+    IN _idcliente INT
+)
+BEGIN	
+	DELETE FROM clientes WHERE idcliente = _idcliente;
+END */$$
+DELIMITER ;
+
+/* Procedure structure for procedure `sp_ficha_colaborador` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `sp_ficha_colaborador` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ficha_colaborador`(
+	IN _idnomina INT
+)
+BEGIN
+	SELECT 
+	*
+    FROM nominas NOM
+    LEFT JOIN personas_colaboradores PERCO ON PERCO.idpersonacolaborador = NOM.idpersonacolaborador
+	LEFT JOIN colaboradores	COL ON COL.idpersonacolaborador = PERCO.idpersonacolaborador
+    WHERE (_idnomina IS NULL OR NOM.idnomina = _idnomina);
+END */$$
+DELIMITER ;
+
 /* Procedure structure for procedure `sp_filtrar_cajachica` */
 
 /*!50003 DROP PROCEDURE IF EXISTS  `sp_filtrar_cajachica` */;
@@ -5229,15 +5534,15 @@ DELIMITER ;
 DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_filtrar_colaboradores`(
-	IN _num_doc VARCHAR(20),
-    IN _idarea INT
+	IN _num_doc VARCHAR(20)
+    -- IN _idcargo INT
 )
 BEGIN
     SELECT * FROM colaboradores	COL
-	left JOIN personas PE ON PE.idpersona = COL.idpersona
-    LEFT JOIN areas AR ON AR.idarea = COL.idarea
-    WHERE (PE.num_doc LIKE CONCAT('%', COALESCE(_num_doc, ''), '%') OR PE.num_doc IS NULL)
-	AND (_idarea IS NULL OR AR.idarea = _idarea)
+	left JOIN personas_colaboradores PE ON PE.idpersonacolaborador = COL.idpersonacolaborador
+    -- LEFT JOIN cargos CAR ON CAR.idcargo = COL.idcargo
+    WHERE (PE.dni LIKE CONCAT('%', COALESCE(_num_doc, ''), '%') OR PE.dni IS NULL)
+	-- AND (_idcargo IS NULL OR CAR.idcargo = _idcargo)
     ORDER BY idcolaborador DESC;
 END */$$
 DELIMITER ;
@@ -5269,6 +5574,35 @@ BEGIN
 END */$$
 DELIMITER ;
 
+/* Procedure structure for procedure `sp_filtrar_gastosyentradas` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `sp_filtrar_gastosyentradas` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_filtrar_gastosyentradas`(
+    IN _idusuario INT,
+    IN _iddetallepresentacion INT,
+    IN _fecha_gasto DATE,
+    IN _estado INT
+)
+BEGIN
+    SELECT 
+        *
+    FROM 
+        gastosyentradas GASTOS
+        LEFT JOIN usuarios USU ON USU.idusuario = GASTOS.idusuario
+        LEFT JOIN detalles_presentacion DP ON DP.iddetalle_presentacion = GASTOS.iddetallepresentacion		
+    WHERE 
+		(_idusuario IS NULL OR USU.idusuario = _idusuario)
+        AND (_iddetallepresentacion IS NULL OR DP.iddetalle_presentacion = _iddetallepresentacion)
+        AND (_fecha_gasto IS NULL OR GASTOS.fecha_gasto = _fecha_gasto)
+        AND (_estado IS NULL OR GASTOS.estado = _estado)
+    ORDER BY 
+        GASTOS.idgastoentrada DESC;
+END */$$
+DELIMITER ;
+
 /* Procedure structure for procedure `sp_filtrar_nominas` */
 
 /*!50003 DROP PROCEDURE IF EXISTS  `sp_filtrar_nominas` */;
@@ -5276,30 +5610,88 @@ DELIMITER ;
 DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_filtrar_nominas`(
+    IN _mesindividual INT,
+    IN _anoindividual INT,
+    IN _mesrangoinicio INT,
+    IN _anorangoinicio INT,
+    IN _mesrangofin INT,
+    IN _anorangofin INT,
+    IN _idpersonacolaborador INT
+)
+BEGIN
+    SELECT 
+        PERCO.nombreapellidos,
+        PERCO.dni,
+        CAR.cargo,
+        PERCO.fnacimiento,
+        PERCO.estadocivil,
+        PERCO.sexo,
+        PERCO.domicilio,
+        PERCO.correo,
+        PERCO.nivelestudio,
+        PERCO.contactoemergencia,
+        PERCO.discapacidad,
+        COL.idcolaborador,
+        COL.camisa, 
+        COL.pantalon,
+        COL.zapatos,
+        NOM.ruc,
+        NOM.idnomina,
+        NOM.clavesol,
+        NOM.ncuenta,
+        NOM.tipo,
+        NOM.fechaingreso
+    FROM nominas NOM
+	LEFT JOIN personas_colaboradores PERCO ON PERCO.idpersonacolaborador = NOM.idpersonacolaborador
+    LEFT JOIN colaboradores COL ON COL.idcolaborador = PERCO.idpersonacolaborador
+	LEFT JOIN cargos CAR ON CAR.idcargo = PERCO.idcargo
+    WHERE 
+        (
+            -- Filtro individual
+            (_mesindividual IS NOT NULL AND _anoindividual IS NOT NULL AND 
+             MONTH(NOM.fechaingreso) = _mesindividual AND YEAR(NOM.fechaingreso) = _anoindividual)
+            OR
+            -- Filtro por rango
+            (_mesrangoinicio IS NOT NULL AND _anorangoinicio IS NOT NULL AND 
+             _mesrangofin IS NOT NULL AND _anorangofin IS NOT NULL AND
+             NOM.fechaingreso BETWEEN 
+                 STR_TO_DATE(CONCAT('01/', _mesrangoinicio, '/', _anorangoinicio), '%d/%m/%Y') AND
+                 LAST_DAY(STR_TO_DATE(CONCAT('01/', _mesrangofin, '/', _anorangofin), '%d/%m/%Y'))
+            )
+            OR
+            -- Sin filtros de fecha
+            (_mesindividual IS NULL AND _anoindividual IS NULL AND
+             _mesrangoinicio IS NULL AND _anorangoinicio IS NULL AND
+             _mesrangofin IS NULL AND _anorangofin IS NULL)
+        )
+        AND 
+        -- Filtro por colaborador (opcional)
+        (_idpersonacolaborador IS NULL OR PERCO.idpersonacolaborador = _idpersonacolaborador)
+    ORDER BY NOM.fechaingreso DESC, NOM.idnomina DESC;
+END */$$
+DELIMITER ;
+
+/* Procedure structure for procedure `sp_filtrar_prodserv` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `sp_filtrar_prodserv` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_filtrar_prodserv`(
 	-- IN _nombres VARCHAR(100),
 	-- IN _num_doc VARCHAR(20)
 )
 BEGIN
 	SELECT 
-	NOM.idnomina, 
-    COL.idcolaborador, 
-    PE.nombres, 
-    PE.apellidos, 
-    COL.fechaingreso, 
-    NOM.salario_usado,
-    NOM.periodo,
-    NOM.horas,
-    AR.area,
-    AR.idarea, 
-    NOM.tiempo, 
-    NOM.rendimiento,
-    NOM.proporcion, 
-    NOM.acumulado
-    FROM nomina NOM
-	LEFT JOIN colaboradores	COL ON COL.idcolaborador = NOM.idcolaborador
-	left JOIN personas PE ON PE.idpersona = COL.idpersona
-    LEFT JOIN areas AR ON AR.idarea = NOM.idarea
-    ORDER BY NOM.idcolaborador DESC;
+	PROD.idprodserv,
+    PROD.nombre as nombre_prodserv,
+    PROD.tipo,
+    PROD.codigo,
+    PRO.nombre as nombre_proveedor,
+    PROD.precio
+	from prodserv PROD
+    LEFT JOIN proveedores PRO ON PRO.idproveedor = PROD.idproveedor
+    ORDER BY idprodserv DESC;
 END */$$
 DELIMITER ;
 
@@ -5480,6 +5872,25 @@ BEGIN
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
     LEFT JOIN nacionalidades NAC ON NAC.idnacionalidad = DP.idnacionalidad
     WHERE DP.iddetalle_presentacion = _iddetalle_presentacion;
+END */$$
+DELIMITER ;
+
+/* Procedure structure for procedure `sp_obtener_acumulados_nomina` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `sp_obtener_acumulados_nomina` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_acumulados_nomina`(
+	IN _idnomina INT
+)
+BEGIN
+	SELECT * 
+	FROM gastos_nomina GAS
+	INNER JOIN nomina NOM ON NOM.idnomina = GAS.idnomina
+	WHERE NOM.idnomina = _idnomina
+	ORDER BY NOM.idnomina DESC;
+    
 END */$$
 DELIMITER ;
 
@@ -6023,7 +6434,9 @@ DELIMITER $$
     IN _ndocumento CHAR(9),
     IN _nom_usuario CHAR(30),
     IN _establecimiento VARCHAR(80),
-    IN _fecha_presentacion DATE
+    IN _fecha_presentacion DATE,
+    IN _mes INT,
+    IN _año_semana INT
 )
 BEGIN
     SELECT 
@@ -6070,6 +6483,13 @@ BEGIN
     AND (USU.nom_usuario LIKE CONCAT('%', COALESCE(_nom_usuario, ''), '%') OR _nom_usuario IS NULL)
     AND (DP.establecimiento LIKE CONCAT('%', COALESCE(_establecimiento, ''), '%') OR _establecimiento IS NULL)
     AND (DP.fecha_presentacion LIKE CONCAT('%', COALESCE(_fecha_presentacion, ''), '%') OR _fecha_presentacion IS NULL)
+    
+    -- Filtrar por mes (cuando _mes es diferente de NULL)
+        AND (_mes IS NULL OR MONTH(DP.fecha_presentacion) = _mes)
+        
+        -- Filtrar por semana del año (cuando _año_semana es diferente de NULL)
+        AND (_año_semana IS NULL OR CONCAT(YEAR(DP.fecha_presentacion), LPAD(WEEK(DP.fecha_presentacion, 3), 2, '0')) = _año_semana)
+    
     GROUP BY DP.iddetalle_presentacion, CO.idcontrato
     ORDER BY iddetalle_presentacion DESC;
 END */$$
@@ -6106,7 +6526,7 @@ DELIMITER $$
 )
 BEGIN
 	SELECT 		
-		DP.iddetalle_presentacion, USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.tipo_evento, DP.idnacionalidad, NAC.pais, NAC.idnacionalidad, CLI.telefono , CLI.razonsocial, DP.esExtranjero
+		DP.iddetalle_presentacion, DP.estado,DP.modalidad,USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.tipo_evento, DP.idnacionalidad, NAC.pais, NAC.idnacionalidad, CLI.telefono , CLI.razonsocial, DP.esExtranjero, DP.estadoCordinacionTecnica, DP.estadoCordinacionPublicidad, DP.modalidad
 	FROM detalles_presentacion DP
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
@@ -6344,6 +6764,25 @@ BEGIN
     WHERE
     (_idusuario IS NULL OR VIA.idusuario = _idusuario) AND
     (_idviatico IS NULL OR VIA.idviatico = _idviatico);
+END */$$
+DELIMITER ;
+
+/* Procedure structure for procedure `sp_obtener_nomina_porid` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `sp_obtener_nomina_porid` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_nomina_porid`(
+	IN _idnomina INT
+)
+BEGIN
+	SELECT * 
+	FROM nominas NOM
+	LEFT JOIN colaboradores COL ON COL.idcolaborador = NOM.idcolaborador
+    LEFT JOIN personas_colaboradores PERCO ON PERCO.idpersonacolaborador = COL.idpersonacolaborador
+	WHERE NOM.idnomina = _idnomina
+	ORDER BY NOM.idnomina DESC;
 END */$$
 DELIMITER ;
 
@@ -6795,7 +7234,6 @@ BEGIN
 	WHERE COL.idcolaborador = _idcolaborador
 	ORDER BY NOM.idnomina DESC
 	LIMIT 1;
-
 END */$$
 DELIMITER ;
 
@@ -6893,6 +7331,33 @@ BEGIN
         INNER JOIN nivelaccesos NA ON US.idnivelacceso = NA.idnivelacceso
         LEFT JOIN personas PER ON PER.idpersona = US.idpersona
         WHERE NA.idnivelacceso = _idnivelacceso;
+END */$$
+DELIMITER ;
+
+/* Procedure structure for procedure `sp_pagar_gastoyentrada` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `sp_pagar_gastoyentrada` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_pagar_gastoyentrada`(
+	IN _idgastoentrada INT,
+	IN _estado INT,
+	IN _mediopago INT,
+    IN _detalles VARCHAR(200),
+	IN _comprobante_url VARCHAR(200),
+    IN _comprobante_fac_bol VARCHAR(200)
+)
+BEGIN
+		UPDATE gastosyentradas 
+    SET 
+		estado = NULLIF(_estado, ''),
+		mediopago = NULLIF(_mediopago, ''),
+        detalles = NULLIF(_detalles, ''),
+        comprobante_url = NULLIF(_comprobante_url, ''),
+        comprobante_fac_bol = NULLIF(_comprobante_fac_bol, '')
+    WHERE idgastoentrada = _idgastoentrada;
+    
 END */$$
 DELIMITER ;
 
@@ -7002,19 +7467,22 @@ DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_colaborador`(
     OUT _idcolaborador INT,
-    IN _idpersona INT,
-    IN _idsucursal INT,
-    IN _fechaingreso DATE,
-    IN _idarea int
+    IN _idpersonacolaborador int,
+    IN _camisa VARCHAR(80),
+    IN _pantalon VARCHAR(80),
+	IN _zapatos  VARCHAR(80)
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
-
+    
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SET existe_error = 1;
+    END;
     
     -- Insertar la notificación
-    INSERT INTO colaboradores (idpersona, idsucursal, fechaingreso, idarea)
-    VALUES (_idpersona, _idsucursal, _fechaingreso , _idarea);
-
+    INSERT INTO colaboradores (idpersonacolaborador, camisa, pantalon, zapatos)
+    VALUES (nullif(_idpersonacolaborador,''), nullif(_camisa,''), nullif(_pantalon,''), nullif(_zapatos,''));
     IF existe_error = 1 THEN
         SET _idcolaborador = -1;
     ELSE
@@ -7196,7 +7664,7 @@ BEGIN
         fecha_presentacion, horainicio, horafinal, establecimiento, 
         referencia, acuerdo, tipo_evento, modotransporte,modalidad, validez, igv, esExtranjero, idnacionalidad
     ) VALUES (
-        _idusuario, _idcliente, NULLIF(_iddistrito, ''), NULLIF(_ncotizacion, ''), 
+        _idusuario, NULLIF(_idcliente,''), NULLIF(_iddistrito, ''), NULLIF(_ncotizacion, ''), 
         _fechapresentacion, _horainicio, _horafinal, NULLIF(_establecimiento, ''), 
         NULLIF(_referencia, ''), NULLIF(_acuerdo, ''), nullif(_tipoevento,''), nullif(_modotransporte,''), nullif(_modalidad,''), _validez, _igv, _esExtranjero, nullif(_idnacionalidad,'')
     );
@@ -7244,90 +7712,23 @@ DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_gasto_entrada`(
     OUT _idgastoentrada INT,
-    IN _estadopago INT,
-    IN _fgasto DATE,
-    IN _fvencimiento DATE,
-    IN _tipo INT,
-    IN _concepto INT,
-    IN _subtipo INT,
-    IN _idproveedor INT,
-    IN _idcolaborador INT,
-    IN _gasto DECIMAL(10,2),
-    IN _cunitario DECIMAL(10,2),
-    IN _pagado DECIMAL(10,2),
-    IN _idproducto INT,
-    IN _cantidad INT,
-    IN _unidades INT,
-    IN _formapago INT,
-    IN _cuenta INT,
-    IN _foliofactura VARCHAR(13),
-    IN _emision DATE,
-    IN _descripcion TEXT,
-    IN _costofinal DECIMAL(10,2),
-    IN _egreso DECIMAL(10,2),
-    IN _montopdte DECIMAL(10,2),
-    IN _impuestos DECIMAL(10,2),
-    IN _costofinalunit DECIMAL(10,2)
+    IN _estado INT,
+    IN _concepto VARCHAR(200),
+    IN _fecha_gasto date,
+	IN _monto DECIMAL(10,2),
+    IN _iddetallepresentacion INT,
+    IN _idusuario INT,
+    IN _mediopago INT,
+    IN _detalles VARCHAR(200),
+    IN _comprobante_url VARCHAR(200),
+    IN _comprobante_fac_bol VARCHAR(200)
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
-
-
-    -- Insertar en la tabla nomina
-    INSERT INTO gastosentradas (
-        estadopago,
-        fgasto,
-        fvencimiento,
-        tipo,
-        concepto,
-        subtipo,
-        idproveedor,
-        idcolaborador,
-        gasto,
-        cunitario,
-        pagado,
-        idproducto,
-        cantidad,
-        unidades,
-        formapago,
-        cuenta,
-        foliofactura,
-        emision,
-        descripcion,
-        costofinal,
-        egreso,
-        montopdte,
-        impuestos,
-        costofinalunit
-    )
-    VALUES (
-        NULLIF(_estadopago, ''),
-        NULLIF(_fgasto, ''),
-        NULLIF(_fvencimiento, ''),
-        NULLIF(_tipo, ''),
-        NULLIF(_concepto, ''),
-        NULLIF(_subtipo, ''),
-        NULLIF(_idproveedor, ''),
-        NULLIF(_idcolaborador, ''),
-        NULLIF(_gasto, ''),
-        NULLIF(_cunitario, ''),
-        NULLIF(_pagado, ''),
-        NULLIF(_idproducto, ''),
-        NULLIF(_cantidad, ''),
-        NULLIF(_unidades, ''),
-        NULLIF(_formapago, ''),
-        NULLIF(_cuenta, ''),
-        NULLIF(_foliofactura, ''),
-        NULLIF(_emision, ''),
-        NULLIF(_descripcion, ''),
-        NULLIF(_costofinal, ''),
-        NULLIF(_egreso, ''),
-        NULLIF(_montopdte, ''),
-        NULLIF(_impuestos, ''),
-        NULLIF(_costofinalunit, '')
-    );
-
-    -- Devolver el ID insertado o -1 si hubo error
+    
+    -- Insertar la notificación
+    INSERT INTO gastosyentradas (estado, concepto, fecha_gasto, monto, iddetallepresentacion, idusuario, mediopago, detalles, comprobante_url, comprobante_fac_bol)
+    VALUES (_estado, nullif(_concepto,''), _fecha_gasto , _monto, _iddetallepresentacion, _idusuario,nullif(_mediopago,''),_detalles,_comprobante_url,_comprobante_fac_bol );
     IF existe_error = 1 THEN
         SET _idgastoentrada = -1;
     ELSE
@@ -7359,8 +7760,6 @@ BEGIN
     -- Insertar la notificación
     INSERT INTO gastos_nomina (idnomina, descripcion, monto)
     VALUES (_idnomina , _descripcion, _monto);
-
-
     IF existe_error = 1 THEN
         SET _idgastonomina = -1;
     ELSE
@@ -7421,7 +7820,7 @@ BEGIN
 END */$$
 DELIMITER ;
 
-/* Procedure structure for procedure `` */
+/* Procedure structure for procedure `sp_registrar_nomina` */
 
 /*!50003 DROP PROCEDURE IF EXISTS  `sp_registrar_nomina` */;
 
@@ -7429,27 +7828,24 @@ DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_nomina`(
     OUT _idnomina INT,
-    IN _idcolaborador int,
-    IN _salario_usado DECIMAL(10,2),
-    IN _periodo INT,
-    IN _idarea INT,
-    IN _horas DECIMAL(10,2),
-    IN _tiempo DECIMAL(10,2),
-    IN _rendimiento DECIMAL(10,2),
-    IN _proporcion DECIMAL(10,2),
-    IN _acumulado DECIMAL(10,2)
+    IN _idpersonacolaborador int,
+    IN _tipo INT,
+    IN _fechaingreso DATE,
+    IN _ruc varchar(20),
+    IN _clavesol varchar(20),
+    IN _ncuenta varchar(20)
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
-    
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+
+        DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
     BEGIN
         SET existe_error = 1;
     END;
     
     -- Insertar la notificación
-    INSERT INTO nomina (idcolaborador, salario_usado, periodo, idarea ,horas, tiempo, rendimiento, proporcion,acumulado)
-    VALUES (_idcolaborador , _salario_usado, _periodo, _idarea,_horas,nullif(_tiempo, '') , nullif(_rendimiento, ''), nullif(_proporcion,''), nullif(_acumulado,''));
+    INSERT INTO nominas (idpersonacolaborador, tipo, fechaingreso, ruc, clavesol, ncuenta)
+    VALUES (nullif(_idpersonacolaborador,'') , nullif(_tipo,''), nullif(_fechaingreso,''), nullif(_ruc,''), nullif(_clavesol, '') , nullif(_ncuenta, ''));
 
     IF existe_error = 1 THEN
         SET _idnomina = -1;
@@ -7611,6 +8007,78 @@ BEGIN
 END */$$
 DELIMITER ;
 
+/* Procedure structure for procedure `sp_registrar_persona_colaborador` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `sp_registrar_persona_colaborador` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_persona_colaborador`(
+    OUT _idpersonacolaborador INT,
+    IN _nombreapellidos VARCHAR(150),
+    IN _dni varchar(8),
+    IN _fnacimiento DATE,
+    IN _estadocivil smallint,
+    IN _sexo CHAR(1),
+    IN _domicilio varchar(200),
+    IN _correo varchar(200),
+    IN _nivelestudio VARCHAR(200),
+    IN _contactoemergencia varchar(200),
+    IN _discapacidad VARCHAR(200),
+    IN _foto VARCHAR(80)
+)
+BEGIN
+    DECLARE existe_error INT DEFAULT 0;
+    
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SET existe_error = 1;
+    END;
+    
+    -- Insertar la notificación
+    INSERT INTO personas_colaboradores (nombreapellidos, dni, fnacimiento, estadocivil, sexo, domicilio, correo, nivelestudio, contactoemergencia, discapacidad, foto)
+    VALUES (nullif(_nombreapellidos,'') , nullif(_dni,''), nullif(_fnacimiento,''), nullif(_estadocivil,''), nullif(_sexo,''), nullif(_domicilio,''), nullif(_correo,''), nullif(_nivelestudio,''), nullif(_contactoemergencia,''), nullif(_discapacidad,''), nullif(_foto, ''));
+    IF existe_error = 1 THEN
+        SET _idpersonacolaborador = -1;
+    ELSE
+        SET _idpersonacolaborador = LAST_INSERT_ID();
+    END IF;
+END */$$
+DELIMITER ;
+
+/* Procedure structure for procedure `sp_registrar_prodserv` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `sp_registrar_prodserv` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_prodserv`(
+    OUT _idprodserv INT,
+    IN _nombre VARCHAR(80),
+    IN _tipo INT,
+    IN _codigo VARCHAR(10),
+    IN _idproveedor INT,
+    IN _precio DECIMAL(10,2)
+)
+BEGIN
+    DECLARE existe_error INT DEFAULT 0;
+    
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SET existe_error = 1;
+    END;
+    
+    -- Insertar la notificación
+    INSERT INTO prodserv (nombre, tipo, codigo, idproveedor, precio)
+    VALUES (_nombre , _tipo, _codigo, nullif(_idproveedor, ''), _precio);
+    IF existe_error = 1 THEN
+        SET _idprodserv = -1;
+    ELSE
+        SET _idprodserv = LAST_INSERT_ID();
+    END IF;
+END */$$
+DELIMITER ;
+
 /* Procedure structure for procedure `sp_registrar_proveedor` */
 
 /*!50003 DROP PROCEDURE IF EXISTS  `sp_registrar_proveedor` */;
@@ -7696,7 +8164,6 @@ BEGIN
     -- Insertar la notificación
     INSERT INTO salarios (idcolaborador, salario, periodo, horas, costohora)
     VALUES (_idcolaborador, _salario , _periodo ,_horas, _costohora);
-
     IF existe_error = 1 THEN
         SET _idsalario = -1;
     ELSE

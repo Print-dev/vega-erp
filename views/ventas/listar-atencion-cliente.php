@@ -207,7 +207,7 @@
                             <table class="table" id="table-atenciones">
                                 <thead class="text-center" style="background-color:rgb(255, 255, 255);">
                                     <tr>
-                                        <th>N° Cotizacion</th>
+                                        <th>Fecha presentacion</th>
                                         <th>Artista</th>
                                         <!-- <th>N° Documento/RUC</th>
                                         <th>Cliente</th>
@@ -216,7 +216,6 @@
                                         <th>País</th> -->
                                         <th>Lugar</th>
                                         <th>Ubigeo</th>
-                                        <th>Fecha presentacion</th>
                                         <!-- <th>Estado</th>
                                         <th>Estado propuesta</th> -->
                                         <th>Opciones</th>

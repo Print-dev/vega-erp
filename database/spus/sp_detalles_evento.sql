@@ -35,10 +35,7 @@ BEGIN
 END //
 
 DELIMITER ;
-select * from detalles_presentacion
-SELECT *
-FROM detalles_presentacion
-WHERE ncotizacion IS NOT NULL AND ncotizacion != '';
+
 
 DROP PROCEDURE IF EXISTS sp_registrar_detalle_presentacion;
 DELIMITER //
@@ -107,7 +104,7 @@ CREATE PROCEDURE `sp_obtener_dp_porid`(
 )
 BEGIN
 	SELECT 		
-		DP.iddetalle_presentacion, DP.modalidad,USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.tipo_evento, DP.idnacionalidad, NAC.pais, NAC.idnacionalidad, CLI.telefono , CLI.razonsocial, DP.esExtranjero, DP.estadoCordinacionTecnica, DP.estadoCordinacionPublicidad, DP.modalidad
+		DP.iddetalle_presentacion, DP.estado,DP.modalidad,USU.nom_usuario,DE.departamento, PRO.provincia, DIS.distrito, PRO.idprovincia, USU.idusuario, CLI.idcliente, DP.igv, DP.reserva, DP.pagado50, DP.establecimiento, DP.fecha_presentacion, DP.horainicio, DP.horafinal, DP.tipo_evento, DP.idnacionalidad, NAC.pais, NAC.idnacionalidad, CLI.telefono , CLI.razonsocial, DP.esExtranjero, DP.estadoCordinacionTecnica, DP.estadoCordinacionPublicidad, DP.modalidad
 	FROM detalles_presentacion DP
     LEFT JOIN clientes CLI ON CLI.idcliente = DP.idcliente
     LEFT JOIN usuarios USU ON USU.idusuario = DP.idusuario
@@ -118,6 +115,8 @@ BEGIN
     WHERE DP.iddetalle_presentacion = _iddetalle_presentacion; -- me quede aca
 END //
 DELIMITER ;
+
+select * from detalles_presentacion
 
 DROP DATABASE IF EXISTS `sp_obtener_dps`
 DELIMITER //

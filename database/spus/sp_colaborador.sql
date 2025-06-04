@@ -67,19 +67,17 @@ DROP PROCEDURE IF EXISTS sp_ficha_colaborador;
 DELIMITER //
 CREATE PROCEDURE sp_ficha_colaborador(
 	IN _idnomina INT
-	-- IN _nombres VARCHAR(100),
-	-- IN _num_doc VARCHAR(20)
 )
 BEGIN
 	SELECT 
 	*
     FROM nominas NOM
-	LEFT JOIN colaboradores	COL ON COL.idcolaborador = NOM.idcolaborador
-    LEFT JOIN personas_colaboradores PERCO ON PERCO.idpersonacolaborador = COL.idpersonacolaborador
+    LEFT JOIN personas_colaboradores PERCO ON PERCO.idpersonacolaborador = NOM.idpersonacolaborador
+	LEFT JOIN colaboradores	COL ON COL.idpersonacolaborador = PERCO.idpersonacolaborador
     WHERE (_idnomina IS NULL OR NOM.idnomina = _idnomina);
 END //
 
-
+CALL sp_ficha_colaborador (2)
 DROP PROCEDURE IF EXISTS sp_obtener_colaborador_con_cargo;
 DELIMITER //
 CREATE PROCEDURE sp_obtener_colaborador_con_cargo(

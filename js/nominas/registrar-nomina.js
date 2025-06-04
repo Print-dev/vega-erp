@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return data.json();
     }
 
-    //await obtenerCargos()
+    await obtenerColaboradoresConCargo()
     /* bloquearCamposDatosFisicos(true)
     bloquearCamposInformacionPago(true) */
     // *************************************** SECCION DE BLOQUEAR CAMPOS ****************************
@@ -79,18 +79,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // ************************************ REGISTRAR DATOS ********************************
 
-    async function obtenerColaboradores() {
+    async function obtenerColaboradoresConCargo() {
         const params = new URLSearchParams();
-        params.append("operation", "filtrarColaboradores");
-        params.append("numdoc", "");
-        params.append("idarea", "");
+        params.append("operation", "obtenerColaboradoresConCargo");
 
-        const data = await getDatos(`${host}nomina.controller.php`, params);
+        const data = await getDatos(`${host}colaborador.controller.php`, params);
         console.log("data -> ", data);
         $q("#colaborador").innerHTML = `<option value="">Seleccione</option>`;
         data.forEach(nomina => {
             $q("#colaborador").innerHTML += `
-            <option value="${nomina.idcolaborador}">${nomina.nombres} ${nomina.apellidos}</option>
+            <option value="${nomina.idpersonacolaborador}">${nomina.nombreapellidos} - ${nomina.cargo}</option>
         `;
         });
     }
@@ -190,10 +188,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             return rcolaborador;
         } */
 
-    async function registrarNomina(idcolaborador) {
+    async function registrarNomina() {
         const colaborador = new FormData();
         colaborador.append("operation", "registrarNomina");
-        colaborador.append("idcolaborador", idcolaborador);
+        colaborador.append("idpersonacolaborador", $q("#colaborador").value || "");
         colaborador.append("tipo", $q("#tipo").value || '');
         colaborador.append("fechaingreso", $q("#fechaingresonomina").value || '');
         colaborador.append("ruc", $q("#ruc").value || '');
@@ -244,7 +242,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (nominaRegis.idnomina) {
             //bloquearCamposDatosFisicos(true)
             //bloquearCamposInformacionPago(true)
-            showToast("Nomina Registrada", "SUCCESS", 3000, `${hostOnly}/views/nominas/listar-nominas`)
+            showToast("Nomina Registrada", "SUCCESS", 3000)
 
         }
     })

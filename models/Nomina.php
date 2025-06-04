@@ -354,7 +354,7 @@ class Nomina extends ExecQuery
       $cmd = $pdo->prepare('CALL sp_registrar_nomina(@idnomina,?,?,?,?,?,?)');
       $cmd->execute(
         array(
-          $params['idcolaborador'],
+          $params['idpersonacolaborador'],
           $params['tipo'],
           $params['fechaingreso'],
           $params['ruc'],

@@ -350,6 +350,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <button class="btn btn-sm btn-primary btn-info" data-idnomina="${x.idnomina}">Info</button>
                         <button class="btn btn-sm btn-primary btn-actualizar" data-idnomina="${x.idnomina}">Actualizar</button>
                         <button class="btn btn-sm btn-danger btn-borrar" data-idnomina="${x.idnomina}">Borrar</button>
+                        <button class="btn btn-sm btn-info btn-ficha" data-idnomina="${x.idnomina}">Ficha</button>
                     </td>
                 </tr>
             `;
@@ -411,6 +412,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }
                     if (e.target.classList.contains("btn-info")) {
                         await buttonInfo(e);
+                    }
+                    if (e.target.classList.contains("btn-ficha")) {
+                        await buttonFicha(e);
                     }
                     /* if (e.target.classList.contains("btn-cerrar")) {
                         buttonCerrarCaja(e);
@@ -677,11 +681,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     })
 
-    $q("#btnGenerarFicha").addEventListener("click", async () => {
+    /* $q("#btnGenerarFicha").addEventListener("click", async () => {
         //const ficha = await obtenerFichaColaborador(1)
         window.open(`${hostOnly}/generators/generadores_pdf/ficha_colaborador/fichacolaborador.php?idnomina=${4}`, '_blank');
         return
-    })
+    }) */
+
+    async function buttonFicha(e) {
+        idnomina = e.target.getAttribute("data-idnomina");
+
+        window.open(`${hostOnly}/generators/generadores_pdf/ficha_colaborador/fichacolaborador.php?idnomina=${idnomina}`, '_blank');
+        return
+    }
 
     /* async function buttonAcumulados(e) {
         idnomina = e.target.getAttribute("data-idnomina");

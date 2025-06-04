@@ -132,9 +132,9 @@
             <th class="section-header">I. DATOS PERSONALES</th>
         </tr>
         <tr>
-            <td style="height: 8px;"></td>
-            <td style="height: 8px;"></td>
-            <td colspan="4" style="height: 8px;"></td>
+            <td style="height: 8px;"><?php $fichaColaborador[0]['nombreapellidos'] ?></td>
+            <td style="height: 8px;"><?php $fichaColaborador[0]['nombreapellidos'] ?></td>
+            <td colspan="4" style="height: 8px;"><?php $fichaColaborador[0]['nombreapellidos'] ?></td>
         </tr>
         <tr>
             <th style="width: 25%; height: 5px;">APELLIDO PATERNO</th>

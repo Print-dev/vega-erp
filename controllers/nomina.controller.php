@@ -288,7 +288,7 @@ if (isset($_POST['operation'])) {
 
         case 'registrarNomina':
             $cleanData = [
-                'idcolaborador'               => $nomina->limpiarCadena($_POST['idcolaborador']) ? $nomina->limpiarCadena($_POST['idcolaborador']) : '',
+                'idpersonacolaborador'               => $nomina->limpiarCadena($_POST['idpersonacolaborador']) ? $nomina->limpiarCadena($_POST['idpersonacolaborador']) : '',
                 'tipo'     => $nomina->limpiarCadena($_POST['tipo']) ? $nomina->limpiarCadena($_POST['tipo']) : '',
                 'fechaingreso'                => $nomina->limpiarCadena($_POST['fechaingreso']) ? $nomina->limpiarCadena($_POST['fechaingreso']) : '',
                 'ruc'        => $nomina->limpiarCadena($_POST['ruc']) ? $nomina->limpiarCadena($_POST['ruc']) : '',

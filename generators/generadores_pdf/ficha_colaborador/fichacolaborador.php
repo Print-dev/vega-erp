@@ -39,7 +39,7 @@ $precio = isset($_GET['precio']) && $_GET['precio'] !== "" ? $detalleevento->lim
 //EJECUTAR FUNCION
 $fichaColaborador = $colaborador->obtenerFichaColaborador(['idnomina' => $idnomina]);
 
-//die(print_r($fichaColaborador));
+//die(print_r(var_dump($fichaColaborador)));
 
 /* if ($cotizacion[0]['esExtranjero'] == 1) {
     $tarifaArtista = $tarifario->obtenerTarifaArtistaPorPais(['idusuario' => $idusuario, 'idnacionalidad' => $idnacionalidad, 'tipoevento' => $tipoevento]);

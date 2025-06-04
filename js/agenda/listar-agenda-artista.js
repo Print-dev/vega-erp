@@ -1574,6 +1574,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </label>
                   </div>
                 </div>
+                <hr>
+                <div class="${dpInfo[0]?.estado == 3 ? `bg-danger` : `bg-info`} text-white p-3 fw-bolder text-center">
+                  ${dpInfo[0]?.estado == 3 ? `CANCELADO` : 'ACTIVO'}
+                </div>
+
               </div>    
         `;
 

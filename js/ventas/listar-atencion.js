@@ -325,12 +325,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function obtenerLongLatPorCiudad(provincia) {
     const Fdata = await fetch(`https://nominatim.openstreetmap.org/search?q=${provincia}&format=json`)
     const data = await Fdata.json()
+    console.log("LONGITUD LATITUD POR CIUDAD: ", data);
     return data
   }
 
   async function obtenerDuracionDeViaje(lon_origen, lat_origen, lon_destino, lat_destino) {
     const Fdata = await fetch(`https://router.project-osrm.org/route/v1/driving/${lon_origen},${lat_origen};${lon_destino},${lat_destino}?overview=false`)
     const data = await Fdata.json()
+    console.log("INFO DE VIAJE -> ", data);
     return data
   }
 
@@ -953,13 +955,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     for (const x of data) {
       tbody.innerHTML += `
             <tr class="border-0">
-                <td>${x.ncotizacion ? x.ncotizacion : 'no aplica'}</td>
+                  <td>${formatearFecha(x.fecha_presentacion)}</td>                        
                 <td>${x.nom_usuario ? x.nom_usuario : ''}</td>
 
 
                 <td>${x.establecimiento ? x.establecimiento : ``}</td>
                 <td>${x.departamento ? x.departamento + "/" + x.provincia + "/" + x.distrito : x.establecimiento + "/" + x.pais}</td>
-                <td>${formatearFecha(x.fecha_presentacion)}</td>                        
                 
                 <td>
                     ${idusuarioLogeado == 22 ? `
@@ -1227,7 +1228,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </label>
               </div>
             </div>
-
+<div class="${dpInfo[0]?.estado == 3 ? `bg-danger` : `bg-info`} text-white p-3 fw-bolder text-center">
+                  ${dpInfo[0]?.estado == 3 ? `CANCELADO` : 'ACTIVO'}
+                </div>
            </div>    
      `;
 

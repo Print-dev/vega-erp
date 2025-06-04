@@ -129,7 +129,7 @@ DROP PROCEDURE IF EXISTS `sp_registrar_nomina`;
 DELIMITER //
 CREATE PROCEDURE sp_registrar_nomina(
     OUT _idnomina INT,
-    IN _idcolaborador int,
+    IN _idpersonacolaborador int,
     IN _tipo INT,
     IN _fechaingreso DATE,
     IN _ruc varchar(20),
@@ -138,15 +138,15 @@ CREATE PROCEDURE sp_registrar_nomina(
 )
 BEGIN
     DECLARE existe_error INT DEFAULT 0;
-    
-    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+
+        DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
     BEGIN
         SET existe_error = 1;
     END;
     
     -- Insertar la notificación
-    INSERT INTO nominas (idcolaborador, tipo, fechaingreso, idcargo, ruc, clavesol, ncuenta)
-    VALUES (nullif(_idcolaborador,'') , nullif(_tipo,''), nullif(_fechaingreso,''), nullif(_idcargo,''), nullif(_ruc,''), nullif(_clavesol, '') , nullif(_ncuenta, ''));
+    INSERT INTO nominas (idpersonacolaborador, tipo, fechaingreso, ruc, clavesol, ncuenta)
+    VALUES (nullif(_idpersonacolaborador,'') , nullif(_tipo,''), nullif(_fechaingreso,''), nullif(_ruc,''), nullif(_clavesol, '') , nullif(_ncuenta, ''));
 
     IF existe_error = 1 THEN
         SET _idnomina = -1;
@@ -155,6 +155,8 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
+
+CALL sp_registrar_nomina (@idnomina, 5,1,'2025-05-20','aadasdds', 'adasdadad', 'asdasdasd');
 
 -- NUEVA NOMINA
 
@@ -289,7 +291,7 @@ CREATE PROCEDURE sp_filtrar_nominas(
     IN _anorangoinicio INT,
     IN _mesrangofin INT,
     IN _anorangofin INT,
-    IN _idcolaborador INT
+    IN _idpersonacolaborador INT
 )
 BEGIN
     SELECT 
@@ -314,9 +316,10 @@ BEGIN
         NOM.ncuenta,
         NOM.tipo,
         NOM.fechaingreso
+	SELECT * 
     FROM nominas NOM
-    LEFT JOIN colaboradores COL ON COL.idcolaborador = NOM.idcolaborador
-    LEFT JOIN personas_colaboradores PERCO ON PERCO.idpersonacolaborador = COL.idpersonacolaborador
+	LEFT JOIN personas_colaboradores PERCO ON PERCO.idpersonacolaborador = NOM.idpersonacolaborador
+    LEFT JOIN colaboradores COL ON COL.idcolaborador = PERCO.idpersonacolaborador
 	LEFT JOIN cargos CAR ON CAR.idcargo = PERCO.idcargo
     WHERE 
         (
@@ -339,13 +342,13 @@ BEGIN
         )
         AND 
         -- Filtro por colaborador (opcional)
-        (_idcolaborador IS NULL OR COL.idcolaborador = _idcolaborador)
+        (_idpersonacolaborador IS NULL OR PERCO.idpersonacolaborador = _idpersonacolaborador)
     ORDER BY NOM.fechaingreso DESC, NOM.idnomina DESC;
 END //
 DELIMITER ;
 
 select*from nominas;
-CALL sp_filtrar_nominas(NULL, NULL, 04, 2025, 08, 2025, NULL);
+CALL sp_filtrar_nominas(NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- Muestra solo nóminas de junio 2023select * from colaboradores;
 DROP PROCEDURE IF EXISTS sp_filtrar_salarios;

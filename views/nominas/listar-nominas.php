@@ -20,7 +20,7 @@
                     <a href="<?= $hostOnlyHeader ?>/views/nominas/registrar-nomina" class="btn btn-primary">Nueva Registro</a>
 
                     <button class="btn btn-success" id="btnGenerarExcel"><i class="fa-solid fa-file-excel"></i> Descargar en Excel</button>
-                    <button class="btn btn-info" id="btnGenerarFicha"><i class="fa-regular fa-file-lines"></i>  Descargar Ficha(s)</button>
+                    <!-- <button class="btn btn-info" id="btnGenerarFicha"><i class="fa-regular fa-file-lines"></i>  Descargar Ficha(s)</button> -->
                 </div>
             </div>
             <div class="row">

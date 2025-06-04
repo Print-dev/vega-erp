@@ -593,6 +593,22 @@ CREATE TABLE cargos ( -- AREAS DE UN COLABORADOR, EJEMP: sistemas, diseño, mark
 select*from cargos_colaboradores CO
 INNER JOIN personas_colaboradores PC ON PC.idpersonacolaborador = CO.idpersonacolaborador
 ORDER BY CO.idpersonacolaborador;
+
+SELECT PC.*, CO.*
+FROM personas_colaboradores PC
+INNER JOIN (
+    SELECT *
+    FROM cargos_colaboradores
+    WHERE idcargocolaborador IN (
+        SELECT MAX(idcargocolaborador)
+        FROM cargos_colaboradores
+        GROUP BY idpersonacolaborador
+    )
+) CO ON PC.idpersonacolaborador = CO.idpersonacolaborador
+ORDER BY PC.idpersonacolaborador;
+
+
+
 CREATE TABLE `cargos_colaboradores` (
   `idcargocolaborador` int(11) NOT NULL AUTO_INCREMENT,
   `idpersonacolaborador` int(11) DEFAULT NULL,
@@ -632,13 +648,13 @@ CREATE TABLE colaboradores (
 -- select *  from nominas
 CREATE TABLE nominas (
 	idnomina int auto_increment primary key,
-    idcolaborador INT NULL,
+    idpersonacolaborador INT NULL,
     tipo 	INT null, -- 1: planilla, 2: contrato, 3: locacion
     fechaingreso	DATE NULL,
     ruc				varchar(20) null,
     clavesol		varchar(20) null,
     ncuenta			varchar(20) null,
-	constraint fk_idcolaborador_nomina foreign key (idcolaborador) references colaboradores (idcolaborador) ON DELETE CASCADE
+	constraint fk_idcolaborador_nomina foreign key (idpersonacolaborador) references personas_colaboradores (idpersonacolaborador) ON DELETE CASCADE
 ) ENGINE = INNODB;
 
 
@@ -811,4 +827,4 @@ CREATE TABLE prodserv (
     precio 		DECIMAL(10,2) null,
 	constraint fk_idproveedor foreign key (idproveedor) references proveedores (idproveedor) ON DELETE CASCADE
 ) ENGINE = INNODB;
-SELECT * FROM prodserv
+
